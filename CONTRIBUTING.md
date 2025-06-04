@@ -1,678 +1,608 @@
-# Contributing to System Infrastructure
+# 🚀 Contributing to System Infrastructure
 
-Welcome to the project! This guide will help you get started with the contribution process.
+Thank you for your interest in contributing to our infrastructure project! This guide explains how to collaborate effectively, whether you're a human contributor or an AI-assisted tool.
 
-## Table of Contents
+## 📋 Table of Contents
 
-- [Welcome](#welcome)
+- [🌟 Welcome](#-welcome)
   - [Project Overview](#project-overview)
-  - [Why Contribute?](#why-contribute)
-  - [Types of Contributions](#types-of-contributions)
-    - [What We're Looking For](#what-were-looking-for)
-    - [What We're Not Looking For](#what-were-not-looking-for)
-    - [Getting Started](#getting-started)
-    - [Advanced Contributions](#advanced-contributions)
-  - [Contribution Guidelines](#contribution-guidelines)
-    - [Nix-Specific Guidelines](#nix-specific-guidelines)
-    - [Before You Begin](#before-you-begin)
-- [Contribution Workflow](#contribution-workflow)
-  - [Before You Begin](#before-you-begin)
-  - [Making Changes](#making-changes)
-    - [Create a Feature Branch](#1-create-a-feature-branch)
-    - [Implement Your Changes](#2-implement-your-changes)
-    - [Testing Your Changes](#3-testing-your-changes)
-  - [Submitting Changes](#submitting-changes)
-  - [After Submission](#after-submission)
-- [How to Contribute](#how-to-contribute)
-  - [Reporting Bugs](#reporting-bugs)
-  - [Suggesting Enhancements](#suggesting-enhancements)
-  - [Your First Code Contribution](#your-first-code-contribution)
-- [Development Workflow](#development-workflow)
-  - [Branch Naming](#branch-naming)
-  - [Pull Request Process](#pull-request-process)
-- [Commit Guidelines](#commit-guidelines)
-  - [Commit Message Format](#commit-message-format)
-  - [Commit Types](#commit-types)
-  - [Examples](#examples)
-- [Code Style and Standards](#code-style-and-standards)
-- [Getting Help](#getting-help)
-- [Code of Conduct](#code-of-conduct)
-- [License](#license)
+  - [How to Contribute](#how-to-contribute)
+  - [First Time? Start Here](#first-time-start-here)
+- [🔍 Contribution Workflow](#-contribution-workflow)
+  - [1. Find or Create an Issue](#1-find-or-create-an-issue)
+  - [2. Set Up Your Environment](#2-set-up-your-environment)
+  - [3. Make Your Changes](#3-make-your-changes)
+  - [4. Commit with Gitmoji](#4-commit-with-gitmoji)
+  - [5. Submit a Pull Request](#5-submit-a-pull-request)
+  - [6. Code Review](#6-code-review)
+  - [7. After Approval](#7-after-approval)
+- [🤖 AI-Assisted Contributions](#-ai-assisted-contributions)
+  - [Guidelines for AI Tools](#guidelines-for-ai-tools)
+  - [Best Practices](#best-practices)
+  - [Common Pitfalls](#common-pitfalls)
+- [📌 Issue Management](#-issue-management)
+  - [Bug Reports](#bug-reports)
+  - [Feature Requests](#feature-requests)
+  - [Issue Lifecycle](#issue-lifecycle)
+- [👥 Community](#-community)
+  - [Getting Help](#getting-help)
+  - [Code of Conduct](#code-of-conduct)
+  - [Recognition](#recognition)
 
-## Welcome
+## 🌟 Welcome
 
 ### Project Overview
 
-This repository contains the NixOS configuration for our infrastructure, implementing a declarative approach to system management. The mission of this project is to create reproducible, maintainable, and secure system configurations that can be version-controlled and easily deployed across different environments.
+This project implements a fully declarative and modular system configuration using Nix, nix-darwin, and home-manager. We value contributions that enhance reliability, security, and maintainability.
 
-### Why Contribute?
+### How to Contribute
 
-By contributing to this NixOS configuration, you can:
-- Help build robust, reproducible infrastructure using Nix/Flakes
-- Gain experience with modern NixOS practices and module development
-- Learn about system configuration as code and infrastructure automation
-- Improve the reliability and security of the systems
-- Contribute to a project that values declarative and reproducible infrastructure
+You can contribute by:
+- 🐛 Reporting and fixing bugs
+- ✨ Suggesting and implementing features
+- 📚 Improving documentation
+- 👁️ Reviewing pull requests
+- 💡 Sharing ideas and feedback
+- 🤝 Helping other contributors
 
-### Types of Contributions
+### First Time? Start Here
 
-We welcome various types of contributions, organized from general to specific:
+1. Read our [Getting Started](#-getting-started) guide
+2. Look for issues labeled `good first issue`
+3. Join our community discussions
+4. Don't hesitate to ask questions!
 
-#### What We're Looking For
+## 🔍 Contribution Workflow
 
-**1. Code Contributions**
-- New NixOS modules and configurations
-- Bug fixes and performance improvements
-- Test coverage enhancements
-- Security hardening
+### 1. Find or Create an Issue
 
-**2. Documentation**
-- API and module documentation
-- Tutorials and how-to guides
-- Code examples and recipes
-- Translation of documentation
+- Browse our [issue tracker](https://github.com/aytordev/system/issues)
+- Search for existing issues before creating a new one
+- If you find a relevant issue, comment to express interest
+- If no issue exists, create one following our [issue guidelines](#-issue-management)
 
-**3. Testing & Quality**
-- Bug reports with reproduction steps
-- Test case additions
-- Performance benchmarking
-- Security audits
+### 2. Set Up Your Environment
 
-**4. Community Support**
-- Answering questions
-- Triaging issues
-- Code reviews
-- Mentoring new contributors
+1. **Fork the Repository**
+   - Click "Fork" at the top-right of the repository page
+   - This creates your personal copy of the project
 
-#### What We're Not Looking For
-- Breaking changes without discussion
-- Untested or undocumented code
-- Non-backward compatible changes without migration paths
-- Contributions that don't follow our code of conduct
-
-#### Getting Started
-For new contributors, we recommend starting with:
-1. Documentation improvements
-2. Good first issues
-3. Test coverage improvements
-4. Small bug fixes
-
-#### Advanced Contributions
-For experienced contributors, consider:
-- New module development
-- Performance optimizations
-- Security enhancements
-- Complex feature implementations
-
-### Contribution Guidelines
-
-To ensure a smooth contribution process, please note:
-
-#### What We're Looking For
-- Well-tested Nix expressions and modules
-- Clear, documented configurations with examples
-- Backward compatibility for existing systems
-- Solutions that follow NixOS best practices
-- Properly formatted commit messages following our guidelines
-
-#### Nix-Specific Guidelines
-- Use flakes for development and deployment
-- Follow the Nixpkgs manual and module system conventions
-- Keep configurations modular and reusable
-- Document all public interfaces and options
-- Include appropriate type annotations for module options
-
-#### Before You Begin
-- Check existing issues and PRs to avoid duplicates
-- For significant changes, open an issue first to discuss
-- Ensure your changes align with our project goals and roadmap
-
-## Contribution Workflow
-
-### Before You Begin
-- Check existing issues and PRs to avoid duplicates
-- For significant changes, open an issue first to discuss
-- Ensure your changes align with our project goals and roadmap
-
-### Making Changes
-
-#### 1. Create a Feature Branch
-```bash
-# Create and switch to a new branch
-# Example for a new authentication feature
-git checkout main
-git pull origin main
-git checkout -b feat/user-authentication
-
-# Or for a bug fix
-git checkout -b fix/login-error-404
-
-# Or for documentation updates
-git checkout -b docs/update-api-docs
-```
-
-#### 2. Implement Your Changes
-
-**Example: Adding a New NixOS Module**
-```nix
-# Example: modules/my-service.nix
-{ config, lib, pkgs, ... }:
-
-with lib;
-
-let
-  cfg = config.services.myService;
-in {
-  options.services.myService = {
-    enable = mkEnableOption "My custom service";
-    port = mkOption {
-      type = types.port;
-      default = 8080;
-      description = "Port to run the service on";
-    };
-  };
-
-  config = mkIf cfg.enable {
-    systemd.services.my-service = {
-      description = "My Custom Service";
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart = "${pkgs.my-package}/bin/my-service --port ${toString cfg.port}";
-        Restart = "always";
-        User = "my-service";
-      };
-    };
-    
-    users.users.my-service = {
-      isSystemUser = true;
-      group = "my-service";
-    };
-    users.groups.my-service = {};
-  };
-}
-```
-
-**Example: Modifying an Existing Service**
-1. Locate the relevant module in `nixpkgs` or your local modules
-2. Create an override or extension:
-   ```nix
-   # Example in configuration.nix or a module
-   { config, lib, ... }: {
-     services.nginx = {
-       enable = true;
-       recommendedGzipSettings = true;
-       recommendedOptimisation = true;
-       
-       # Add custom configuration
-       appendHttpConfig = ''
-         # Custom nginx configuration
-         server_tokens off;
-         add_header X-Frame-Options DENY;
-       '';
-     };
-   }
-   ```
-3. Test the changes in a VM or sandbox:
+2. **Clone Your Fork**
    ```bash
-   nixos-rebuild build-vm -I nixos-config=./configuration.nix
+   git clone git@github.com:YOUR-USERNAME/system.git
+   cd system
    ```
-4. Update documentation if the change affects configuration options
 
-#### 3. Testing Your Changes
+3. **Configure Remotes**
+   - Add the main repository as 'upstream':
+   ```bash
+   git remote add upstream git@github.com:aytordev/system.git
+   ```
+   - Verify remotes are set up correctly:
+   ```bash
+   git remote -v
+   ```
 
-> **Note:** Comprehensive testing documentation is currently under development. The following provides basic guidance, and we're working on expanding this section with detailed testing strategies and examples.
+4. **Create a Feature Branch**
+   - Always work on a new branch for each feature/fix:
+   ```bash
+   git checkout -b type/descriptive-name
+   ```
+   - Branch naming convention:
+     - `feat/` for new features
+     - `fix/` for bug fixes
+     - `docs/` for documentation
+     - `refactor/` for code improvements
+     - `test/` for test additions
 
-**Basic Testing Commands**
+### 3. Make Your Changes
 
-> **Note:** Under development.
+1. **Understand the Scope**
+   - Focus on one logical change per PR
+   - Keep changes small and reviewable
+   - Reference related issues in your commit messages
 
-**Testing Best Practices**
-1. Always test configuration changes in a VM or on a non-production system first
-2. Use `nixos-option` to verify configuration values
-3. Check system logs with `journalctl` after making service changes
+2. **Development Workflow**
+   - Make incremental commits
+   - Test your changes locally
+   - Update documentation as needed
+   - Follow our [code style guidelines](CODE_STYLE.md)
 
-We're actively developing more comprehensive testing documentation, including:
-- Unit testing for Nix modules
-- Integration testing strategies
-- Automated testing in CI/CD pipelines
-- Property-based testing examples
+3. **Testing**
+   - Add tests for new functionality
+   - Run the full test suite locally
+   - Document any testing limitations
 
-Please check back soon for updates, or consider contributing to our testing documentation.
+4. **Documentation**
+   - Update relevant documentation
+   - Add examples where helpful
+   - Document any breaking changes
 
-### Submitting Changes
+### 4. Commit with Gitmoji
 
-#### 1. Push Your Changes
-```bash
-# Add changed files
-git add .
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification with [Gitmoji](https://gitmoji.dev/) to create meaningful, consistent commit messages. This standard helps with:
+- Automated changelog generation
+- Semantic versioning
+- Clear communication of changes
+- Better collaboration
 
-# Commit with a descriptive message
-git commit -m ":sparkles: feat(auth): add user authentication middleware"
-
-# Push to your fork
-git push -u origin your-branch-name
-```
-
-#### 2. Open a Pull Request
-1. Go to the [Pull Requests](https://github.com/your-org/system/pulls) page
-2. Click "New Pull Request"
-3. Set base branch to `develop` and compare with your feature branch
-4. Fill in the PR template with details about your changes
-
-**Example PR Title**:
-```
-✨ feat(auth): add user authentication middleware
-```
-
-**Example PR Description**:
-```markdown
-## Description
-Adds JWT-based authentication middleware for API endpoints
-
-## Related Issues
-Fixes #123
-
-## Testing
-- [x] Added unit tests
-- [x] Tested manually with Postman
-- [ ] Updated documentation
-
-## Screenshots (if applicable)
-[Add screenshots or screen recordings if relevant]
-```
-
-#### 3. Code Review Process
-- Automated checks (CI/CD) will run
-- Maintainers will review your code
-- Address any feedback or requested changes
-- Update your branch with `git pull --rebase origin develop` if needed
-
-#### 4. After Approval
-- A maintainer will squash and merge your PR
-- Your changes will be included in the next release
-- The PR will be automatically closed
-
-### After Submission
-
-#### Monitoring Your PR
-- Check the "Checks" tab for CI/CD pipeline status
-- Monitor email notifications for review comments
-- If tests fail, push fixes to the same branch
-
-#### Common Issues and Solutions
-
-**1. Merge Conflicts**
-```bash
-git fetch origin
-git rebase origin/develop
-# Resolve conflicts, then
-git add .
-git rebase --continue
-```
-
-**2. Failing Tests**
-- Check the test output in the CI logs
-- Run tests locally to reproduce:
-
-> **Note:** Under development.
-
-**3. Code Review Feedback**
-- Address all comments by pushing new commits
-- For discussions, use the "Resolve conversation" button
-- If you disagree with feedback, explain your reasoning
-
-#### After Merge
-- Delete your feature branch
-- Update your local develop branch:
-  ```bash
-  git checkout develop
-  git pull origin develop
-  git branch -d your-feature-branch
-  ```
-- Celebrate your contribution! 🎉
-- Consider sharing your experience with the community
-
-## How to Contribute
-
-### Reporting Bugs
-
-- Use GitHub Issues to report bugs
-- Include steps to reproduce the issue
-- Describe the expected behavior vs. actual behavior
-- Include version information (OS, dependencies, etc.)
-- Add appropriate labels to the issue
-
-### Suggesting Enhancements
-
-- Open an issue describing the enhancement
-- Explain why this enhancement would be useful
-- Include any relevant technical details or implementation ideas
-- Use the "enhancement" label
-
-### Your First Code Contribution
-
-1. Find an issue labeled `good first issue` or `help wanted`
-2. Comment on the issue that you'd like to work on it
-3. Follow our [Development Workflow](#development-workflow)
-
-## Development Workflow
-
-### Commit Message Guidelines
-
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification with Gitmoji for all commit messages. This ensures a consistent commit history and enables automated changelog generation.
-
-#### Commit Message Format
+#### Commit Message Structure
 
 ```
-:gitmoji: type(scope?): subject
+:gitmoji: type(scope): concise description
 
 [optional body]
 
-[optional footer(s)]
+[optional footer]
 ```
 
-## Commit Guidelines
+#### Gitmoji Types and Usage
 
-We strictly follow the [Conventional Commits](https://www.conventionalcommits.org/) specification with [Gitmoji](https://gitmoji.dev/) for all commit messages. This combination ensures a consistent, readable commit history and enables automated changelog generation.
+| Type | Gitmoji | When to Use | Example |
+|------|---------|-------------|---------|
+| `feat` | ✨ | New features or significant additions | `✨ feat(auth): add MFA support` |
+| `fix` | 🐛 | Bug fixes | `🐛 fix(api): handle null user edge case` |
+| `docs` | 📝 | Documentation changes | `📝 docs: update API reference` |
+| `style` | 🎨 | Code style/formatting changes | `🎨 style: format with prettier` |
+| `refactor` | ♻️ | Code changes that neither fix bugs nor add features | `♻️ refactor(auth): simplify token validation` |
+| `perf` | ⚡️ | Performance improvements | `⚡️ perf(db): optimize query performance` |
+| `test` | ✅ | Adding or modifying tests | `✅ test(utils): add test coverage` |
+| `chore` | 🔧 | Build process or auxiliary tool changes | `🔧 chore(deps): update dependencies` |
+| `ci` | 👷 | CI configuration changes | `👷 ci: add GitHub Actions workflow` |
+| `build` | 📦 | Build system or external dependencies | `📦 build: update webpack config` |
+| `revert` | ⏪ | Revert previous commit | `⏪ revert: revert auth changes` |
+| `wip` | 🚧 | Work in progress | `🚧 wip: implement payment flow` |
+| `security` | 🔒 | Security-related changes | `🔒 security: upgrade vulnerable packages` |
+| `i18n` | 🌐 | Internationalization/localization | `🌐 i18n: add Spanish translation` |
 
-### Commit Message Structure
+#### Commit Message Components
 
-```
-:gitmoji: type(scope?): subject
+1. **Gitmoji**
+   - Always start with an appropriate Gitmoji
+   - Use the most specific emoji that matches the change
+   - Don't use multiple emojis in a single commit
 
-[optional body]
-
-[optional footer(s)]
-```
-
-### Components Explained
-
-1. **Gitmoji (Required)**
-   - Visual indicator at the start of the commit
-   - Must be one of the [official Gitmoji](https://gitmoji.dev/)
-   - Should be semantically related to the change type
-   - No space between the emoji and the type
-
-2. **Type (Required - Conventional Commit Type)**
-   - Must be one of the standard Conventional Commit types:
-     - `feat`: New feature (✨)
-     - `fix`: Bug fix (🐛)
-     - `docs`: Documentation changes (📝)
-     - `style`: Code style/formatting (🎨)
-     - `refactor`: Code refactoring (♻️)
-     - `perf`: Performance improvements (⚡️)
-     - `test`: Adding or fixing tests (✅, 🚨)
-     - `chore`: Maintenance tasks (🔧, ⬆️, etc.)
-   - Must be lowercase
-   - Must immediately follow the Gitmoji (no space after the emoji)
+2. **Type (Required)**
+   - Must be one of the standard types listed above
+   - Use lowercase
+   - Be specific and consistent
 
 3. **Scope (Optional)**
-   - Must be a noun describing a section of the codebase
-   - Must be in parentheses
-   - Must immediately follow the type
-   - Should be lowercase with hyphen-separated words if needed
+   - Enclosed in parentheses
+   - Describes the section of the codebase affected
+   - Examples: `(auth)`, `(api)`, `(ui)`, `(config)`
+   - Use `*` for changes affecting multiple scopes
 
-4. **Subject (Required)**
-   - Brief description of the change (max 72 characters)
-   - Must use imperative mood ("add" not "added" or "adds")
+4. **Description (Required)**
+   - Use imperative, present tense ("add" not "added" or "adds")
+   - Don't capitalize the first letter
    - No period at the end
-   - Must be separated from type/scope by a colon and space (`: `)
+   - Keep it under 72 characters
 
+5. **Body (Optional)**
+   - Separate from subject with a blank line
+   - Use imperative, present tense
+   - Explain what and why, not how
+   - Wrap at 72 characters
+   - Use bullet points for multiple changes
 
-### Gitmoji to Conventional Commit Mapping
+6. **Footer (Optional)**
+   - Separate from body with a blank line
+   - Reference issues with keywords (e.g., `Closes #123`)
+   - Document breaking changes with `BREAKING CHANGE:`
+   - Include migration notes if needed
 
-| Gitmoji | Conventional Type | When to Use | Example |
-|---------|-------------------|-------------|---------|
-| ✨ | `feat` | New features or functionality | `✨ feat(auth): add OAuth login` |
-| 🐛 | `fix` | Bug fixes | `🐛 fix(api): handle null user data` |
-| ♻️ | `refactor` | Code changes that neither fix bugs nor add features | `♻️ refactor(utils): optimize data processing` |
-| 📝 | `docs` | Documentation changes | `📝 docs(readme): update installation guide` |
-| 🎨 | `style` | Code style/formatting | `🎨 style: format code with prettier` |
-| ⚡️ | `perf` | Performance improvements | `⚡️ perf(render): optimize component rendering` |
-| ✅ | `test` | Adding or updating tests | `✅ test(auth): add login test cases` |
-| 🚨 | `test` | Fixing failing tests | `🚨 test: fix flaky test in user service` |
-| 🚧 | `wip` | Work in progress (use sparingly) | `🚧 wip: implement checkout flow` |
-| 🚑 | `fix` | Critical hotfixes | `🚑 fix(auth): patch security vulnerability` |
-| 🔒 | `fix` | Security-related fixes | `🔒 fix(security): update dependencies with CVEs` |
-| 🚀 | `chore` | Deployment/CI changes | `🚀 chore(ci): update deployment pipeline` |
-| ⬆️ | `chore` | Dependency updates | `⬆️ chore(deps): update react to v18.2.0` |
-| 🔧 | `chore` | Configuration changes | `🔧 chore(config): update webpack config` |
-| 🚚 | `chore` | File/folder structure changes | `🚚 chore: move components to shared folder` |
-| 🗃️ | `chore` | Database changes | `🗃️ chore(db): add users table migration` |
-| 🍱 | `chore` | Adding/updating assets | `🍱 chore(assets): add new icons` |
+#### Advanced Examples
 
-### Special Cases
-
-| Gitmoji | Conventional Type | Usage | Example |
-|---------|-------------------|-------|---------|
-| 🍻 | - | Only for initial commit | `🍻 Initial commit` |
-| 🔥 | `chore` | Removing code/files | `🔥 chore: remove deprecated endpoints` |
-| 🏷️ | `chore` | Version tags | `🏷️ chore: v1.2.0` |
-| 🔍 | `chore` | SEO improvements | `🔍 chore(seo): add meta tags` |
-| 💄 | `style` | UI/style changes | `💄 style(ui): update button colors` |
-| ♿️ | `perf` | Accessibility improvements | `♿️ perf(a11y): improve screen reader support` |
-
-### Breaking Changes
-
-For breaking changes, add `BREAKING CHANGE:` in the footer or body of the commit message, followed by a description of what changed and how to migrate:
-
+**Feature with Body and Footer**
 ```
-:boom: feat(api): remove deprecated API
+✨ feat(auth): add OAuth2 with GitHub
 
-BREAKING CHANGE: The deprecated API endpoint `/v1/old` has been removed.
-Please use `/v2/new` instead.
-```
+- Implement OAuth2 authentication flow
+- Add user model extensions for OAuth
+- Update configuration documentation
+- Add comprehensive test coverage
 
-### Examples
-
-#### Feature with scope
-```
-✨ feat(auth): add OAuth2 login
-```
-
-#### Bug fix with body and footer
-```
-🐛 fix(api): handle null user data
-
-Prevent null reference exception in user endpoint
-when user data is not found in the database.
-
-Fixes #123
-```
-
-#### Chore with scope
-```
-⬆️ chore(deps): update react to v18.2.0
-```
-
-#### Breaking change
-```
-💥 feat(api): remove deprecated endpoints
-
-BREAKING CHANGE: The following deprecated endpoints have been removed:
-- GET /api/v1/old-endpoint
-- POST /api/v1/legacy
-
-Please use the new v2 API endpoints instead.
-```
-
-### Best Practices
-
-1. **Be Consistent**
-   - Use the same type/scope for similar changes
-   - Keep the same style throughout the project
-
-2. **Be Specific**
-   - Use scopes to indicate which part of the code is affected
-   - Keep the subject line clear and concise
-
-3. **Use the Body for Context**
-   - Explain what changed and why
-   - Include any relevant background information
-
-4. **Reference Issues**
-   - Use `Fixes #123` or `Closes #123` to automatically close issues
-   - Reference related issues in the body
-
-5. **Keep It Atomic**
-   - Each commit should represent a single logical change
-   - Split large changes into smaller, focused commits
-
-### Examples
-
-```
-✨ feat(auth): add login with GitHub
-
-Add OAuth integration with GitHub for user authentication.
 Closes #123
-
-- Implemented OAuth2 flow
-- Added user model updates
-- Updated documentation
+Related to #456
 ```
 
+**Bug Fix with Breaking Change**
 ```
-🐛 fix(api): handle null response in user endpoint
+🐛 fix(api): handle null user sessions
 
-Prevent null reference exception when user data is not found.
+- Add null checks in session middleware
+- Update error handling in auth service
+- Add test cases for edge cases
+
+BREAKING CHANGE: Session middleware now requires valid user object
+
+Closes #789
+```
+
+**Documentation Update**
+```
+📝 docs: update contribution guidelines
+
+- Add detailed commit message guidelines
+- Include Gitmoji reference
+- Update code review checklist
+- Add examples for common scenarios
+
+Addresses #101
+```
+
+**Chore with Multiple Dependencies**
+```
+🔧 chore(deps): update security packages
+
+- Update express from 4.17.1 to 4.18.2
+- Upgrade react and react-dom to 18.2.0
+- Update jest and related testing libraries
+
+Resolves security advisory GHSA-xxxx-xxxx-xxxx
+```
+
+#### Best Practices
+
+1. **Atomic Commits**
+   - Each commit should represent a single logical change
+   - Keep changes focused and cohesive
+   - Split large features into smaller, reviewable commits
+
+2. **Meaningful Messages**
+   - Be clear and descriptive
+   - Explain why the change is being made
+   - Reference relevant issues or discussions
+
+3. **Consistency**
+   - Follow the same format across all commits
+   - Use the same terminology
+   - Keep the style uniform
+
+4. **Review Before Committing**
+   - Stage changes selectively with `git add -p`
+   - Review staged changes with `git diff --cached`
+   - Write a clear, descriptive message
+
+5. **Interactive Rebase**
+   - Clean up your commit history before pushing
+   - Squash fixup commits
+   - Reorder commits logically
+   - Rewrite messages for clarity
+
+#### Common Pitfalls to Avoid
+
+❌ **Vague Messages**
+```
+❌ git commit -m "fix bug"
+✅ git commit -m "🐛 fix(auth): handle null token in middleware"
+```
+
+❌ **Multiple Changes in One Commit**
+```
+❌ feat: add user auth and update styles
+✅ feat(auth): implement JWT authentication
+✅ style(ui): update login form styles
+```
+
+❌ **Inconsistent Formatting**
+```
+❌ FIX: Login issue
+✅ 🐛 fix(login): resolve authentication timeout
+```
+
+#### Tools and Automation
+
+1. **Commitizen**
+   ```bash
+   # Install
+   npm install -g commitizen
+   
+   # Use interactive commit helper
+   git cz
+   ```
+
+2. **Commitlint**
+   - Validates commit messages against conventional format
+   - Can be integrated with Husky for pre-commit hooks
+
+3. **Git Hooks**
+   - Use `prepare-commit-msg` to suggest emojis
+   - Add `commit-msg` hook to validate format
+   - Use `pre-push` to run tests
+
+4. **Changelog Generation**
+   - `standard-version`: Automate versioning and CHANGELOG generation
+   - `semantic-release`: Fully automated package publishing
+
+#### Workflow Integration
+
+1. **Feature Branches**
+   ```bash
+   git checkout -b feat/feature-name
+   # Make changes
+   git add .
+   git commit -m "✨ feat(feature): implement new feature"
+   git push -u origin feat/feature-name
+   ```
+
+2. **Bug Fixes**
+   ```bash
+   git checkout -b fix/issue-description
+   # Fix the bug
+   git add .
+   git commit -m "🐛 fix(module): resolve specific issue"
+   git push -u origin fix/issue-description
+   ```
+
+3. **WIP Commits**
+   ```bash
+   git add .
+   git commit -m "🚧 wip: in-progress feature"
+   # Later, amend or rebase to clean up
+   ```
+
+Remember: Good commit messages are the cornerstone of maintainable code. They help your future self and other contributors understand the history and reasoning behind changes.
+   - Use imperative mood ("add" not "added" or "adds")
+   - Keep it under 72 characters
+   - Reference issues at the end (e.g., `Closes #123`)
+
+2. **Body**
+   - Explain what and why, not how
+   - Use bullet points for multiple changes
+   - Reference any relevant issues or PRs
+
+3. **Footer**
+   - Breaking changes should start with `BREAKING CHANGE:`
+   - Reference related issues with `Closes #123` or `Fixes #456`
+
+#### Examples
+
+**Feature Addition**
+```
+✨ feat(auth): implement OAuth2 with GitHub
+
+- Add OAuth2 authentication flow
+- Create user model extensions
+- Update configuration documentation
+
+Closes #123
+```
+
+**Bug Fix**
+```
+🐛 fix(api): prevent null reference in user service
+
+- Add null checks for user object
+- Add test coverage for edge cases
+- Update API documentation
+
 Fixes #456
 ```
 
-## Visual Workflow Overview
+**Documentation Update**
+```
+📝 docs(contributing): add AI guidelines
 
-```mermaid
-graph TD
-    A[Start] --> B[Create Issue]
-    B --> C[Create Branch]
-    C --> D[Make Changes]
-    D --> E[Run Tests]
-    E --> F[Commit Changes]
-    F --> G[Push to Remote]
-    G --> H[Open PR]
-    H --> I[Code Review]
-    I --> J{Approved?}
-    J -->|Yes| K[Merge to Develop]
-    J -->|No| D
-    K --> L[Delete Branch]
-    L --> M[Deploy to Staging]
-    M --> N[QA Testing]
-    N --> O{Passed?}
-    O -->|Yes| P[Deploy to Production]
-    O -->|No| D
+- Add best practices for AI-assisted contributions
+- Include common pitfalls to avoid
+- Update code review checklist
+
+Refs #789
 ```
 
-### Common Scenarios
+### 5. Submit a Pull Request
 
-#### 1. Starting a New Feature
-1. Create a new branch from `develop`
-2. Implement feature following TDD (Test-Driven Development)
-3. Write documentation and examples
-4. Update CHANGELOG.md
-5. Submit PR for review
-
-#### 2. Fixing a Bug
-1. Reproduce the bug with a test
-2. Fix the issue
-3. Add regression tests
-4. Document the fix in CHANGELOG.md
-5. Submit PR with `fix:` prefix
-
-#### 3. Updating Dependencies
-1. Check for outdated packages:
+1. Push your changes:
    ```bash
-   pip list --outdated
+   git push -u origin your-branch-name
    ```
-2. Update requirements files
-3. Test thoroughly
-4. Document breaking changes
-5. Submit PR with `chore(deps):` prefix
+2. Open a [new pull request](https://github.com/aytordev/system/compare)
+3. Fill out the PR template completely
+4. Reference related issues using `Closes #123` or `Fixes #456`
+5. Request reviews from relevant maintainers
 
-### Branch Naming
+### 6. Code Review
 
-Use the following format for branch names:
+- Address all review comments
+- Push updates to your branch
+- Mark resolved comments as resolved
+- Be responsive to feedback
+- Keep discussions focused and constructive
 
-```
-type/descriptive-name
-```
+### 7. After Approval
 
-Where `type` is one of:
-- `feat` - New feature
-- `fix` - Bug fix
-- `docs` - Documentation changes
-- `style` - Code style updates
-- `refactor` - Code changes that neither fix bugs nor add features
-- `test` - Adding missing tests or correcting existing tests
-- `chore` - Maintenance tasks
+- Your PR will be squashed and merged
+- The branch will be automatically deleted
+- Update your local repository:
+  ```bash
+  git checkout main
+  git pull upstream main
+  git branch -d your-branch-name
+  ```
 
-### Commit Message Guidelines
+## 🤖 AI-Assisted Contributions
 
-We follow [Conventional Commits](https://www.conventionalcommits.org/) with [Gitmoji](https://gitmoji.dev/) for all commit messages. This ensures a consistent commit history and enables automated changelog generation.
+We actively encourage the use of AI tools to enhance productivity and code quality. This section provides guidelines for effectively leveraging AI in your contributions.
 
-#### Commit Message Format
+### When to Use AI
 
-```
-:gitmoji: type(scope?): subject
+AI tools are particularly helpful for:
+- Generating boilerplate code
+- Refactoring existing code
+- Writing test cases
+- Improving documentation
+- Debugging and error resolution
+- Learning new concepts
 
-[optional body]
+### Guidelines for AI Tools
 
-[optional footer(s)]
-```
+1. **Code Review and Understanding**
+   - Always thoroughly review AI-generated code
+   - Ensure you understand every line of code before committing
+   - Verify alignment with our [coding standards](CODE_STYLE.md)
+   - Check for security implications and edge cases
 
-#### Gitmoji Types
+2. **Quality Assurance**
+   - AI-generated code must meet our quality standards
+   - Include comprehensive tests (unit, integration)
+   - Document complex logic and decisions
+   - Follow established architectural patterns
 
-| Emoji | Code | Description |
-|-------|------|-------------|
-| ✨ | `:sparkles:` | Introduce new features |
-| 🐛 | `:bug:` | Fix a bug |
-| 📝 | `:memo:` | Add or update documentation |
-| ♻️ | `:recycle:` | Refactor code |
-| 🚧 | `:construction:` | Work in progress |
-| 🔧 | `:wrench:` | Add or update configuration |
-| ✅ | `:white_check_mark:` | Add or update tests |
-| 🚀 | `:rocket:` | Deploy stuff |
-| 🔒 | `:lock:` | Fix security issues |
-| ⬆️ | `:arrow_up:` | Upgrade dependencies |
-| ⬇️ | `:arrow_down:` | Downgrade dependencies |
-| 🎨 | `:art:` | Improve structure/format of the code |
-| ⚡️ | `:zap:` | Improve performance |
-| 🔥 | `:fire:` | Remove code or files |
-| 🚚 | `:truck:` | Move or rename files |
-| 📦 | `:package:` | Add or update compiled files or packages |
-4. Ensure all tests pass
-5. Submit a pull request to the `develop` branch
-6. Reference any related issues in your PR description
-7. Request review from maintainers
-8. Address any review feedback
+3. **Intellectual Responsibility**
+   - You are responsible for all code you submit
+   - Ensure compliance with open source licenses
+   - Be transparent about AI usage if asked
+   - Respect intellectual property rights
 
-## Code Style and Standards
+### AI Best Practices
 
-Please refer to our comprehensive [CODESTYLE.md](CODESTYLE.md) document for detailed guidelines on:
+#### Effective Prompting
+- **Be Specific**
+  ```
+  ❌ "Write a function to sort users"
+  ✅ "Write a TypeScript function that sorts an array of User objects by last name, then first name, in ascending order. Include JSDoc comments and type definitions."
+  ```
 
-- General coding standards and best practices
-- Language-specific style guides (Python, etc.)
-- Documentation standards and examples
-- Testing guidelines and examples
-- Git commit message conventions
-- Pull request guidelines
-- Code review checklist
+- **Provide Context**
+  - Share relevant code snippets
+  - Reference our codebase patterns
+  - Specify performance requirements
 
-All contributors are expected to follow these standards to maintain code quality and consistency across the project.
+- **Iterative Refinement**
+  - Start with high-level requirements
+  - Gradually add constraints
+  - Request explanations for complex logic
 
-## Getting Help
+#### Code Quality
+- **Refinement**
+  - Break down complex solutions
+  - Ensure consistent style
+  - Add meaningful comments
+  - Implement proper error handling
 
-If you have any questions or need assistance, please open an issue in the repository. The maintainer will respond as soon as possible.
+- **Testing**
+  - Generate test cases
+  - Include edge cases
+  - Verify test coverage
+
+#### Documentation
+- **Code Documentation**
+  - Add JSDoc/TSDoc comments
+  - Document assumptions and limitations
+  - Include usage examples
+
+- **Project Documentation**
+  - Update relevant documentation
+  - Add inline comments for complex logic
+  - Document any AI-specific considerations
+
+### Common Pitfalls to Avoid
+
+1. **Over-reliance on AI**
+   - Don't accept AI output without review
+   - Verify all factual claims
+   - Test thoroughly
+
+2. **Security Risks**
+   - Never paste sensitive information into AI tools
+   - Sanitize any code before sharing
+   - Review for security vulnerabilities
+
+3. **Quality Issues**
+   - Watch for "hallucinated" APIs or libraries
+   - Check for outdated practices
+   - Ensure consistency with project standards
+
+4. **Legal and Ethical Considerations**
+   - Respect licensing requirements
+   - Avoid copyright infringement
+   - Be mindful of data privacy
+
+### Getting Help
+
+If you're using AI tools and need assistance:
+1. Check our [AI Guidelines](docs/AI_GUIDELINES.md)
+2. Ask in the community discussions
+3. Request a code review with specific questions
+4. Document any challenges you encounter
+
+### Tools We Recommend
+
+- **Code Generation**: GitHub Copilot, Codeium
+- **Code Review**: Amazon CodeWhisperer, Tabnine
+- **Documentation**: ChatGPT, Claude
+- **Testing**: Codium, Mutable AI
+
+Remember: AI is a tool to augment your work, not replace critical thinking and understanding. You are responsible for the quality and correctness of any code you submit.
+
+## 📌 Issue Management
+
+### Bug Reports
+
+**Required Information:**
+1. **Description**
+   - Clear summary of the issue
+   - Steps to reproduce
+   - Expected vs actual behavior
+
+2. **Environment**
+   - System information
+   - Software versions
+   - Configuration details
+
+3. **Additional Context**
+   - Error messages/logs
+   - Screenshots if applicable
+   - Related issues/PRs
+
+### Feature Requests
+
+**What to Include:**
+1. **Problem Statement**
+   - Clear description of the problem
+   - Why it's important to solve
+   - Current workarounds
+
+2. **Proposed Solution**
+   - Description of the solution
+   - Alternative solutions considered
+   - Potential impacts
+
+### Issue Lifecycle
+
+1. **New** - Initial submission
+2. **Triaged** - Labeled and prioritized
+3. **In Progress** - Assigned and being worked on
+4. **Review** - Solution proposed, needs review
+5. **Resolved** - Fixed in a specific version
+6. **Closed** - Won't fix, duplicate, or not reproducible
+
+## 👥 Community
+
+### Getting Help
+
+1. **Search First**
+   - Check the [documentation](README.md)
+   - Search [existing issues](https://github.com/aytordev/system/issues)
+   - Look through [discussions](https://github.com/aytordev/system/discussions)
+
+2. **Ask for Help**
+   - Use the appropriate channel
+   - Be specific about your question
+   - Include relevant details
+
+### Code of Conduct
+
+We are committed to fostering a welcoming and inclusive community. Please review our [Code of Conduct](CODE_OF_CONDUCT.md) for expected behavior and reporting procedures.
 
 ### Recognition
 
-All contributions, big and small, are valued and appreciated. Significant contributions may be recognized in release notes.
-
-## Code of Conduct
-
-This project is committed to fostering a welcoming and respectful environment for all contributors. All participants are expected to follow standard professional conduct.
-
-## License
-
-By contributing, you agree that your contributions will be licensed under the project's [LICENSE](LICENSE) file.
+All contributors are recognized in our [Contributors](CONTRIBUTORS.md) file. Your contributions are greatly appreciated!
 
 ---
-*This document was inspired by [The Good Docs Project](https://thegooddocsproject.dev/) and other open source contributing guides.*
+
+📝 *This document was last updated on June 4, 2025*
+
+💡 *Need help? [Open an issue](https://github.com/aytordev/system/issues/new/choose) or join our [discussions](https://github.com/aytordev/system/discussions) for support.*
