@@ -50,12 +50,14 @@ in {
   #
   # Defines packages that can be built with `nix build`.
   ###########################################################################
-  packages = forAllSystems (system: {
+  packages = forAllSystems (system: let
+    pkgs = pkgsFor system;
+  in {
     # Default package built with `nix build`
-    default = self.packages.${system}.hello;
+    default = pkgs.hello;
     
     # Example package
-    hello = pkgsFor system.hello;
+    hello = pkgs.hello;
   });
 
   ###########################################################################

@@ -58,7 +58,6 @@
     nix-darwin = {
       url = "github:lnl7/nix-darwin";
       # Use the same nixpkgs as nixpkgs-darwin to ensure compatibility
-      description = "Manage macOS system configuration declaratively";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
 
