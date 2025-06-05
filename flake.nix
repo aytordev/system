@@ -21,9 +21,9 @@
     # Binary cache servers for faster package downloads.
     # These provide pre-built binaries to avoid local compilation.
     extra-substituters = [
-      "https://anyrun.cachix.org"  # Cache for the anyrun application
+      "https://anyrun.cachix.org" # Cache for the anyrun application
     ];
-    
+
     # Public keys for verifying the authenticity of cached binaries.
     # These must match the signatures of the binary caches listed above.
     extra-trusted-public-keys = [
@@ -42,11 +42,11 @@
     # Primary package collection (unstable channel)
     # Contains the latest package versions but may be less stable
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    
+
     # Additional nixpkgs channels for specific version requirements
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";  # Alias for consistency
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";       # Stable release channel
-    nixpkgs-ollama.url = "github:nixos/nixpkgs/nixos-unstable";    # For Ollama-specific packages
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable"; # Alias for consistency
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05"; # Stable release channel
+    nixpkgs-ollama.url = "github:nixos/nixpkgs/nixos-unstable"; # For Ollama-specific packages
 
     # macOS-specific packages and configurations
     nixpkgs-darwin = {
@@ -67,7 +67,7 @@
       url = "github:nix-community/home-manager";
       # Alternative stable version (uncomment to use instead):
       # url = "github:nix-community/home-manager/release-25.05";
-      
+
       # Use the main nixpkgs to ensure consistent package versions
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -76,7 +76,7 @@
     # Enforces code style and runs linters before commits
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs";  # Use the same nixpkgs as the main flake
+      inputs.nixpkgs.follows = "nixpkgs"; # Use the same nixpkgs as the main flake
     };
   };
 }

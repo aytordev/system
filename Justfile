@@ -20,10 +20,17 @@ up:
 upp input:
     nix flake update {{input}}
 
-# Format Nix files
+# Format Nix files using the flake's formatter
+# Usage: just fmt [path]  # Format files or directories (default: .)
 [group('nix')]
-fmt:
-    nix fmt
+fmt path=".":
+    nix run .#formatter.aarch64-darwin -- "{{path}}"
+
+# Check Nix formatting without making changes
+# Usage: just fmt-check [path]  # Check files or directories (default: .)
+[group('nix')]
+fmt-check path=".":
+    nix run .#formatter.aarch64-darwin -- --check "{{path}}"
 
 # Garbage collection
 [group('nix')]
