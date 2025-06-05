@@ -41,9 +41,25 @@ in {
   ###########################################################################
   devShells = forAllSystems (system: let
     pkgs = pkgsFor system;
+    shells = import ../dev-shells { 
+      inherit pkgs system;
+      inherit (self) inputs;  # Pass flake inputs to dev-shells
+    };
+    
+    # Helper to create a shell with common configuration
+    mkShell = shell: pkgs.mkShell (shell // {
+      buildInputs = shell.packages or [];
+    });
+
+    # Get all shells from the shells attribute
+    allShells = shells.shells or {};
+
   in {
-    default = pkgs.mkShell {};
-  });
+    # Default shell
+    default = mkShell (shells.default or {});
+    
+    # All other shells
+  } // builtins.mapAttrs (name: _: mkShell allShells.${name}) allShells);
 
   ###########################################################################
   # Packages

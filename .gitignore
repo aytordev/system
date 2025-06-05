@@ -35,7 +35,9 @@
 !/nix/
 
 # Nix build output
-/outputs/
+/outputs/*.lock
+/outputs/*.drv
+/outputs/*.check
 /outputs-*/
 
 # Nix garbage collection roots
