@@ -90,5 +90,6 @@ in {
   ###########################################################################
   darwinConfigurations = {};
 
-  # No legacy aliases needed - use packages.<system>.default and devShells.<system>.default directly
+  # No legacy aliases needed - use packages.<system>.default and 
+  #devShells.<system>.default directly
 }
