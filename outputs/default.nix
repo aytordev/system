@@ -90,11 +90,5 @@ in {
   ###########################################################################
   darwinConfigurations = {};
 
-  ###########################################################################
-  # Legacy Aliases
-  #
-  # For backward compatibility with older Nix commands.
-  ###########################################################################
-  defaultPackage = forAllSystems (system: self.packages.${system}.default);
-  devShell = forAllSystems (system: self.devShells.${system}.default);
+  # No legacy aliases needed - use packages.<system>.default and devShells.<system>.default directly
 }
