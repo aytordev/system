@@ -1,3 +1,53 @@
+# Nix specific
+/result
+/result-*
+*.o
+*.so
+*.dylib
+*.a
+*.d
+*.o
+*.so
+*.dylib
+*.a
+*.d
+
+# Nix build results
+/result
+/result-*
+*.o
+*.so
+*.dylib
+*.a
+*.d
+*.o
+*.so
+*.dylib
+*.a
+*.d
+
+# Nix shell
+.shell.direnv/
+.direnv/
+
+# Nix store paths
+/nix/
+!/nix/
+
+# Nix build output
+/outputs/
+/outputs-*/
+
+# Nix garbage collection roots
+/gc-*
+
+# Nix profile generations
+/nix/var/nix/profiles/*
+!/nix/var/nix/profiles/per-user
+
+# Nix temporary files
+/nix/var/nix/temproots/*
+
 # System files and directories
 .DS_Store
 Thumbs.db
