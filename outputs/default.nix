@@ -147,8 +147,20 @@ in {
   # Pre-commit Checks
   #
   # Defines checks that run on `git commit`.
+  #
+  # Run all checks: nix flake check
+  # Run specific check: nix build .#checks.<system>.<check>
   ###########################################################################
-  checks = forAllSystems (system: {});
+  checks = forAllSystems (system: let
+    pkgs = pkgsFor system;
+    # Import all checks from the checks directory
+    allChecks = import ./../checks {
+      inherit pkgs system;
+      inherit (self) inputs;
+      inherit self;
+    };
+  in
+    allChecks);
 
   ###########################################################################
   # NixOS Configurations
