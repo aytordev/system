@@ -1,6 +1,13 @@
 # Format checking using alejandra
-# Verifies that all Nix files are properly formatted
+# Verifies that all Nix files in the repository are properly formatted
+# according to the project's style guidelines.
+#
+# This check ensures consistent code style by running alejandra on all Nix files.
+# It's automatically included in the flake's checks when running `nix flake check`.
+#
+# To fix formatting issues, run `nix fmt` from the repository root.
 {
+  # Standard flake inputs
   pkgs,
   self,
   lib ? pkgs.lib,
@@ -9,7 +16,8 @@
   # Get the alejandra formatter
   alejandra = self.formatter.${pkgs.system};
 
-  # Directories to check (relative to flake root)
+  # Directories to check for Nix files
+  # These paths are relative to the flake root
   directories = [
     "." # Root directory
     "./checks" # Check definitions
