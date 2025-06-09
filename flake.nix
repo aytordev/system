@@ -71,12 +71,5 @@
       # Use the main nixpkgs to ensure consistent package versions
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Pre-commit hooks for Nix development
-    # Enforces code style and runs linters before commits
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs"; # Use the same nixpkgs as the main flake
-    };
   };
 }

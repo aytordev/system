@@ -4,7 +4,6 @@
   # Core inputs from flake.nix
   self,
   nixpkgs,
-  pre-commit-hooks,
   ...
 } @ inputs: let
   #############################################################################
@@ -144,11 +143,23 @@ in {
   formatter = forAllSystems (system: (pkgsFor system).alejandra);
 
   ###########################################################################
-  # Pre-commit Checks
+  # Checks
   #
-  # Defines checks that run on `git commit`.
+  # Defines checks that run on `nix flake check`.
+  #
+  # Run all checks: nix flake check
+  # Run specific check: nix build .#checks.<system>.<check>
   ###########################################################################
-  checks = forAllSystems (system: {});
+  checks = forAllSystems (system: let
+    pkgs = pkgsFor system;
+    # Import all checks from the checks directory
+    allChecks = import ../checks {
+      inherit pkgs system;
+      inherit (self) inputs;
+      inherit self;
+    };
+  in
+    allChecks);
 
   ###########################################################################
   # NixOS Configurations
