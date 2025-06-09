@@ -1,5 +1,10 @@
-# This file defines all outputs for the Nix flake.
-# It's imported by flake.nix to keep the configuration organized.
+# outputs/default.nix
+#
+# Main entry point for Nix flake outputs. Defines packages, development shells,
+# formatters, and system configurations for the project.
+#
+# Version: 1.0.0
+# Last Updated: 2025-06-09
 {
   # Core inputs from flake.nix
   self,
@@ -7,18 +12,25 @@
   ...
 } @ inputs: let
   #############################################################################
-  # outputs/default.nix
-  #
-  # This file defines the outputs for our Nix flake, including development shells
-  # and packages. It serves as the main entry point for all system configurations.
-  #
-  # Version: 1.0.0
-  # Last Updated: 2025-06-05
+  # Imports and Configuration
+  #############################################################################
+  inherit (inputs.nixpkgs) lib;
+
+  # Import project libraries with nixpkgs lib
+  # Type: AttrSet
+  libraries = import ../libraries {inherit lib;};
+
   #############################################################################
   # System Configuration
   #############################################################################
-  # System types to support
-  # Add or remove as needed for your use case
+  # List of supported system types for cross-compilation.
+  #
+  # Type: List String
+  # Supported values:
+  #   - x86_64-linux: 64-bit Linux (Intel/AMD)
+  #   - aarch64-linux: 64-bit Linux (ARM)
+  #   - x86_64-darwin: 64-bit macOS (Intel)
+  #   - aarch64-darwin: 64-bit macOS (Apple Silicon)
   systems = [
     "x86_64-linux"
     "aarch64-linux"
@@ -26,9 +38,18 @@
     "aarch64-darwin"
   ];
 
-  # Helper function to generate system-specific attributes
+  # Helper function to validate system type
   #
-  # Type: AttrSet (String -> a) -> AttrSet (String -> a)
+  # Type: String -> Bool
+  # Example: assertSystem "x86_64-linux"
+  assertSystem = system:
+    if builtins.elem system systems
+    then true
+    else throw "Unsupported system: ${system}";
+
+  # Generate system-specific attributes from a function
+  #
+  # Type: (String -> a) -> AttrSet String a
   # Example: forAllSystems (system: { hello = "hello-${system}"; })
   forAllSystems = nixpkgs.lib.genAttrs systems;
 
@@ -36,12 +57,12 @@
   #
   # Type: String -> AttrSet
   # Example: pkgsFor "x86_64-linux"
+  # Returns: Nixpkgs package set for the specified system
   pkgsFor = system:
+    assert assertSystem system;
     import nixpkgs {
       inherit system;
-      config = {
-        allowUnfree = true; # Allow proprietary packages
-      };
+      config.allowUnfree = true; # Allow proprietary packages
     };
 in {
   ###########################################################################
@@ -60,44 +81,36 @@ in {
 
     # Import all shell definitions
     # Type: AttrSet
-    shells = import ../dev-shells {
+    shells = import (libraries.relativeToRoot "dev-shells") {
       inherit pkgs system;
       inherit (self) inputs; # Pass flake inputs to dev-shells
     };
 
-    # Helper to create a shell with common configuration
-    # Type: AttrSet -> derivation
+      # Create a shell environment with the given configuration
     #
+    # Type: AttrSet -> derivation
     # Example:
     #   mkShell {
-    #     name = "example";
     #     packages = [ pkgs.hello ];
+    #     shellHook = "echo 'Hello, Nix!'";
     #   }
     mkShell = shell:
-      pkgs.mkShell (shell
-        // {
-          buildInputs = shell.packages or [];
-        });
+      pkgs.mkShell (shell // {
+        buildInputs = shell.packages or [];
+      });
 
-    # Get all shells from the shells attribute
+    # Get all shells from the shells attribute with error handling
+    #
     # Type: AttrSet
-    allShells = shells.shells or {};
+    # Returns: Attribute set of shell configurations
+    # Throws: If no shells are defined in dev-shells/default.nix
+    allShells = shells.shells or (throw ''
+      No shells defined in dev-shells/default.nix.
+      Please ensure you have a 'shells' attribute in your shell definitions.
+    '');
   in
-    {
-      # Default shell (fallback if no default is defined in dev-shells/default.nix)
-      default = mkShell (shells.default or {});
-
-      # Dynamically import all other shells
-    }
-    // builtins.mapAttrs (
-      name: shell:
-        mkShell (shell
-          // {
-            # Ensure each shell has a name
-            name = shell.name or name;
-          })
-    )
-    allShells);
+    # Convert the shells to derivations
+    builtins.mapAttrs (name: shell: mkShell shell) allShells);
 
   ###########################################################################
   # Packages
@@ -153,7 +166,7 @@ in {
   checks = forAllSystems (system: let
     pkgs = pkgsFor system;
     # Import all checks from the checks directory
-    allChecks = import ../checks {
+    allChecks = import (libraries.relativeToRoot "checks") {
       inherit pkgs system;
       inherit (self) inputs;
       inherit self;
@@ -177,6 +190,24 @@ in {
   ###########################################################################
   darwinConfigurations = {};
 
-  # No legacy aliases needed - use packages.<system>.default and
-  #devShells.<system>.default directly
+  ############################################################################
+  # Examples
+  ###########################################################################
+  # Common usage examples:
+  #
+  # Build the default package:
+  #   nix build
+  #
+  # Enter development shell:
+  #   nix develop
+  #
+  # Format all Nix files:
+  #   nix fmt
+  #
+  # Run all checks:
+  #   nix flake check
+  #
+  # Build a specific system configuration:
+  #   nixos-rebuild switch --flake .#hostname
+  ###########################################################################
 }
