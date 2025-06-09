@@ -143,9 +143,9 @@ in {
   formatter = forAllSystems (system: (pkgsFor system).alejandra);
 
   ###########################################################################
-  # Pre-commit Checks
+  # Checks
   #
-  # Defines checks that run on `git commit`.
+  # Defines checks that run on `nix flake check`.
   #
   # Run all checks: nix flake check
   # Run specific check: nix build .#checks.<system>.<check>
@@ -153,7 +153,7 @@ in {
   checks = forAllSystems (system: let
     pkgs = pkgsFor system;
     # Import all checks from the checks directory
-    allChecks = import ./../checks {
+    allChecks = import ../checks {
       inherit pkgs system;
       inherit (self) inputs;
       inherit self;
