@@ -4,7 +4,6 @@
   # Core inputs from flake.nix
   self,
   nixpkgs,
-  pre-commit-hooks,
   ...
 } @ inputs: let
   #############################################################################
