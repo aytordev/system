@@ -28,7 +28,11 @@
   # Import project-specific libraries
   # Type: AttrSet
   # Contains custom utility functions and shared modules
-  libraries = import ../libraries {inherit lib;};
+  libraries = import ../libraries {
+    inherit lib;
+    inherit inputs;
+    inherit (inputs) self;
+  };
 
   variables = import ../variables {inherit lib;};
   #############################################################################
