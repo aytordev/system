@@ -5,11 +5,7 @@
 #
 # Version: 1.0.0
 # Last Updated: 2025-06-09
-{
-  lib,
-  ...
-}:
-let
+{lib, ...}: let
   # Get all .nix files in the current directory
   nixFiles =
     builtins.filter

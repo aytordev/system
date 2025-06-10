@@ -1,10 +1,18 @@
 # outputs/default.nix
 #
-# Main entry point for Nix flake outputs. Defines packages, development shells,
-# formatters, and system configurations for the project.
+# Main entry point for Nix flake outputs. This file defines:
+# - System configurations for NixOS and macOS
+# - Development shells with all necessary tools
+# - Custom packages and overlays
+# - CI/CD checks and formatters
+# - Home Manager configurations
 #
-# Version: 1.0.0
-# Last Updated: 2025-06-09
+# The configuration uses a modular approach to support multiple platforms and
+# architectures with shared modules and customizations.
+#
+# Version: 1.1.0
+# Last Updated: 2025-06-10
+# Flake inputs are passed from flake.nix
 {
   # Core inputs from flake.nix
   self,
@@ -14,44 +22,94 @@
   #############################################################################
   # Imports and Configuration
   #############################################################################
+  # Import nixpkgs library for utility functions
   inherit (inputs.nixpkgs) lib;
 
-  # Import project libraries with nixpkgs lib
+  # Import project-specific libraries
   # Type: AttrSet
+  # Contains custom utility functions and shared modules
   libraries = import ../libraries {inherit lib;};
 
+  variables = import ../variables {inherit lib;};
   #############################################################################
   # System Configuration
   #############################################################################
-  # List of supported system types for cross-compilation.
-  #
-  # Type: List String
-  # Supported values:
-  #   - x86_64-linux: 64-bit Linux (Intel/AMD)
-  #   - aarch64-linux: 64-bit Linux (ARM)
-  #   - x86_64-darwin: 64-bit macOS (Intel)
-  #   - aarch64-darwin: 64-bit macOS (Apple Silicon)
-  systems = [
-    "x86_64-linux"
-    "aarch64-linux"
-    "x86_64-darwin"
-    "aarch64-darwin"
-  ];
 
-  # Helper function to validate system type
-  #
-  # Type: String -> Bool
-  # Example: assertSystem "x86_64-linux"
-  assertSystem = system:
-    if builtins.elem system systems
-    then true
-    else throw "Unsupported system: ${system}";
+  # Add my custom lib, vars, nixpkgs instance, and all the inputs to specialArgs,
+  # so that I can use them in all my nixos/home-manager/darwin modules.
+  genSpecialArgs = system:
+    inputs
+    // {
+      inherit libraries variables;
 
-  # Generate system-specific attributes from a function
+      # use unstable branch for some packages to get the latest updates
+      pkgs-unstable = import inputs.nixpkgs-unstable {
+        inherit system; # refer the `system` parameter form outer scope recursively
+        # To use chrome, we need to allow the installation of non-free software
+        config.allowUnfree = true;
+      };
+      pkgs-stable = import inputs.nixpkgs-stable {
+        inherit system;
+        # To use chrome, we need to allow the installation of non-free software
+        config.allowUnfree = true;
+      };
+    };
+
+  # Common arguments passed to all modules
+  # Type: AttrSet
+  # Contains:
+  # - inputs: All flake inputs
+  # - lib: Nixpkgs library functions
+  # - libraries: Project-specific libraries
+  # - genSpecialArgs: Function to generate system-specific arguments
+  args = {inherit inputs lib libraries variables genSpecialArgs;};
+
+  # Import system-specific configurations
+  # Each system has its own directory under supported-systems/
+  nixosSystems = {
+    # x86_64 Linux configuration
+    x86_64-linux =
+      import (libraries.relativeToRoot "supported-systems/x86_64-linux")
+      (args // {system = "x86_64-linux";});
+
+    # Uncomment to enable other architectures as needed
+    # aarch64-linux = import (libraries.relativeToRoot "supported-systems/aarch64-linux")
+    #   (args // {system = "aarch64-linux";});
+    # riscv64-linux = import (libraries.relativeToRoot "supported-systems/riscv64-linux")
+    #   (args // {system = "riscv64-linux";});
+  };
+
+  # macOS-specific configurations
+  darwinSystems = {
+    # Apple Silicon (M1/M2) Macs
+    aarch64-darwin =
+      import (libraries.relativeToRoot "supported-systems/aarch64-darwin")
+      (args // {system = "aarch64-darwin";});
+
+    # Intel Macs
+    # x86_64-darwin =
+    #   import (libraries.relativeToRoot "supported-systems/x86_64-darwin")
+    #   (args // {system = "x86_64-darwin";});
+  };
+
+  # Combined system configurations
+  allSystems = nixosSystems // darwinSystems;
+
+  # Helper variables for system management
+  allSystemNames = builtins.attrNames allSystems;
+  nixosSystemValues = builtins.attrValues nixosSystems;
+  darwinSystemValues = builtins.attrValues darwinSystems;
+  allSystemValues = nixosSystemValues ++ darwinSystemValues;
+
+  # Helper function to generate a set of attributes for each supported system
   #
   # Type: (String -> a) -> AttrSet String a
-  # Example: forAllSystems (system: { hello = "hello-${system}"; })
-  forAllSystems = nixpkgs.lib.genAttrs systems;
+  #   - func: A function that takes a system string and returns any value
+  # Returns: An attribute set where keys are system names and values are the result of applying func
+  #
+  # Example:
+  #   forAllSystems (system: pkgs.hello)  # Returns { "x86_64-linux" = pkgs.hello; "aarch64-darwin" = pkgs.hello; ... }
+  forAllSystems = func: (nixpkgs.lib.genAttrs allSystemNames func);
 
   # Import system-specific nixpkgs with common configuration
   #
@@ -59,11 +117,11 @@
   # Example: pkgsFor "x86_64-linux"
   # Returns: Nixpkgs package set for the specified system
   pkgsFor = system:
-    assert assertSystem system;
-    import nixpkgs {
-      inherit system;
-      config.allowUnfree = true; # Allow proprietary packages
-    };
+    assert builtins.elem system allSystemNames;
+      import nixpkgs {
+        inherit system;
+        config.allowUnfree = true; # Allow proprietary packages
+      };
 in {
   ###########################################################################
   # Development Environment
@@ -86,7 +144,7 @@ in {
       inherit (self) inputs; # Pass flake inputs to dev-shells
     };
 
-      # Create a shell environment with the given configuration
+    # Create a shell environment with the given configuration
     #
     # Type: AttrSet -> derivation
     # Example:
@@ -95,19 +153,21 @@ in {
     #     shellHook = "echo 'Hello, Nix!'";
     #   }
     mkShell = shell:
-      pkgs.mkShell (shell // {
-        buildInputs = shell.packages or [];
-      });
+      pkgs.mkShell (shell
+        // {
+          buildInputs = shell.packages or [];
+        });
 
     # Get all shells from the shells attribute with error handling
     #
     # Type: AttrSet
     # Returns: Attribute set of shell configurations
     # Throws: If no shells are defined in dev-shells/default.nix
-    allShells = shells.shells or (throw ''
-      No shells defined in dev-shells/default.nix.
-      Please ensure you have a 'shells' attribute in your shell definitions.
-    '');
+    allShells =
+      shells.shells or (throw ''
+        No shells defined in dev-shells/default.nix.
+        Please ensure you have a 'shells' attribute in your shell definitions.
+      '');
   in
     # Convert the shells to derivations
     builtins.mapAttrs (name: shell: mkShell shell) allShells);
@@ -188,7 +248,7 @@ in {
   # System configurations for macOS machines.
   # Build with `darwin-rebuild switch --flake .#hostname`
   ###########################################################################
-  darwinConfigurations = {};
+  darwinConfigurations = lib.attrsets.mergeAttrsList (map (it: it.darwinConfigurations or {}) darwinSystemValues);
 
   ############################################################################
   # Examples

@@ -4,7 +4,6 @@
 #
 # Version: 1.0.0
 # Last Updated: 2025-06-09
-
 {lib, ...}: {
   # Create a path relative to the repository root
   #
