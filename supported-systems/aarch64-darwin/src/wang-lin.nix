@@ -62,7 +62,7 @@
   # Combine modules with all other arguments
   systemArgs =
     modules
-    // args
+    // args # This includes all the original arguments like variables, lib, etc.
     // {
       # Add any additional arguments needed by modules
       hostName = name;
