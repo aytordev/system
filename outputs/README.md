@@ -1,89 +1,117 @@
-# 📦 Outputs
+# 📦 System Outputs
 
-This directory contains the main Nix flake outputs that define the system configurations, packages, and development environments provided by this repository.
+This directory contains the main Nix flake outputs that define the system configurations, packages, and development environments for the infrastructure.
 
-## 📁 Directory Structure
+## 🏗️ System Architecture
 
-```
-outputs/
-└── default.nix    # Primary entry point for all flake outputs
-```
+The system uses a modular approach to manage configurations across different platforms and architectures. The key components are:
 
-## 🎯 Purpose
+1. **System Definitions**: In `supported-systems/`, containing platform-specific configurations
+2. **Shared Modules**: Reusable components in `modules/`
+3. **Home Manager**: User environment configurations in `home/`
+4. **Development Shells**: Pre-configured environments in `dev-shells/`
 
-The `outputs` directory serves as the central location for all Nix flake outputs, making it easy to discover and use the various configurations and packages defined in this repository.
+## 🧩 Core Components
 
-## 🏗️ Main Components
+### System Management
 
-### `default.nix`
-The primary entry point that defines all flake outputs, including:
-- System configurations for different platforms
-- Development environments
-- Custom packages and overlays
-- CI/CD checks and formatters
-- Home Manager configurations
+The `default.nix` implements a flexible system management approach with these features:
 
-## 💻 Usage
+- **Multi-nixpkgs Support**: Multiple nixpkgs versions (stable, unstable)
+- **Cross-platform**: Support for NixOS and macOS (via nix-darwin)
+- **Modular Design**: Reusable configurations through modules
+- **Developer Experience**: Consistent environments with development shells
 
-### List All Available Outputs
+### Special Arguments
+
+A key feature is the `genSpecialArgs` function that provides:
+- Access to all flake inputs
+- Custom libraries and utilities
+- Multiple nixpkgs versions (stable, unstable)
+- System-specific configurations
+
+## 🚀 Usage
+
+### List Available Systems
 ```bash
-# Show tree of all available outputs
 nix flake show
 ```
 
-### Build a Specific Output
+### Build a System Configuration
 ```bash
-# Example: Build a NixOS configuration
+# NixOS
 nix build .#nixosConfigurations.hostname.config.system.build.toplevel
 
-# Example: Build a specific package
-nix build .#packages.x86_64-linux.hello
+# macOS
+nix build .#darwinConfigurations.hostname.system
 ```
 
-### Enter a Development Environment
+### Enter Development Shell
 ```bash
-# Enter the default development shell
+# Default shell
 nix develop
 
-# Or a specific shell
+# Specific shell
 nix develop .#devShells.x86_64-linux.just
 ```
 
-## 📂 Output Categories
+## 🏗️ Output Categories
 
-### System Configurations (`nixosConfigurations.*`)
-Pre-configured system setups for different environments and use cases.
+### `nixosConfigurations.*`
+NixOS system configurations. Each host should have its own configuration file in `supported-systems/`.
 
-### Development Shells (`devShells.*`)
-Consistent development environments with all necessary tools and dependencies.
+### `darwinConfigurations.*`
+macOS system configurations managed by nix-darwin.
 
-### Packages (`packages.*`)
-Custom Nix packages and overlays for various platforms.
+### `devShells.*`
+Development environments with all necessary tools and dependencies.
 
-### Checks (`checks.*`)
+### `packages.*`
+Custom Nix packages and overlays.
+
+### `checks.*`
 Automated checks for code quality and correctness.
 
-### Home Manager (`homeConfigurations.*`)
-User environment configurations managed by Home Manager.
+## 🛠️ Development
 
-## ➕ Adding New Outputs
+### Adding a New System
 
-1. Add your new output to the appropriate section in `default.nix`
-2. Document the new output in this README with:
-   - Purpose and intended use case
-   - Example usage
-   - Any dependencies or requirements
-3. Include any necessary tests or examples
+1. Create a new file in `supported-systems/` (e.g., `x86_64-linux/myhost.nix`)
+2. Import and use the appropriate modules
+3. Add the system to the appropriate configuration set in `default.nix`
 
-## 📦 Dependencies
+Example:
+```nix
+# In supported-systems/x86_64-linux/myhost.nix
+{ config, pkgs, ... }: {
+  # System configuration here
+  system.stateVersion = "23.11";
+}
+```
 
-- [Nix](https://nixos.org/) (≥ 2.4)
-- [nix-darwin](https://github.com/LnL7/nix-darwin) (≥ 1.11.0, for macOS configurations)
-- [home-manager](https://github.com/nix-community/home-manager) (≥ 23.11, for user environment management)
+### Using Multiple nixpkgs Versions
 
-## 🔗 Related Documentation
+The configuration provides access to multiple nixpkgs versions:
 
-- [Checks](../checks/README.md) - For running code quality checks
-- [Development Shells](../dev-shells/README.md) - For development environment setup
-- [NixOS Manual](https://nixos.org/manual/nixos/stable/) - For NixOS configuration reference
-- [Home Manager Manual](https://nix-community.github.io/home-manager/) - For user environment configuration
+```nix
+# In a module or configuration
+{ pkgs, pkgs-unstable, pkgs-stable, ... }: {
+  environment.systemPackages = [
+    pkgs.keepassxc       # From main nixpkgs
+    pkgs-unstable.helix  # Latest version from unstable
+    pkgs-stable.firefox  # Stable version
+  ];
+}
+```
+
+## 📚 Documentation
+
+- [NixOS Manual](https://nixos.org/manual/nixos/stable/)
+- [Home Manager Manual](https://nix-community.github.io/home-manager/)
+- [nix-darwin Documentation](https://github.com/LnL7/nix-darwin)
+
+## 🔗 Related
+
+- [Development Shells](../dev-shells/README.md)
+- [Checks](../checks/README.md)
+- [Modules](../modules/README.md)
