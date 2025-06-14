@@ -26,9 +26,11 @@
     # System-level modules (nix-darwin configuration)
     darwin-modules =
       # Convert relative paths to absolute paths using the project root
-      (map libraries.relativeTo [
+      (map libraries.relativeToRoot [
         # Common system modules
-        # "modules/darwin/common.nix"
+
+        # "modules/darwin/default.nix"
+        # "modules/shared/default.nix"
 
         # Host-specific system configuration
         # "hosts/darwin-${name}/system.nix"
@@ -38,16 +40,15 @@
       ])
       # Additional modules can be added here
       ++ [
-        # Inline module example:
-        # ({ config, pkgs, ... }: {
-        #   # System configuration
-        #   system.stateVersion = 4;
-        #   networking.hostName = "${name}";
-        # })
+        # Inline module example
+        # {
+        #   system.stateVersion = 6;  # Should match the version of nix-darwin you're using
+        #   networking.hostName = name;
+        # }
       ];
 
     # User-level modules (Home Manager configuration)
-    home-modules = map libraries.relativeTo [
+    home-modules = map libraries.relativeToRoot [
       # Common user modules
       # "home/common.nix"
 
@@ -67,8 +68,8 @@
       # Add any additional arguments needed by modules
       hostName = name;
     };
+
 in {
   # The final darwin configuration for this host
-  # This will be merged with other hosts' configurations
   darwinConfigurations.${name} = libraries.macosSystem systemArgs;
 }

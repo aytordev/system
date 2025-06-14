@@ -20,7 +20,7 @@
   # Each strategy is a function that receives the full args and returns the arguments to pass
   moduleStrategies = {
     # Default strategy - only pass the library
-    default = _: defaultArgs;
+    default = args: args;
 
     # Special handling for macos-system.nix - pass all arguments
     "macos-system.nix" = args: args;
@@ -58,7 +58,7 @@ in
   combined
   // {
     # Export all libraries as a single attribute set
-    inherit (combined) relativeToRoot macosSystem;
+    inherit (combined) relativeToRoot macosSystem namespace;
 
     # Export the lib itself for convenience
     inherit lib;
