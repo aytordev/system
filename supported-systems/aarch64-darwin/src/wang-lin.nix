@@ -28,6 +28,7 @@
       # Convert relative paths to absolute paths using the project root
       (map libraries.relativeToRoot [
         # Common system modules
+        "modules/shared/nix/default.nix"
         "modules/darwin/system/fonts/default.nix"
         # "modules/darwin/default.nix"
         # "modules/shared/default.nix"
@@ -46,7 +47,7 @@
           networking.hostName = name;
 
           # Set the primary user for user-specific configurations
-          system.primaryUser = "aytordev";
+          system.primaryUser = variables.username;
 
           # Configure system fonts
           system.fonts.enable = true;
