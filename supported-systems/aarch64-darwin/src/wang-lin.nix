@@ -28,7 +28,7 @@
       # Convert relative paths to absolute paths using the project root
       (map libraries.relativeToRoot [
         # Common system modules
-
+        "modules/darwin/system/fonts/default.nix"
         # "modules/darwin/default.nix"
         # "modules/shared/default.nix"
 
@@ -40,11 +40,17 @@
       ])
       # Additional modules can be added here
       ++ [
-        # Inline module example
-        # {
-        #   system.stateVersion = 6;  # Should match the version of nix-darwin you're using
-        #   networking.hostName = name;
-        # }
+        # System configuration
+        {
+          system.stateVersion = 6; # Match your nix-darwin version
+          networking.hostName = name;
+
+          # Set the primary user for user-specific configurations
+          system.primaryUser = "aytordev";
+
+          # Configure system fonts
+          system.fonts.enable = true;
+        }
       ];
 
     # User-level modules (Home Manager configuration)
@@ -68,7 +74,6 @@
       # Add any additional arguments needed by modules
       hostName = name;
     };
-
 in {
   # The final darwin configuration for this host
   darwinConfigurations.${name} = libraries.macosSystem systemArgs;
