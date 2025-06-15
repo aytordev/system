@@ -30,8 +30,9 @@
         # Common system modules
         "modules/shared/nix/default.nix"
         "modules/darwin/system/fonts/default.nix"
-        # "modules/darwin/default.nix"
-        # "modules/shared/default.nix"
+        "modules/darwin/system/interface/default.nix"
+        "modules/darwin/system/input/default.nix"
+        "modules/darwin/system/networking/default.nix"
 
         # Host-specific system configuration
         # "hosts/darwin-${name}/system.nix"
