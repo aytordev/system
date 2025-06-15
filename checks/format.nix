@@ -22,7 +22,11 @@
     "." # Root directory
     "./checks" # Check definitions
     "./dev-shells" # Development shells
+    "./libraries" # Libraries
+    "./modules" # Module definitions
     "./outputs" # Output definitions
+    "./supported-systems" # Supported systems
+    "./variables" # Variables
   ];
 
   # Find all Nix files in the specified directories

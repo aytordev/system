@@ -11,58 +11,7 @@
   # organization and maintainability.
   #############################################################################
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    home-manager,
-    nix-darwin,
-    nixpkgs-darwin,
-    haumea,
-    ...
-  }:
-    let
-      # Import the main outputs
-      outputs = import ./outputs/default.nix inputs;
-      
-      # Get the system from the first available configuration or default to current system
-      system = outputs.darwinConfigurations.wang-lin.system or "x86_64-darwin";
-      
-      # Create a package set with the required development tools
-      devTools = pkgs: with pkgs; [
-        # Nix tools
-        alejandra
-        statix
-        deadnix
-        nixpkgs-fmt
-        nix-linter
-        
-        # Shell tools
-        shellcheck
-        shfmt
-        shellharden
-        
-        # General development
-        git
-        jq
-        yq-go
-      ];
-    in
-      outputs // {
-        # Add development shell
-        devShells.${system}.default = nixpkgs.legacyPackages.${system}.mkShell {
-          buildInputs = devTools nixpkgs.legacyPackages.${system};
-          
-          shellHook = ''
-            echo "🚀 Development shell activated"
-            echo "Available tools:"
-            echo "- alejandra: Nix formatter"
-            echo "- statix: Nix linter"
-            echo "- deadnix: Find dead code in Nix files"
-            echo "- shellcheck: Shell script analysis"
-            echo "- shfmt: Shell script formatter"
-          '';
-        };
-      };
+  outputs = inputs: import ./outputs/default.nix inputs;
 
   # Nix configuration for the flake itself (not the system configuration)
   # This affects how Nix fetches dependencies and caches

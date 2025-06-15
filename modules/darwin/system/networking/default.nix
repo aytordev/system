@@ -36,20 +36,21 @@
 #   };
 # }
 # ```
-{ config, lib, ... }:
-
-with lib;
-
-let
+{
+  config,
+  lib,
+  ...
+}:
+with lib; let
   # Default DNS servers (Cloudflare)
   #
   # These are the default DNS servers that will be used if none are specified.
   # Cloudflare's DNS is used by default for its privacy-focused approach and performance.
   defaultDNSServers = [
-    "1.1.1.1"     # Cloudflare Primary
-    "1.0.0.1"     # Cloudflare Secondary
-    "2606:4700:4700::1111"  # Cloudflare Primary (IPv6)
-    "2606:4700:4700::1001"  # Cloudflare Secondary (IPv6)
+    "1.1.1.1" # Cloudflare Primary
+    "1.0.0.1" # Cloudflare Secondary
+    "2606:4700:4700::1111" # Cloudflare Primary (IPv6)
+    "2606:4700:4700::1001" # Cloudflare Secondary (IPv6)
   ];
 
   # Default firewall settings
@@ -66,15 +67,16 @@ let
   #
   # These types ensure type safety and provide documentation for the module's options.
   dnsServerType = types.listOf (types.strMatching "^[0-9a-fA-F:.]+$");
-  
+
   # Firewall state type:
   # - 0: Disabled
   # - 1: Enabled (default)
   # - 2: Block all incoming connections
-  firewallStateType = types.enum [ 0 1 2 ] // {
-    description = "Firewall state (0=disabled, 1=enabled, 2=block all)";
-  };
-
+  firewallStateType =
+    types.enum [0 1 2]
+    // {
+      description = "Firewall state (0=disabled, 1=enabled, 2=block all)";
+    };
 in {
   # Main module options
   #
@@ -85,7 +87,7 @@ in {
     # Type: boolean
     # Default: true
     enable = mkEnableOption "system networking configuration";
-    
+
     # DNS Configuration
     #
     # Controls the system's DNS resolver configuration.
@@ -121,16 +123,25 @@ in {
 
   config = {
     # Apply network services configuration
-    networking.knownNetworkServices = [ "Wi-Fi" "Ethernet" ];
+    networking.knownNetworkServices = ["Wi-Fi" "Ethernet"];
 
     # Apply DNS configuration
     networking.dns = config.system.networking.dns.servers;
 
     # Apply firewall configuration
     system.defaults.alf = {
-      globalstate = if config.system.networking.firewall.globalState == 1 then 1 else 0;
-      loggingenabled = if config.system.networking.firewall.enableLogging then 1 else 0;
-      stealthenabled = if config.system.networking.firewall.enableStealthMode then 1 else 0;
+      globalstate =
+        if config.system.networking.firewall.globalState == 1
+        then 1
+        else 0;
+      loggingenabled =
+        if config.system.networking.firewall.enableLogging
+        then 1
+        else 0;
+      stealthenabled =
+        if config.system.networking.firewall.enableStealthMode
+        then 1
+        else 0;
     };
   };
 }

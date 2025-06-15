@@ -44,10 +44,7 @@
   lib,
   ...
 }:
-
-with lib;
-
-let
+with lib; let
   # Define input configuration types for better type safety
   inputTypes = {
     # Trackpad Configuration
@@ -181,18 +178,19 @@ let
       };
     };
   };
-
 in {
   # Main module options
   #
   # These options are available under `system.input` in the system configuration.
-  options.system.input = inputTypes // {
-    # Whether to enable the input module
-    #
-    # Type: boolean
-    # Default: true
-    enable = mkEnableOption "system input configuration";
-  };
+  options.system.input =
+    inputTypes
+    // {
+      # Whether to enable the input module
+      #
+      # Type: boolean
+      # Default: true
+      enable = mkEnableOption "system input configuration";
+    };
 
   # Module implementation
   #
@@ -217,12 +215,15 @@ in {
       NSGlobalDomain = {
         # Basic keyboard behavior
         ApplePressAndHoldEnabled = mkDefault config.system.input.keyboard.pressAndHold;
-        AppleKeyboardUIMode = if config.system.input.keyboard.fullKeyboardControl then 3 else 0;
-        
+        AppleKeyboardUIMode =
+          if config.system.input.keyboard.fullKeyboardControl
+          then 3
+          else 0;
+
         # Key repeat settings
         InitialKeyRepeat = mkDefault config.system.input.keyboard.keyRepeatDelay;
         KeyRepeat = mkDefault config.system.input.keyboard.keyRepeatRate;
-        
+
         # Text input settings
         NSAutomaticCapitalizationEnabled = mkDefault config.system.input.keyboard.textInput.autoCapitalization;
         NSAutomaticDashSubstitutionEnabled = mkDefault config.system.input.keyboard.textInput.smartDashes;
