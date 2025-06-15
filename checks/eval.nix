@@ -11,7 +11,7 @@
   pkgs,
   self,
   ...
-} @ args: let
+}: let
   # Get the flake root directory as a string
   # This is used to reference files relative to the repository root
   flakeRoot = builtins.toString self.outPath;

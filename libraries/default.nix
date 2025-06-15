@@ -8,14 +8,7 @@
 #
 # This module follows SOLID principles for better maintainability and extensibility.
 # It provides a dynamic way to import library modules with appropriate arguments.
-{
-  lib,
-  inputs ? null,
-  ...
-} @ args: let
-  # Default arguments passed to all modules unless overridden
-  defaultArgs = {inherit lib;};
-
+{lib, ...} @ args: let
   # Define argument strategies for different module types
   # Each strategy is a function that receives the full args and returns the arguments to pass
   moduleStrategies = {

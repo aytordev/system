@@ -279,7 +279,7 @@ in {
     # Type: boolean
     # Default: true
     enable = mkEnableOption "system interface configuration";
-    
+
     activityMonitor = mkOption {
       type = interfaceTypes.activityMonitorType;
       default = defaults.activityMonitor;
@@ -317,13 +317,12 @@ in {
       touch "$HOME/Pictures/screenshots/.keep"
       chown "$USER" "$HOME/Pictures/screenshots"
       chown "$USER" "$HOME/Pictures/screenshots/.keep"
-      
+
       # Activate system settings
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
     '';
 
     system = {
-
       defaults = mkMerge [
         # Activity Monitor Configuration
         #
@@ -525,7 +524,7 @@ in {
           screencapture = {
             show-thumbnail = false; # Disable thumbnail for faster workflow
             type = "png"; # Use PNG for lossless quality
-            location = "~/Pictures/screenshots/";  # Using ~ for home directory
+            location = "~/Pictures/screenshots/"; # Using ~ for home directory
             disable-shadow = true; # Remove shadows for professional-looking screenshots
           };
 
