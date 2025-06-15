@@ -37,7 +37,7 @@
   # Import project-specific variables
   # Type: AttrSet
   # Contains custom variables and constants
-  variables = import ../variables {inherit lib;};
+  variables = import ../variables;
   #############################################################################
   # System Configuration
   #############################################################################

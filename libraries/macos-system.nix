@@ -7,7 +7,7 @@
 # Version: 2.0.1
 # Last Modified: 2025-06-11
 #
-{lib, ...} @ args: let
+{lib, ...}: let
   # Type Definitions
   # ===============
   #
@@ -47,7 +47,7 @@
               description = "Flake inputs required for system configuration";
               options = {
                 # nix-darwin package or flake input
-                nix-darwin = lib.mkOption {
+                "nix-darwin" = lib.mkOption {
                   type = lib.types.raw or lib.types.unspecified;
                   description = ''
                     The nix-darwin flake input. This is required for system configuration.
@@ -261,11 +261,6 @@
 
   # Process and validate system arguments
   processArgs = systemArgs: let
-    # Create a validated configuration using the type system
-    validated = lib.types.submodule {
-      options = types.systemArgsType.options;
-    };
-
     # Merge with defaults and validate
     merged =
       lib.recursiveUpdate {
