@@ -13,8 +13,6 @@
 {
   # Standard flake inputs
   pkgs,
-  system,
-  self,
   ...
 } @ args: let
   # Get all .nix files in the current directory, excluding default.nix

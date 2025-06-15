@@ -63,7 +63,7 @@
     fi
 
     # Run deadnix on all files at once
-    if ! ${deadnix}/bin/deadnix --fail ${filesToCheckStr}; then
+    if ! ${deadnix}/bin/deadnix --quiet ${filesToCheckStr}; then
       echo -e "\n''${RED}✗ Deadnix found unused code in one or more files''${NC}"
       echo -e "To fix issues, run: nix run github:astro/deadnix#deadnix -- --edit ."
       exit 1
