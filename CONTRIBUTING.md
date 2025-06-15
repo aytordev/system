@@ -99,32 +99,64 @@ You can contribute by:
 
 1. **Understand the Scope**
    - Focus on one logical change per PR
-   - Keep changes small and reviewable
-   - Reference related issues in your commit messages
+   - Keep changes small and reviewable (300-500 lines max per PR)
+   - Reference related issues in your commit messages using `#issue-number`
 
 2. **Development Workflow**
-   - Make incremental commits
-   - Test your changes locally
-   - Update documentation as needed
+   - Make small, atomic commits that focus on a single change
+   - Test your changes locally before committing
+   - Update documentation alongside code changes
    - Follow our [code style guidelines](CODE_STYLE.md)
+   - Run linters and formatters before committing
 
 3. **Testing**
-   - Add tests for new functionality
-   - Run the full test suite locally
-   - Document any testing limitations
+   - Add or update tests for all new functionality
+   - Run the full test suite locally before pushing
+   - Document any testing limitations or assumptions
+   - Ensure all tests pass before opening a PR
 
 4. **Documentation**
-   - Update relevant documentation
-   - Add examples where helpful
-   - Document any breaking changes
+   - Update relevant documentation with your changes
+   - Add examples for new features or configurations
+   - Clearly document any breaking changes
+   - Keep README files up to date with usage examples
 
-### 4. Commit with Gitmoji
+### 4. Branch Naming and Git Workflow
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification with [Gitmoji](https://gitmoji.dev/) to create meaningful, consistent commit messages. This standard helps with:
-- Automated changelog generation
-- Semantic versioning
-- Clear communication of changes
-- Better collaboration
+#### Branch Naming Convention
+
+Create feature branches from the latest `main` branch using the following format:
+
+```
+type/description-in-kebab-case
+```
+
+**Examples:**
+```
+feat/add-user-authentication
+fix/login-form-validation
+docs/update-api-documentation
+refactor/user-service
+chore/update-dependencies
+```
+
+#### Creating a New Branch
+
+```bash
+# Make sure you're on the latest main branch
+git checkout main
+git pull upstream main
+
+# Create and switch to a new branch
+git checkout -b type/descriptive-branch-name
+
+# Push the branch to your fork
+git push -u origin type/descriptive-branch-name
+```
+
+### 5. Commit with Gitmoji
+
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification with [Gitmoji](https://gitmoji.dev/) to create meaningful, consistent commit messages. Always use gitmoji codes (e.g., `:sparkles:`) instead of emoji images.
 
 #### Commit Message Structure
 
@@ -136,24 +168,26 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 [optional footer]
 ```
 
+**Important:** Always use gitmoji codes (e.g., `:sparkles:`) in your commit messages, not emoji characters. This ensures consistency across different systems and editors.
+
 #### Gitmoji Types and Usage
 
-| Type | Gitmoji | When to Use | Example |
-|------|---------|-------------|---------|
-| `feat` | ✨ | New features or significant additions | `✨ feat(auth): add MFA support` |
-| `fix` | 🐛 | Bug fixes | `🐛 fix(api): handle null user edge case` |
-| `docs` | 📝 | Documentation changes | `📝 docs: update API reference` |
-| `style` | 🎨 | Code style/formatting changes | `🎨 style: format with prettier` |
-| `refactor` | ♻️ | Code changes that neither fix bugs nor add features | `♻️ refactor(auth): simplify token validation` |
-| `perf` | ⚡️ | Performance improvements | `⚡️ perf(db): optimize query performance` |
-| `test` | ✅ | Adding or modifying tests | `✅ test(utils): add test coverage` |
-| `chore` | 🔧 | Build process or auxiliary tool changes | `🔧 chore(deps): update dependencies` |
-| `ci` | 👷 | CI configuration changes | `👷 ci: add GitHub Actions workflow` |
-| `build` | 📦 | Build system or external dependencies | `📦 build: update webpack config` |
-| `revert` | ⏪ | Revert previous commit | `⏪ revert: revert auth changes` |
-| `wip` | 🚧 | Work in progress | `🚧 wip: implement payment flow` |
-| `security` | 🔒 | Security-related changes | `🔒 security: upgrade vulnerable packages` |
-| `i18n` | 🌐 | Internationalization/localization | `🌐 i18n: add Spanish translation` |
+| Type | Gitmoji Code | When to Use | Example |
+|------|--------------|-------------|---------|
+| `feat` | `:sparkles:` | New features or significant additions | `:sparkles: feat(auth): add MFA support` |
+| `fix` | `:bug:` | Bug fixes | `:bug: fix(api): handle null user edge case` |
+| `docs` | `:memo:` | Documentation changes | `:memo: docs: update API reference` |
+| `style` | `:art:` | Code style/formatting changes | `:art: style: format with prettier` |
+| `refactor` | `:recycle:` | Code changes that neither fix bugs nor add features | `:recycle: refactor(auth): simplify token validation` |
+| `perf` | `:zap:` | Performance improvements | `:zap: perf(db): optimize query performance` |
+| `test` | `:white_check_mark:` | Adding or modifying tests | `:white_check_mark: test(utils): add test coverage` |
+| `chore` | `:wrench:` | Build process or auxiliary tool changes | `:wrench: chore(deps): update dependencies` |
+| `ci` | `:construction_worker:` | CI configuration changes | `:construction_worker: ci: add GitHub Actions workflow` |
+| `build` | `:package:` | Build system or external dependencies | `:package: build: update webpack config` |
+| `revert` | `:rewind:` | Revert previous commit | `:rewind: revert: revert auth changes` |
+| `wip` | `:construction:` | Work in progress | `:construction: wip: implement payment flow` |
+| `security` | `:lock:` | Security-related changes | `:lock: security: upgrade vulnerable packages` |
+| `i18n` | `:globe_with_meridians:` | Internationalization/localization | `:globe_with_meridians: i18n: add Spanish translation` |
 
 #### Commit Message Components
 
@@ -318,23 +352,84 @@ Resolves security advisory GHSA-xxxx-xxxx-xxxx
 
 #### Workflow Integration
 
-1. **Feature Branches**
-   ```bash
-   git checkout -b feat/feature-name
-   # Make changes
-   git add .
-   git commit -m "✨ feat(feature): implement new feature"
-   git push -u origin feat/feature-name
-   ```
+### Example Workflows
 
-2. **Bug Fixes**
-   ```bash
-   git checkout -b fix/issue-description
-   # Fix the bug
-   git add .
-   git commit -m "🐛 fix(module): resolve specific issue"
-   git push -u origin fix/issue-description
-   ```
+#### 1. Starting a New Feature
+
+```bash
+# Make sure you have the latest changes
+git checkout main
+git pull upstream main
+
+# Create and switch to a new feature branch
+git checkout -b feat/user-profile
+
+# Make your changes
+# ...
+
+# Stage changes
+git add .
+
+# Commit with a descriptive message using gitmoji code
+git commit -m ":sparkles: feat(profile): add user profile page"
+
+# Push to your fork
+git push -u origin feat/user-profile
+```
+
+#### 2. Fixing a Bug
+
+```bash
+# Create a branch for the fix
+git checkout -b fix/login-validation
+
+# Make your changes
+# ...
+
+git add .
+git commit -m ":bug: fix(auth): validate email format on login"
+
+# Push to your fork
+git push -u origin fix/login-validation
+```
+
+#### 3. Updating Documentation
+
+```bash
+git checkout -b docs/update-readme
+
+# Update documentation
+# ...
+
+git add .
+git commit -m ":memo: docs: update installation instructions"
+git push -u origin docs/update-readme
+```
+
+### Best Practices
+
+1. **Commit Often, Perfect Later**
+   - Make small, focused commits
+   - Use `git add -p` to stage changes interactively
+   - Squash or fixup commits before opening a PR
+
+2. **Write Good Commit Messages**
+   - Use the imperative mood ("Add" not "Added" or "Adds")
+   - Keep the subject line under 50 characters
+   - Explain what and why, not how
+   - Reference issues and PRs in the footer
+
+3. **Before Pushing**
+   - Run tests
+   - Check for linting errors
+   - Review your changes with `git diff --staged`
+   - Ensure your branch is up to date with main
+
+4. **Pull Requests**
+   - Reference the issue in your PR description
+   - Keep PRs focused and reviewable (300-500 lines max)
+   - Request reviews from relevant team members
+   - Address all review comments before merging
 
 3. **WIP Commits**
    ```bash
