@@ -6,6 +6,39 @@
 # This module provides comprehensive configuration for input devices on Darwin systems,
 # including trackpad, mouse, and keyboard settings. The settings are organized into
 # logical sections for better maintainability and clarity.
+#
+# ## Features
+# - Configure trackpad gestures and sensitivity
+# - Customize mouse behavior and scrolling
+# - Set keyboard repeat rate and key mappings
+# - Configure input device acceleration and sensitivity
+#
+# ## Example Usage
+# ```nix
+# {
+#   system.input = {
+#     # Trackpad configuration
+#     trackpad = {
+#       tapToClick = true;
+#       clickFirmness = 1;
+#       trackpadThreeFingerDrag = true;
+#     };
+#
+#     # Keyboard configuration
+#     keyboard = {
+#       keyRepeat = true;
+#       keyRepeatDelay = 15;  # ms
+#       keyRepeatRate = 2;    # characters per second
+#     };
+#
+#     # Mouse configuration
+#     mouse = {
+#       trackingSpeed = 3.0;  # 0-3.0 (slowest to fastest)
+#       scrollSpeed = 1.0;    # 0.0-3.0 (slowest to fastest)
+#     };
+#   };
+# }
+# ```
 {
   config,
   lib,
@@ -17,7 +50,10 @@ with lib;
 let
   # Define input configuration types for better type safety
   inputTypes = {
-    # Trackpad configuration
+    # Trackpad Configuration
+    #
+    # Controls the behavior and sensitivity of the built-in trackpad.
+    # These settings affect gestures, clicking, and scrolling behavior.
     trackpad = {
       # Pressure sensitivity (0 = silent clicking, 1 = default)
       actuationStrength = mkOption {
@@ -62,7 +98,10 @@ let
       };
     };
 
-    # Mouse configuration
+    # Mouse Configuration
+    #
+    # Controls the behavior of external mice connected to the system.
+    # Includes settings for tracking speed, scrolling, and button behavior.
     mouse = {
       # Mouse speed (0.0 to 3.0)
       trackingSpeed = mkOption {
@@ -72,7 +111,10 @@ let
       };
     };
 
-    # Keyboard configuration
+    # Keyboard Configuration
+    #
+    # Controls keyboard behavior including key repeat, modifier keys,
+    # and special key mappings.
     keyboard = {
       # Key repeat (true/false)
       enableKeyRepeat = mkOption {
@@ -141,9 +183,22 @@ let
   };
 
 in {
-  options.system.input = inputTypes;
+  # Main module options
+  #
+  # These options are available under `system.input` in the system configuration.
+  options.system.input = inputTypes // {
+    # Whether to enable the input module
+    #
+    # Type: boolean
+    # Default: true
+    enable = mkEnableOption "system input configuration";
+  };
 
-  config = {
+  # Module implementation
+  #
+  # This section applies the input configuration to the system by generating the
+  # appropriate `defaults` commands and system settings.
+  config = mkIf config.system.input.enable {
     system.defaults = {
       # Trackpad settings
       trackpad = {

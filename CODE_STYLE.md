@@ -287,7 +287,9 @@ users.users.myuser = {
 
 ## 🛠 Tooling
 
-## Required Tools
+### Required Tools
+
+The following tools are recommended for development:
 
 - `alejandra`: Nix formatter
 - `statix`: Nix linter
@@ -296,9 +298,35 @@ users.users.myuser = {
 - `shfmt`: Bash formatter
 - `bats`: Bash testing
 
-## Editor Integration
+### Manual Formatting and Linting
 
-### VS Code
+Before committing changes, please run the following commands:
+
+```bash
+# Format all Nix files
+alejandra .
+
+# Check for Nix issues
+statix check
+
+# Check for dead code
+deadnix .
+
+# Fix dead code (interactive)
+deadnix --edit .
+
+# Lint shell scripts
+find . -name '*.sh' -exec shellcheck {} \;
+
+# Format shell scripts
+shfmt -i 2 -w .
+```
+
+### Editor Integration
+
+#### VS Code
+
+For the best development experience, we recommend using VS Code with these settings:
 
 ```json
 {
@@ -312,31 +340,19 @@ users.users.myuser = {
 }
 ```
 
-### Pre-commit Hooks
+#### Neovim
 
-```nix
-# flake.nix
-{
-  inputs.pre-commit-hooks = {
-    url = "github:cachix/pre-commit-hooks.nix";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
+For Neovim users, you can use the following plugins:
 
-  outputs = { self, nixpkgs, pre-commit-hooks, ... }@inputs: {
-    checks = {
-      pre-commit-check = pre-commit-hooks.lib.${system}.run {
-        src = ./.;
-        hooks = {
-          alejandra.enable = true;
-          statix.enable = true;
-          shellcheck.enable = true;
-          shfmt.enable = true;
-        };
-      };
-    };
-  };
-}
-```
+1. `nvim-lspconfig` with `rnix-lsp` for Nix LSP support
+2. `null-ls.nvim` for formatting with `alejandra` and `shfmt`
+3. `mason.nvim` for easy installation of language servers
+
+#### JetBrains IDEs
+
+1. Install the "Nix IDE Support" plugin
+2. Enable "Show NixOS Options" in Settings > Languages & Frameworks > Nix
+3. Configure external tools for formatting with `alejandra` and `shfmt`
 
 ---
 

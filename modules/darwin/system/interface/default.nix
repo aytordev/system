@@ -5,6 +5,35 @@
 #
 # This module provides comprehensive configuration for the macOS system interface,
 # including Dock, Finder, and system-wide appearance settings.
+#
+# ## Features
+# - Configure macOS Dock behavior and appearance
+# - Customize Finder preferences
+# - Set system-wide appearance settings
+# - Configure menu bar and control center
+# - Manage window and app behavior
+#
+# ## Example Usage
+# ```nix
+# {
+#   system.interface = {
+#     dock = {
+#       autohide = true;
+#       orientation = "left";
+#       showRecents = false;
+#     };
+#     finder = {
+#       showPathbar = true;
+#       showStatusBar = true;
+#       showTabView = true;
+#     };
+#     globalDomain = {
+#       appleInterfaceStyle = "Dark";
+#       appleShowScrollBars = "WhenScrolling";
+#     };
+#   };
+# }
+# ```
 {
   config,
   lib,
@@ -12,8 +41,23 @@
 }:
 with lib; let
   # Type definitions for better type safety and documentation
+  #
+  # These types define the structure and validation rules for the module's options.
+  # Each type includes documentation and default values where applicable.
   interfaceTypes = with types; {
-    # Activity Monitor configuration type
+    # Configuration for the Activity Monitor application
+    #
+    # Controls various aspects of the Activity Monitor's behavior and appearance.
+    # Example:
+    # ```nix
+    # {
+    #   iconType = 6;  # CPU History
+    #   openMainWindow = true;
+    #   showCategory = 101;  # All Processes
+    #   sortColumn = "CPUUsage";
+    #   sortDirection = 0;  # Descending
+    # }
+    # ```
     activityMonitorType = submodule {
       options = {
         iconType = mkOption {
@@ -174,7 +218,10 @@ with lib; let
     };
   };
 
-  # Default configurations
+  # Default configurations for all interface settings
+  #
+  # These defaults follow macOS conventions and provide a good starting point
+  # for most users. They can be overridden in the system configuration.
   defaults = {
     activityMonitor = {
       iconType = 6;
@@ -223,7 +270,16 @@ with lib; let
   # Helper function to map hot corners to wvous-* settings
   mkHotCorners = corners: mapAttrs' (pos: action: nameValuePair "wvous-${pos}-corner" action) corners;
 in {
+  # Main module options
+  #
+  # These options are available under `system.interface` in the system configuration.
   options.system.interface = {
+    # Whether to enable the interface module
+    #
+    # Type: boolean
+    # Default: true
+    enable = mkEnableOption "system interface configuration";
+    
     activityMonitor = mkOption {
       type = interfaceTypes.activityMonitorType;
       default = defaults.activityMonitor;
@@ -249,7 +305,11 @@ in {
     };
   };
 
-  config = {
+  # Module implementation
+  #
+  # This section applies the configuration to the system by generating the
+  # appropriate `defaults` commands and system settings.
+  config = mkIf config.system.interface.enable {
     system.activationScripts.extraActivation.text = ''
       # Create screenshots directory
       echo "Creating screenshots directory..."
