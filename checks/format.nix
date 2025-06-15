@@ -12,7 +12,7 @@
   self,
   lib ? pkgs.lib,
   ...
-} @ args: let
+}: let
   # Get the alejandra formatter
   alejandra = self.formatter.${pkgs.system};
 

@@ -9,10 +9,8 @@
 {
   # Standard flake inputs
   pkgs,
-  self,
-  lib ? pkgs.lib,
   ...
-} @ args: let
+}: let
   # Get the statix package
   statix = pkgs.statix;
 
