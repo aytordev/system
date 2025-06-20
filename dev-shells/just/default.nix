@@ -1,10 +1,10 @@
-# dev-shells/just.nix
+# dev-shells/just/default.nix
 #
 # This file defines the development shell for the 'just' task runner.
 # It provides a minimal environment for running project tasks.
 #
-# Version: 1.0.0
-# Last Updated: 2025-06-05
+# Version: 2.0.0
+# Last Updated: 2025-06-20
 {pkgs, ...}: {
   # Shell metadata
   name = "just";
@@ -27,7 +27,5 @@
     else
       echo -e "\n\033[33mℹ️  No Justfile found in current directory\033[0m"
     fi
-
-    echo ""
   '';
 }
