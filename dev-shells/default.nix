@@ -9,10 +9,12 @@
 #
 # Version: 2.1.0
 # Last Updated: 2025-06-20
-
-{ pkgs, system, inputs, ... }@args:
-
-let
+{
+  pkgs,
+  system,
+  inputs,
+  ...
+} @ args: let
   # Get the current directory contents
   currentDir = builtins.readDir ./.;
 
@@ -23,7 +25,8 @@ let
   # Returns:
   #   Boolean indicating if the entry is a valid shell directory
   isShellDir = name:
-    currentDir.${name} == "directory"
+    currentDir.${name}
+    == "directory"
     && builtins.pathExists (./. + "/${name}/default.nix");
 
   # Get all valid shell directories
@@ -35,55 +38,56 @@ let
   #   dir: Name of the directory containing the shell configuration
   # Returns:
   #   The imported and validated shell configuration
-  importShell = dir:
-    let
-      path = ./. + "/${dir}";
-      shell = import path { inherit pkgs system inputs; };
-    in
-      if !(builtins.isAttrs shell) then
-        throw "Shell '${dir}' must evaluate to an attribute set"
-      else if !(shell ? name) then
-        throw "Shell '${dir}' must have a 'name' attribute"
-      else
-        shell;
+  importShell = dir: let
+    path = ./. + "/${dir}";
+    shell = import path {inherit pkgs system inputs;};
+  in
+    if !(builtins.isAttrs shell)
+    then throw "Shell '${dir}' must evaluate to an attribute set"
+    else if !(shell ? name)
+    then throw "Shell '${dir}' must have a 'name' attribute"
+    else shell;
 
   # Import all shell modules
   importedShells = builtins.listToAttrs (
     builtins.map
-      (dir: {
-        name = dir;
-        value = importShell dir;
-      })
-      shellDirs
+    (dir: {
+      name = dir;
+      value = importShell dir;
+    })
+    shellDirs
   );
 
   # Common packages for all shells
   commonPackages = with pkgs; [
     # Version Control
-    git     # Distributed version control system
+    git # Distributed version control system
     git-lfs # Git extension for versioning large files
-    gh      # GitHub CLI tool
+    gh # GitHub CLI tool
 
     # Nix Development
     nixpkgs-fmt # Nix code formatter
-    statix      # Lints and suggestions for Nix code
-    deadnix     # Find and remove unused code in .nix files
+    statix # Lints and suggestions for Nix code
+    deadnix # Find and remove unused code in .nix files
 
     # Shell Tools
-    jq     # Lightweight command-line JSON processor
-    yq-go  # Portable command-line YAML/XML/TOML/... processor
-    htop   # Interactive process viewer
-    file   # File type identification utility
-    tree   # Display directory structure as a tree
+    jq # Lightweight command-line JSON processor
+    yq-go # Portable command-line YAML/XML/TOML/... processor
+    htop # Interactive process viewer
+    file # File type identification utility
+    tree # Display directory structure as a tree
   ];
 
   # Add common packages to each shell
-  shellsWithCommonPkgs = builtins.mapAttrs (
-    name: shell:
-      shell // {
-        packages = (shell.packages or [ ]) ++ commonPackages;
-      }
-  ) importedShells;
+  shellsWithCommonPkgs =
+    builtins.mapAttrs (
+      name: shell:
+        shell
+        // {
+          packages = (shell.packages or []) ++ commonPackages;
+        }
+    )
+    importedShells;
 
   # Default shell with list of available shells
   defaultShell = {
@@ -96,10 +100,11 @@ let
       echo ""
     '';
   };
-
 in {
   # The 'shells' attribute is expected by the flake
-  shells = shellsWithCommonPkgs // {
-    default = defaultShell;
-  };
+  shells =
+    shellsWithCommonPkgs
+    // {
+      default = defaultShell;
+    };
 }
