@@ -1,63 +1,119 @@
 # libraries/default.nix
 #
-# Main entry point for library functions. Automatically imports all .nix files
-# in this directory and makes them available through a single attribute set.
+# @summary Main entry point for library functions
 #
-# Version: 2.0.0
-# Last Updated: 2025-06-10
+# @description
+#   Automatically imports all .nix files in this directory and makes them available
+#   through a single attribute set. This module follows SOLID principles for better
+#   maintainability and extensibility, providing a dynamic way to import library
+#   modules with appropriate arguments.
 #
-# This module follows SOLID principles for better maintainability and extensibility.
-# It provides a dynamic way to import library modules with appropriate arguments.
-{lib, ...} @ args: let
-  # Define argument strategies for different module types
-  # Each strategy is a function that receives the full args and returns the arguments to pass
-  moduleStrategies = {
-    # Default strategy - only pass the library
-    default = args: args;
+# @version 2.0.0
+# @last_updated 2025-06-10
+#
+# @param lib The nixpkgs library
+# @param ... Additional arguments passed to modules
+#
+# @return An attribute set containing all library functions and utilities
+#
+# @example Basic usage
+#   let
+#     lib = import ./libraries;
+#   in {
+#     # Use library functions
+#     path = lib.relativeToRoot ["path" "to" "file"];
+#   }
+{lib, ...} @ args:
 
-    # Special handling for macos-system.nix - pass all arguments
-    "macos-system.nix" = args: args;
-
-    # Add more strategies here as needed
-    # "special-module.nix" = args: args // { special = true; };
-  };
-
-  # Get the strategy function for a given file
-  getStrategy = file:
-    if lib.hasAttr file moduleStrategies
-    then moduleStrategies."${file}"
-    else moduleStrategies.default;
-
-  # Get all .nix files in the current directory
+let
+  # Type: Path -> [String]
+  #
+  # Get all .nix files in a directory, recursively.
+  #
+  # @param dir The directory to search in
+  # @return List of relative paths to .nix files
   getNixFiles = dir:
-    builtins.filter
-    (file: file != "default.nix" && lib.strings.hasSuffix ".nix" file)
-    (builtins.attrNames (builtins.readDir dir));
+    let
+      # Read directory and filter for .nix files and directories
+      allFiles = builtins.attrNames (builtins.readDir dir);
+      
+      # Filter function to identify .nix files (excluding default.nix) and directories
+      isNixFileOrDir = file:
+        let 
+          isNixFile = lib.strings.hasSuffix ".nix" file;
+          isNotDefault = file != "default.nix";
+          isDir = (builtins.readDir dir)."${file}" == "directory";
+        in (isNixFile && isNotDefault) || isDir;
+      
+      # Get files and directories in current directory
+      filteredFiles = builtins.filter isNixFileOrDir allFiles;
+      
+      # Recursively process subdirectories
+      processSubdir = file:
+        if (builtins.readDir dir)."${file}" == "directory"
+        then
+          let
+            subdir = dir + "/${file}";
+            subFiles = getNixFiles subdir;
+          in builtins.map (f: "${file}/${f}") subFiles
+        else [];
+      
+      # Get all files from subdirectories
+      subdirFiles = builtins.concatMap processSubdir filteredFiles;
+      
+      # Combine files from current directory and subdirectories
+      allNixFiles = filteredFiles ++ subdirFiles;
+    in allNixFiles;
 
-  # Import a single file with the appropriate arguments
-  importFile = file: let
-    strategy = getStrategy file;
-    importArgs = strategy args;
-  in
-    import (./. + "/${file}") importArgs;
+  # Type: Path -> (Path -> a) -> a
+  #
+  # Import a file with the appropriate strategy.
+  #
+  # @param file The file to import
+  # @return The imported module or function result
+  # @throws If the imported file doesn't return an attribute set or function
+  importFile = file:
+    let
+      # Resolve file path
+      filePath = ./. + "/${file}";
+      
+      # Import the file
+      imported = import filePath args;
+      
+      # Handle the imported value (function or attribute set)
+      result =
+        if builtins.isFunction imported then
+          imported args  # Call function with args
+        else if builtins.isAttrs imported then
+          imported       # Use attribute set as-is
+        else
+          throw """
+            Error in ${file}: 
+            Imported file must return an attribute set or function that returns an attribute set.
+            Got: ${builtins.typeOf imported}
+          """;
+    in result;
 
-  # Import all library files
-  imported = map importFile (getNixFiles ./.);
-
-  # Merge all attribute sets into one
-  combined = lib.foldl' lib.recursiveUpdate {} imported;
-in
-  # Export the combined libraries with some additional utilities
-  combined
-  // {
-    # Export all libraries as a single attribute set
-    inherit (combined) relativeToRoot macosSystem namespace;
-
-    # Export the lib itself for convenience
+  # Import all .nix files in the current directory
+  importedModules = map importFile (getNixFiles ./.);
+  
+  # Merge all attribute sets into one using recursive update
+  combinedModules = lib.foldl' lib.recursiveUpdate {} importedModules;
+  
+  # Public API
+  publicApi = {
+    # Re-export important modules
+    inherit (combinedModules) relativeToRoot macosSystem;
+    
+    # Re-export lib for convenience
     inherit lib;
-
-    # Export the import mechanism for testing or advanced usage
-    _importers = {
-      inherit getStrategy importFile getNixFiles;
+    
+    # Internal utilities (exposed for testing)
+    _internal = {
+      inherit getNixFiles importFile;
     };
-  }
+  };
+  
+in
+  # Combine public API with all modules
+  combinedModules // publicApi
