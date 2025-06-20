@@ -1,107 +1,119 @@
 # libraries/default.nix
 #
-# Main entry point for library functions. Automatically imports all .nix files
-# in this directory and makes them available through a single attribute set.
+# @summary Main entry point for library functions
 #
-# Version: 2.0.0
-# Last Updated: 2025-06-10
+# @description
+#   Automatically imports all .nix files in this directory and makes them available
+#   through a single attribute set. This module follows SOLID principles for better
+#   maintainability and extensibility, providing a dynamic way to import library
+#   modules with appropriate arguments.
 #
-# This module follows SOLID principles for better maintainability and extensibility.
-# It provides a dynamic way to import library modules with appropriate arguments.
-{lib, ...} @ args: let
-  # Define strategies for importing different types of files
-  moduleStrategies = {
-    # Default strategy: pass all arguments to the module
-    default = _: args;
+# @version 2.0.0
+# @last_updated 2025-06-10
+#
+# @param lib The nixpkgs library
+# @param ... Additional arguments passed to modules
+#
+# @return An attribute set containing all library functions and utilities
+#
+# @example Basic usage
+#   let
+#     lib = import ./libraries;
+#   in {
+#     # Use library functions
+#     path = lib.relativeToRoot ["path" "to" "file"];
+#   }
+{lib, ...} @ args:
 
-    # Strategy for files that expect specific arguments
-    specific = _: {inherit lib;};
-  };
-
-  # Determine which import strategy to use based on the file name
-  getStrategy = file:
-    if lib.strings.hasInfix "special" file
-    then moduleStrategies.specific
-    else moduleStrategies.default;
-
-  # Recursively find all .nix files in a directory, excluding default.nix
-  getNixFiles = dir: let
-    allFiles = builtins.attrNames (builtins.readDir dir);
-    filteredFiles =
-      builtins.filter
-      (
-        file: let
+let
+  # Type: Path -> [String]
+  #
+  # Get all .nix files in a directory, recursively.
+  #
+  # @param dir The directory to search in
+  # @return List of relative paths to .nix files
+  getNixFiles = dir:
+    let
+      # Read directory and filter for .nix files and directories
+      allFiles = builtins.attrNames (builtins.readDir dir);
+      
+      # Filter function to identify .nix files (excluding default.nix) and directories
+      isNixFileOrDir = file:
+        let 
           isNixFile = lib.strings.hasSuffix ".nix" file;
           isNotDefault = file != "default.nix";
           isDir = (builtins.readDir dir)."${file}" == "directory";
-          result = (isNixFile && isNotDefault) || isDir;
-        in
-          result
-      )
-      allFiles;
-
-    subdirFiles =
-      builtins.concatMap
-      (
-        file:
-          if (builtins.readDir dir)."${file}" == "directory"
-          then let
+        in (isNixFile && isNotDefault) || isDir;
+      
+      # Get files and directories in current directory
+      filteredFiles = builtins.filter isNixFileOrDir allFiles;
+      
+      # Recursively process subdirectories
+      processSubdir = file:
+        if (builtins.readDir dir)."${file}" == "directory"
+        then
+          let
             subdir = dir + "/${file}";
-          in
-            builtins.map (f: "${file}/${f}") (getNixFiles subdir)
-          else []
-      )
-      (builtins.filter (f: (builtins.readDir dir)."${f}" == "directory") allFiles);
+            subFiles = getNixFiles subdir;
+          in builtins.map (f: "${file}/${f}") subFiles
+        else [];
+      
+      # Get all files from subdirectories
+      subdirFiles = builtins.concatMap processSubdir filteredFiles;
+      
+      # Combine files from current directory and subdirectories
+      allNixFiles = filteredFiles ++ subdirFiles;
+    in allNixFiles;
 
-    allNixFiles = filteredFiles ++ subdirFiles;
-  in
-    allNixFiles;
-
-  # Import a single file with the appropriate strategy
-  importFile = file: let
-    strategy = getStrategy file;
-    importArgs = strategy args;
-    filePath = ./. + "/${file}";
-    imported = import filePath importArgs;
-    result =
-      if builtins.isFunction imported
-      then imported importArgs
-      else if builtins.isAttrs imported
-      then imported
-      else builtins.throw "Imported file ${file} must return an attribute set or function that returns an attribute set";
-  in
-    result;
+  # Type: Path -> (Path -> a) -> a
+  #
+  # Import a file with the appropriate strategy.
+  #
+  # @param file The file to import
+  # @return The imported module or function result
+  # @throws If the imported file doesn't return an attribute set or function
+  importFile = file:
+    let
+      # Resolve file path
+      filePath = ./. + "/${file}";
+      
+      # Import the file
+      imported = import filePath args;
+      
+      # Handle the imported value (function or attribute set)
+      result =
+        if builtins.isFunction imported then
+          imported args  # Call function with args
+        else if builtins.isAttrs imported then
+          imported       # Use attribute set as-is
+        else
+          throw """
+            Error in ${file}: 
+            Imported file must return an attribute set or function that returns an attribute set.
+            Got: ${builtins.typeOf imported}
+          """;
+    in result;
 
   # Import all .nix files in the current directory
-  imported = let
-    files = getNixFiles ./.;
-    importedModules = map importFile files;
-  in
-    importedModules;
-
-  # Merge all attribute sets into one
-  combined =
-    lib.foldl' (
-      acc: module:
-        lib.recursiveUpdate acc module
-    ) {}
-    imported;
-
-  # Extract the modules we want to re-export
-  exports = {
-    # Export all libraries as a single attribute set
-    inherit (combined) relativeToRoot macosSystem;
-
-    # Export the lib itself for convenience
+  importedModules = map importFile (getNixFiles ./.);
+  
+  # Merge all attribute sets into one using recursive update
+  combinedModules = lib.foldl' lib.recursiveUpdate {} importedModules;
+  
+  # Public API
+  publicApi = {
+    # Re-export important modules
+    inherit (combinedModules) relativeToRoot macosSystem;
+    
+    # Re-export lib for convenience
     inherit lib;
-
-    # Export the import mechanism for testing or advanced usage
-    _importers = {
-      inherit getStrategy importFile getNixFiles;
+    
+    # Internal utilities (exposed for testing)
+    _internal = {
+      inherit getNixFiles importFile;
     };
   };
-
-  # Combine everything together
-  final = combined // exports;
+  
 in
-  final
+  # Combine public API with all modules
+  combinedModules // publicApi
