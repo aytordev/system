@@ -25,19 +25,33 @@ Main entry point for the libraries module system. Dynamically imports all `.nix`
 
 **Example from `supported-systems/aarch64-darwin/default.nix`**:
 ```nix
-# Load all .nix files from the src/ directory using Haumea
-# This dynamically discovers all host configurations
-data = haumea.lib.load {
-  src = ./src; # Source directory containing host configurations
-  inputs = args; # Pass through all flake inputs and other arguments
-};
+# Recursively find and load host configurations from the src/ directory
+findHostConfigs = dir: let
+  entries = safeReadDir dir;
+  isHostDir = name: (entries.${name} or "") == "directory";
+  hostDirs = lib.filter isHostDir (builtins.attrNames entries);
 
-# Merge all darwinConfigurations from all loaded files
-outputs = {
-  darwinConfigurations =
-    lib.attrsets.mergeAttrsList
-    (map (it: it.darwinConfigurations or {}) (builtins.attrValues data));
-};
+  # Import a single host configuration
+  importHost = name: let
+    path = dir + "/${name}";
+    config = import (path + "/default.nix") (args // {hostDir = path;});
+  in
+    config.darwinConfigurations or {};
+
+  # Merge configurations with error checking
+  mergeConfigs = acc: name: 
+    let hostConfig = importHost name;
+    in if !(builtins.isAttrs hostConfig)
+       then throw "Host '${name}' must export a darwinConfigurations attribute set"
+       else lib.recursiveUpdate acc hostConfig;
+
+in lib.foldl' mergeConfigs {} hostDirs;
+
+# Discover and merge all host configurations
+darwinConfigurations = 
+  if !(isDirectory ./src)
+  then {}
+  else findHostConfigs ./src;
 ```
 
 ### `macos-system.nix`
