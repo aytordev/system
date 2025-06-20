@@ -9,49 +9,88 @@
 # This module follows SOLID principles for better maintainability and extensibility.
 # It provides a dynamic way to import library modules with appropriate arguments.
 {lib, ...} @ args: let
-  # Define argument strategies for different module types
-  # Each strategy is a function that receives the full args and returns the arguments to pass
+  # Define strategies for importing different types of files
   moduleStrategies = {
-    # Default strategy - only pass the library
-    default = args: args;
+    # Default strategy: pass all arguments to the module
+    default = _: args;
 
-    # Special handling for macos-system.nix - pass all arguments
-    "macos-system.nix" = args: args;
-
-    # Add more strategies here as needed
-    # "special-module.nix" = args: args // { special = true; };
+    # Strategy for files that expect specific arguments
+    specific = _: {inherit lib;};
   };
 
-  # Get the strategy function for a given file
+  # Determine which import strategy to use based on the file name
   getStrategy = file:
-    if lib.hasAttr file moduleStrategies
-    then moduleStrategies."${file}"
+    if lib.strings.hasInfix "special" file
+    then moduleStrategies.specific
     else moduleStrategies.default;
 
-  # Get all .nix files in the current directory
-  getNixFiles = dir:
-    builtins.filter
-    (file: file != "default.nix" && lib.strings.hasSuffix ".nix" file)
-    (builtins.attrNames (builtins.readDir dir));
+  # Recursively find all .nix files in a directory, excluding default.nix
+  getNixFiles = dir: let
+    allFiles = builtins.attrNames (builtins.readDir dir);
+    filteredFiles =
+      builtins.filter
+      (
+        file: let
+          isNixFile = lib.strings.hasSuffix ".nix" file;
+          isNotDefault = file != "default.nix";
+          isDir = (builtins.readDir dir)."${file}" == "directory";
+          result = (isNixFile && isNotDefault) || isDir;
+        in
+          result
+      )
+      allFiles;
 
-  # Import a single file with the appropriate arguments
+    subdirFiles =
+      builtins.concatMap
+      (
+        file:
+          if (builtins.readDir dir)."${file}" == "directory"
+          then let
+            subdir = dir + "/${file}";
+          in
+            builtins.map (f: "${file}/${f}") (getNixFiles subdir)
+          else []
+      )
+      (builtins.filter (f: (builtins.readDir dir)."${f}" == "directory") allFiles);
+
+    allNixFiles = filteredFiles ++ subdirFiles;
+  in
+    allNixFiles;
+
+  # Import a single file with the appropriate strategy
   importFile = file: let
     strategy = getStrategy file;
     importArgs = strategy args;
+    filePath = ./. + "/${file}";
+    imported = import filePath importArgs;
+    result =
+      if builtins.isFunction imported
+      then imported importArgs
+      else if builtins.isAttrs imported
+      then imported
+      else builtins.throw "Imported file ${file} must return an attribute set or function that returns an attribute set";
   in
-    import (./. + "/${file}") importArgs;
+    result;
 
-  # Import all library files
-  imported = map importFile (getNixFiles ./.);
+  # Import all .nix files in the current directory
+  imported = let
+    files = getNixFiles ./.;
+    importedModules = map importFile files;
+  in
+    importedModules;
 
   # Merge all attribute sets into one
-  combined = lib.foldl' lib.recursiveUpdate {} imported;
-in
-  # Export the combined libraries with some additional utilities
-  combined
-  // {
+  combined =
+    lib.foldl' (
+      acc: module:
+        lib.recursiveUpdate acc module
+    ) {}
+    imported;
+
+  # Extract the modules we want to re-export
+  exports = {
     # Export all libraries as a single attribute set
-    inherit (combined) relativeToRoot macosSystem namespace;
+    inherit (combined) relativeToRoot macosSystem;
 
     # Export the lib itself for convenience
     inherit lib;
@@ -60,4 +99,9 @@ in
     _importers = {
       inherit getStrategy importFile getNixFiles;
     };
-  }
+  };
+
+  # Combine everything together
+  final = combined // exports;
+in
+  final
