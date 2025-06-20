@@ -27,12 +27,16 @@
     darwin-modules =
       # Convert relative paths to absolute paths using the project root
       (map libraries.relativeToRoot [
-        # Common system modules
+        # Common modules
+        ## System modules
         "modules/shared/nix/default.nix"
         "modules/darwin/system/fonts/default.nix"
         "modules/darwin/system/interface/default.nix"
         "modules/darwin/system/input/default.nix"
         "modules/darwin/system/networking/default.nix"
+
+        ## Tools
+        "modules/darwin/tools/homebrew/default.nix"
 
         # Host-specific system configuration
         # "hosts/darwin-${name}/system.nix"
@@ -52,6 +56,9 @@
 
           # Configure system fonts
           system.fonts.enable = true;
+
+          # Configure Homebrew
+          tools.homebrew.enable = true;
         }
       ];
 
