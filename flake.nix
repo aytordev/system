@@ -96,12 +96,6 @@
     # =========================================================================
     # Development & Tooling
     # =========================================================================
-
-    # Haumea: Filesystem-based module system for Nix
-    # Used for organizing and importing Nix modules
-    haumea = {
-      url = "github:nix-community/haumea/v0.2.2";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # Note: Haumea was removed in favor of native Nix module loading
   };
 }
