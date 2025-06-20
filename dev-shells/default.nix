@@ -1,41 +1,64 @@
 # dev-shells/default.nix
 #
-# This file defines the base development shell configuration and dynamically
-# imports all other shell configurations from this directory. It provides
-# common packages and utilities used across all development environments.
+# This file defines the base development shell configuration and imports
+# shell configurations from subdirectories. Each shell should be in its
+# own directory with a default.nix file that exports a shell configuration.
 #
-# Version: 1.0.0
-# Last Updated: 2025-06-05
+# Shells are automatically discovered and imported from subdirectories
+# that contain a default.nix file.
+#
+# Version: 2.1.0
+# Last Updated: 2025-06-20
 {
   pkgs,
   system,
   inputs,
   ...
-}: let
-  # Import a shell file and pass necessary arguments
+} @ args: let
+  # Get the current directory contents
+  currentDir = builtins.readDir ./.;
+
+  # Check if a directory entry is a valid shell directory
   #
-  # Type: String -> Path -> AttrSet
-  # Example: importShell "just" ./just.nix
-  importShell = name: path: {
-    name = builtins.elemAt (pkgs.lib.strings.splitString "." (baseNameOf path)) 0;
-    value = import path {inherit pkgs system inputs;};
-  };
+  # Args:
+  #   name: Name of the directory entry to check
+  # Returns:
+  #   Boolean indicating if the entry is a valid shell directory
+  isShellDir = name:
+    currentDir.${name}
+    == "directory"
+    && builtins.pathExists (./. + "/${name}/default.nix");
 
-  # Get all .nix files except default.nix
-  # Type: [String]
-  shellFiles =
-    builtins.filter
-    (f: f != "default.nix" && pkgs.lib.strings.hasSuffix ".nix" f)
-    (builtins.attrNames (builtins.readDir ./.));
+  # Get all valid shell directories
+  shellDirs = builtins.filter isShellDir (builtins.attrNames currentDir);
 
-  # Create attribute set of all shells
-  # Type: AttrSet
-  allShells =
-    builtins.listToAttrs
-    (map (f: importShell f (./. + "/${f}")) shellFiles);
+  # Import and validate a shell module
+  #
+  # Args:
+  #   dir: Name of the directory containing the shell configuration
+  # Returns:
+  #   The imported and validated shell configuration
+  importShell = dir: let
+    path = ./. + "/${dir}";
+    shell = import path {inherit pkgs system inputs;};
+  in
+    if !(builtins.isAttrs shell)
+    then throw "Shell '${dir}' must evaluate to an attribute set"
+    else if !(shell ? name)
+    then throw "Shell '${dir}' must have a 'name' attribute"
+    else shell;
+
+  # Import all shell modules
+  importedShells = builtins.listToAttrs (
+    builtins.map
+    (dir: {
+      name = dir;
+      value = importShell dir;
+    })
+    shellDirs
+  );
 
   # Common packages for all shells
-  # Type: [package]
   commonPackages = with pkgs; [
     # Version Control
     git # Distributed version control system
@@ -54,34 +77,34 @@
     file # File type identification utility
     tree # Display directory structure as a tree
   ];
-in {
-  # All individual shells with common packages
-  # Type: AttrSet
-  shells =
-    pkgs.lib.mapAttrs (
-      _: shell: let
-        # Ensure each shell has required attributes
-        validatedShell =
-          shell
-          // {
-            name = shell.name or "unnamed-shell";
-            packages = (shell.packages or []) ++ commonPackages;
-          };
-      in
-        validatedShell
+
+  # Add common packages to each shell
+  shellsWithCommonPkgs =
+    builtins.mapAttrs (
+      name: shell:
+        shell
+        // {
+          packages = (shell.packages or []) ++ commonPackages;
+        }
     )
-    allShells;
+    importedShells;
 
   # Default shell with list of available shells
-  # Type: AttrSet
-  default = {
+  defaultShell = {
     name = "default";
     packages = commonPackages;
     shellHook = ''
       echo -e "\n\033[1;32m🚀 Default Development Shell\033[0m"
-      echo "Available shells: ${toString (builtins.attrNames allShells)}"
+      echo "Available shells: ${toString (builtins.attrNames importedShells)}"
       echo "Enter a specific shell with: nix develop .#<shell-name>"
       echo ""
     '';
   };
+in {
+  # The 'shells' attribute is expected by the flake
+  shells =
+    shellsWithCommonPkgs
+    // {
+      default = defaultShell;
+    };
 }
