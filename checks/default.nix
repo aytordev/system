@@ -1,40 +1,70 @@
 # Checks configuration for the NixOS flake
-# This module dynamically imports all check files in the current directory
-# and combines them into a single attribute set.
 #
-# Each check file should export a derivation that performs a specific
-# verification task (e.g., formatting, linting, evaluation).
+# This module dynamically imports all check modules from subdirectories
+# and combines them into a single attribute set. Each check should be in its
+# own directory with a default.nix file that exports a derivation.
 #
-# Example:
-#   checks = {
-#     format = pkgs.runCommand ...;
-#     eval = pkgs.runCommand ...;
-#   };
+# Version: 1.1.0
+# Last Updated: 2025-06-20
 {
-  # Standard flake inputs
   pkgs,
+  self,
   ...
 } @ args: let
-  # Get all .nix files in the current directory, excluding default.nix
-  checkFiles =
-    builtins.filter
-    (f: f != "default.nix" && pkgs.lib.strings.hasSuffix ".nix" f)
-    (builtins.attrNames (builtins.readDir ./.));
+  # Read the current directory contents
+  currentDir = builtins.readDir ./.;
 
-  # Import a check file and return an attribute set entry
+  # isCheckDir :: String -> Bool
+  # Check if a directory entry is a valid check (has a default.nix)
   #
-  # Type: String -> { name: String, value: Derivation }
-  importCheck = name: let
-    # Remove the .nix extension to get the check name
-    checkName = builtins.head (pkgs.lib.strings.splitString "." name);
-  in {
-    name = checkName;
-    value = import (./. + "/${name}") args;
-  };
+  # Args:
+  #   name: Name of the directory entry to check
+  # Returns:
+  #   Boolean indicating if the entry is a valid check directory
+  isCheckDir = name: let
+    entryType = currentDir.${name} or "";
+    isDir = entryType == "directory";
+    checkPath = ./. + "/${name}";
+    hasDefaultNix = isDir && builtins.pathExists (checkPath + "/default.nix");
+  in
+    isDir && hasDefaultNix;
 
-  # Import all check files
-  importedChecks = builtins.map importCheck checkFiles;
+  # Get all valid check directories
+  checkDirs = builtins.filter isCheckDir (builtins.attrNames currentDir);
+
+  # importCheck :: String -> { name: String, value: Derivation }
+  # Import a check module and validate its structure
+  #
+  # Args:
+  #   name: Name of the check to import
+  # Returns:
+  #   Attribute set with name and value (the imported check)
+  # Throws:
+  #   If the check doesn't evaluate to a valid derivation
+  importCheck = name: let
+    checkPath = ./. + "/${name}";
+    imported = import (checkPath + "/default.nix") args;
+
+    # Simple validation that the imported value is a derivation
+    isValidDerivation =
+      builtins.isAttrs imported
+      && (imported.type or "") == "derivation";
+
+    errorMsg =
+      "Check '${name}' in ${toString checkPath} "
+      + "must evaluate to a derivation";
+  in
+    if !isValidDerivation
+    then throw errorMsg
+    else {
+      inherit name;
+      value = imported;
+    };
+
+  # Import all check modules and convert to attribute set
+  importedChecks = map importCheck checkDirs;
+
+  # Final result: convert list of {name, value} to attribute set
+  result = builtins.listToAttrs importedChecks;
 in
-  # Convert the list of attribute sets to a single attribute set
-  # Example: [ { name = "format"; value = <drv>; } ] -> { format = <drv>; }
-  builtins.listToAttrs importedChecks
+  result
