@@ -1,39 +1,57 @@
 # 🛠️ Development Shells
 
-This directory contains Nix development shell configurations that provide consistent development environments across different systems.
+This directory contains Nix development shell configurations that provide consistent development environments across different systems. Each shell is automatically discovered and loaded from its own subdirectory.
 
 ## 📁 Directory Structure
 
 ```
 dev-shells/
-├── default.nix    # Main development shell with all tools
-└── just.nix       # Specialized shell for just command runner
+├── default.nix       # Main development shell with dynamic shell discovery
+├── README.md         # This documentation
+└── just/             # Just command runner shell
+    └── default.nix   # Just shell configuration
 ```
 
 ## 🎯 Purpose
 
-Development shells ensure that all developers and CI systems have access to the same tools and dependencies, making the development process more reliable and reproducible.
+Development shells ensure that all developers and CI systems have access to the same tools and dependencies, making the development process more reliable and reproducible. The shell system is designed to be:
+
+- **Modular**: Each shell is self-contained in its own directory
+- **Discoverable**: Shells are automatically discovered
+- **Consistent**: Common tools are included in all shells
+- **Documented**: Each shell should document its purpose and usage
 
 ## 🚀 Available Development Shells
 
-### `default.nix`
-The main development shell that includes essential development tools and dependencies required for working with this repository.
+### Default Shell (`default`)
+The default development shell that includes common development tools and a list of available shells.
 
-### `just.nix`
+### Just Shell (`just`)
 A specialized development shell containing the `just` command runner and related tools. This shell is used for running common development tasks defined in the `Justfile`.
 
 ## 💻 Usage
 
-### Enter the Default Development Shell
+### List Available Shells
 ```bash
-# Enter interactive shell with all development tools
-nix develop
+nix flake show | grep -A 10 'devShells'
 ```
 
-### Run a Specific Command
+### Enter a Development Shell
+```bash
+# Enter the default shell
+nix develop
+
+# Enter a specific shell (e.g., just)
+nix develop .#just
+```
+
+### Run a Command Without Entering the Shell
 ```bash
 # Run a single command in the development environment
 nix develop -c <command>
+
+# Example: Run just with arguments
+nix develop .#just -c just <task>
 ```
 
 ### Using with direnv (Recommended)
@@ -47,39 +65,69 @@ nix develop -c <command>
    ```
 3. Add a `.envrc` file to your project root:
    ```bash
-   use flake .#devShells.$(uname -m)-linux.default
+   use flake .#devShells.$(uname -m)-linux.default  # Default shell
+   # or
+   use flake .#just                               # Just shell
    ```
 4. Run `direnv allow` to activate the environment
 
-## ➕ Adding New Development Shells
+## ➕ Adding a New Development Shell
 
-1. Create a new `.nix` file with your shell configuration
-2. Update `default.nix` to include or re-export your new shell
-3. Document the new shell in this README with:
-   - Purpose and intended use case
-   - Included tools and their versions
-   - Any special configuration requirements
+1. Create a new directory under `dev-shells/` for your shell:
+   ```bash
+   mkdir -p dev-shells/my-new-shell
+   ```
 
-## 🧰 Included Tools
+2. Create a `default.nix` file in your shell's directory:
+   ```nix
+   # dev-shells/my-new-shell/default.nix
+   { pkgs, system, inputs, ... }:
+   
+   {
+     name = "my-new-shell";
+     
+     # List of packages to include
+     packages = with pkgs; [
+       # Add your packages here
+     ];
+     
+     # Optional: Shell initialization script
+     shellHook = ''
+       echo "Welcome to my-new-shell!"
+     '';
+   }
+   ```
 
-### Core Development
-- Git and version control tools
-- Nix development tools (nixpkgs-fmt, nix-diff, etc.)
-- Build essentials (gcc, make, etc.)
+3. The shell will be automatically discovered and available via:
+   ```bash
+   nix develop .#my-new-shell
+   ```
 
-### Code Quality
-- Linters and formatters
-- Static analysis tools
+## 🧰 Common Packages
 
-### Project-Specific
-- `just` command runner (in `just.nix`)
-- Other project-specific tools
+All shells automatically include these common tools:
+
+### Version Control
+- `git` - Distributed version control
+- `git-lfs` - Git extension for large files
+- `gh` - GitHub CLI tool
+
+### Nix Development
+- `nixpkgs-fmt` - Nix code formatter
+- `statix` - Lints and suggestions for Nix code
+- `deadnix` - Find and remove unused code in .nix files
+
+### Shell Tools
+- `jq` - Command-line JSON processor
+- `yq-go` - Portable YAML/XML/TOML processor
+- `htop` - Interactive process viewer
+- `file` - File type identification
+- `tree` - Directory structure viewer
 
 ## 📦 Dependencies
 
 - [Nix](https://nixos.org/) (≥ 2.4)
 - [direnv](https://direnv.net/) (≥ 2.32.0, optional but recommended)
-- [just](https://github.com/casey/just) (≥ 1.12.0, for just.nix)
 
 ## 🔗 Related Documentation
 
