@@ -69,6 +69,7 @@
 
       # Host-specific user configuration
       # "hosts/darwin-${name}/home.nix"
+      "homes/aarch64-darwin/aytordev@wang-lin/default.nix"
 
       # Desktop environment
       # "home/darwin/desktop.nix"
