@@ -65,10 +65,9 @@
     # User-level modules (Home Manager configuration)
     home-modules = map libraries.relativeToRoot [
       # Common user modules
-      # "home/common.nix"
+      "modules/home/user/default.nix"
 
       # Host-specific user configuration
-      # "hosts/darwin-${name}/home.nix"
       "homes/aarch64-darwin/aytordev@wang-lin/default.nix"
 
       # Desktop environment

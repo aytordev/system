@@ -22,6 +22,7 @@
     "." # Root directory
     "./checks" # Check definitions
     "./dev-shells" # Development shells
+    "./homes" # Home configurations
     "./libraries" # Libraries
     "./modules" # Module definitions
     "./outputs" # Output definitions
