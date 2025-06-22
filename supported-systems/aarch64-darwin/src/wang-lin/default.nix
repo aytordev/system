@@ -63,16 +63,23 @@
       ];
 
     # User-level modules (Home Manager configuration)
-    home-modules = map libraries.relativeToRoot [
-      # Common user modules
-      # "home/common.nix"
+    home-modules =
+      (map libraries.relativeToRoot [
+        # Common modules
+        "modules/home/user/default.nix"
 
-      # Host-specific user configuration
-      # "hosts/darwin-${name}/home.nix"
+        # Host-specific user configuration
+        "homes/aarch64-darwin/aytordev@wang-lin/default.nix"
 
-      # Desktop environment
-      # "home/darwin/desktop.nix"
-    ];
+        # Desktop environment
+        # "home/darwin/desktop.nix"
+      ])
+      ++ [
+        # User configuration
+        # {
+        #   home.homeDirectory = "/Users/aytordev";
+        # }
+      ];
   };
 
   # Combine modules with all other arguments

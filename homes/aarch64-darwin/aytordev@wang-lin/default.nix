@@ -1,0 +1,56 @@
+# Home Manager Configuration for aytordev@wang-lin
+#
+# This file contains user-specific configuration for the 'aytordev' user on the 'wang-lin' host.
+# It's part of the system's modular configuration and is imported by the system's home configuration.
+#
+# This configuration is specific to Darwin (macOS) systems and includes packages and settings
+# that should only apply to this user on this specific host.
+#
+# Maintainer: Aytor Vicente Martinez <me@aytor.dev>
+# Last Updated: 2025-06-23
+{
+  config,
+  lib,
+  ...
+}: {
+  # Home Manager version compatibility
+  #
+  # Important: This value should not be changed unless you're prepared to perform
+  # the necessary migrations. It determines the version of Home Manager to be
+  # compatible with.
+  home.stateVersion = "25.11";
+
+  # Enable and configure the user module
+  user = {
+    enable = true;
+    name = "aytordev";
+    home = "/Users/aytordev";
+  };
+
+  # Example configurations (commented out for reference):
+  # ====================================================
+  #
+  # 1. Install user-specific packages:
+  # home.packages = with pkgs; [
+  #   git
+  #   htop
+  #   jq
+  # ];
+  #
+  # 2. Configure Git:
+  # programs.git = {
+  #   enable = true;
+  #   userName = "Aytor Vicente Martinez";
+  #   userEmail = "me@aytor.dev";
+  #   extraConfig = {
+  #     core.editor = "nvim";
+  #     pull.rebase = true;
+  #   };
+  # };
+  #
+  # 3. Add shell aliases:
+  # programs.bash.shellAliases = {
+  #   ll = "ls -la";
+  #   update = "sudo nixos-rebuild switch";
+  # };
+}
