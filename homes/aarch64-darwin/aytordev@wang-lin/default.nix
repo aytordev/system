@@ -5,24 +5,18 @@
 {
   config,
   lib,
-  variables,
   ...
 }: {
   # Home Manager configuration version
   #
   # Important: This value should not be changed unless you know what you're doing.
   # It determines the version of Home Manager to be compatible with.
+
   home.stateVersion = "25.11";
 
-  # User configuration
-  user = {
-    enable = true;
-    email = variables.useremail;
-    fullName = variables.userfullname;
-    home = "/Users/${variables.username}";
-    icon = null;
-    name = variables.username;
-  };
+  user.enable = true;
+  user.name = "aytordev";
+  user.home = "/Users/aytordev";
 
   # User-specific packages and configurations can be added here.
   # Example:

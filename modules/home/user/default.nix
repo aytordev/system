@@ -8,7 +8,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkOption types mkEnableOption mkMerge mkDefault;
+  inherit (lib) mkIf mkOption types mkEnableOption mkMerge mkDefault mkForce;
   inherit (lib.types) str package bool nullOr;
   inherit (builtins) baseNameOf;
 
@@ -16,25 +16,13 @@
 
   home-directory =
     if cfg.name == null
-    then null
+    then throw "user.name must be set"
     else if pkgs.stdenv.hostPlatform.isDarwin
     then "/Users/${cfg.name}"
     else "/home/${cfg.name}";
 in {
   options.user = {
     enable = mkEnableOption "user configuration";
-
-    email = mkOption {
-      type = str;
-      default = variables.useremail;
-      description = "The email address of the user";
-    };
-
-    fullName = mkOption {
-      type = str;
-      default = variables.userfullname;
-      description = "The full name of the user";
-    };
 
     home = mkOption {
       type = nullOr str;
@@ -43,15 +31,9 @@ in {
       description = "The user's home directory path";
     };
 
-    icon = mkOption {
-      type = nullOr package;
-      default = null;
-      description = "The profile picture to use for the user";
-    };
-
     name = mkOption {
       type = nullOr str;
-      default = variables.username;
+      default = "aytordev";
       description = "The username";
     };
   };
@@ -69,26 +51,18 @@ in {
         }
       ];
 
-      home = {
-        file =
-          {
-            "Desktop/.keep".text = "";
-            "Documents/.keep".text = "";
-            "Downloads/.keep".text = "";
-            "Music/.keep".text = "";
-            "Pictures/.keep".text = "";
-            "Videos/.keep".text = "";
-          }
-          // lib.optionalAttrs (cfg.icon != null) {
-            ".face".source = cfg.icon;
-            ".face.icon".source = cfg.icon;
-            "Pictures/${baseNameOf cfg.icon}".source = cfg.icon;
-          };
-
-        homeDirectory = mkDefault cfg.home;
-
-        username = mkDefault cfg.name;
+      home.file = {
+        "Desktop/.keep".text = "";
+        "Documents/.keep".text = "";
+        "Downloads/.keep".text = "";
+        "Music/.keep".text = "";
+        "Pictures/.keep".text = "";
+        "Videos/.keep".text = "";
       };
+
+      home.homeDirectory = mkForce cfg.home;
+
+      home.username = mkDefault cfg.name;
     }
   ]);
 }
