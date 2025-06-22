@@ -1,30 +1,56 @@
-# Home Manager configuration for aytordev@wang-lin
+# Home Manager Configuration for aytordev@wang-lin
 #
-# This module defines the home configuration for user 'aytordev' on the 'wang-lin' host.
+# This file contains user-specific configuration for the 'aytordev' user on the 'wang-lin' host.
 # It's part of the system's modular configuration and is imported by the system's home configuration.
+#
+# This configuration is specific to Darwin (macOS) systems and includes packages and settings
+# that should only apply to this user on this specific host.
+#
+# Maintainer: Aytor Vicente Martinez <me@aytor.dev>
+# Last Updated: 2025-06-23
 {
   config,
   lib,
   ...
 }: {
-  # Home Manager configuration version
+  # Home Manager version compatibility
   #
-  # Important: This value should not be changed unless you know what you're doing.
-  # It determines the version of Home Manager to be compatible with.
-
+  # Important: This value should not be changed unless you're prepared to perform
+  # the necessary migrations. It determines the version of Home Manager to be
+  # compatible with.
   home.stateVersion = "25.11";
 
-  user.enable = true;
-  user.name = "aytordev";
-  user.home = "/Users/aytordev";
+  # Enable and configure the user module
+  user = {
+    enable = true;
+    name = "aytordev";
+    home = "/Users/aytordev";
+  };
 
-  # User-specific packages and configurations can be added here.
-  # Example:
-  # home.packages = with pkgs; [ git vim ];
+  # Example configurations (commented out for reference):
+  # ====================================================
   #
+  # 1. Install user-specific packages:
+  # home.packages = with pkgs; [
+  #   git
+  #   htop
+  #   jq
+  # ];
+  #
+  # 2. Configure Git:
   # programs.git = {
   #   enable = true;
-  #   userName = "Your Name";
-  #   userEmail = "your.email@example.com";
+  #   userName = "Aytor Vicente Martinez";
+  #   userEmail = "me@aytor.dev";
+  #   extraConfig = {
+  #     core.editor = "nvim";
+  #     pull.rebase = true;
+  #   };
+  # };
+  #
+  # 3. Add shell aliases:
+  # programs.bash.shellAliases = {
+  #   ll = "ls -la";
+  #   update = "sudo nixos-rebuild switch";
   # };
 }
