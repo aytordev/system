@@ -384,15 +384,20 @@
         then throw "variables.username must be a string"
         else user;
 
-      # Prepare special arguments, ensuring libraries are properly passed through
-      specialArgs =
-        (merged.specialArgs or {})
-        // (lib.optionalAttrs (inputs ? libraries) {
+      # Prepare special arguments, ensuring both libraries and variables are properly passed through
+      specialArgs = let
+        baseArgs = merged.specialArgs or {};
+        inputArgs = lib.optionalAttrs (inputs ? libraries) {
           inherit (inputs) libraries;
-        })
-        // (lib.optionalAttrs (systemArgs ? libraries) {
+        } // lib.optionalAttrs (inputs ? variables) {
+          inherit (inputs) variables;
+        };
+        directArgs = lib.optionalAttrs (systemArgs ? libraries) {
           inherit (systemArgs) libraries;
-        });
+        } // lib.optionalAttrs (systemArgs ? variables) {
+          inherit (systemArgs) variables;
+        };
+      in baseArgs // inputArgs // directArgs;
     in {
       inherit lib nix-darwin home-manager nixpkgs;
       system = merged.system;
