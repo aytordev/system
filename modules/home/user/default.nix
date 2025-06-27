@@ -4,7 +4,7 @@
 # across different platforms. It handles user-specific settings, home directory structure,
 # and ensures consistent user environment setup.
 #
-# Maintainer: Aytor Vicente Martinez <me@aytor.dev>
+# Version: 2.0.0
 # Last Updated: 2025-06-23
 {
   config,
