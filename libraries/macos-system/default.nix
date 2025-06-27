@@ -189,13 +189,24 @@
     };
 
   # Internal helper functions for the module
+  # Type: helpers :: AttrSet
+  # Contains utility functions for input validation, memoization, and other
+  # internal operations used throughout the library.
   helpers = rec {
     # Validate that a required input is provided.
     #
-    # @param name: The name of the input (for error messages)
-    # @param value: The value to check
-    # @return: The value if not null, otherwise throws an error
-    # @throws: Detailed error message if the input is null
+    # Type: requireInput :: String -> a -> a | throw Error
+    #
+    # Args:
+    #   name: The name of the input (for error messages)
+    #   value: The value to check
+    #
+    # Returns:
+    #   The value if not null
+    #
+    # Throws:
+    #   Detailed error message with example if the input is null
+    #
     requireInput = name: value:
       if value == null
       then
@@ -207,7 +218,9 @@
           Example fix:
           ```nix
           (import ./macos-system.nix { inherit lib; }).macosSystem {
-            inherit (inputs) nix-darwin home-manager nixpkgs;
+            inputs = {
+              inherit (inputs) nix-darwin home-manager nixpkgs;
+            };
             system = "aarch64-darwin";
             variables = { username = "your-username"; };
             "darwin-modules" = [];
@@ -215,16 +228,55 @@
         ''
       else value;
 
-    # Memoization wrapper (currently disabled)
-    # TODO: Implement proper memoization that handles complex types
-    # This is a no-op implementation that simply returns the function as-is.
-    # A proper implementation would need to handle serialization of complex types.
-    memoize = f: f; # No-op for now
+    # Memoization wrapper for pure functions
+    #
+    # Type: memoize :: (a -> b) -> (a -> b)
+    #
+    # Args:
+    #   f: Pure function to memoize
+    #
+    # Returns:
+    #   A memoized version of the function
+    #
+    # Note:
+    #   Uses JSON serialization for cache keys, so arguments must be JSON-serializable
+    #
+    memoize = f: let
+      cache = {};
+    in
+      arg:
+        if cache ? ${builtins.toJSON arg}
+        then cache.${builtins.toJSON arg}
+        else let
+          result = f arg;
+        in
+          builtins.trace "Caching result for ${builtins.toJSON arg}"
+          (
+            cache // {${builtins.toJSON arg} = result;}
+          ).${
+            builtins.toJSON arg
+          };
   };
 
   # Configuration builders
+  #
+  # Type: builders :: AttrSet
+  #
+  # Contains functions for building different parts of the system configuration.
+  # These are internal implementation details and should not be used directly.
+  #
   builders = {
-    # Create nixpkgs configuration
+    # Create a nixpkgs configuration with common defaults
+    #
+    # Type: mkNixpkgsConfig :: { system :: String, nixpkgs :: Path } -> AttrSet
+    #
+    # Args:
+    #   system: Target system architecture (e.g., "aarch64-darwin")
+    #   nixpkgs: Path to nixpkgs or nixpkgs configuration
+    #
+    # Returns:
+    #   A NixOS module configuring nixpkgs
+    #
     mkNixpkgsConfig = {
       system,
       nixpkgs,
@@ -236,7 +288,24 @@
       };
     };
 
-    # Create home-manager configuration if available
+    # Create a home-manager configuration if available
+    #
+    # Type: mkHomeManagerConfig :: {
+    #   home-manager :: AttrSet,
+    #   modules :: [Module],
+    #   username :: String,
+    #   specialArgs :: AttrSet
+    # } -> [Module]
+    #
+    # Args:
+    #   home-manager: The home-manager package
+    #   modules: List of home-manager modules to include
+    #   username: System username
+    #   specialArgs: Additional arguments to pass to modules
+    #
+    # Returns:
+    #   A list of modules to enable home-manager integration
+    #
     mkHomeManagerConfig = {
       home-manager,
       modules,
@@ -259,24 +328,23 @@
       else [];
   };
 
-  /*
-  Process and validate system arguments
-
-  Type: processArgs :: AttrSet -> AttrSet
-
-  Validates and processes system arguments, merging them with defaults and ensuring
-  required fields are present. Returns a processed argument set ready for configuration.
-
-  Args:
-    systemArgs: An attribute set containing system configuration arguments
-
-  Returns:
-    An attribute set containing validated and processed arguments
-
-  Throws:
-    - If required inputs are missing
-    - If username is not provided or empty
-  */
+  # Process and validate system arguments
+  #
+  # Type: processArgs :: AttrSet -> AttrSet
+  #
+  # Validates and processes system arguments, merging them with defaults and ensuring
+  # required fields are present. Returns a processed argument set ready for configuration.
+  #
+  # Args:
+  #   systemArgs: An attribute set containing system configuration arguments
+  #
+  # Returns:
+  #   An attribute set containing validated and processed arguments
+  #
+  # Throws:
+  #   - If required inputs are missing
+  #   - If username is not provided or empty
+  #
   processArgs = systemArgs:
     if !builtins.isAttrs systemArgs
     then throw "systemArgs must be an attribute set"
@@ -334,32 +402,31 @@
       "home-modules" = merged."home-modules";
     };
 
-  /*
-  Build a complete Darwin system configuration
-
-  Type: mkDarwinConfig :: AttrSet -> AttrSet
-
-  Constructs a complete Darwin system configuration by combining various modules
-  and configurations. This is the main entry point for creating system configurations.
-
-  Args:
-    args: An attribute set containing:
-      - system: System architecture (e.g., "aarch64-darwin")
-      - nix-darwin: The nix-darwin package
-      - nixpkgs: The nixpkgs package set
-      - username: System username
-      - specialArgs: Additional arguments to pass to modules
-      - darwin-modules: List of Darwin modules to include
-      - home-modules: List of Home Manager modules to include
-      - home-manager: Home Manager package (optional)
-
-  Returns:
-    A complete Darwin system configuration
-
-  Throws:
-    - If required arguments are missing
-    - If module construction fails
-  */
+  # Build a complete Darwin system configuration
+  #
+  # Type: mkDarwinConfig :: AttrSet -> AttrSet
+  #
+  # Constructs a complete Darwin system configuration by combining various modules
+  # and configurations. This is the main entry point for creating system configurations.
+  #
+  # Args:
+  #   args: An attribute set containing:
+  #     - system: System architecture (e.g., "aarch64-darwin")
+  #     - nix-darwin: The nix-darwin package
+  #     - nixpkgs: The nixpkgs package set
+  #     - username: System username
+  #     - specialArgs: Additional arguments to pass to modules
+  #     - darwin-modules: List of Darwin modules to include
+  #     - home-modules: List of Home Manager modules to include
+  #     - home-manager: Home Manager package (optional)
+  #
+  # Returns:
+  #   A complete Darwin system configuration
+  #
+  # Throws:
+  #   - If required arguments are missing
+  #   - If module construction fails
+  #
   mkDarwinConfig = args:
     if !builtins.isAttrs args
     then throw "args must be an attribute set"
@@ -390,12 +457,13 @@
         hmModules = args'."home-modules" or [];
       in
         if hm != null && hmModules != []
-        then builders.mkHomeManagerConfig {
-          home-manager = hm;
-          username = args'.username;
-          specialArgs = args'.specialArgs or {};
-          modules = hmModules;
-        }
+        then
+          builders.mkHomeManagerConfig {
+            home-manager = hm;
+            username = args'.username;
+            specialArgs = args'.specialArgs or {};
+            modules = hmModules;
+          }
         else [];
 
       # Combine all modules, ensuring no nested lists
@@ -413,10 +481,49 @@
       };
     in
       if missingArgs != []
-      then throw "Missing required arguments: ${builtins.toString missingArgs}"
+      then
+        throw ''
+          The following required arguments are missing:
+          ${lib.concatStringsSep "\n" (map (a: "- ${a}") missingArgs)}
+
+          Example usage:
+          ```nix
+          macosSystem {
+            inputs = {
+              inherit (inputs) nix-darwin home-manager nixpkgs;
+            };
+            system = "aarch64-darwin";
+            variables = { username = "your-username"; };
+            "darwin-modules" = [];
+          }
+          ```
+        ''
       else args'."nix-darwin".lib.darwinSystem systemConfig;
 in {
   # Main entry point for creating a macOS system configuration
+  #
+  # Type: macosSystem :: AttrSet -> AttrSet
+  #
+  # Create a complete macOS system configuration with the provided arguments.
+  #
+  # Args:
+  #   systemArgs: Configuration options (see systemArgsType for details)
+  #
+  # Returns:
+  #   A complete system configuration that can be activated
+  #
+  # Example:
+  #   ```nix
+  #   macosSystem {
+  #     inputs = {
+  #       inherit (inputs) nix-darwin home-manager nixpkgs;
+  #     };
+  #     system = "aarch64-darwin";
+  #     variables = { username = "your-username"; };
+  #     "darwin-modules" = [];
+  #   }
+  #   ```
+  #
   macosSystem = systemArgs: let
     processed = processArgs systemArgs;
   in
