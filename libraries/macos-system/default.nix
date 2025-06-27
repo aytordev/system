@@ -283,12 +283,16 @@
       if merged.variables ? username && merged.variables.username != ""
       then merged.variables.username
       else throw "variables.username is required and cannot be empty";
+
+    # Prepare specialArgs, including any libraries from systemArgs
+    specialArgs = merged.specialArgs // (if systemArgs ? libraries then {
+      inherit (systemArgs) libraries;
+    } else {});
   in {
     inherit lib nix-darwin home-manager nixpkgs;
     system = merged.system;
-    inherit username;
+    inherit username specialArgs;
     variables = merged.variables;
-    specialArgs = merged.specialArgs;
     "darwin-modules" = merged."darwin-modules";
     "home-modules" = merged."home-modules";
   };
@@ -297,6 +301,9 @@
   mkDarwinConfig = args: let
     # Filter out the lib argument that might be passed by memoization
     filteredArgs = builtins.removeAttrs args ["lib"];
+
+    # Get specialArgs with fallback to empty set
+    specialArgs = filteredArgs.specialArgs or {};
 
     # Build the modules list
     modules =
@@ -310,13 +317,14 @@
       ++ (builders.mkHomeManagerConfig {
         home-manager = filteredArgs.home-manager or null;
         username = filteredArgs.username or "";
-        specialArgs = filteredArgs.specialArgs or {};
+        specialArgs = specialArgs;
         modules = filteredArgs."home-modules" or [];
       });
   in
     filteredArgs.nix-darwin.lib.darwinSystem {
-      inherit (filteredArgs) system specialArgs;
+      inherit (filteredArgs) system;
       inherit modules;
+      inherit specialArgs;
     };
 in {
   # Main entry point for creating a macOS system configuration

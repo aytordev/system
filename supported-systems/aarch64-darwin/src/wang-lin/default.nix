@@ -29,7 +29,7 @@
       (map libraries.relativeToRoot [
         # Common modules
         ## System modules
-        "modules/shared/nix/default.nix"
+        "modules/darwin/nix/default.nix"
         "modules/darwin/system/fonts/default.nix"
         "modules/darwin/system/interface/default.nix"
         "modules/darwin/system/input/default.nix"
