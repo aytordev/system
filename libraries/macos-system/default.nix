@@ -259,73 +259,162 @@
       else [];
   };
 
-  # Process and validate system arguments
-  processArgs = systemArgs: let
-    # Merge with defaults and validate
-    merged =
-      lib.recursiveUpdate {
+  /*
+  Process and validate system arguments
+
+  Type: processArgs :: AttrSet -> AttrSet
+
+  Validates and processes system arguments, merging them with defaults and ensuring
+  required fields are present. Returns a processed argument set ready for configuration.
+
+  Args:
+    systemArgs: An attribute set containing system configuration arguments
+
+  Returns:
+    An attribute set containing validated and processed arguments
+
+  Throws:
+    - If required inputs are missing
+    - If username is not provided or empty
+  */
+  processArgs = systemArgs:
+    if !builtins.isAttrs systemArgs
+    then throw "systemArgs must be an attribute set"
+    else let
+      # Default configuration values
+      defaults = {
         system = "aarch64-darwin";
         variables = {};
         specialArgs = {};
         "darwin-modules" = [];
         "home-modules" = [];
-      }
-      systemArgs;
+      };
 
-    # Extract and validate required inputs
-    inputs = merged.inputs or {};
-    nix-darwin = helpers.requireInput "nix-darwin" (inputs.nix-darwin or null);
-    nixpkgs = helpers.requireInput "nixpkgs" (inputs.nixpkgs or null);
-    home-manager = inputs.home-manager or null;
+      # Merge with user args
+      merged = defaults // systemArgs;
 
-    # Get username with validation
-    username =
-      if merged.variables ? username && merged.variables.username != ""
-      then merged.variables.username
-      else throw "variables.username is required and cannot be empty";
+      # Input validation
+      inputs = merged.inputs or {};
 
-    # Prepare specialArgs, including any libraries from systemArgs
-    specialArgs = merged.specialArgs // (if systemArgs ? libraries then {
-      inherit (systemArgs) libraries;
-    } else {});
-  in {
-    inherit lib nix-darwin home-manager nixpkgs;
-    system = merged.system;
-    inherit username specialArgs;
-    variables = merged.variables;
-    "darwin-modules" = merged."darwin-modules";
-    "home-modules" = merged."home-modules";
-  };
+      nix-darwin = helpers.requireInput "nix-darwin" (
+        inputs.nix-darwin or (throw "inputs.nix-darwin is required")
+      );
 
-  # Main configuration builder
-  mkDarwinConfig = args: let
-    # Filter out the lib argument that might be passed by memoization
-    filteredArgs = builtins.removeAttrs args ["lib"];
+      nixpkgs = helpers.requireInput "nixpkgs" (
+        inputs.nixpkgs or (throw "inputs.nixpkgs is required")
+      );
 
-    # Get specialArgs with fallback to empty set
-    specialArgs = filteredArgs.specialArgs or {};
+      home-manager = inputs.home-manager or null;
 
-    # Build the modules list
-    modules =
-      filteredArgs."darwin-modules" or []
-      ++ [
-        (builders.mkNixpkgsConfig {
-          inherit (filteredArgs) system;
-          nixpkgs = filteredArgs.nixpkgs;
+      # Validate username with better error message
+      username = let
+        user = merged.variables.username or "";
+      in
+        if user == ""
+        then throw "variables.username is required and cannot be empty. Please provide a username in your configuration."
+        else if !builtins.isString user
+        then throw "variables.username must be a string"
+        else user;
+
+      # Prepare special arguments, ensuring libraries are properly passed through
+      specialArgs =
+        (merged.specialArgs or {})
+        // (lib.optionalAttrs (inputs ? libraries) {
+          inherit (inputs) libraries;
         })
-      ]
-      ++ (builders.mkHomeManagerConfig {
-        home-manager = filteredArgs.home-manager or null;
-        username = filteredArgs.username or "";
-        specialArgs = specialArgs;
-        modules = filteredArgs."home-modules" or [];
-      });
-  in
-    filteredArgs.nix-darwin.lib.darwinSystem {
-      inherit (filteredArgs) system;
-      inherit modules;
-      inherit specialArgs;
+        // (lib.optionalAttrs (systemArgs ? libraries) {
+          inherit (systemArgs) libraries;
+        });
+    in {
+      inherit lib nix-darwin home-manager nixpkgs;
+      system = merged.system;
+      inherit username specialArgs;
+      variables = merged.variables;
+      "darwin-modules" = merged."darwin-modules";
+      "home-modules" = merged."home-modules";
     };
+
+  /*
+  Build a complete Darwin system configuration
+
+  Type: mkDarwinConfig :: AttrSet -> AttrSet
+
+  Constructs a complete Darwin system configuration by combining various modules
+  and configurations. This is the main entry point for creating system configurations.
+
+  Args:
+    args: An attribute set containing:
+      - system: System architecture (e.g., "aarch64-darwin")
+      - nix-darwin: The nix-darwin package
+      - nixpkgs: The nixpkgs package set
+      - username: System username
+      - specialArgs: Additional arguments to pass to modules
+      - darwin-modules: List of Darwin modules to include
+      - home-modules: List of Home Manager modules to include
+      - home-manager: Home Manager package (optional)
+
+  Returns:
+    A complete Darwin system configuration
+
+  Throws:
+    - If required arguments are missing
+    - If module construction fails
+  */
+  mkDarwinConfig = args:
+    if !builtins.isAttrs args
+    then throw "args must be an attribute set"
+    else let
+      # Remove lib to prevent conflicts with nix-darwin's lib
+      args' = builtins.removeAttrs args ["lib"];
+
+      # Validate required arguments
+      requiredArgs = ["system" "nix-darwin" "nixpkgs" "username"];
+      missingArgs = builtins.filter (a: !args'?${a}) requiredArgs;
+
+      throwIfMissing = arg:
+        if !args'?${arg}
+        then throw "Missing required argument: ${arg}"
+        else null;
+
+      _ = builtins.map throwIfMissing requiredArgs;
+
+      # Build nixpkgs configuration module
+      nixpkgsModule = builders.mkNixpkgsConfig {
+        system = args'.system;
+        nixpkgs = args'.nixpkgs;
+      };
+
+      # Build Home Manager configuration if available
+      homeManagerModules = let
+        hm = args'."home-manager" or null;
+        hmModules = args'."home-modules" or [];
+      in
+        if hm != null && hmModules != []
+        then builders.mkHomeManagerConfig {
+          home-manager = hm;
+          username = args'.username;
+          specialArgs = args'.specialArgs or {};
+          modules = hmModules;
+        }
+        else [];
+
+      # Combine all modules, ensuring no nested lists
+      modules = lib.lists.flatten [
+        (args'."darwin-modules" or [])
+        nixpkgsModule
+        homeManagerModules
+      ];
+
+      # Final system configuration
+      systemConfig = {
+        system = args'.system;
+        inherit modules;
+        specialArgs = args'.specialArgs or {};
+      };
+    in
+      if missingArgs != []
+      then throw "Missing required arguments: ${builtins.toString missingArgs}"
+      else args'."nix-darwin".lib.darwinSystem systemConfig;
 in {
   # Main entry point for creating a macOS system configuration
   macosSystem = systemArgs: let
