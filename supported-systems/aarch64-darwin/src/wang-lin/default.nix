@@ -38,30 +38,14 @@
         ## Tools
         "modules/darwin/tools/homebrew/default.nix"
 
-        # Host-specific system configuration
-        # "hosts/darwin-${name}/system.nix"
-
         # Secrets management
         # "secrets/darwin.nix"
       ])
       # Additional modules can be added here
-      ++ [
-        # System configuration
-        {
-          system.stateVersion = 6; # Match your nix-darwin version
-
-          # Set the hostname
-          system.networking.hostName = name;
-          system.networking.computerName = "Mac Studio M3 Ultra (2025)";
-          system.networking.localHostName = name;
-
-          # Set the primary user for user-specific configurations
-          system.primaryUser = variables.username;
-
-          # Configure Homebrew
-          tools.homebrew.enable = true;
-        }
-      ];
+      ++ (map libraries.relativeToRoot [
+        # Host-specific system configuration
+        "supported-systems/aarch64-darwin/src/wang-lin/system/default.nix"
+      ]);
 
     # User-level modules (Home Manager configuration)
     home-modules =
@@ -69,18 +53,13 @@
         # Common modules
         "modules/home/user/default.nix"
 
-        # Host-specific user configuration
-        "homes/aarch64-darwin/aytordev@wang-lin/default.nix"
-
         # Desktop environment
         # "home/darwin/desktop.nix"
       ])
-      ++ [
-        # User configuration
-        # {
-        #   home.homeDirectory = "/Users/aytordev";
-        # }
-      ];
+      ++ (map libraries.relativeToRoot [
+        # Host-specific user configuration
+        "homes/aarch64-darwin/aytordev@wang-lin/default.nix"
+      ]);
   };
 
   # Combine modules with all other arguments
