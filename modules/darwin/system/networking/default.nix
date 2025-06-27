@@ -131,15 +131,15 @@ in {
     # Apply DNS configuration
     networking.dns = config.system.networking.dns.servers;
 
-      # Apply firewall configuration
-      networking.applicationFirewall = {
-        enable = config.system.networking.firewall.enable;
-        blockAllIncoming = config.system.networking.firewall.blockAllIncoming;
-        enableStealthMode = config.system.networking.firewall.enableStealthMode;
-        # Logging is controlled by the system log level
-      };
+    # Apply firewall configuration
+    networking.applicationFirewall = {
+      enable = config.system.networking.firewall.enable;
+      blockAllIncoming = config.system.networking.firewall.blockAllIncoming;
+      enableStealthMode = config.system.networking.firewall.enableStealthMode;
+      # Logging is controlled by the system log level
+    };
 
-      # Note: Port-based firewall rules are not supported on Darwin
-      # Use application-level firewall rules or pf for advanced filtering
+    # Note: Port-based firewall rules are not supported on Darwin
+    # Use application-level firewall rules or pf for advanced filtering
   };
 }
