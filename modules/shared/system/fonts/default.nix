@@ -3,16 +3,14 @@
   lib,
   pkgs,
   ...
-}:
-
-let
+}: let
   inherit (lib) types mkOption;
 
   # Common fonts that should be available on all systems
   commonFonts = with pkgs; [
     # Desktop Fonts
-    corefonts  # MS fonts
-    b612  # High legibility
+    corefonts # MS fonts
+    b612 # High legibility
     material-icons
     material-design-icons
     work-sans
@@ -30,7 +28,6 @@ let
     monaspace
     nerd-fonts.symbols-only
   ];
-
 in {
   options.system.fonts = with types; {
     fonts = mkOption {
@@ -38,13 +35,13 @@ in {
       default = commonFonts;
       description = "List of font packages to install system-wide";
     };
-      
+
     default = mkOption {
       type = str;
       default = "MonaspaceNeon";
       description = "Default system font name";
     };
-      
+
     size = mkOption {
       type = addCheck int (n: n > 0);
       default = 13;

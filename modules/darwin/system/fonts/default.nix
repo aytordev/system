@@ -25,9 +25,7 @@
   pkgs,
   libraries,
   ...
-}:
-
-let
+}: let
   inherit (lib) types mkIf mkOption;
 
   # Import shared fonts module
@@ -35,9 +33,8 @@ let
 
   # Darwin-specific font configuration
   cfg = config.system.fonts;
-
 in {
-  imports = [ sharedFonts ];
+  imports = [sharedFonts];
 
   options.system.fonts = {
     # Font smoothing configuration for macOS
@@ -72,30 +69,39 @@ in {
 
     # Configure font smoothing if enabled
     system.defaults.NSGlobalDomain = mkIf (cfg.smoothing != null) {
-      AppleFontSmoothing = if cfg.smoothing.enable then cfg.smoothing.level else 0;
+      AppleFontSmoothing =
+        if cfg.smoothing.enable
+        then cfg.smoothing.level
+        else 0;
     };
 
     # Install fonts through homebrew for better macOS integration
     # homebrew.casks = [ "font-hack-nerd-font" "font-fira-code" ];
 
     # Add assertions for font smoothing configuration
-    assertions = (
-      if cfg.smoothing != null then [
-        {
-          assertion = cfg.smoothing.level >= 0 && cfg.smoothing.level <= 3;
-          message = "Font smoothing level must be between 0 and 3";
-        }
-      ] else []
-    ) ++ (
-      if cfg.smoothing != null && cfg.smoothing.enable then [
-        {
-          assertion = config.system.primaryUser != null;
-          message = ''
-            The option `system.fonts.smoothing.enable` requires `system.primaryUser` to be set.
-            Please set `system.primaryUser` to the name of the primary user.
-          '';
-        }
-      ] else []
-    );
+    assertions =
+      (
+        if cfg.smoothing != null
+        then [
+          {
+            assertion = cfg.smoothing.level >= 0 && cfg.smoothing.level <= 3;
+            message = "Font smoothing level must be between 0 and 3";
+          }
+        ]
+        else []
+      )
+      ++ (
+        if cfg.smoothing != null && cfg.smoothing.enable
+        then [
+          {
+            assertion = config.system.primaryUser != null;
+            message = ''
+              The option `system.fonts.smoothing.enable` requires `system.primaryUser` to be set.
+              Please set `system.primaryUser` to the name of the primary user.
+            '';
+          }
+        ]
+        else []
+      );
   };
 }

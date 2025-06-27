@@ -49,7 +49,11 @@
         # System configuration
         {
           system.stateVersion = 6; # Match your nix-darwin version
-          networking.hostName = name;
+
+          # Set the hostname
+          system.networking.hostName = name;
+          system.networking.computerName = "Mac Studio M3 Ultra (2025)";
+          system.networking.localHostName = name;
 
           # Set the primary user for user-specific configurations
           system.primaryUser = variables.username;

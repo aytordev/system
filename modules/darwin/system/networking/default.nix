@@ -1,16 +1,16 @@
 # System Networking Module for Darwin (macOS)
 #
-# Version: 2.2.0
-# Last Updated: 2025-06-15
+# Version: 3.0.0
+# Last Updated: 2025-06-27
 #
 # This module provides comprehensive networking configuration for Darwin systems,
 # including DNS settings, firewall configuration, and network service management.
 #
 # ## Features
 # - Configure system-wide DNS servers
-# - Manage firewall settings and rules
-# - Set up network services and interfaces
-# - Configure network time synchronization
+# - Modern application firewall configuration
+# - Network service management
+# - Network time synchronization
 #
 # ## Example Usage
 # ```nix
@@ -24,11 +24,11 @@
 #
 #     # Firewall configuration
 #     firewall = {
-#       globalState = 1;  # 1 = enabled
-#       enableLogging = false;
-#       stealthMode = false;
-#       allowedTCPPorts = [80 443];
-#       allowedUDPPorts = [53 123];
+#       enable = true;  # Enable the firewall
+#       blockAllIncoming = false;  # Block all incoming connections when true
+#       enableStealthMode = false;  # Enable stealth mode (no ICMP responses)
+#       allowedTCPPorts = [80 443];  # Allowed TCP ports
+#       allowedUDPPorts = [53 123];  # Allowed UDP ports
 #     };
 #
 #     # Network time synchronization
@@ -53,40 +53,38 @@ with lib; let
     "2606:4700:4700::1001" # Cloudflare Secondary (IPv6)
   ];
 
-  # Default firewall settings
-  #
-  # These settings provide a balanced approach between security and usability.
-  # The firewall is enabled by default but with logging disabled to reduce disk I/O.
-  defaultFirewallSettings = {
-    globalstate = 1; # 1 = enabled
-    loggingenabled = 0; # Disable logging by default
-    stealthenabled = 0; # Disable stealth mode by default
-  };
-
   # Type definitions for module options
   #
   # These types ensure type safety and provide documentation for the module's options.
   dnsServerType = types.listOf (types.strMatching "^[0-9a-fA-F:.]+$");
 
-  # Firewall state type:
-  # - 0: Disabled
-  # - 1: Enabled (default)
-  # - 2: Block all incoming connections
-  firewallStateType =
-    types.enum [0 1 2]
-    // {
-      description = "Firewall state (0=disabled, 1=enabled, 2=block all)";
-    };
+  # Hostname validation regex (RFC 1123)
+  hostnameType = types.strMatching "^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$";
 in {
   # Main module options
   #
   # These options are available under `system.networking` in the system configuration.
   options.system.networking = {
-    # Whether to enable the networking module
+    # Host Identification
     #
-    # Type: boolean
-    # Default: true
-    enable = mkEnableOption "system networking configuration";
+    # Configure system identification and naming.
+    hostName = mkOption {
+      type = types.nullOr hostnameType;
+      default = null;
+      description = "The hostname of the system (e.g., 'my-macbook')";
+    };
+
+    computerName = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "User-friendly computer name (e.g., 'My MacBook')";
+    };
+
+    localHostName = mkOption {
+      type = types.nullOr hostnameType;
+      default = null;
+      description = "Local (Bonjour) hostname (e.g., 'My-MacBook')";
+    };
 
     # DNS Configuration
     #
@@ -103,19 +101,19 @@ in {
     #
     # Controls the application firewall settings and rules.
     firewall = {
-      globalState = mkOption {
-        type = firewallStateType;
-        default = defaultFirewallSettings.globalstate;
-        description = "Firewall state (0=disabled, 1=enabled, 2=block all)";
-      };
-      enableLogging = mkOption {
+      enable = mkOption {
         type = types.bool;
-        default = defaultFirewallSettings.loggingenabled == 1;
-        description = "Whether to enable firewall logging";
+        default = true;
+        description = "Enable the application firewall";
+      };
+      blockAllIncoming = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Block all incoming connections";
       };
       enableStealthMode = mkOption {
         type = types.bool;
-        default = defaultFirewallSettings.stealthenabled == 1;
+        default = false;
         description = "Enable stealth mode (don't respond to ICMP pings)";
       };
     };
@@ -125,23 +123,23 @@ in {
     # Apply network services configuration
     networking.knownNetworkServices = ["Wi-Fi" "Ethernet"];
 
+    # Set host identification if specified
+    networking.computerName = mkIf (config.system.networking.computerName != null) config.system.networking.computerName;
+    networking.hostName = mkIf (config.system.networking.hostName != null) config.system.networking.hostName;
+    networking.localHostName = mkIf (config.system.networking.localHostName != null) config.system.networking.localHostName;
+
     # Apply DNS configuration
     networking.dns = config.system.networking.dns.servers;
 
     # Apply firewall configuration
-    system.defaults.alf = {
-      globalstate =
-        if config.system.networking.firewall.globalState == 1
-        then 1
-        else 0;
-      loggingenabled =
-        if config.system.networking.firewall.enableLogging
-        then 1
-        else 0;
-      stealthenabled =
-        if config.system.networking.firewall.enableStealthMode
-        then 1
-        else 0;
+    networking.applicationFirewall = {
+      enable = config.system.networking.firewall.enable;
+      blockAllIncoming = config.system.networking.firewall.blockAllIncoming;
+      enableStealthMode = config.system.networking.firewall.enableStealthMode;
+      # Logging is controlled by the system log level
     };
+
+    # Note: Port-based firewall rules are not supported on Darwin
+    # Use application-level firewall rules or pf for advanced filtering
   };
 }
