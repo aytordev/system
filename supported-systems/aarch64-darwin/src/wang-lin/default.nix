@@ -54,9 +54,6 @@
           # Set the primary user for user-specific configurations
           system.primaryUser = variables.username;
 
-          # Configure system fonts
-          system.fonts.enable = true;
-
           # Configure Homebrew
           tools.homebrew.enable = true;
         }
