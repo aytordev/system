@@ -27,6 +27,13 @@
   # The home directory for the account
   user.home = "/Users/aytordev";
 
+  # Enable and configure the home module
+  home.enable = true;
+  # The home files to manage
+  home.files = {};
+  # The XDG config files to manage
+  home.configs = {};
+
   # Example configurations (commented out for reference):
   # ====================================================
   #

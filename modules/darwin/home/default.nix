@@ -12,12 +12,14 @@
 }: {
   options = {
     home = {
-      enable = lib.mkEnableOption "home configuration" // {
-        description = ''
-          Whether to enable home configuration management.
-          When enabled, manages user configuration files and XDG configs.
-        '';
-      };
+      enable =
+        lib.mkEnableOption "home configuration"
+        // {
+          description = ''
+            Whether to enable home configuration management.
+            When enabled, manages user configuration files and XDG configs.
+          '';
+        };
 
       # User's home files
       #
@@ -82,24 +84,30 @@
 
   config = lib.mkIf config.home.enable (lib.mkMerge [
     # Enable XDG by default for better organization
-    { xdg.enable = true; }
+    {xdg.enable = true;}
 
     # Handle home files
     (lib.mkIf (config.home.files != {}) {
-      home.file = lib.mapAttrs' (name: value: 
-        lib.nameValuePair name { inherit (value) source; }
-      ) config.home.files;
+      home.file =
+        lib.mapAttrs' (
+          name: value:
+            lib.nameValuePair name {inherit (value) source;}
+        )
+        config.home.files;
     })
 
     # Handle XDG config files with either source or text content
     (lib.mkIf (config.home.configs != {}) {
-      xdg.configFile = lib.mapAttrs' (name: value: 
-        lib.nameValuePair name (
-          if value.source != null
-          then { source = value.source; }
-          else { text = value.text; }
+      xdg.configFile =
+        lib.mapAttrs' (
+          name: value:
+            lib.nameValuePair name (
+              if value.source != null
+              then {source = value.source;}
+              else {text = value.text;}
+            )
         )
-      ) config.home.configs;
+        config.home.configs;
     })
   ]);
 }
