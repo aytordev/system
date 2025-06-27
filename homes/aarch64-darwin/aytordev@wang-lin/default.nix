@@ -6,8 +6,8 @@
 # This configuration is specific to Darwin (macOS) systems and includes packages and settings
 # that should only apply to this user on this specific host.
 #
-# Maintainer: Aytor Vicente Martinez <me@aytor.dev>
-# Last Updated: 2025-06-23
+# Version: 2.0.1
+# Last Updated: 2025-06-23fa
 {
   config,
   lib,
@@ -21,11 +21,11 @@
   home.stateVersion = "25.11";
 
   # Enable and configure the user module
-  user = {
-    enable = true;
-    name = "aytordev";
-    home = "/Users/aytordev";
-  };
+  user.enable = true;
+  # The username for the account
+  user.name = "aytordev";
+  # The home directory for the account
+  user.home = "/Users/aytordev";
 
   # Example configurations (commented out for reference):
   # ====================================================
