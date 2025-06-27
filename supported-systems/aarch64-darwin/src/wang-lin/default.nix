@@ -52,6 +52,7 @@
       (map libraries.relativeToRoot [
         # Common modules
         "modules/home/user/default.nix"
+        "modules/darwin/home/default.nix"
 
         # Desktop environment
         # "home/darwin/desktop.nix"
