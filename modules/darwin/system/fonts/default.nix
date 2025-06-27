@@ -76,7 +76,7 @@ in {
     };
 
     # Install fonts through homebrew for better macOS integration
-    homebrew.casks = [ "font-hack-nerd-font" "font-fira-code" ];
+    # homebrew.casks = [ "font-hack-nerd-font" "font-fira-code" ];
 
     # Add assertions for font smoothing configuration
     assertions = (
