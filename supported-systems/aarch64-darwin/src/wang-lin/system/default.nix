@@ -3,8 +3,11 @@
 # This file defines host-specific module configurations for the wang-lin system.
 # It serves as a central place to manage and organize all module configurations
 # specific to this host.
-
-{lib, variables, ...}: {
+{
+  lib,
+  variables,
+  ...
+}: {
   # Add any host-specific module configurations here
   # This is a good place to set default values or overrides for modules
   # that are specific to this host.

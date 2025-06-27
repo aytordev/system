@@ -53,15 +53,13 @@
         # Common modules
         "modules/home/user/default.nix"
 
-
-
         # Desktop environment
         # "home/darwin/desktop.nix"
       ])
       ++ (map libraries.relativeToRoot [
         # Host-specific user configuration
-        "homes/aarch64-darwin/aytordev@wang-lin/default.nix"      
-        ]);
+        "homes/aarch64-darwin/aytordev@wang-lin/default.nix"
+      ]);
   };
 
   # Combine modules with all other arguments
@@ -69,9 +67,9 @@
     modules
     // args # This includes all the original arguments like variables, lib, etc.
     // {
-    # Add any additional arguments needed by modules
-    hostName = name;
-  };
+      # Add any additional arguments needed by modules
+      hostName = name;
+    };
 in {
   # The final darwin configuration for this host
   darwinConfigurations.${name} = libraries.macosSystem systemArgs;
