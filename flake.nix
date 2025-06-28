@@ -97,5 +97,22 @@
     # Development & Tooling
     # =========================================================================
     # Note: Haumea was removed in favor of native Nix module loading
+
+    # =========================================================================
+    # Secrets
+    # =========================================================================
+    # secrets: Is a private repository that contains secrets
+    secrets.url = "git+ssh://git@github.com/aytordev/secrets.git?shallow=1";
+    secrets.flake = false;
+
+    # =========================================================================
+    # Security
+    # =========================================================================
+    # sops-nix: Manage secrets using SOPS
+    sops-nix = {
+      url = "github:mic92/sops-nix";
+      # Use unstable nixpkgs for sops-nix
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 }
