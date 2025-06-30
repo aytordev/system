@@ -1,12 +1,14 @@
-# Variables del sistema
-# Este archivo reexporta las variables desde el directorio de secrets
+# System Variables
+# This file re-exports variables from the secrets directory
+# These variables are used throughout the system configuration
+
 {
   lib,
   inputs,
   ...
 } @ args: {
-  # Reexportar los valores relevantes
-  username = inputs.secrets.username;
-  userfullname = inputs.secrets.userfullname;
-  useremail = inputs.secrets.useremail;
+  # User information from secrets
+  username = inputs.secrets.username;    # System username
+  userfullname = inputs.secrets.userfullname;  # User's full name
+  useremail = inputs.secrets.useremail;  # User's email address
 }
