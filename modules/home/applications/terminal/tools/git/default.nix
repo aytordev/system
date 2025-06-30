@@ -12,6 +12,9 @@ let
   # Import git ignore patterns
   ignores = import ./git-ignore.nix;
 
+  # Import shell aliases
+  shell-aliases = import ./shell-aliases.nix { inherit config lib pkgs; };
+
   # Common Git packages
   gitPackages = with pkgs; [
     git-absorb
@@ -48,5 +51,6 @@ in {
   config = mkIf cfg.enable {
     home.packages = gitPackages;
     programs.git = gitConfig;
+    home.shellAliases = shell-aliases;
   };
 }
