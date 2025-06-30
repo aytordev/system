@@ -6,6 +6,9 @@ let
 
   cfg = config.applications.terminal.tools.git;
 
+  # Import aliases submodule
+  aliases = import ./aliases.nix { inherit lib; };
+
   # Common Git packages
   gitPackages = with pkgs; [
     git-absorb
@@ -23,6 +26,9 @@ let
     enable = true;
     package = pkgs.gitFull;
 
+    # Import aliases directly
+    aliases = aliases;
+
     userName = inputs.secrets.username;
     userEmail = inputs.secrets.useremail;
   };
@@ -35,8 +41,6 @@ in {
   config = mkIf cfg.enable {
     home.packages = gitPackages;
     
-    programs = {
-      git = gitConfig;
-    };
+    programs.git = gitConfig;
   };
 }
