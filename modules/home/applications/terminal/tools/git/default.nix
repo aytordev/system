@@ -1,19 +1,23 @@
 # Git configuration module
-{ config, lib, pkgs, inputs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}: let
   inherit (lib) mkEnableOption mkIf;
 
   cfg = config.applications.terminal.tools.git;
 
   # Import submodules
-  aliases = import ./aliases.nix { inherit lib; };
-  
+  aliases = import ./aliases.nix {inherit lib;};
+
   # Import git ignore patterns
   ignores = import ./git-ignore.nix;
 
   # Import shell aliases
-  shell-aliases = import ./shell-aliases.nix { inherit config lib pkgs; };
+  shell-aliases = import ./shell-aliases.nix {inherit config lib pkgs;};
 
   # Common Git packages
   gitPackages = with pkgs; [
@@ -42,7 +46,6 @@ let
     userName = inputs.secrets.username;
     userEmail = inputs.secrets.useremail;
   };
-
 in {
   options.applications.terminal.tools.git = {
     enable = mkEnableOption "Git configuration";
