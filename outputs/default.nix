@@ -70,13 +70,14 @@
   # - libraries: Project-specific libraries
   # - genSpecialArgs: Function to generate system-specific arguments
   args = {
-    inherit 
-      inputs 
-      lib 
-      libraries 
+    inherit
+      inputs
+      lib
+      libraries
       # variables # Remove if not needed
-      genSpecialArgs;
-    };
+      genSpecialArgs
+      ;
+  };
 
   # Import system-specific configurations
   # Each system has its own directory under supported-systems/
