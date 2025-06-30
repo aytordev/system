@@ -7,7 +7,7 @@
 # Version: 2.0.1
 # Last Modified: 2025-06-11
 #
-{lib, ...}: let
+{lib, inputs, ...}: let
   # Type Definitions
   # ===============
   #
@@ -109,25 +109,6 @@
             example = "aarch64-darwin";
           };
 
-          # User variables and settings
-          variables = lib.mkOption {
-            type = lib.types.attrsOf lib.types.anything;
-            default = {};
-            description = ''
-              User-defined variables that will be available in all modules.
-              Must include at least a 'username' field for home-manager.
-
-              Example:
-              ```nix
-              variables = {
-                username = "johndoe";
-                fullName = "John Doe";
-                email = "john@example.com";
-              };
-              ```
-            '';
-          };
-
           # nix-darwin modules
           "darwin-modules" = lib.mkOption {
             type = lib.types.listOf lib.types.anything;
@@ -174,7 +155,7 @@
             default = {};
             description = ''
               Additional arguments to make available in all modules.
-              These will be merged with the default special arguments.
+              These will be merged with the default special arguments, including inputs.secrets.
 
               Example:
               ```nix
@@ -362,7 +343,7 @@
       merged = defaults // systemArgs;
 
       # Input validation
-      inputs = merged.inputs or {};
+      inputs = systemArgs.inputs or (throw "systemArgs.inputs is required");
 
       nix-darwin = helpers.requireInput "nix-darwin" (
         inputs.nix-darwin or (throw "inputs.nix-darwin is required")
@@ -374,32 +355,26 @@
 
       home-manager = inputs.home-manager or null;
 
-      # Validate username with better error message
+      # Validate username from secrets
       username = let
-        user = merged.variables.username or "";
+        user = inputs.secrets.username or "";
       in
         if user == ""
-        then throw "variables.username is required and cannot be empty. Please provide a username in your configuration."
+        then throw "inputs.secrets.username is required and cannot be empty. Please provide a username in your configuration."
         else if !builtins.isString user
-        then throw "variables.username must be a string"
+        then throw "inputs.secrets.username must be a string"
         else user;
 
-      # Prepare special arguments, ensuring both libraries and variables are properly passed through
+      # Prepare special arguments, ensuring libraries are properly passed through
       specialArgs = let
         baseArgs = merged.specialArgs or {};
         inputArgs =
           lib.optionalAttrs (inputs ? libraries) {
             inherit (inputs) libraries;
-          }
-          // lib.optionalAttrs (inputs ? variables) {
-            inherit (inputs) variables;
           };
         directArgs =
           lib.optionalAttrs (systemArgs ? libraries) {
             inherit (systemArgs) libraries;
-          }
-          // lib.optionalAttrs (systemArgs ? variables) {
-            inherit (systemArgs) variables;
           };
       in
         baseArgs // inputArgs // directArgs;
@@ -488,6 +463,7 @@
         system = args'.system;
         inherit modules;
         specialArgs = args'.specialArgs or {};
+        inputs = args.inputs;
       };
     in
       if missingArgs != []
@@ -535,9 +511,17 @@ in {
   #   ```
   #
   macosSystem = systemArgs: let
+    inputs = systemArgs.inputs or (throw "systemArgs.inputs is required");
     processed = processArgs systemArgs;
   in
-    mkDarwinConfig processed;
+    mkDarwinConfig {
+      inherit (processed) lib system username specialArgs;
+      variables = processed.variables;
+      "darwin-modules" = processed."darwin-modules";
+      "home-modules" = processed."home-modules";
+      inherit (inputs) nix-darwin nixpkgs home-manager;
+      inputs = inputs;
+    };
 
   # Internal API for testing and advanced use
   _internal = {

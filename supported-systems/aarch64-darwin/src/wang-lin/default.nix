@@ -13,7 +13,6 @@
   inputs,
   lib,
   libraries,
-  variables,
   system,
   genSpecialArgs,
   ...
