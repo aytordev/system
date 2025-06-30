@@ -6,8 +6,11 @@ let
 
   cfg = config.applications.terminal.tools.git;
 
-  # Import aliases submodule
+  # Import submodules
   aliases = import ./aliases.nix { inherit lib; };
+  
+  # Import git ignore patterns
+  ignores = import ./git-ignore.nix;
 
   # Common Git packages
   gitPackages = with pkgs; [
@@ -29,6 +32,10 @@ let
     # Import aliases directly
     aliases = aliases;
 
+    # Include git ignore patterns
+    ignores = ignores;
+
+    # User configuration
     userName = inputs.secrets.username;
     userEmail = inputs.secrets.useremail;
   };
@@ -40,7 +47,6 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = gitPackages;
-    
     programs.git = gitConfig;
   };
 }
