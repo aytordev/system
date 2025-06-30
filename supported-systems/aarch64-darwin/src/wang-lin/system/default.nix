@@ -5,7 +5,7 @@
 # specific to this host.
 {
   lib,
-  variables,
+  inputs,
   ...
 }: {
   # Add any host-specific module configurations here
@@ -20,7 +20,7 @@
   system.networking.localHostName = "wang-lin";
 
   # Set the primary user for user-specific configurations
-  system.primaryUser = variables.username;
+  system.primaryUser = inputs.secrets.username;
 
   # Configure Homebrew
   tools.homebrew.enable = true;

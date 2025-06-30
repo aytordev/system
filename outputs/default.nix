@@ -37,7 +37,7 @@
   # Import project-specific variables
   # Type: AttrSet
   # Contains custom variables and constants
-  variables = import ../variables {inherit lib inputs;};
+  # variables = import ../variables {inherit lib inputs;};
   #############################################################################
   # System Configuration
   #############################################################################
@@ -47,7 +47,7 @@
   genSpecialArgs = system:
     inputs
     // {
-      inherit libraries variables;
+      inherit libraries;
 
       # use unstable branch for some packages to get the latest updates
       pkgs-unstable = import inputs.nixpkgs-unstable {
@@ -69,7 +69,15 @@
   # - lib: Nixpkgs library functions
   # - libraries: Project-specific libraries
   # - genSpecialArgs: Function to generate system-specific arguments
-  args = {inherit inputs lib libraries variables genSpecialArgs;};
+  args = {
+    inherit
+      inputs
+      lib
+      libraries
+      # variables # Remove if not needed
+      genSpecialArgs
+      ;
+  };
 
   # Import system-specific configurations
   # Each system has its own directory under supported-systems/
