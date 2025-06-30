@@ -174,6 +174,40 @@
   # Contains utility functions for input validation, memoization, and other
   # internal operations used throughout the library.
   helpers = rec {
+    # Format error messages consistently
+    # Type: formatError :: { what :: String, why :: String, howToFix :: String } -> String
+    formatError = { what, why, howToFix }:
+      ''
+        Configuration error: ${what}
+        - Reason: ${why}
+        
+        How to fix:
+        ${howToFix}
+      '';
+
+    # Validate required inputs with a single error message
+    # Type: validateRequiredInputs :: { inputs :: AttrSet, required :: [String] } -> AttrSet | throw Error
+    validateRequiredInputs = { inputs, required }:
+      let
+        missing = builtins.filter (name: !(inputs ? ${name})) required;
+      in
+        if missing == []
+        then inputs
+        else throw (formatError {
+          what = "Missing required inputs";
+          why = "The following required inputs are missing: ${toString missing}";
+          howToFix = ''
+            Ensure your configuration includes all required inputs:
+            ${lib.concatMapStringsSep "\n" (name: "- inputs.${name}") missing}
+            
+            Example:
+            ```nix
+            inputs = {
+              ${lib.concatMapStringsSep "\n  " (name: "${name} = inputs.${name};") required}
+            };
+            ```
+          '';
+        });
     # Validate that a required input is provided.
     #
     # Type: requireInput :: String -> a -> a | throw Error
@@ -341,26 +375,31 @@
 
       # Merge with user args
       merged = defaults // systemArgs;
-
-      # Input validation
+      
+      # Get inputs with validation
       inputs = systemArgs.inputs or (throw "systemArgs.inputs is required");
+      
+      # Validate required inputs
+      validatedInputs = helpers.validateRequiredInputs {
+        inherit inputs;
+        required = ["nix-darwin" "nixpkgs" "secrets"];
+      };
 
-      nix-darwin = helpers.requireInput "nix-darwin" (
-        inputs.nix-darwin or (throw "inputs.nix-darwin is required")
-      );
-
-      nixpkgs = helpers.requireInput "nixpkgs" (
-        inputs.nixpkgs or (throw "inputs.nixpkgs is required")
-      );
-
-      home-manager = inputs.home-manager or null;
+      # Extract validated inputs
+      nix-darwin = validatedInputs.nix-darwin;
+      nixpkgs = validatedInputs.nixpkgs;
+      home-manager = validatedInputs.home-manager or null;
 
       # Validate username from secrets
       username = let
-        user = inputs.secrets.username or "";
+        user = validatedInputs.secrets.username or "";
       in
         if user == ""
-        then throw "inputs.secrets.username is required and cannot be empty. Please provide a username in your configuration."
+        then throw (helpers.formatError {
+          what = "Missing username";
+          why = "inputs.secrets.username is required and cannot be empty";
+          howToFix = "Please provide a username in your configuration.";
+        })
         else if !builtins.isString user
         then throw "inputs.secrets.username must be a string"
         else user;
@@ -368,16 +407,13 @@
       # Prepare special arguments, ensuring libraries are properly passed through
       specialArgs = let
         baseArgs = merged.specialArgs or {};
-        inputArgs =
-          lib.optionalAttrs (inputs ? libraries) {
-            inherit (inputs) libraries;
-          };
-        directArgs =
-          lib.optionalAttrs (systemArgs ? libraries) {
-            inherit (systemArgs) libraries;
-          };
-      in
-        baseArgs // inputArgs // directArgs;
+        inputArgs = lib.optionalAttrs (inputs ? libraries) {
+          inherit (inputs) libraries;
+        };
+        directArgs = lib.optionalAttrs (systemArgs ? libraries) {
+          inherit (systemArgs) libraries;
+        };
+      in baseArgs // inputArgs // directArgs;
     in {
       inherit lib nix-darwin home-manager nixpkgs;
       system = merged.system;
@@ -422,13 +458,18 @@
       # Validate required arguments
       requiredArgs = ["system" "nix-darwin" "nixpkgs" "username"];
       missingArgs = builtins.filter (a: !args'?${a}) requiredArgs;
-
-      throwIfMissing = arg:
-        if !args'?${arg}
-        then throw "Missing required argument: ${arg}"
-        else null;
-
-      _ = builtins.map throwIfMissing requiredArgs;
+      
+      # Throw if any required args are missing
+      _ = if missingArgs != []
+          then throw (helpers.formatError {
+            what = "Missing required arguments";
+            why = "The following required arguments are missing: ${toString missingArgs}";
+            howToFix = ''
+              Ensure your configuration includes all required arguments:
+              ${lib.concatMapStringsSep "\n" (a: "- ${a}") missingArgs}
+            '';
+          })
+          else null;
 
       # Build nixpkgs configuration module
       nixpkgsModule = builders.mkNixpkgsConfig {
@@ -510,18 +551,21 @@ in {
   #   }
   #   ```
   #
-  macosSystem = systemArgs: let
-    inputs = systemArgs.inputs or (throw "systemArgs.inputs is required");
-    processed = processArgs systemArgs;
-  in
-    mkDarwinConfig {
-      inherit (processed) lib system username specialArgs;
-      variables = processed.variables;
-      "darwin-modules" = processed."darwin-modules";
-      "home-modules" = processed."home-modules";
-      inherit (inputs) nix-darwin nixpkgs home-manager;
-      inputs = inputs;
-    };
+  macosSystem = systemArgs:
+    let
+      # Centralized input validation
+      inputs = systemArgs.inputs or (throw "systemArgs.inputs is required");
+      
+      # Process and validate all arguments
+      processed = processArgs (systemArgs // { inherit inputs; });
+    in
+      mkDarwinConfig ({
+        inherit (processed) lib system username specialArgs variables;
+        "darwin-modules" = processed."darwin-modules";
+        "home-modules" = processed."home-modules";
+        inherit (inputs) nix-darwin nixpkgs home-manager;
+        inherit inputs;
+      } // (if processed ? home-manager then { inherit (processed) home-manager; } else {}));
 
   # Internal API for testing and advanced use
   _internal = {
