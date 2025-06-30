@@ -102,8 +102,7 @@
     # Secrets
     # =========================================================================
     # secrets: Is a private repository that contains secrets
-    secrets.url = "git+ssh://git@github.com/aytordev/secrets.git?shallow=1";
-    secrets.flake = false;
+    secrets.url = "git+ssh://git@github.com/aytordev/secrets.git?ref=main&shallow=1";
 
     # =========================================================================
     # Security

@@ -1,9 +1,11 @@
-# Variables imported from secrets
-{ lib, inputs, ... }@args: 
-let
-  # Import secrets with lib available
-  secrets = import inputs.secrets { inherit lib; };
-in {
-  # Expose the secrets
-  inherit (secrets.soft-secrets.personal) username userfullname useremail;
+# Variables del sistema
+# Este archivo reexporta las variables desde el directorio de secrets
+
+{ lib, inputs, ... } @args:
+
+{
+  # Reexportar los valores relevantes
+  username = inputs.secrets.username;
+  userfullname = inputs.secrets.userfullname;
+  useremail = inputs.secrets.useremail;
 }
