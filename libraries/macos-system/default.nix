@@ -237,7 +237,6 @@
               inherit (inputs) nix-darwin home-manager nixpkgs;
             };
             system = "aarch64-darwin";
-            variables = { username = "your-username"; };
             "darwin-modules" = [];
           }
         ''
@@ -367,7 +366,6 @@
       # Default configuration values
       defaults = {
         system = "aarch64-darwin";
-        variables = {};
         specialArgs = {};
         "darwin-modules" = [];
         "home-modules" = [];
@@ -418,7 +416,6 @@
       inherit lib nix-darwin home-manager nixpkgs;
       system = merged.system;
       inherit username specialArgs;
-      variables = merged.variables;
       "darwin-modules" = merged."darwin-modules";
       "home-modules" = merged."home-modules";
     };
@@ -520,7 +517,6 @@
               inherit (inputs) nix-darwin home-manager nixpkgs;
             };
             system = "aarch64-darwin";
-            variables = { username = "your-username"; };
             "darwin-modules" = [];
           }
           ```
@@ -546,7 +542,6 @@ in {
   #       inherit (inputs) nix-darwin home-manager nixpkgs;
   #     };
   #     system = "aarch64-darwin";
-  #     variables = { username = "your-username"; };
   #     "darwin-modules" = [];
   #   }
   #   ```
@@ -560,7 +555,7 @@ in {
       processed = processArgs (systemArgs // { inherit inputs; });
     in
       mkDarwinConfig ({
-        inherit (processed) lib system username specialArgs variables;
+        inherit (processed) lib system username specialArgs;
         "darwin-modules" = processed."darwin-modules";
         "home-modules" = processed."home-modules";
         inherit (inputs) nix-darwin nixpkgs home-manager;
