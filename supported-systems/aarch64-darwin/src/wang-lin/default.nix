@@ -36,6 +36,9 @@
 
         ## Tools
         "modules/darwin/tools/homebrew/default.nix"
+
+        ## Security
+        "modules/darwin/security/sops/default.nix"
       ])
       # Additional modules can be added here
       ++ (map libraries.relativeToRoot [
