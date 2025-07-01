@@ -36,9 +36,6 @@
 
         ## Tools
         "modules/darwin/tools/homebrew/default.nix"
-
-        # Secrets management
-        # "secrets/darwin.nix"
       ])
       # Additional modules can be added here
       ++ (map libraries.relativeToRoot [
@@ -53,8 +50,9 @@
         "modules/home/user/default.nix"
         "modules/darwin/home/default.nix"
 
-        # Desktop environment
-        # "home/darwin/desktop.nix"
+        # Applications
+        ## Terminal tools
+        "modules/home/applications/terminal/tools/git/default.nix"
       ])
       ++ (map libraries.relativeToRoot [
         # Host-specific user configuration

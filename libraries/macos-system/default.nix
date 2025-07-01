@@ -498,7 +498,12 @@
           builders.mkHomeManagerConfig {
             home-manager = hm;
             username = args'.username;
-            specialArgs = args'.specialArgs or {};
+            specialArgs =
+              (args'.specialArgs or {})
+              // {
+                # Asegurar que los inputs estén disponibles en los módulos de Home Manager
+                inherit (args') inputs;
+              };
             modules = hmModules;
           }
         else [];

@@ -11,6 +11,7 @@
 {
   config,
   lib,
+  inputs,
   ...
 }: {
   # Home Manager version compatibility
@@ -23,9 +24,9 @@
   # Enable and configure the user module
   user.enable = true;
   # The username for the account
-  user.name = "aytordev";
+  user.name = inputs.secrets.username;
   # The home directory for the account
-  user.home = "/Users/aytordev";
+  user.home = "/Users/${inputs.secrets.username}";
 
   # Enable and configure the home module
   home.enable = true;
@@ -33,6 +34,9 @@
   home.files = {};
   # The XDG config files to manage
   home.configs = {};
+
+  # Enable my git configuration
+  applications.terminal.tools.git.enable = true;
 
   # Example configurations (commented out for reference):
   # ====================================================
