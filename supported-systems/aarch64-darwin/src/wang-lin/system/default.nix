@@ -7,7 +7,9 @@
   lib,
   inputs,
   ...
-}: {
+}: let
+  sopsFolder = builtins.toString inputs.secrets + "/hard-secrets";
+in {
   # Add any host-specific module configurations here
   # This is a good place to set default values or overrides for modules
   # that are specific to this host.
@@ -23,5 +25,17 @@
   system.primaryUser = inputs.secrets.username;
 
   # Configure Homebrew
-  tools.homebrew.enable = true;
+  darwin.tools.homebrew.enable = true;
+
+  # Configure SOPS
+  darwin.security.sops.enable = true;
+  darwin.security.sops.defaultSopsFile = "${sopsFolder}/${inputs.secrets.username}.yaml";
+  darwin.security.sops.age.keyFile = "/Users/${inputs.secrets.username}/.config/sops/age/keys.txt";
+
+  darwin.security.sops.secrets.github_ssh_private_key = {
+    key = "github_ssh_private_key";
+    path = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
+    mode = "0600";
+    owner = "${inputs.secrets.username}";
+  };
 }

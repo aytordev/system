@@ -29,9 +29,9 @@
 }: let
   inherit (lib) mkEnableOption mkIf;
 
-  cfg = config.tools.homebrew;
+  cfg = config.darwin.tools.homebrew;
 in {
-  options.tools.homebrew = {
+  options.darwin.tools.homebrew = {
     enable = mkEnableOption "Homebrew package manager";
     # Note: Additional options can be added here following the pattern:
     # optionName = mkOption {
