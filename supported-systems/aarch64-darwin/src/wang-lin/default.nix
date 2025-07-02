@@ -26,22 +26,23 @@
     darwin-modules =
       # Convert relative paths to absolute paths using the project root
       (map libraries.relativeToRoot [
-        # Common modules
-        ## System modules
-        "modules/darwin/nix/default.nix"
-        "modules/darwin/system/fonts/default.nix"
-        "modules/darwin/system/interface/default.nix"
-        "modules/darwin/system/input/default.nix"
-        "modules/darwin/system/networking/default.nix"
+          # Common modules
+          ## System modules
+          "modules/darwin/nix/default.nix"
+          "modules/darwin/system/fonts/default.nix"
+          "modules/darwin/system/interface/default.nix"
+          "modules/darwin/system/input/default.nix"
+          "modules/darwin/system/networking/default.nix"
 
-        ## Tools
-        "modules/darwin/tools/homebrew/default.nix"
+          ## Tools
+          "modules/darwin/tools/homebrew/default.nix"
 
-        ## Security
-        "modules/darwin/security/sops/default.nix"
-      ] ++ [
-        inputs.sops-nix.darwinModules.sops
-      ])
+          ## Security
+          "modules/darwin/security/sops/default.nix"
+        ]
+        ++ [
+          inputs.sops-nix.darwinModules.sops
+        ])
       # Additional modules can be added here
       ++ (map libraries.relativeToRoot [
         # Host-specific system configuration

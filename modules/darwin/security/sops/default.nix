@@ -1,6 +1,10 @@
-{ config, lib, pkgs, inputs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}: let
   cfg = config.darwin.security.sops;
   inherit (lib) mkEnableOption mkOption types mkIf mkMerge;
   inherit (builtins) isString;
@@ -38,9 +42,7 @@ let
       };
     };
   };
-
-in
-{
+in {
   options.darwin.security.sops = {
     enable = mkEnableOption "SOPS secrets management";
 
@@ -78,7 +80,7 @@ in
       sops = {
         defaultSopsFile = cfg.defaultSopsFile;
         age.keyFile = cfg.age.keyFile;
-        
+
         # Disable SSH key checking
         gnupg.sshKeyPaths = [];
       };
@@ -86,17 +88,25 @@ in
 
     # Generate secrets configuration
     {
-      sops.secrets = lib.mapAttrs (name: secret:
-        if builtins.isString secret then {
-          sopsFile = cfg.defaultSopsFile;
-          key = name;
-          path = secret;
-        } else {
-          inherit (secret) path;
-          sopsFile = if secret.sopsFile != null then secret.sopsFile else cfg.defaultSopsFile;
-          inherit (secret) key mode owner group;
-        }
-      ) cfg.secrets;
+      sops.secrets =
+        lib.mapAttrs (
+          name: secret:
+            if builtins.isString secret
+            then {
+              sopsFile = cfg.defaultSopsFile;
+              key = name;
+              path = secret;
+            }
+            else {
+              inherit (secret) path;
+              sopsFile =
+                if secret.sopsFile != null
+                then secret.sopsFile
+                else cfg.defaultSopsFile;
+              inherit (secret) key mode owner group;
+            }
+        )
+        cfg.secrets;
     }
   ]);
 }

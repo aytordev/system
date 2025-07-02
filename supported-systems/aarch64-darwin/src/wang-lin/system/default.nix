@@ -9,8 +9,7 @@
   ...
 }: let
   sopsFolder = builtins.toString inputs.secrets + "/hard-secrets";
-in
-{
+in {
   # Add any host-specific module configurations here
   # This is a good place to set default values or overrides for modules
   # that are specific to this host.
