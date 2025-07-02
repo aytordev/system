@@ -39,6 +39,8 @@
 
         ## Security
         "modules/darwin/security/sops/default.nix"
+      ] ++ [
+        inputs.sops-nix.darwinModules.sops
       ])
       # Additional modules can be added here
       ++ (map libraries.relativeToRoot [
