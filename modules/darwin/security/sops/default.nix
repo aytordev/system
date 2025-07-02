@@ -74,7 +74,8 @@
   # Create a secret configuration from an attribute set (advanced case)
   mkAttrsSecret = name: secret: {
     inherit (secret) path key mode owner group;
-    sopsFile = if secret ? sopsFile && secret.sopsFile != null
+    sopsFile =
+      if secret ? sopsFile && secret.sopsFile != null
       then secret.sopsFile
       else cfg.defaultSopsFile;
   };
