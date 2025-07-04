@@ -120,12 +120,14 @@
   };
 in {
   options.applications.terminal.tools.git = {
-    enable = mkEnableOption "Git configuration" // {
-      description = ''
-        Whether to enable the Git configuration module.
-        This includes Git itself, common tools, and configuration.
-      '';
-    };
+    enable =
+      mkEnableOption "Git configuration"
+      // {
+        description = ''
+          Whether to enable the Git configuration module.
+          This includes Git itself, common tools, and configuration.
+        '';
+      };
 
     # SSH key used for commit/tag signing
     #
@@ -163,22 +165,23 @@ in {
   # Module implementation
   config = let
     cfg = config.applications.terminal.tools.git;
-  in lib.mkIf cfg.enable (lib.mkMerge [
-    # Base configuration
-    {
-      # Install Git packages
-      home.packages = gitPackages;
+  in
+    lib.mkIf cfg.enable (lib.mkMerge [
+      # Base configuration
+      {
+        # Install Git packages
+        home.packages = gitPackages;
 
-      # Main Git configuration
-      programs.git = gitConfig;
+        # Main Git configuration
+        programs.git = gitConfig;
 
-      # Shell aliases for Git
-      home.shellAliases = shell-aliases;
-    }
+        # Shell aliases for Git
+        home.shellAliases = shell-aliases;
+      }
 
-    # Mergiraf configuration (Git merge conflict resolution tool)
-    (lib.mkIf (lib.hasAttr "mergiraf" config.programs) {
-      programs.mergiraf.enable = true;
-    })
-  ]);
+      # Mergiraf configuration (Git merge conflict resolution tool)
+      (lib.mkIf (lib.hasAttr "mergiraf" config.programs) {
+        programs.mergiraf.enable = true;
+      })
+    ]);
 }
