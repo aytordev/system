@@ -71,11 +71,11 @@
     extraConfig.rerere.enabled = true;
     extraConfig.rebase.autostash = true;
     extraConfig.safe.directory = [
-              "~/${inputs.secrets.username}/"
-              "/etc/nixos"
-              "/etc/nix-darwin"
-            ];
-    
+      "~/${inputs.secrets.username}/"
+      "/etc/nixos"
+      "/etc/nix-darwin"
+    ];
+
     signing.key = cfg.signingKey;
     signing.format = "ssh";
     signing.signByDefault = cfg.signByDefault;
@@ -83,7 +83,7 @@
 in {
   options.applications.terminal.tools.git = {
     enable = mkEnableOption "Git configuration";
-    
+
     # Configurable signing key
     signingKey = mkOption {
       type = with lib.types; nullOr str;
@@ -102,10 +102,11 @@ in {
 
   config = let
     cfg = config.applications.terminal.tools.git;
-  in mkIf cfg.enable {
-    home.packages = gitPackages;
-    programs.git = gitConfig;
-    programs.mergiraf.enable = true;
-    home.shellAliases = shell-aliases;
-  };
+  in
+    mkIf cfg.enable {
+      home.packages = gitPackages;
+      programs.git = gitConfig;
+      programs.mergiraf.enable = true;
+      home.shellAliases = shell-aliases;
+    };
 }
