@@ -37,6 +37,8 @@
 
   # Enable my git configuration
   applications.terminal.tools.git.enable = true;
+  applications.terminal.tools.git.signingKey = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
+  
 
   # Example configurations (commented out for reference):
   # ====================================================
