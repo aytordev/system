@@ -177,11 +177,9 @@ in {
 
         # Shell aliases for Git
         home.shellAliases = shell-aliases;
-      }
 
-      # Mergiraf configuration (Git merge conflict resolution tool)
-      (lib.mkIf (lib.hasAttr "mergiraf" config.programs) {
+        # Mergiraf configuration (Git merge conflict resolution tool)
         programs.mergiraf.enable = true;
-      })
+      }
     ]);
 }
