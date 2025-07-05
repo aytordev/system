@@ -98,6 +98,9 @@
 
     # Additional Git configuration
     extraConfig.branch.sort = "-committerdate";
+    
+    # Set default editor to nano
+    extraConfig.core.editor = "nano";
     extraConfig.useHttpPath.enable = true;
     extraConfig.fetch.prune = true;
     extraConfig.init.defaultBranch = "main";
