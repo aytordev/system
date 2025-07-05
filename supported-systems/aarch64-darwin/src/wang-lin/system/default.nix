@@ -32,10 +32,8 @@ in {
   darwin.security.sops.defaultSopsFile = "${sopsFolder}/${inputs.secrets.username}.yaml";
   darwin.security.sops.age.keyFile = "/Users/${inputs.secrets.username}/.config/sops/age/keys.txt";
 
-  darwin.security.sops.secrets.github_ssh_private_key = {
-    key = "github_ssh_private_key";
-    path = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
-    mode = "0600";
-    owner = "${inputs.secrets.username}";
-  };
+  darwin.security.sops.secrets.github_ssh_private_key.key = "github_ssh_private_key";
+  darwin.security.sops.secrets.github_ssh_private_key.path = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
+  darwin.security.sops.secrets.github_ssh_private_key.mode = "0600";
+  darwin.security.sops.secrets.github_ssh_private_key.owner = "${inputs.secrets.username}";
 }
