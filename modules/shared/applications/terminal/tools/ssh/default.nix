@@ -7,8 +7,6 @@ let
   
 in {
   options.programs.terminal.tools.ssh = {
-    enable = mkEnableOption "SSH configuration and host management";
-    
     port = mkOption {
       type = types.port;
       default = 2222;
@@ -46,7 +44,7 @@ in {
     };
   };
   
-  config = lib.mkIf cfg.enable {
+  config = {
     programs.ssh = {
       enable = true;
       
