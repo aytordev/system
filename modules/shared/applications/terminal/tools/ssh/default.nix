@@ -3,10 +3,10 @@
 let
   inherit (lib) mkEnableOption mkOption types;
   
-  cfg = config.programs.terminal.tools.ssh;
+  cfg = config.applications.terminal.tools.ssh;
   
 in {
-  options.programs.terminal.tools.ssh = {
+  options.applications.terminal.tools.ssh = {
     port = mkOption {
       type = types.port;
       default = 2222;
@@ -45,9 +45,7 @@ in {
   };
   
   config = {
-    programs.ssh = {
-      enable = true;
-      
+    programs.ssh = {      
       extraConfig = ''
         # Default SSH configuration
         Host *

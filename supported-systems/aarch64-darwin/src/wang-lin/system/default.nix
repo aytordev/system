@@ -36,4 +36,8 @@ in {
   darwin.security.sops.secrets.github_ssh_private_key.path = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
   darwin.security.sops.secrets.github_ssh_private_key.mode = "0600";
   darwin.security.sops.secrets.github_ssh_private_key.owner = "${inputs.secrets.username}";
+
+  # SSH configuration
+  applications.terminal.tools.ssh.knownHosts."github".hostNames = [ "github.com" ];
+  applications.terminal.tools.ssh.knownHosts."github".publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
 }

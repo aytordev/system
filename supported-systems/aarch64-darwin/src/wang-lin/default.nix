@@ -39,6 +39,10 @@
 
           ## Security
           "modules/darwin/security/sops/default.nix"
+
+          # Applications
+          ## Terminal tools
+          "modules/darwin/applications/terminal/tools/ssh/default.nix"
         ]
         ++ [
           inputs.sops-nix.darwinModules.sops
