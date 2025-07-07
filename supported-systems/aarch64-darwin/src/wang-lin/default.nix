@@ -40,6 +40,9 @@
           ## Security
           "modules/darwin/security/sops/default.nix"
 
+          ## Services
+          "modules/darwin/services/openssh/default.nix"
+
           # Applications
           ## Terminal tools
           "modules/darwin/applications/terminal/tools/ssh/default.nix"
