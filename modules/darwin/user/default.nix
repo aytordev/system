@@ -1,8 +1,12 @@
-{ config, lib, pkgs, inputs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}: let
   inherit (lib) types mkEnableOption mkOption;
-  
+
   cfg = config.darwin.user;
 in {
   options.darwin.user = {
