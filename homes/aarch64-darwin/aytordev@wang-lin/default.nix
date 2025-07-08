@@ -39,6 +39,9 @@
   applications.terminal.tools.git.enable = true;
   applications.terminal.tools.git.signingKey = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
 
+  # Enable my zsh configuration
+  applications.terminal.shells.zsh.enable = true;
+
   # Example configurations (commented out for reference):
   # ====================================================
   #
