@@ -39,6 +39,7 @@
 
           ## Security
           "modules/darwin/security/sops/default.nix"
+          "modules/darwin/security/sudo/default.nix"
 
           ## Services
           "modules/darwin/services/openssh/default.nix"
