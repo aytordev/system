@@ -15,7 +15,7 @@ let
   osModule = import ./modules/os.nix { inherit lib; };
   gitModule = import ./modules/git.nix { inherit lib; };
   languagesModule = import ./modules/languages.nix { inherit lib; };
-  shellModule = import ./modules/shell.nix { inherit lib; };
+  shellModule = import ./modules/shell-module.nix { inherit lib; };
 
   # XDG Base Directory paths
   xdgConfigHome = "${config.xdg.configHome}";
