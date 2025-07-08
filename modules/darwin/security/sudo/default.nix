@@ -11,10 +11,7 @@
   lib,
   ...
 }:
-
-with lib;
-
-let
+with lib; let
   cfg = config.darwin.security.sudo;
 in {
   ####################################
@@ -41,7 +38,7 @@ in {
       sudo.extraConfig = ''
         # Set sudo timeout to 30 minutes (1800 seconds)
         Defaults timestamp_timeout=30
-        
+
         # Preserve environment variables (adjust as needed)
         Defaults env_keep += "HOME"
         Defaults env_keep += "PATH"

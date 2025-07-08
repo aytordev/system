@@ -1,10 +1,12 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkEnableOption mkIf mkOption types;
-  
+
   cfg = config.darwin.services.openssh;
-  
 in {
   options.darwin.services.openssh = {
     extraConfig = mkOption {
@@ -25,12 +27,12 @@ in {
 
   config = {
     # Add OpenSSH package to system packages
-    environment.systemPackages = [ pkgs.openssh ];
-    
+    environment.systemPackages = [pkgs.openssh];
+
     # Configure the OpenSSH service
     services.openssh = {
       enable = true;
-      
+
       # Append any additional configuration provided by the user
       extraConfig = cfg.extraConfig;
     };
