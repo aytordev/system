@@ -1,8 +1,10 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
   cfg = config.applications.terminal.shells.zsh;
 in {
   options.applications.terminal.shells.zsh = {
@@ -13,7 +15,7 @@ in {
     programs.zsh = {
       enable = true;
     };
-    
+
     # Required packages
     home.packages = with pkgs; [
       zsh
