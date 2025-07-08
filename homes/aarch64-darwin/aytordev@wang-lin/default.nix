@@ -42,6 +42,9 @@
   # Enable my zsh configuration
   applications.terminal.shells.zsh.enable = true;
 
+  # Enable my starship configuration
+  applications.terminal.tools.starship.enable = true;
+
   # Example configurations (commented out for reference):
   # ====================================================
   #
