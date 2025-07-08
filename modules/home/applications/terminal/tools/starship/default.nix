@@ -25,27 +25,29 @@ let
   # Starship configuration paths
   starshipConfigDir = "${xdgConfigHome}/starship";
   starshipConfigFile = "${starshipConfigDir}/config.toml";
+  starshipCacheDir = "${xdgCacheHome}/starship";
 
   # Base configuration
   baseConfig = {
     "$schema" = "https://starship.rs/config-schema.json";
-    format = """
-      [╭](bold overlay1)$username\
-      $directory\
-      $git_branch\
-      $git_status\
-      $c\
-      $rust\
-      $golang\
-      $nodejs\
-      $php\
-      $java\
-      $kotlin\
-      $haskell\
-      $python\
-      $lua\
-      $docker_context\
-      $line_break$character""";
+    format = ''
+      [╭](bold overlay1)'' + "$username" + ''
+      '' + "$directory" + ''
+      '' + "$git_branch" + ''
+      '' + "$git_status" + ''
+      '' + "$c" + ''
+      '' + "$rust" + ''
+      '' + "$golang" + ''
+      '' + "$nodejs" + ''
+      '' + "$php" + ''
+      '' + "$java" + ''
+      '' + "$kotlin" + ''
+      '' + "$haskell" + ''
+      '' + "$python" + ''
+      '' + "$lua" + ''
+      '' + "$docker_context" + ''
+      '' + "$line_break" + "$character" + ''
+    '';
   };
 
   # Merge all configurations using foldl and recursiveUpdate
@@ -77,13 +79,29 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
-      home.packages = [pkgs.starship];
+      # Create a wrapper script that strictly controls the Starship environment
+      home.packages = [
+        (pkgs.writeShellScriptBin "starship" ''
+          #!/bin/sh
+          # Strictly control the Starship environment
+          export STARSHIP_CONFIG="${starshipConfigFile}"
+          export STARSHIP_CONFIG_DIR="${starshipConfigDir}"
+          # Force disable all logging
+          unset STARSHIP_LOG
+          unset STARSHIP_CACHE
+          # Use a temporary directory in the user's cache
+          export TMPDIR="${config.xdg.cacheHome}/starship-tmp"
+          mkdir -p "$TMPDIR"
+          chmod 700 "$TMPDIR"
+          # Execute the real Starship binary with the clean environment
+          exec ${pkgs.starship}/bin/starship "$@"
+        '')
+      ];
 
       # Create Starship configuration directory and files
       xdg.configFile = {
-        # Main configuration file
-        "starship/config.toml".source =
-          pkgs.writeText "starship-config.toml" (builtins.toJSON cfg.settings);
+        # Main configuration file - using TOML format
+        "starship/config.toml".source = (pkgs.formats.toml { }).generate "starship-config" cfg.settings;
 
         # Directory for additional configuration files
         "starship/modules".source = lib.mkForce (pkgs.runCommand "starship-modules-dir" {} ''
@@ -92,17 +110,11 @@ in {
         '');
       };
 
-      # Set STARSHIP_CACHE and other environment variables according to XDG spec
-      home.sessionVariables = {
-        STARSHIP_CACHE = "${xdgCacheHome}/starship";
-        STARSHIP_CONFIG = "${starshipConfigFile}";
-        STARSHIP_CONFIG_DIR = "${starshipConfigDir}";
-      };
-
-      # Create cache directory
-      xdg.cacheFile."starship".source = lib.mkForce (pkgs.runCommand "starship-cache-dir" {} ''
-        mkdir -p $out
-      '');
+      # Ensure the temporary directory exists and has the right permissions
+      home.activation.createStarshipTmpDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        $DRY_RUN_CMD mkdir -p "${config.xdg.cacheHome}/starship-tmp"
+        $DRY_RUN_CMD chmod 700 "${config.xdg.cacheHome}/starship-tmp"
+      '';
     }
 
     (mkIf (cfg.enable && cfg.enableZshIntegration) {
