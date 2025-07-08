@@ -30,7 +30,7 @@ in {
     }
     
     (mkIf (cfg.enable && cfg.enableZshIntegration) {
-      programs.zsh.initExtra = ''
+      programs.zsh.initContent = ''
         # Initialize Starship
         eval "$(starship init zsh)"
       '';
