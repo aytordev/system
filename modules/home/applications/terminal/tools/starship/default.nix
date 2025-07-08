@@ -4,8 +4,18 @@
   pkgs,
   ...
 }:
-with lib; let
+
+with lib;
+
+let
   cfg = config.applications.terminal.tools.starship;
+
+  # Import modules
+  nordTheme = import ./themes/nord.nix { inherit lib; };
+  osModule = import ./modules/os.nix { inherit lib; };
+  gitModule = import ./modules/git.nix { inherit lib; };
+  languagesModule = import ./modules/languages.nix { inherit lib; };
+  shellModule = import ./modules/shell.nix { inherit lib; };
 
   # XDG Base Directory paths
   xdgConfigHome = "${config.xdg.configHome}";
@@ -15,6 +25,39 @@ with lib; let
   # Starship configuration paths
   starshipConfigDir = "${xdgConfigHome}/starship";
   starshipConfigFile = "${starshipConfigDir}/config.toml";
+
+  # Base configuration
+  baseConfig = {
+    "$schema" = "https://starship.rs/config-schema.json";
+    format = """
+      [╭](bold overlay1)$username\
+      $directory\
+      $git_branch\
+      $git_status\
+      $c\
+      $rust\
+      $golang\
+      $nodejs\
+      $php\
+      $java\
+      $kotlin\
+      $haskell\
+      $python\
+      $lua\
+      $docker_context\
+      $line_break$character""";
+  };
+
+  # Merge all configurations using foldl and recursiveUpdate
+  mergedConfig = lib.foldl lib.recursiveUpdate {} [
+    baseConfig
+    nordTheme
+    osModule
+    gitModule
+    languagesModule
+    shellModule
+  ];
+
 in {
   options.applications.terminal.tools.starship = {
     enable = mkEnableOption "Starship prompt";
@@ -27,7 +70,7 @@ in {
 
     settings = mkOption {
       type = types.attrs;
-      default = {};
+      default = mergedConfig;
       description = "Starship configuration options";
     };
   };
