@@ -44,6 +44,7 @@
 
   # Enable my starship configuration
   applications.terminal.tools.starship.enable = true;
+  applications.terminal.tools.starship.enableZshIntegration = true;
 
   # Example configurations (commented out for reference):
   # ====================================================
