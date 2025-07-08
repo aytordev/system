@@ -43,4 +43,11 @@ in {
 
   # Sudo configuration
   darwin.security.sudo.enable = true;
+
+  # User configuration
+  darwin.user.enable = true;
+  darwin.user.name = inputs.secrets.username;
+  darwin.user.email = inputs.secrets.useremail;
+  darwin.user.fullName = inputs.secrets.userfullname;
+  darwin.user.uid = 501;
 }

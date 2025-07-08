@@ -34,15 +34,18 @@
           "modules/darwin/system/input/default.nix"
           "modules/darwin/system/networking/default.nix"
 
-          ## Tools
-          "modules/darwin/tools/homebrew/default.nix"
-
           ## Security
           "modules/darwin/security/sops/default.nix"
           "modules/darwin/security/sudo/default.nix"
 
           ## Services
           "modules/darwin/services/openssh/default.nix"
+
+          ## Tools
+          "modules/darwin/tools/homebrew/default.nix"
+
+          ## User
+          "modules/darwin/user/default.nix"
 
           # Applications
           ## Terminal tools
