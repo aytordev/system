@@ -1,8 +1,8 @@
 {lib}: {
   directory = {
-    style = "fg:peach";
+    style = "fg:lavender";
     format = "[ $path ]($style)";
-    truncation_length = 3;
+    truncation_length = 4;
     truncation_symbol = "…/";
     substitutions = {
       "Documents" = "󰈙 ";
@@ -34,6 +34,6 @@
     format = ''
       [╰─$symbol](fg:overlay1) '';
     success_symbol = "[❯](fg:bold text)";
-    error_symbol = "[×](fg:bold red)";
+    error_symbol = "[×](fg:bold peach)";
   };
 }

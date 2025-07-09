@@ -7,8 +7,15 @@
 with lib; let
   cfg = config.applications.terminal.tools.starship;
 
+  # Import themes
+  themes = {
+    catppuccin-frappe = import ./themes/catppuccin-frappe.nix {inherit lib;};
+    catppuccin-latte = import ./themes/catppuccin-latte.nix {inherit lib;};
+    catppuccin-macchiato = import ./themes/catppuccin-macchiato.nix {inherit lib;};
+    catppuccin-mocha = import ./themes/catppuccin-mocha.nix {inherit lib;};
+  };
+
   # Import modules
-  nordTheme = import ./themes/nord.nix {inherit lib;};
   osModule = import ./modules/os.nix {inherit lib;};
   gitModule = import ./modules/git.nix {inherit lib;};
   languagesModule = import ./modules/languages.nix {inherit lib;};
@@ -84,7 +91,7 @@ with lib; let
   # Merge all configurations using foldl and recursiveUpdate
   mergedConfig = lib.foldl lib.recursiveUpdate {} [
     baseConfig
-    nordTheme
+    (themes.${cfg.theme} or themes.catppuccin-frappe)
     osModule
     gitModule
     languagesModule
@@ -93,6 +100,12 @@ with lib; let
 in {
   options.applications.terminal.tools.starship = {
     enable = mkEnableOption "Starship prompt";
+    
+    theme = mkOption {
+      type = types.enum ["catppuccin-frappe" "catppuccin-latte" "catppuccin-macchiato" "catppuccin-mocha"];
+      default = "catppuccin-frappe";
+      description = "Color theme to use for Starship prompt";
+    };
 
     enableZshIntegration = mkOption {
       type = types.bool;
