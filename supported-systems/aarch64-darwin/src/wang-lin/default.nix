@@ -70,6 +70,9 @@
         # Applications
         ## Terminal tools
         "modules/home/applications/terminal/tools/git/default.nix"
+        "modules/home/applications/terminal/tools/starship/default.nix"
+        ## Shells
+        "modules/home/applications/terminal/shells/zsh/default.nix"
       ])
       ++ (map libraries.relativeToRoot [
         # Host-specific user configuration

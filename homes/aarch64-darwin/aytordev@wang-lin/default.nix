@@ -39,6 +39,13 @@
   applications.terminal.tools.git.enable = true;
   applications.terminal.tools.git.signingKey = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
 
+  # Enable my zsh configuration
+  applications.terminal.shells.zsh.enable = true;
+
+  # Enable my starship configuration
+  applications.terminal.tools.starship.enable = true;
+  applications.terminal.tools.starship.enableZshIntegration = true;
+
   # Example configurations (commented out for reference):
   # ====================================================
   #
