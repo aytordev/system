@@ -34,6 +34,6 @@
     format = ''
       [╰─$symbol](fg:overlay1) '';
     success_symbol = "[❯](fg:bold text)";
-    error_symbol = "[✗](fg:bold red)";
+    error_symbol = "[×](fg:bold red)";
   };
 }
