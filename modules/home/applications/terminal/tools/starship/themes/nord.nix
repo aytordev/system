@@ -1,6 +1,4 @@
-{ lib }:
-
-{
+{lib}: {
   palette = "nord";
 
   palettes.nord = {

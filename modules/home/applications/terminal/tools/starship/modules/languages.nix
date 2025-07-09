@@ -1,9 +1,6 @@
-{ lib }:
-
-let
+{lib}: let
   langFormat = symbol: "[[ $symbol( $version) ](fg:teal)](fg:teal)";
-in
-{
+in {
   nodejs = {
     symbol = "";
     style = "fg:teal";

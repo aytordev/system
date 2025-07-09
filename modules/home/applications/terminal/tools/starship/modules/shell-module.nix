@@ -1,6 +1,4 @@
-{ lib }:
-
-{
+{lib}: {
   directory = {
     style = "fg:peach";
     format = "[ $path ]($style)";
@@ -35,7 +33,7 @@
   character = {
     format = ''
       [╰─$symbol](fg:overlay1) '';
-    success_symbol = "[](fg:bold text)";
-    error_symbol = "[×](fg:bold red)";
+    success_symbol = "[❯](fg:bold text)";
+    error_symbol = "[✗](fg:bold red)";
   };
 }

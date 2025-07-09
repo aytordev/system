@@ -1,6 +1,4 @@
-{ lib }:
-
-{
+{lib}: {
   os = {
     disabled = false;
     style = "fg:text";
