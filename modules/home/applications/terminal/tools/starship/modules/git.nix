@@ -1,6 +1,4 @@
-{ lib }:
-
-{
+{lib}: {
   git_branch = {
     symbol = "";
     style = "fg:teal";
