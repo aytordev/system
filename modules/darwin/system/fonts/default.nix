@@ -75,8 +75,8 @@ in {
         else 0;
     };
 
-    # Install fonts through homebrew for better macOS integration
-    # homebrew.casks = [ "font-hack-nerd-font" "font-fira-code" ];
+    # Install fonts directly from Nix packages
+    fonts.packages = lib.optionals (cfg != null && cfg.fonts != null) cfg.fonts;
 
     # Add assertions for font smoothing configuration
     assertions =
