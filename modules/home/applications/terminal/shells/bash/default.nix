@@ -192,12 +192,29 @@ in {
       home.activation.bashDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
         # Create XDG base directories
         $DRY_RUN_CMD mkdir -p "${xdgConfigHome}/bash/conf.d"
-        $DRY_RUN_CMD mkdir -p "${xdgDataHome}/bash"
+        $DRY_RUN_CMD mkdir -p "${xdgDataHome}/bash/sessions"  # Aseguramos que el directorio de sesiones exista
         $DRY_RUN_CMD mkdir -p "${xdgCacheHome}/bash"
         
         # Set secure permissions
         $DRY_RUN_CMD chmod 700 "${xdgConfigHome}/bash"
         $DRY_RUN_CMD chmod 700 "${xdgDataHome}/bash"
+        $DRY_RUN_CMD chmod 700 "${xdgDataHome}/bash/sessions"  # Aseguramos permisos correctos
+        
+        # Handle macOS Terminal.app session directory
+        if [ "$(uname -s)" = "Darwin" ]; then
+          OLD_SESSION_DIR="$HOME/.bash_sessions"
+          
+          # If old session dir exists and is not a symlink, back it up
+          if [ -d "$OLD_SESSION_DIR" ] && [ ! -L "$OLD_SESSION_DIR" ]; then
+            $DRY_RUN_CMD echo "Moving existing bash_sessions to XDG directory..."
+            $DRY_RUN_CMD mv "$OLD_SESSION_DIR" "$OLD_SESSION_DIR.bak"
+          fi
+          
+          # Create symlink if it doesn't exist
+          if [ ! -e "$OLD_SESSION_DIR" ]; then
+            $DRY_RUN_CMD ln -sf "${xdgDataHome}/bash/sessions" "$OLD_SESSION_DIR"
+          fi
+        fi
         $DRY_RUN_CMD chmod 700 "${xdgCacheHome}/bash"
         
         # Create a sample inputrc if it doesn't exist
