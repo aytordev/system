@@ -41,11 +41,7 @@ in {
           export BASH_CONFIG_DIR="$XDG_CONFIG_HOME/bash"
           export BASH_DATA_DIR="$XDG_DATA_HOME/bash"
           export BASH_CACHE_DIR="$XDG_CACHE_HOME/bash"
-          
-          # Ensure directories exist
-          mkdir -p "$BASH_CONFIG_DIR/conf.d"
-          mkdir -p "$BASH_DATA_DIR"
-          mkdir -p "$BASH_CACHE_DIR"
+          export BASH_SESSION_DIR="$BASH_DATA_DIR/sessions"
           
           # History configuration
           export HISTFILE="$BASH_DATA_DIR/history"
@@ -55,14 +51,7 @@ in {
           shopt -s histappend
           
           # Shell options
-          shopt -s checkwinsize
-          shopt -s extglob
-          shopt -s globstar
-          shopt -s checkjobs
-          shopt -s autocd
-          shopt -s cdspell
-          shopt -s dirspell
-          shopt -s nocaseglob
+          shopt -s checkwinsize extglob globstar checkjobs autocd cdspell dirspell nocaseglob
           
           # Set inputrc location
           export INPUTRC="$BASH_CONFIG_DIR/inputrc"
@@ -84,8 +73,9 @@ in {
             . ${pkgs.nix-bash-completions}/share/bash-completion/completions/nix
           
           # Git prompt
-          if [ -f ${pkgs.git}/share/git/contrib/completion/git-prompt.sh ]; then
-            . ${pkgs.git}/share/git/contrib/completion/git-prompt.sh
+          if command -v __git_ps1 >/dev/null 2>&1 || 
+             { [ -f ${pkgs.git}/share/git/contrib/completion/git-prompt.sh ] && 
+               . ${pkgs.git}/share/git/contrib/completion/git-prompt.sh; }; then
             GIT_PS1_SHOWDIRTYSTATE=1
             GIT_PS1_SHOWUNTRACKEDFILES=1
             PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1 " (%s)")\n\\$ '
@@ -94,14 +84,14 @@ in {
           fi
           
           # fzf configuration
-          if [ -n "$(command -v fzf)" ]; then
+          if command -v fzf >/dev/null 2>&1; then
             # Source fzf key bindings and completion
             for file in "${pkgs.fzf}/share/fzf/"{key-bindings,completion}.bash; do
               [ -f "$file" ] && . "$file"
             done
             
-            # Use fd for fzf
-            if [ -n "$(command -v fd)" ]; then
+            # Use fd for fzf if available
+            if command -v fd >/dev/null 2>&1; then
               export FZF_DEFAULT_COMMAND="fd --type f --hidden --exclude .git"
               
               _fzf_compgen_path() {
@@ -115,45 +105,26 @@ in {
           fi
           
           # zoxide initialization
-          if [ -n "$(command -v zoxide)" ]; then
+          if command -v zoxide >/dev/null 2>&1; then
             eval "$(zoxide init bash --cmd cd --no-aliases)"
           fi
           
           # Starship prompt
-          if [ -n "$(command -v starship)" ]; then
+          if command -v starship >/dev/null 2>&1; then
             export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"
             export STARSHIP_CACHE="$XDG_CACHE_HOME/starship"
-            mkdir -p "$STARSHIP_CACHE"
-            eval "$(starship init bash)"
+            eval "$(starship init bash 2>/dev/null)"  # Suppress error if starship fails
           fi
           
           # Source additional configs from conf.d if they exist
           for f in "$BASH_CONFIG_DIR/conf.d/"*.sh; do
             [ -f "$f" ] && . "$f"
           done
-
-          # Set BASH_SESSION_DIR for session files (macOS specific)
-          export BASH_SESSION_DIR="${xdgDataHome}/bash/sessions"
-          if [ ! -d "$BASH_SESSION_DIR" ]; then
-            mkdir -p "$BASH_SESSION_DIR"
-          fi
-        
+          
           # For macOS Terminal.app session restoration
           if [ "$(uname -s)" = "Darwin" ] && [ -n "$TERM_SESSION_ID" ]; then
-            # Define the old session directory path
-            local OLD_SESSION_DIR="$HOME/.bash_sessions"
-            
-            # Create a symlink from the old location to the new XDG location
-            if [ ! -L "$OLD_SESSION_DIR" ] && [ -d "$OLD_SESSION_DIR" ]; then
-              # Backup any existing session directory
-              echo "Moving existing bash_sessions to XDG directory"
-              mv "$OLD_SESSION_DIR" "$OLD_SESSION_DIR.bak"
-            fi
-            
-            # Create symlink if it doesn't exist
-            if [ ! -e "$OLD_SESSION_DIR" ]; then
-              ln -sf "$BASH_SESSION_DIR" "$OLD_SESSION_DIR"
-            fi
+            # Just ensure the symlink exists (handled by home.activation)
+            :
           fi
         '';
       };
