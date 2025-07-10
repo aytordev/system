@@ -1,5 +1,6 @@
 {lib}: {
   os = {
+    format = "[ [$symbol](fg:text) ]($style)";
     disabled = false;
     style = "fg:text";
     symbols = {
@@ -27,9 +28,9 @@
 
   username = {
     show_always = true;
-    style_user = "fg:sapphire";
-    style_root = "fg:sapphire";
-    format = "[ $user ]($style)";
+    style_user = "fg:mauve";
+    style_root = "fg:mauve";
+    format = "[$user]($style)";
   };
 
   localip = {

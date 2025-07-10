@@ -6,12 +6,12 @@
   };
 
   git_status = {
-    format = "[[($all_status$ahead_behind )](fg:green)]($style)";
-    ahead = "[⬆](bold purple)";
-    behind = "[⬇](bold purple)";
+    format = "[[($all_status$ahead_behind)](fg:green)]($style)";
+    ahead = "[⬆](bold sapphire)";
+    behind = "[⬇](bold sapphire)";
     staged = "[✚](green)";
     deleted = "[✖](red)";
-    renamed = "[➜](purple)";
+    renamed = "[➜](blue)";
     stashed = "[✭](cyan)";
     untracked = "[◼](white)";
     modified = "[✱](blue)";

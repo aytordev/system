@@ -37,6 +37,9 @@ with lib; let
     format =
       ''
         [╭](bold overlay1)''
+      + "$os"
+      + ''
+      ''
       + "$username"
       + ''
       ''
