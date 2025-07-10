@@ -1,12 +1,11 @@
-{lib}: {
+{lib}: { 
   git_branch = {
-    symbol = "";
-    style = "fg:teal";
-    format = "on [$symbol $branch(:$remote_branch)]($style)";
+    symbol = "🌿";
+    style = "fg:bold green";
+    format = "on [$symbol $branch(:$remote_branch) ]($style)";
   };
 
   git_status = {
-    style = "fg:teal";
     format = "[[($all_status$ahead_behind )](fg:green)]($style)";
     ahead = "[⬆](bold purple)";
     behind = "[⬇](bold purple)";
