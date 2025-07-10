@@ -19,47 +19,58 @@ in {
       home.packages = with pkgs; [
         bash-completion
         nix-bash-completions
+        # Add bash here since we're not using programs.bash.enable
+        bash
       ];
       
-      # Enable fzf (configured in tools/fzf)
-
-      programs.bash = {
-        enable = true;
-        enableCompletion = true;
-        enableVteIntegration = true;
-
-        # XDG Base Directory compliance
-        profileExtra = ''
+      # Disable the default bash module to prevent it from generating .bashrc
+      programs.bash.enable = false;
+      
+      # Create the main .bashrc file in XDG config with all configurations
+      home.file.".config/bash/.bashrc" = {
+        text = ''
+          # This file is managed by NixOS/Home Manager
+          # All Bash configuration is centralized here for XDG compliance
+          
           # Set up XDG directories
           export XDG_CONFIG_HOME="${xdgConfigHome}"
           export XDG_DATA_HOME="${xdgDataHome}"
           export XDG_CACHE_HOME="${xdgCacheHome}"
           
+          # Set up Bash specific directories
+          export BASH_CONFIG_DIR="$XDG_CONFIG_HOME/bash"
+          export BASH_DATA_DIR="$XDG_DATA_HOME/bash"
+          export BASH_CACHE_DIR="$XDG_CACHE_HOME/bash"
+          
           # Ensure directories exist
-          mkdir -p "$XDG_CACHE_HOME/bash"
-          mkdir -p "$XDG_DATA_HOME/bash"
+          mkdir -p "$BASH_CONFIG_DIR/conf.d"
+          mkdir -p "$BASH_DATA_DIR"
+          mkdir -p "$BASH_CACHE_DIR"
           
-          # Set history file location
-          export HISTFILE="$XDG_DATA_HOME/bash/history"
+          # History configuration
+          export HISTFILE="$BASH_DATA_DIR/history"
           export HISTSIZE=10000
-          export HISTFILESIZE=10000
+          export HISTFILESIZE=100000
           export HISTCONTROL=ignoredups:erasedups
-          
-          # Append to history file, don't overwrite it
           shopt -s histappend
           
-          # Update LINES and COLUMNS after each command
+          # Shell options
           shopt -s checkwinsize
-        '';
-
-        # Shell options and completions
-        bashrcExtra = ''
-          # Source system-wide bashrc if it exists
-          if [ -f /etc/bashrc ]; then
-            . /etc/bashrc
-          fi
+          shopt -s extglob
+          shopt -s globstar
+          shopt -s checkjobs
+          shopt -s autocd
+          shopt -s cdspell
+          shopt -s dirspell
+          shopt -s nocaseglob
           
-          # Enable programmable completion features
+          # Set inputrc location
+          export INPUTRC="$BASH_CONFIG_DIR/inputrc"
+          
+          # Source system-wide bashrc if it exists
+          [ -f /etc/bashrc ] && . /etc/bashrc
+          
+          # Enable programmable completion
           if ! shopt -oq posix; then
             if [ -f /usr/share/bash-completion/bash_completion ]; then
               . /usr/share/bash-completion/bash_completion
@@ -69,11 +80,10 @@ in {
           fi
           
           # Load nix completions
-          if [ -f ${pkgs.nix-bash-completions}/share/bash-completion/completions/nix ]; then
+          [ -f ${pkgs.nix-bash-completions}/share/bash-completion/completions/nix ] &&
             . ${pkgs.nix-bash-completions}/share/bash-completion/completions/nix
-          fi
           
-          # Custom prompt with git support
+          # Git prompt
           if [ -f ${pkgs.git}/share/git/contrib/completion/git-prompt.sh ]; then
             . ${pkgs.git}/share/git/contrib/completion/git-prompt.sh
             GIT_PS1_SHOWDIRTYSTATE=1
@@ -83,26 +93,102 @@ in {
             PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\n\\$ '
           fi
           
-          # Better directory navigation
-          shopt -s autocd
-          shopt -s cdspell
-          shopt -s dirspell
+          # fzf configuration
+          if [ -n "$(command -v fzf)" ]; then
+            # Source fzf key bindings and completion
+            for file in "${pkgs.fzf}/share/fzf/"{key-bindings,completion}.bash; do
+              [ -f "$file" ] && . "$file"
+            done
+            
+            # Use fd for fzf
+            if [ -n "$(command -v fd)" ]; then
+              export FZF_DEFAULT_COMMAND="fd --type f --hidden --exclude .git"
+              
+              _fzf_compgen_path() {
+                fd --hidden --follow --exclude .git . "$1"
+              }
+              
+              _fzf_compgen_dir() {
+                fd --type d --hidden --follow --exclude .git . "$1"
+              }
+            fi
+          fi
           
-          # Case-insensitive globbing
-          shopt -s nocaseglob
+          # zoxide initialization
+          if [ -n "$(command -v zoxide)" ]; then
+            eval "$(zoxide init bash --cmd cd --no-aliases)"
+          fi
           
-          # Enable ** pattern
-          shopt -s globstar
+          # Starship prompt
+          if [ -n "$(command -v starship)" ]; then
+            export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"
+            export STARSHIP_CACHE="$XDG_CACHE_HOME/starship"
+            mkdir -p "$STARSHIP_CACHE"
+            eval "$(starship init bash)"
+          fi
           
-          # fzf configuration is managed by tools/fzf module
+          # Source additional configs from conf.d if they exist
+          for f in "$BASH_CONFIG_DIR/conf.d/"*.sh; do
+            [ -f "$f" ] && . "$f"
+          done
         '';
       };
-
-      # Create necessary directories
+      
+      # Create minimal stubs in $HOME that source our XDG config
+      home.file.".bashrc" = {
+        force = true;  # Force overwrite any existing file
+        text = ''
+          # This is a minimal .bashrc that sources the XDG config
+          # All configuration is in ~/.config/bash/.bashrc
+          
+          # Source the main config if it exists
+          [ -f "$HOME/.config/bash/.bashrc" ] && . "$HOME/.config/bash/.bashrc"
+        '';
+      };
+      
+      # For login shells (macOS Terminal, SSH, etc.)
+      home.file.".bash_profile" = {
+        force = true;
+        text = ''
+          # This is a minimal .bash_profile that sources the XDG config
+          [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+        '';
+      };
+      
+      # For POSIX-compliant login shells (fallback)
+      home.file.".profile" = {
+        force = true;
+        text = ''
+          # This is a minimal .profile that sources the XDG config
+          [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+        '';
+      };
+      
+      # Create necessary directories with proper permissions
       home.activation.bashDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        # Create XDG base directories
+        $DRY_RUN_CMD mkdir -p "${xdgConfigHome}/bash/conf.d"
         $DRY_RUN_CMD mkdir -p "${xdgDataHome}/bash"
         $DRY_RUN_CMD mkdir -p "${xdgCacheHome}/bash"
+        
+        # Set secure permissions
+        $DRY_RUN_CMD chmod 700 "${xdgConfigHome}/bash"
         $DRY_RUN_CMD chmod 700 "${xdgDataHome}/bash"
+        $DRY_RUN_CMD chmod 700 "${xdgCacheHome}/bash"
+        
+        # Create a sample inputrc if it doesn't exist
+        if [ ! -f "${xdgConfigHome}/bash/inputrc" ]; then
+          $DRY_RUN_CMD echo "# Bash readline settings" > "${xdgConfigHome}/bash/inputrc"
+          $DRY_RUN_CMD echo "set completion-ignore-case on" >> "${xdgConfigHome}/bash/inputrc"
+          $DRY_RUN_CMD echo "set show-all-if-ambiguous on" >> "${xdgConfigHome}/bash/inputrc"
+          $DRY_RUN_CMD echo "set show-all-if-unmodified on" >> "${xdgConfigHome}/bash/inputrc"
+        fi
+        
+        # Create a sample custom config if conf.d is empty
+        if [ ! -f "${xdgConfigHome}/bash/conf.d/example.sh" ]; then
+          $DRY_RUN_CMD echo "# Add your custom Bash configurations here" > "${xdgConfigHome}/bash/conf.d/example.sh"
+          $DRY_RUN_CMD echo "# This file will be automatically sourced by .bashrc" >> "${xdgConfigHome}/bash/conf.d/example.sh"
+        fi
       '';
     }
   ]);
