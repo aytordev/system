@@ -46,6 +46,12 @@
   applications.terminal.tools.starship.enable = true;
   applications.terminal.tools.starship.enableZshIntegration = true;
 
+  # Enable my fzf configuration
+  applications.terminal.tools.fzf.enable = true;
+
+  # Enable my zoxide configuration
+  applications.terminal.tools.zoxide.enable = true;
+
   # Example configurations (commented out for reference):
   # ====================================================
   #

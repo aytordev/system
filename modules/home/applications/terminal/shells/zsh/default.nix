@@ -18,13 +18,45 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
+      # Zsh packages - only include packages that provide binaries or need to be in PATH
+      home.packages = with pkgs; [
+        zsh # The Z shell itself
+        zsh-completions
+        nix-zsh-completions
+        zsh-autosuggestions
+        zsh-syntax-highlighting
+      ];
+
+      # Zsh configuration
       programs.zsh = {
         enable = true;
 
         # XDG Base Directory compliance
         dotDir = ".config/zsh";
+        enableCompletion = true;
+        enableVteIntegration = true;
 
-        # Set ZDOTDIR to ensure all zsh files are in XDG config
+        # Plugins configuration
+        plugins = [
+          {
+            name = "zsh-completions";
+            src = "${pkgs.zsh-completions}/share/zsh/site-functions";
+          }
+          {
+            name = "nix-zsh-completions";
+            src = "${pkgs.nix-zsh-completions}/share/zsh/site-functions";
+          }
+          {
+            name = "zsh-autosuggestions";
+            src = "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions";
+          }
+          {
+            name = "zsh-syntax-highlighting";
+            src = "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting";
+          }
+        ];
+
+        # Environment variables and directory setup
         envExtra = ''
           # Set ZDOTDIR if not already set
           export ZDOTDIR="${xdgConfigHome}/zsh"
@@ -34,46 +66,64 @@ in {
             mkdir -p "$ZDOTDIR"
           fi
 
-          # Set ZSH data directories according to XDG spec
-          export ZSH="${xdgDataHome}/zsh"
+          # Set ZSH_CACHE_DIR for completion cache
           export ZSH_CACHE_DIR="${xdgCacheHome}/zsh"
-
-          # Create necessary directories
-          mkdir -p "$ZSH"
-          mkdir -p "$ZSH_CACHE_DIR"
+          if [ ! -d "$ZSH_CACHE_DIR" ]; then
+            mkdir -p "$ZSH_CACHE_DIR"
+          fi
         '';
 
-        # History settings with XDG compliance
+        # History configuration
         history = {
-          path = "${xdgDataHome}/zsh/history";
-          save = 10000;
           size = 10000;
+          save = 10000;
+          path = "${xdgDataHome}/zsh/history";
+          ignoreDups = true;
           share = true;
           expireDuplicatesFirst = true;
           extended = true;
         };
 
-        # Completion cache in XDG cache directory
+        # Completion system initialization (kept for backward compatibility)
         completionInit = ''
+          # Completion initialization moved to initContent
+        '';
+
+        # Additional initialization code
+        initContent = ''
+          # Set up fpath for completions
+          fpath=(
+            ${pkgs.zsh-completions}/share/zsh/site-functions
+            ${pkgs.nix-zsh-completions}/share/zsh/site-functions
+            "$fpath[@]"
+          )
+
+          # Initialize completion system
           autoload -Uz compinit
-          zstyle ':completion:*' cache-path ${xdgCacheHome}/zsh/zcompcache
-          zmodload zsh/complist
-          compinit -d ${xdgCacheHome}/zsh/zcompdump
+          compinit -d "${xdgCacheHome}/zsh/zcompdump-''${ZSH_VERSION}"
+
+          # Load bash completion compatibility
+          autoload -Uz bashcompinit && bashcompinit
+
+          # Source plugins
+          source "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+          source "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+          # Apply completion styles
+          zstyle ":completion:*" menu select
+          zstyle ":completion:*" group-name ""
+          zstyle ":completion:*:descriptions" format "%F{green}-- %d --%f"
+          zstyle ":completion:*" matcher-list "m:{a-zA-Z}={A-Za-z}" "r:|=*" "l:|=* r:|=*"
+          zstyle ":completion:*" use-cache on
+          zstyle ":completion:*" cache-path "${xdgCacheHome}/zsh/zcompcache"
         '';
       };
 
-      # Required packages
-      home.packages = with pkgs; [
-        zsh
-      ];
-
-      # Create necessary XDG directories
-      xdg.configFile."zsh".source =
-        lib.mkIf (config.programs.zsh.dotDir == ".config/zsh")
-        (pkgs.runCommand "zsh-config-dir" {} ''
-          mkdir -p $out
-          # Add any default zsh configuration files here if needed
-        '');
+      # Ensure the ZDOTDIR exists and has the correct permissions
+      home.activation.zshDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        $DRY_RUN_CMD mkdir -p "${config.xdg.configHome}/zsh"
+        $DRY_RUN_CMD chmod 700 "${config.xdg.configHome}/zsh"
+      '';
     }
   ]);
 }

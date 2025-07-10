@@ -103,7 +103,7 @@ with lib; let
 in {
   options.applications.terminal.tools.starship = {
     enable = mkEnableOption "Starship prompt";
-    
+
     theme = mkOption {
       type = types.enum ["catppuccin-frappe" "catppuccin-latte" "catppuccin-macchiato" "catppuccin-mocha"];
       default = "catppuccin-frappe";
