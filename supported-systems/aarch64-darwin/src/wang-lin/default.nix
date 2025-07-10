@@ -72,6 +72,7 @@
         "modules/home/applications/terminal/tools/git/default.nix"
         "modules/home/applications/terminal/tools/starship/default.nix"
         "modules/home/applications/terminal/tools/fzf/default.nix"
+        "modules/home/applications/terminal/tools/zoxide/default.nix"
         ## Shells
         "modules/home/applications/terminal/shells/zsh/default.nix"
       ])

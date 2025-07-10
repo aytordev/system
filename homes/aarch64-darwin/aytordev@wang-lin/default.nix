@@ -49,6 +49,9 @@
   # Enable my fzf configuration
   applications.terminal.tools.fzf.enable = true;
 
+  # Enable my zoxide configuration
+  applications.terminal.tools.zoxide.enable = true;
+
   # Example configurations (commented out for reference):
   # ====================================================
   #
