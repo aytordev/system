@@ -66,7 +66,7 @@ in {
     };
 
     # Manual Zsh integration to ensure proper loading order
-    programs.zsh.initExtra = ''
+    programs.zsh.initContent = ''
       # Initialize fzf
       if [[ -f "${pkgs.fzf}/share/fzf/key-bindings.zsh" ]]; then
         source "${pkgs.fzf}/share/fzf/key-bindings.zsh"
