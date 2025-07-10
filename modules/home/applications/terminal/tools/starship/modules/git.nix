@@ -1,4 +1,4 @@
-{lib}: { 
+{lib}: {
   git_branch = {
     symbol = "🌿";
     style = "fg:bold green";

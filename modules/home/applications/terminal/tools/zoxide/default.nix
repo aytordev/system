@@ -1,12 +1,15 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkIf mkEnableOption mkBefore;
   cfg = config.applications.terminal.tools.zoxide;
 in {
   options.applications.terminal.tools.zoxide = {
     enable = mkEnableOption "zoxide, a smarter cd command";
-    
+
     package = lib.mkOption {
       type = lib.types.package;
       default = pkgs.zoxide;
@@ -16,7 +19,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ cfg.package ];
+    home.packages = [cfg.package];
 
     # Configuración para asegurar el cumplimiento con XDG
     home.sessionVariables = {
@@ -37,7 +40,7 @@ in {
       enableNushellIntegration = true;
       options = [
         "--cmd cd"
-        "--no-aliases"  # Evita crear alias globales, mejor para el control
+        "--no-aliases" # Evita crear alias globales, mejor para el control
       ];
     };
 

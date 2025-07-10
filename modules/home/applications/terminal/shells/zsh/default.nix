@@ -20,7 +20,7 @@ in {
     {
       # Zsh packages - only include packages that provide binaries or need to be in PATH
       home.packages = with pkgs; [
-        zsh  # The Z shell itself
+        zsh # The Z shell itself
         zsh-completions
         nix-zsh-completions
         zsh-autosuggestions
@@ -88,7 +88,7 @@ in {
         completionInit = ''
           # Completion initialization moved to initContent
         '';
-        
+
         # Additional initialization code
         initContent = ''
           # Set up fpath for completions
@@ -97,18 +97,18 @@ in {
             ${pkgs.nix-zsh-completions}/share/zsh/site-functions
             "$fpath[@]"
           )
-          
+
           # Initialize completion system
           autoload -Uz compinit
           compinit -d "${xdgCacheHome}/zsh/zcompdump-''${ZSH_VERSION}"
-          
+
           # Load bash completion compatibility
           autoload -Uz bashcompinit && bashcompinit
-          
+
           # Source plugins
           source "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
           source "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-          
+
           # Apply completion styles
           zstyle ":completion:*" menu select
           zstyle ":completion:*" group-name ""
