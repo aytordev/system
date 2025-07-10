@@ -111,7 +111,7 @@ in {
           
           # Apply completion styles
           zstyle ":completion:*" menu select
-          zstyle ":completion:*" group-name ''''
+          zstyle ":completion:*" group-name ""
           zstyle ":completion:*:descriptions" format "%F{green}-- %d --%f"
           zstyle ":completion:*" matcher-list "m:{a-zA-Z}={A-Za-z}" "r:|=*" "l:|=* r:|=*"
           zstyle ":completion:*" use-cache on
