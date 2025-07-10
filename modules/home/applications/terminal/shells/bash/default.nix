@@ -131,6 +131,30 @@ in {
           for f in "$BASH_CONFIG_DIR/conf.d/"*.sh; do
             [ -f "$f" ] && . "$f"
           done
+
+          # Set BASH_SESSION_DIR for session files (macOS specific)
+          export BASH_SESSION_DIR="${xdgDataHome}/bash/sessions"
+          if [ ! -d "$BASH_SESSION_DIR" ]; then
+            mkdir -p "$BASH_SESSION_DIR"
+          fi
+        
+          # For macOS Terminal.app session restoration
+          if [ "$(uname -s)" = "Darwin" ] && [ -n "$TERM_SESSION_ID" ]; then
+            # Define the old session directory path
+            local OLD_SESSION_DIR="$HOME/.bash_sessions"
+            
+            # Create a symlink from the old location to the new XDG location
+            if [ ! -L "$OLD_SESSION_DIR" ] && [ -d "$OLD_SESSION_DIR" ]; then
+              # Backup any existing session directory
+              echo "Moving existing bash_sessions to XDG directory"
+              mv "$OLD_SESSION_DIR" "$OLD_SESSION_DIR.bak"
+            fi
+            
+            # Create symlink if it doesn't exist
+            if [ ! -e "$OLD_SESSION_DIR" ]; then
+              ln -sf "$BASH_SESSION_DIR" "$OLD_SESSION_DIR"
+            fi
+          fi
         '';
       };
       
