@@ -18,13 +18,26 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
+      # Zsh packages
+      home.packages = with pkgs; [
+        zsh
+        zsh-completions
+        nix-zsh-completions
+      ];
+
+      # Zsh configuration
       programs.zsh = {
         enable = true;
 
         # XDG Base Directory compliance
         dotDir = ".config/zsh";
+        enableCompletion = true;
+        enableVteIntegration = true;
+        
+        # Enable autosuggestions with the new format
+        autosuggestion.enable = true;
 
-        # Set ZDOTDIR to ensure all zsh files are in XDG config
+        # Environment variables and directory setup
         envExtra = ''
           # Set ZDOTDIR if not already set
           export ZDOTDIR="${xdgConfigHome}/zsh"
@@ -34,46 +47,29 @@ in {
             mkdir -p "$ZDOTDIR"
           fi
 
-          # Set ZSH data directories according to XDG spec
-          export ZSH="${xdgDataHome}/zsh"
+          # Set ZSH_CACHE_DIR for completion cache
           export ZSH_CACHE_DIR="${xdgCacheHome}/zsh"
-
-          # Create necessary directories
-          mkdir -p "$ZSH"
-          mkdir -p "$ZSH_CACHE_DIR"
+          if [ ! -d "$ZSH_CACHE_DIR" ]; then
+            mkdir -p "$ZSH_CACHE_DIR"
+          fi
         '';
 
-        # History settings with XDG compliance
+        # History configuration
         history = {
-          path = "${xdgDataHome}/zsh/history";
-          save = 10000;
           size = 10000;
+          save = 10000;
+          path = "${xdgDataHome}/zsh/history";
+          ignoreDups = true;
           share = true;
           expireDuplicatesFirst = true;
           extended = true;
         };
 
-        # Enhanced completion configuration
-        enableCompletion = true;
-        autosuggestion.enable = true;
-        
-        # Completion cache in XDG cache directory
+        # Completion system initialization
         completionInit = ''
           # Initialize completion system
           autoload -Uz compinit
-          
-          # Completion cache settings
-          zstyle ':completion:*' use-cache on
-          zstyle ':completion:*' cache-path ${xdgCacheHome}/zsh/zcompcache
-          
-          # Load completion system and compinit
-          zmodload zsh/complist
-          
-          # Initialize completion system with dump file in XDG cache
-          compinit -d ${xdgCacheHome}/zsh/zcompdump
-          
-          # Load and initialize completion system with compinit
-          autoload -Uz compinit && compinit -i -d ${xdgCacheHome}/zsh/zcompdump
+          compinit -d ${xdgCacheHome}/zsh/zcompdump-$ZSH_VERSION
           
           # Load bash completion compatibility
           autoload -Uz bashcompinit && bashcompinit
@@ -92,16 +88,8 @@ in {
           zstyle ':completion:*' use-cache on
           zstyle ':completion:*' cache-path ${xdgCacheHome}/zsh/zcompcache
         '';
-      };
-
-      # Required packages
-      home.packages = with pkgs; [
-        zsh
-      ];
-      
-      # Zsh plugins and completions
-      programs.zsh = {
-        # Enable completions from all installed packages
+        
+        # Additional initialization code
         initContent = ''
           # Add completion directories to fpath
           fpath=(
