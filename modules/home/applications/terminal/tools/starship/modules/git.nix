@@ -2,7 +2,7 @@
   git_branch = {
     symbol = "";
     style = "fg:teal";
-    format = "[[ $symbol $branch ](fg:green)]($style)";
+    format = "on [$symbol $branch(:$remote_branch)]($style)";
   };
 
   git_status = {
