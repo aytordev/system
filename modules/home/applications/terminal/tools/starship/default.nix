@@ -269,10 +269,10 @@ in {
         # Initialize starship directly without saving to file
         $env.PROMPT_COMMAND = { || ${pkgs.starship}/bin/starship prompt --cmd-duration $env.CMD_DURATION_MS $'--status=($env.LAST_EXIT_CODE)' }
         $env.PROMPT_COMMAND_RIGHT = { || ${pkgs.starship}/bin/starship prompt --right }
-        
+
         # Set up environment for the prompt
         $env.STARSHIP_SHELL = "nu"
-        
+
         # Clear any existing prompt commands
         $env.PROMPT_INDICATOR = { || "" }
         $env.PROMPT_INDICATOR_VI_INSERT = { || "" }

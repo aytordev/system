@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib; let
   cfg = config.applications.terminal.tools.fzf;
 
@@ -63,7 +68,6 @@ with lib; let
       }
     ]))
   '';
-
 in {
   options.applications.terminal.tools.fzf = {
     enable = mkEnableOption "fuzzy finder";
