@@ -27,8 +27,8 @@
 
   username = {
     show_always = true;
-    style_user = "fg:blue";
-    style_root = "fg:blue";
+    style_user = "fg:sapphire";
+    style_root = "fg:sapphire";
     format = "[ $user ]($style)";
   };
 
