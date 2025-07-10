@@ -53,12 +53,44 @@ in {
           extended = true;
         };
 
+        # Enhanced completion configuration
+        enableCompletion = true;
+        autosuggestion.enable = true;
+        
         # Completion cache in XDG cache directory
         completionInit = ''
+          # Initialize completion system
           autoload -Uz compinit
+          
+          # Completion cache settings
+          zstyle ':completion:*' use-cache on
           zstyle ':completion:*' cache-path ${xdgCacheHome}/zsh/zcompcache
+          
+          # Load completion system and compinit
           zmodload zsh/complist
+          
+          # Initialize completion system with dump file in XDG cache
           compinit -d ${xdgCacheHome}/zsh/zcompdump
+          
+          # Load and initialize completion system with compinit
+          autoload -Uz compinit && compinit -i -d ${xdgCacheHome}/zsh/zcompdump
+          
+          # Load bash completion compatibility
+          autoload -Uz bashcompinit && bashcompinit
+          
+          # Menu selection for completions
+          zstyle ':completion:*' menu select
+          
+          # Group matches and describe
+          zstyle ':completion:*' group-name '''
+          zstyle ':completion:*:descriptions' format ' %F{green}-- %d --%f'
+          
+          # Case-insensitive (all), partial-word, and then substring completion
+          zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+          
+          # Use caching for commands that are slow
+          zstyle ':completion:*' use-cache on
+          zstyle ':completion:*' cache-path ${xdgCacheHome}/zsh/zcompcache
         '';
       };
 
@@ -66,6 +98,19 @@ in {
       home.packages = with pkgs; [
         zsh
       ];
+      
+      # Zsh plugins and completions
+      programs.zsh = {
+        # Enable completions from all installed packages
+        initContent = ''
+          # Add completion directories to fpath
+          fpath=(
+            ${pkgs.zsh-completions}/share/zsh/site-functions
+            ${pkgs.nix-zsh-completions}/share/zsh/site-functions
+            $fpath
+          )
+        '';
+      };
 
       # Create necessary XDG directories
       xdg.configFile."zsh".source =
