@@ -46,6 +46,9 @@
   applications.terminal.tools.starship.enable = true;
   applications.terminal.tools.starship.enableZshIntegration = true;
 
+  # Enable my fzf configuration
+  applications.terminal.tools.fzf.enable = true;
+
   # Example configurations (commented out for reference):
   # ====================================================
   #
