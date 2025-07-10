@@ -125,7 +125,7 @@ in {
         export ZSH_SESSION_DIR="${config.xdg.dataHome}/zsh/sessions"
         $DRY_RUN_CMD mkdir -p "$ZSH_SESSION_DIR"
         $DRY_RUN_CMD chmod 700 "$ZSH_SESSION_DIR"
-        
+
         # For macOS Terminal.app compatibility
         if [ "$(uname -s)" = "Darwin" ]; then
           OLD_SESSION_DIR="$HOME/.zsh_sessions"

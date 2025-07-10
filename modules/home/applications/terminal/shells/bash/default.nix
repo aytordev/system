@@ -22,43 +22,43 @@ in {
         # Add bash here since we're not using programs.bash.enable
         bash
       ];
-      
+
       # Disable the default bash module to prevent it from generating .bashrc
       programs.bash.enable = false;
-      
+
       # Create the main .bashrc file in XDG config with all configurations
       home.file.".config/bash/.bashrc" = {
         text = ''
           # This file is managed by NixOS/Home Manager
           # All Bash configuration is centralized here for XDG compliance
-          
+
           # Set up XDG directories
           export XDG_CONFIG_HOME="${xdgConfigHome}"
           export XDG_DATA_HOME="${xdgDataHome}"
           export XDG_CACHE_HOME="${xdgCacheHome}"
-          
+
           # Set up Bash specific directories
           export BASH_CONFIG_DIR="$XDG_CONFIG_HOME/bash"
           export BASH_DATA_DIR="$XDG_DATA_HOME/bash"
           export BASH_CACHE_DIR="$XDG_CACHE_HOME/bash"
           export BASH_SESSION_DIR="$BASH_DATA_DIR/sessions"
-          
+
           # History configuration
           export HISTFILE="$BASH_DATA_DIR/history"
           export HISTSIZE=10000
           export HISTFILESIZE=100000
           export HISTCONTROL=ignoredups:erasedups
           shopt -s histappend
-          
+
           # Shell options
           shopt -s checkwinsize extglob globstar checkjobs autocd cdspell dirspell nocaseglob
-          
+
           # Set inputrc location
           export INPUTRC="$BASH_CONFIG_DIR/inputrc"
-          
+
           # Source system-wide bashrc if it exists
           [ -f /etc/bashrc ] && . /etc/bashrc
-          
+
           # Enable programmable completion
           if ! shopt -oq posix; then
             if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -67,14 +67,14 @@ in {
               . /etc/bash_completion
             fi
           fi
-          
+
           # Load nix completions
           [ -f ${pkgs.nix-bash-completions}/share/bash-completion/completions/nix ] &&
             . ${pkgs.nix-bash-completions}/share/bash-completion/completions/nix
-          
+
           # Git prompt
-          if command -v __git_ps1 >/dev/null 2>&1 || 
-             { [ -f ${pkgs.git}/share/git/contrib/completion/git-prompt.sh ] && 
+          if command -v __git_ps1 >/dev/null 2>&1 ||
+             { [ -f ${pkgs.git}/share/git/contrib/completion/git-prompt.sh ] &&
                . ${pkgs.git}/share/git/contrib/completion/git-prompt.sh; }; then
             GIT_PS1_SHOWDIRTYSTATE=1
             GIT_PS1_SHOWUNTRACKEDFILES=1
@@ -82,45 +82,45 @@ in {
           else
             PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\n\\$ '
           fi
-          
+
           # fzf configuration
           if command -v fzf >/dev/null 2>&1; then
             # Source fzf key bindings and completion
             for file in "${pkgs.fzf}/share/fzf/"{key-bindings,completion}.bash; do
               [ -f "$file" ] && . "$file"
             done
-            
+
             # Use fd for fzf if available
             if command -v fd >/dev/null 2>&1; then
               export FZF_DEFAULT_COMMAND="fd --type f --hidden --exclude .git"
-              
+
               _fzf_compgen_path() {
                 fd --hidden --follow --exclude .git . "$1"
               }
-              
+
               _fzf_compgen_dir() {
                 fd --type d --hidden --follow --exclude .git . "$1"
               }
             fi
           fi
-          
+
           # zoxide initialization
           if command -v zoxide >/dev/null 2>&1; then
             eval "$(zoxide init bash --cmd cd --no-aliases)"
           fi
-          
+
           # Starship prompt
           if command -v starship >/dev/null 2>&1; then
             export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"
             export STARSHIP_CACHE="$XDG_CACHE_HOME/starship"
             eval "$(starship init bash 2>/dev/null)"  # Suppress error if starship fails
           fi
-          
+
           # Source additional configs from conf.d if they exist
           for f in "$BASH_CONFIG_DIR/conf.d/"*.sh; do
             [ -f "$f" ] && . "$f"
           done
-          
+
           # For macOS Terminal.app session restoration
           if [ "$(uname -s)" = "Darwin" ] && [ -n "$TERM_SESSION_ID" ]; then
             # Just ensure the symlink exists (handled by home.activation)
@@ -128,19 +128,19 @@ in {
           fi
         '';
       };
-      
+
       # Create minimal stubs in $HOME that source our XDG config
       home.file.".bashrc" = {
-        force = true;  # Force overwrite any existing file
+        force = true; # Force overwrite any existing file
         text = ''
           # This is a minimal .bashrc that sources the XDG config
           # All configuration is in ~/.config/bash/.bashrc
-          
+
           # Source the main config if it exists
           [ -f "$HOME/.config/bash/.bashrc" ] && . "$HOME/.config/bash/.bashrc"
         '';
       };
-      
+
       # For login shells (macOS Terminal, SSH, etc.)
       home.file.".bash_profile" = {
         force = true;
@@ -149,7 +149,7 @@ in {
           [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
         '';
       };
-      
+
       # For POSIX-compliant login shells (fallback)
       home.file.".profile" = {
         force = true;
@@ -158,36 +158,36 @@ in {
           [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
         '';
       };
-      
+
       # Create necessary directories with proper permissions
       home.activation.bashDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
         # Create XDG base directories
         $DRY_RUN_CMD mkdir -p "${xdgConfigHome}/bash/conf.d"
         $DRY_RUN_CMD mkdir -p "${xdgDataHome}/bash/sessions"  # Aseguramos que el directorio de sesiones exista
         $DRY_RUN_CMD mkdir -p "${xdgCacheHome}/bash"
-        
+
         # Set secure permissions
         $DRY_RUN_CMD chmod 700 "${xdgConfigHome}/bash"
         $DRY_RUN_CMD chmod 700 "${xdgDataHome}/bash"
         $DRY_RUN_CMD chmod 700 "${xdgDataHome}/bash/sessions"  # Aseguramos permisos correctos
-        
+
         # Handle macOS Terminal.app session directory
         if [ "$(uname -s)" = "Darwin" ]; then
           OLD_SESSION_DIR="$HOME/.bash_sessions"
-          
+
           # If old session dir exists and is not a symlink, back it up
           if [ -d "$OLD_SESSION_DIR" ] && [ ! -L "$OLD_SESSION_DIR" ]; then
             $DRY_RUN_CMD echo "Moving existing bash_sessions to XDG directory..."
             $DRY_RUN_CMD mv "$OLD_SESSION_DIR" "$OLD_SESSION_DIR.bak"
           fi
-          
+
           # Create symlink if it doesn't exist
           if [ ! -e "$OLD_SESSION_DIR" ]; then
             $DRY_RUN_CMD ln -sf "${xdgDataHome}/bash/sessions" "$OLD_SESSION_DIR"
           fi
         fi
         $DRY_RUN_CMD chmod 700 "${xdgCacheHome}/bash"
-        
+
         # Create a sample inputrc if it doesn't exist
         if [ ! -f "${xdgConfigHome}/bash/inputrc" ]; then
           $DRY_RUN_CMD echo "# Bash readline settings" > "${xdgConfigHome}/bash/inputrc"
@@ -195,7 +195,7 @@ in {
           $DRY_RUN_CMD echo "set show-all-if-ambiguous on" >> "${xdgConfigHome}/bash/inputrc"
           $DRY_RUN_CMD echo "set show-all-if-unmodified on" >> "${xdgConfigHome}/bash/inputrc"
         fi
-        
+
         # Create a sample custom config if conf.d is empty
         if [ ! -f "${xdgConfigHome}/bash/conf.d/example.sh" ]; then
           $DRY_RUN_CMD echo "# Add your custom Bash configurations here" > "${xdgConfigHome}/bash/conf.d/example.sh"
