@@ -18,11 +18,13 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
-      # Zsh packages
+      # Zsh packages - only include packages that provide binaries or need to be in PATH
       home.packages = with pkgs; [
-        zsh
+        zsh  # The Z shell itself
         zsh-completions
         nix-zsh-completions
+        zsh-autosuggestions
+        zsh-syntax-highlighting
       ];
 
       # Zsh configuration
@@ -33,9 +35,26 @@ in {
         dotDir = ".config/zsh";
         enableCompletion = true;
         enableVteIntegration = true;
-        
-        # Enable autosuggestions with the new format
-        autosuggestion.enable = true;
+
+        # Plugins configuration
+        plugins = [
+          {
+            name = "zsh-completions";
+            src = "${pkgs.zsh-completions}/share/zsh/site-functions";
+          }
+          {
+            name = "nix-zsh-completions";
+            src = "${pkgs.nix-zsh-completions}/share/zsh/site-functions";
+          }
+          {
+            name = "zsh-autosuggestions";
+            src = "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions";
+          }
+          {
+            name = "zsh-syntax-highlighting";
+            src = "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting";
+          }
+        ];
 
         # Environment variables and directory setup
         envExtra = ''
@@ -65,48 +84,46 @@ in {
           extended = true;
         };
 
-        # Completion system initialization
+        # Completion system initialization (kept for backward compatibility)
         completionInit = ''
-          # Initialize completion system
-          autoload -Uz compinit
-          compinit -d ${xdgCacheHome}/zsh/zcompdump-$ZSH_VERSION
-          
-          # Load bash completion compatibility
-          autoload -Uz bashcompinit && bashcompinit
-          
-          # Menu selection for completions
-          zstyle ':completion:*' menu select
-          
-          # Group matches and describe
-          zstyle ':completion:*' group-name '''
-          zstyle ':completion:*:descriptions' format ' %F{green}-- %d --%f'
-          
-          # Case-insensitive (all), partial-word, and then substring completion
-          zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
-          
-          # Use caching for commands that are slow
-          zstyle ':completion:*' use-cache on
-          zstyle ':completion:*' cache-path ${xdgCacheHome}/zsh/zcompcache
+          # Completion initialization moved to initContent
         '';
         
         # Additional initialization code
         initContent = ''
-          # Add completion directories to fpath
+          # Set up fpath for completions
           fpath=(
             ${pkgs.zsh-completions}/share/zsh/site-functions
             ${pkgs.nix-zsh-completions}/share/zsh/site-functions
-            $fpath
+            "$fpath[@]"
           )
+          
+          # Initialize completion system
+          autoload -Uz compinit
+          compinit -d "${xdgCacheHome}/zsh/zcompdump-''${ZSH_VERSION}"
+          
+          # Load bash completion compatibility
+          autoload -Uz bashcompinit && bashcompinit
+          
+          # Source plugins
+          source "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+          source "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+          
+          # Apply completion styles
+          zstyle ":completion:*" menu select
+          zstyle ":completion:*" group-name ''''
+          zstyle ":completion:*:descriptions" format "%F{green}-- %d --%f"
+          zstyle ":completion:*" matcher-list "m:{a-zA-Z}={A-Za-z}" "r:|=*" "l:|=* r:|=*"
+          zstyle ":completion:*" use-cache on
+          zstyle ":completion:*" cache-path "${xdgCacheHome}/zsh/zcompcache"
         '';
       };
 
-      # Create necessary XDG directories
-      xdg.configFile."zsh".source =
-        lib.mkIf (config.programs.zsh.dotDir == ".config/zsh")
-        (pkgs.runCommand "zsh-config-dir" {} ''
-          mkdir -p $out
-          # Add any default zsh configuration files here if needed
-        '');
+      # Ensure the ZDOTDIR exists and has the correct permissions
+      home.activation.zshDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        $DRY_RUN_CMD mkdir -p "${config.xdg.configHome}/zsh"
+        $DRY_RUN_CMD chmod 700 "${config.xdg.configHome}/zsh"
+      '';
     }
   ]);
 }
