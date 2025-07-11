@@ -54,6 +54,9 @@
   # Enable my starship configuration
   applications.terminal.tools.starship.enable = true;
   applications.terminal.tools.starship.enableZshIntegration = true;
+  applications.terminal.tools.starship.enableFishIntegration = true;
+  applications.terminal.tools.starship.enableBashIntegration = true;
+  applications.terminal.tools.starship.enableNushellIntegration = true;
 
   # Enable my fzf configuration
   applications.terminal.tools.fzf.enable = true;

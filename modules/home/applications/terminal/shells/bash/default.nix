@@ -72,50 +72,6 @@ in {
           [ -f ${pkgs.nix-bash-completions}/share/bash-completion/completions/nix ] &&
             . ${pkgs.nix-bash-completions}/share/bash-completion/completions/nix
 
-          # Git prompt
-          if command -v __git_ps1 >/dev/null 2>&1 ||
-             { [ -f ${pkgs.git}/share/git/contrib/completion/git-prompt.sh ] &&
-               . ${pkgs.git}/share/git/contrib/completion/git-prompt.sh; }; then
-            GIT_PS1_SHOWDIRTYSTATE=1
-            GIT_PS1_SHOWUNTRACKEDFILES=1
-            PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1 " (%s)")\n\\$ '
-          else
-            PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\n\\$ '
-          fi
-
-          # fzf configuration
-          if command -v fzf >/dev/null 2>&1; then
-            # Source fzf key bindings and completion
-            for file in "${pkgs.fzf}/share/fzf/"{key-bindings,completion}.bash; do
-              [ -f "$file" ] && . "$file"
-            done
-
-            # Use fd for fzf if available
-            if command -v fd >/dev/null 2>&1; then
-              export FZF_DEFAULT_COMMAND="fd --type f --hidden --exclude .git"
-
-              _fzf_compgen_path() {
-                fd --hidden --follow --exclude .git . "$1"
-              }
-
-              _fzf_compgen_dir() {
-                fd --type d --hidden --follow --exclude .git . "$1"
-              }
-            fi
-          fi
-
-          # zoxide initialization
-          if command -v zoxide >/dev/null 2>&1; then
-            eval "$(zoxide init bash --cmd cd --no-aliases)"
-          fi
-
-          # Starship prompt
-          if command -v starship >/dev/null 2>&1; then
-            export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"
-            export STARSHIP_CACHE="$XDG_CACHE_HOME/starship"
-            eval "$(starship init bash 2>/dev/null)"  # Suppress error if starship fails
-          fi
-
           # Source additional configs from conf.d if they exist
           for f in "$BASH_CONFIG_DIR/conf.d/"*.sh; do
             [ -f "$f" ] && . "$f"

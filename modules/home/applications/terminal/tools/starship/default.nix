@@ -225,28 +225,6 @@ in {
       '';
     })
 
-    # Bash integration
-    (mkIf (cfg.enable && cfg.enableBashIntegration) {
-      programs.bash.initExtra = ''
-        # Initialize Starship with XDG compliance
-        if [ -n "$(command -v starship)" ]; then
-          export STARSHIP_CONFIG="${starshipConfigFile}"
-          export STARSHIP_CONFIG_DIR="${starshipConfigDir}"
-          export STARSHIP_CACHE="${xdgCacheHome}/starship"
-
-          # Ensure directories exist
-          for dir in "$STARSHIP_CACHE" "$STARSHIP_CONFIG_DIR/modules"; do
-            if [ ! -d "$dir" ]; then
-              mkdir -p "$dir"
-            fi
-          done
-
-          # Initialize starship
-          eval "$(${pkgs.starship}/bin/starship init bash --print-full-init)"
-        fi
-      '';
-    })
-
     # Nushell integration
     (mkIf (cfg.enable && cfg.enableNushellIntegration) {
       programs.nushell.extraConfig = ''
@@ -279,6 +257,31 @@ in {
         $env.PROMPT_INDICATOR_VI_NORMAL = { || "" }
         $env.PROMPT_MULTILINE_INDICATOR = { || "" }
       '';
+    })
+
+    # Bash integration
+    (mkIf (cfg.enable && cfg.enableBashIntegration) {
+      home.file.".config/bash/conf.d/starship.sh" = {
+        text = ''
+          # Initialize Starship with XDG compliance
+          if command -v starship >/dev/null 2>&1; then
+            # Set up Starship environment
+            export STARSHIP_CONFIG="${starshipConfigFile}"
+            export STARSHIP_CONFIG_DIR="${starshipConfigDir}"
+            export STARSHIP_CACHE="${xdgCacheHome}/starship"
+
+            # Ensure directories exist
+            for dir in "$STARSHIP_CACHE" "$STARSHIP_CONFIG_DIR/modules"; do
+              if [ ! -d "$dir" ]; then
+                mkdir -p "$dir"
+              fi
+            done
+
+            # Initialize starship
+            eval "$(starship init bash --print-full-init)"
+          fi
+        '';  # Suppress error if starship fails
+      };
     })
   ]);
 }
