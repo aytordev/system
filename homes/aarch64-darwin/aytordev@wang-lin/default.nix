@@ -42,9 +42,21 @@
   # Enable my zsh configuration
   applications.terminal.shells.zsh.enable = true;
 
+  # Enable my bash configuration
+  applications.terminal.shells.bash.enable = true;
+
+  # Enable my fish configuration
+  applications.terminal.shells.fish.enable = true;
+
+  # Enable my nu shell configuration
+  applications.terminal.shells.nu.enable = true;
+
   # Enable my starship configuration
   applications.terminal.tools.starship.enable = true;
   applications.terminal.tools.starship.enableZshIntegration = true;
+  applications.terminal.tools.starship.enableFishIntegration = true;
+  applications.terminal.tools.starship.enableBashIntegration = true;
+  applications.terminal.tools.starship.enableNushellIntegration = true;
 
   # Enable my fzf configuration
   applications.terminal.tools.fzf.enable = true;

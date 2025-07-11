@@ -56,21 +56,13 @@ in {
           }
         ];
 
-        # Environment variables and directory setup
+        # Environment variables
         envExtra = ''
-          # Set ZDOTDIR if not already set
+          # XDG Base Directory variables
           export ZDOTDIR="${xdgConfigHome}/zsh"
-
-          # Ensure ZDOTDIR exists
-          if [ ! -d "$ZDOTDIR" ]; then
-            mkdir -p "$ZDOTDIR"
-          fi
-
-          # Set ZSH_CACHE_DIR for completion cache
           export ZSH_CACHE_DIR="${xdgCacheHome}/zsh"
-          if [ ! -d "$ZSH_CACHE_DIR" ]; then
-            mkdir -p "$ZSH_CACHE_DIR"
-          fi
+          export ZSH_DATA_DIR="${xdgDataHome}/zsh"
+          export ZSH_SESSION_DIR="$ZSH_DATA_DIR/sessions"
         '';
 
         # History configuration
@@ -84,12 +76,10 @@ in {
           extended = true;
         };
 
-        # Completion system initialization (kept for backward compatibility)
-        completionInit = ''
-          # Completion initialization moved to initContent
-        '';
+        # Empty completionInit as we handle everything in initContent
+        completionInit = '''';
 
-        # Additional initialization code
+        # Main initialization code
         initContent = ''
           # Set up fpath for completions
           fpath=(
@@ -98,9 +88,14 @@ in {
             "$fpath[@]"
           )
 
+          # Create necessary directories if they don't exist
+          [[ ! -d "$ZSH_CACHE_DIR" ]] && mkdir -p "$ZSH_CACHE_DIR"
+          [[ ! -d "$ZSH_DATA_DIR" ]] && mkdir -p "$ZSH_DATA_DIR"
+          [[ ! -d "$ZSH_SESSION_DIR" ]] && mkdir -p "$ZSH_SESSION_DIR"
+
           # Initialize completion system
           autoload -Uz compinit
-          compinit -d "${xdgCacheHome}/zsh/zcompdump-''${ZSH_VERSION}"
+          compinit -d "$ZSH_CACHE_DIR/zcompdump-''${ZSH_VERSION}"
 
           # Load bash completion compatibility
           autoload -Uz bashcompinit && bashcompinit
@@ -115,7 +110,7 @@ in {
           zstyle ":completion:*:descriptions" format "%F{green}-- %d --%f"
           zstyle ":completion:*" matcher-list "m:{a-zA-Z}={A-Za-z}" "r:|=*" "l:|=* r:|=*"
           zstyle ":completion:*" use-cache on
-          zstyle ":completion:*" cache-path "${xdgCacheHome}/zsh/zcompcache"
+          zstyle ":completion:*" cache-path "$ZSH_CACHE_DIR/zcompcache"
         '';
       };
 
@@ -123,6 +118,26 @@ in {
       home.activation.zshDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
         $DRY_RUN_CMD mkdir -p "${config.xdg.configHome}/zsh"
         $DRY_RUN_CMD chmod 700 "${config.xdg.configHome}/zsh"
+      '';
+
+      # Ensure ZSH session directory exists with correct permissions
+      home.activation.zshSessionDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        export ZSH_SESSION_DIR="${config.xdg.dataHome}/zsh/sessions"
+        $DRY_RUN_CMD mkdir -p "$ZSH_SESSION_DIR"
+        $DRY_RUN_CMD chmod 700 "$ZSH_SESSION_DIR"
+
+        # For macOS Terminal.app compatibility
+        if [ "$(uname -s)" = "Darwin" ]; then
+          OLD_SESSION_DIR="$HOME/.zsh_sessions"
+          if [ -d "$OLD_SESSION_DIR" ] && [ ! -L "$OLD_SESSION_DIR" ]; then
+            $DRY_RUN_CMD echo "Migrando sesiones Zsh antiguas a directorio XDG..."
+            $DRY_RUN_CMD mv "$OLD_SESSION_DIR" "$OLD_SESSION_DIR.bak"
+          fi
+          if [ ! -e "$OLD_SESSION_DIR" ]; then
+            $DRY_RUN_CMD ln -sf "$ZSH_SESSION_DIR" "$OLD_SESSION_DIR"
+          fi
+          unset OLD_SESSION_DIR
+        fi
       '';
     }
   ]);

@@ -75,6 +75,9 @@
         "modules/home/applications/terminal/tools/zoxide/default.nix"
         ## Shells
         "modules/home/applications/terminal/shells/zsh/default.nix"
+        "modules/home/applications/terminal/shells/bash/default.nix"
+        "modules/home/applications/terminal/shells/fish/default.nix"
+        "modules/home/applications/terminal/shells/nu-shell/default.nix"
       ])
       ++ (map libraries.relativeToRoot [
         # Host-specific user configuration
