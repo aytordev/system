@@ -280,7 +280,7 @@ in {
             # Initialize starship
             eval "$(starship init bash --print-full-init)"
           fi
-        '';  # Suppress error if starship fails
+        ''; # Suppress error if starship fails
       };
     })
   ]);

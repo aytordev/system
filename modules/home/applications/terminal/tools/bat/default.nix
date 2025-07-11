@@ -1,9 +1,12 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) getExe mkIf;
   cfg = config.applications.terminal.tools.bat;
-in
-{
+in {
   options.applications.terminal.tools.bat = {
     enable = lib.mkEnableOption "bat";
   };
