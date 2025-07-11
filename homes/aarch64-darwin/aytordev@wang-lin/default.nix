@@ -64,6 +64,9 @@
   # Enable my zoxide configuration
   applications.terminal.tools.zoxide.enable = true;
 
+  # Enable my bat configuration
+  applications.terminal.tools.bat.enable = true;
+
   # Example configurations (commented out for reference):
   # ====================================================
   #
