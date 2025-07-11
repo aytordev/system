@@ -45,9 +45,11 @@ in {
     };
 
     # Configuración adicional para shells
-    programs.bash.initExtra = mkBefore ''
-      eval "$(${cfg.package}/bin/zoxide init --cmd cd bash)"
-    '';
+    home.file.".config/bash/conf.d/zoxide.sh" = lib.mkIf config.applications.terminal.shells.bash.enable {
+      text = ''
+        eval "$(${cfg.package}/bin/zoxide init --cmd cd bash)"
+      '';
+    };
 
     programs.zsh.initContent = mkBefore ''
       eval "$(${cfg.package}/bin/zoxide init --cmd cd zsh)"

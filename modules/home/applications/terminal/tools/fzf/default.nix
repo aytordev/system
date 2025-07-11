@@ -140,9 +140,9 @@ in {
       '';
     };
 
-    # Bash configuration
-    programs.bash = {
-      initExtra = ''
+    # Bash integration: write conf.d/fzf.sh if Bash está habilitado
+    home.file.".config/bash/conf.d/fzf.sh" = lib.mkIf config.applications.terminal.shells.bash.enable {
+      text = ''
         # Source fzf key bindings and completion
         if [[ -f "${pkgs.fzf}/share/fzf/key-bindings.bash" ]]; then
           source "${pkgs.fzf}/share/fzf/key-bindings.bash"
