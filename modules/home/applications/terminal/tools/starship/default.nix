@@ -261,26 +261,11 @@ in {
 
     # Bash integration
     (mkIf (cfg.enable && cfg.enableBashIntegration) {
-      home.file.".config/bash/conf.d/starship.sh" = {
+      home.file.".config/bash/conf.d/99-starship.sh" = {
         text = ''
-          # Initialize Starship with XDG compliance
-          if command -v starship >/dev/null 2>&1; then
-            # Set up Starship environment
-            export STARSHIP_CONFIG="${starshipConfigFile}"
-            export STARSHIP_CONFIG_DIR="${starshipConfigDir}"
-            export STARSHIP_CACHE="${xdgCacheHome}/starship"
-
-            # Ensure directories exist
-            for dir in "$STARSHIP_CACHE" "$STARSHIP_CONFIG_DIR/modules"; do
-              if [ ! -d "$dir" ]; then
-                mkdir -p "$dir"
-              fi
-            done
-
-            # Initialize starship
-            eval "$(starship init bash --print-full-init)"
-          fi
-        ''; # Suppress error if starship fails
+          # Initialize Starship prompt
+          eval "$(starship init bash)"
+        '';
       };
     })
   ]);

@@ -79,6 +79,7 @@ in {
             [ -f "$f" ] && . "$f"
           done
 
+
           # For macOS Terminal.app session restoration
           if [ "$(uname -s)" = "Darwin" ] && [ -n "$TERM_SESSION_ID" ]; then
             # Just ensure the symlink exists (handled by home.activation)
