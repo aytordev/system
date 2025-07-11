@@ -103,10 +103,6 @@ in {
 
             # fzf configuration is managed by tools/fzf module
 
-            # Prompt is managed by Starship
-            # Clear any existing prompt commands to avoid conflicts
-            $env.PROMPT_COMMAND = { "" }
-            $env.PROMPT_COMMAND_RIGHT = { "" }
           '';
         };
       };
@@ -119,11 +115,6 @@ in {
           $DRY_RUN_CMD mkdir -p "${xdgDataHome}/nu"
           $DRY_RUN_CMD chmod 700 "${xdgDataHome}/nu"
           $DRY_RUN_CMD mkdir -p "${xdgCacheHome}/nu"
-        '';
-
-        # Ensure starship cache directory exists
-        createStarshipDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
-          $DRY_RUN_CMD mkdir -p "${xdgCacheHome}/starship"
         '';
       };
     }

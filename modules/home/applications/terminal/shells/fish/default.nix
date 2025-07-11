@@ -102,37 +102,6 @@ in {
           end
         '';
 
-        # Shell aliases
-        shellAliases = {
-          # Common commands
-          ls = "command ls -F --color=auto";
-          ll = "ls -lh";
-          la = "ls -A";
-          l = "ls -CF";
-
-          # Git shortcuts
-          gs = "git status";
-          gd = "git diff";
-          gco = "git checkout";
-          gcb = "git checkout -b";
-          gcm = "git commit -m";
-          gaa = "git add --all";
-          gp = "git push";
-
-          # System commands
-          rm = "rm -i";
-          cp = "cp -i";
-          mv = "mv -i";
-
-          # NixOS
-          nixos-rebuild = "sudo nixos-rebuild";
-          home-manager = "nix-shell -p home-manager --run 'home-manager --flake ~/nixos-config';";
-
-          # Python
-          python = "python3";
-          pip = "pip3";
-        };
-
         # Plugins
         plugins = [
           {
