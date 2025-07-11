@@ -67,6 +67,9 @@
   # Enable my bat configuration
   applications.terminal.tools.bat.enable = true;
 
+  # Enable my atuin configuration
+  applications.terminal.tools.atuin.enable = true;
+
   # Example configurations (commented out for reference):
   # ====================================================
   #
