@@ -45,7 +45,7 @@ in {
     };
 
     # Configuración adicional para shells
-    home.file.".config/bash/conf.d/tools/13-zoxide.sh" = lib.mkIf config.applications.terminal.shells.bash.enable {
+    home.file.".config/bash/conf.d/tools/zoxide.sh" = lib.mkIf config.applications.terminal.shells.bash.enable {
       text = ''
         eval "$(${cfg.package}/bin/zoxide init --cmd cd bash)"
       '';
