@@ -80,6 +80,9 @@
   # Enable my btop configuration
   applications.terminal.tools.btop.enable = true;
 
+  # Enable carapace for shell completions
+  applications.terminal.tools.carapace.enable = true;
+
   # Example configurations (commented out for reference):
   # ====================================================
   #
