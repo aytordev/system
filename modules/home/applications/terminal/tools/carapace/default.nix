@@ -29,7 +29,7 @@ in {
       # Carapace shell integration
       if [ -n "$ZSH_VERSION" ]; then
         export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
-        
+
         # Only initialize carapace if we're in an interactive shell
         if [[ $- == *i* ]]; then
           # Source carapace completions if available
@@ -39,7 +39,7 @@ in {
           fi
         fi
       fi
-      
+
       # Custom completion formatting
       zstyle ':completion:*' format '%F{8}%d%f'
       zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
