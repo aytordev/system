@@ -1,18 +1,19 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-
-let
-  cfg = config.applications.terminal.tools.btop;
-in
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
+  cfg = config.applications.terminal.tools.btop;
+in {
   options.applications.terminal.tools.btop = {
     enable = mkEnableOption "btop - A resource monitor that shows usage and stats for processor, memory, disks, network and processes";
   };
 
   config = mkIf cfg.enable {
     # Ensure the btop package is installed
-    home.packages = with pkgs; [ btop ];
+    home.packages = with pkgs; [btop];
 
     programs.btop = {
       enable = true;
