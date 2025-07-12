@@ -62,6 +62,7 @@
       . ${pkgs.nix-bash-completions}/share/bash-completion/completions/nix
 
     # Source additional configs from conf.d if they exist
+    # Load configurations in order:
     for f in "${bashConfigDir}/conf.d/"*.sh; do
       [ -f "$f" ] && . "$f"
     done
