@@ -1,10 +1,12 @@
-{ config, lib, ... }:
-let
+{
+  config,
+  lib,
+  ...
+}: let
   inherit (lib) mkIf mkEnableOption optionalAttrs;
 
   cfg = config.applications.terminal.tools.atuin;
-in
-{
+in {
   options.applications.terminal.tools.atuin = {
     enable = mkEnableOption "atuin";
     enableDebug = mkEnableOption "atuin daemon debug logging";

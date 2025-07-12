@@ -77,6 +77,9 @@
   # Enable my bottom configuration
   applications.terminal.tools.bottom.enable = true;
 
+  # Enable my btop configuration
+  applications.terminal.tools.btop.enable = true;
+
   # Example configurations (commented out for reference):
   # ====================================================
   #

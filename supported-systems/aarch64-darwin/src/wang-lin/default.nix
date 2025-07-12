@@ -76,6 +76,7 @@
         "modules/home/applications/terminal/tools/bat/default.nix"
         "modules/home/applications/terminal/tools/atuin/default.nix"
         "modules/home/applications/terminal/tools/bottom/default.nix"
+        "modules/home/applications/terminal/tools/btop/default.nix"
 
         ## Shells
         "modules/home/applications/terminal/shells/zsh/default.nix"

@@ -13,7 +13,7 @@ in {
 
   config = mkIf cfg.enable {
     # Ensure the bottom package is installed
-    home.packages = with pkgs; [ bottom ];
+    home.packages = with pkgs; [bottom];
 
     programs.bottom = {
       enable = true;

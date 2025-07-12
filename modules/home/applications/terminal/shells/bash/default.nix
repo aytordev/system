@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: with lib; let
+}:
+with lib; let
   cfg = config.applications.terminal.shells.bash;
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
@@ -72,8 +73,8 @@
       # Just ensure the symlink exists (handled by home.activation)
       :
     fi
-  ''; in {
-
+  '';
+in {
   options.applications.terminal.shells.bash = {
     enable = mkEnableOption "Bash shell with useful defaults";
   };
