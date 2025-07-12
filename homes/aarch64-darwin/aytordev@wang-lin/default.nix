@@ -74,6 +74,9 @@
   applications.terminal.tools.atuin.enableZshIntegration = true;
   applications.terminal.tools.atuin.enableNushellIntegration = true;
 
+  # Enable my bottom configuration
+  applications.terminal.tools.bottom.enable = true;
+
   # Example configurations (commented out for reference):
   # ====================================================
   #
