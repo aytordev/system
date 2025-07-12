@@ -17,7 +17,7 @@ in {
 
     programs.bottom = {
       enable = true;
-      package = bottom;
+      package = pkgs.bottom;
 
       settings = {
         flags.group_processes = true;
