@@ -47,20 +47,7 @@ with lib; let
     # Source system-wide bashrc if it exists
     [ -f /etc/bashrc ] && . /etc/bashrc
 
-    # Enable programmable completion (Nix/XDG first, fallback to system)
-    if ! shopt -oq posix; then
-      if [ -f ${pkgs.bash-completion}/share/bash-completion/bash_completion ]; then
-        . ${pkgs.bash-completion}/share/bash-completion/bash_completion
-      elif [ -f /usr/share/bash-completion/bash_completion ]; then
-        . /usr/share/bash-completion/bash_completion
-      elif [ -f /etc/bash_completion ]; then
-        . /etc/bash_completion
-      fi
-    fi
-
-    # Load nix completions
-    [ -f ${pkgs.nix-bash-completions}/share/bash-completion/completions/nix ] &&
-      . ${pkgs.nix-bash-completions}/share/bash-completion/completions/nix
+    # Completions are handled by carapace
 
     # Source additional configs from conf.d if they exist
     # Load configurations in order:
@@ -82,8 +69,6 @@ in {
   config = mkIf cfg.enable (mkMerge [
     {
       home.packages = with pkgs; [
-        bash-completion
-        nix-bash-completions
         bash
       ];
 
