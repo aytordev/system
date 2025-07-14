@@ -43,7 +43,6 @@
         "modules/home/applications/terminal/tools/carapace/default.nix"
         "modules/home/applications/terminal/tools/ssh/default.nix"
         "modules/home/applications/terminal/tools/comma/default.nix"
-        "modules/home/applications/terminal/tools/dircolors/default.nix"
         "modules/home/applications/terminal/shells/zsh/default.nix"
         "modules/home/applications/terminal/shells/bash/default.nix"
         "modules/home/applications/terminal/shells/fish/default.nix"

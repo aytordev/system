@@ -47,5 +47,4 @@
   };
   applications.terminal.tools.ssh.extraConfig = ''
   '';
-  applications.terminal.tools.dircolors.enable = true;
 }
