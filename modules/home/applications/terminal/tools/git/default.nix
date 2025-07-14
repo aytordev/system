@@ -87,6 +87,7 @@ in {
   };
   config = let
     cfg = config.applications.terminal.tools.git;
+    bashConfigDir = "${config.xdg.configHome}/bash/conf.d";
   in
     lib.mkIf cfg.enable (lib.mkMerge [
       {
@@ -94,8 +95,15 @@ in {
         programs.git = gitConfig;
         programs.mergiraf.enable = true;
       }
-      (lib.mkIf (shell-aliases != {}) {
-        home.shellAliases = shell-aliases.shellAliases;
+      (lib.mkIf (shell-aliases.allAliases != {}) {
+        # Create git-aliases.sh in the Bash conf.d directory
+        home.file."${bashConfigDir}/git-aliases.sh" = {
+          text = shell-aliases.generateGitAliasesFile shell-aliases.allAliases;
+          executable = true;
+        };
+        
+        # For backward compatibility, also set shell aliases
+        home.shellAliases = shell-aliases.allAliases;
       })
     ]);
 }
