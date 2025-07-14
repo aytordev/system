@@ -25,14 +25,12 @@
       RedHatEnterprise = "󱄛";
     };
   };
-
   username = {
     show_always = true;
     style_user = "fg:mauve";
     style_root = "fg:mauve";
     format = "[$user]($style)";
   };
-
   localip = {
     ssh_only = false;
     style = "fg:surface0";

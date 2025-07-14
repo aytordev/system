@@ -10,11 +10,8 @@ in {
   options.applications.terminal.tools.btop = {
     enable = mkEnableOption "btop - A resource monitor that shows usage and stats for processor, memory, disks, network and processes";
   };
-
   config = mkIf cfg.enable {
-    # Ensure the btop package is installed
     home.packages = with pkgs; [btop];
-
     programs.btop = {
       enable = true;
       package = pkgs.btop;

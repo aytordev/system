@@ -1,6 +1,5 @@
 {lib}: {
   palette = "catppuccin_mocha";
-
   palettes.catppuccin_mocha = {
     rosewater = "#f5e0dc";
     flamingo = "#f2cdcd";
