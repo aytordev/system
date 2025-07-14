@@ -44,6 +44,7 @@
         "modules/home/applications/terminal/tools/ssh/default.nix"
         "modules/home/applications/terminal/tools/comma/default.nix"
         "modules/home/applications/terminal/tools/direnv/default.nix"
+        "modules/home/applications/terminal/tools/eza/default.nix"
         "modules/home/applications/terminal/shells/zsh/default.nix"
         "modules/home/applications/terminal/shells/bash/default.nix"
         "modules/home/applications/terminal/shells/fish/default.nix"
