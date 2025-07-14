@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-let
+with lib; let
   cfg = config.applications.terminal.tools.git-crypt;
 in {
   options.applications.terminal.tools.git-crypt = {
@@ -15,6 +12,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [ git-crypt ];
+    home.packages = with pkgs; [git-crypt];
   };
 }
