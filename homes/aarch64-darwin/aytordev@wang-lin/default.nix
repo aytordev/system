@@ -28,6 +28,7 @@
   applications.terminal.tools.atuin.enable = true;
   applications.terminal.tools.atuin.enableBashIntegration = true;
   applications.terminal.tools.atuin.enableFishIntegration = true;
+  applications.terminal.tools.fastfetch.enable = true;
   applications.terminal.tools.atuin.enableZshIntegration = true;
   applications.terminal.tools.atuin.enableNushellIntegration = true;
   applications.terminal.tools.bottom.enable = true;
