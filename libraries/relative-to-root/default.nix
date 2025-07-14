@@ -29,10 +29,8 @@
       if builtins.isString pathStr
       then
         if lib.strings.hasPrefix "/" pathStr
-        then
-          pathStr
-        else
-          joinPath repoRoot pathStr
+        then pathStr
+        else joinPath repoRoot pathStr
       else if builtins.isList pathStr
       then
         if pathStr == []

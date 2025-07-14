@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}: let
+{pkgs, ...}: let
   statix = pkgs.statix;
   checkPath = ".";
   checkScript = pkgs.writeShellScript "check-statix" ''
