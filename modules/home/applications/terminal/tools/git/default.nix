@@ -92,8 +92,10 @@ in {
       {
         home.packages = gitPackages;
         programs.git = gitConfig;
-        home.shellAliases = shell-aliases;
         programs.mergiraf.enable = true;
       }
+      (lib.mkIf (shell-aliases != {}) {
+        home.shellAliases = shell-aliases.shellAliases;
+      })
     ]);
 }

@@ -201,7 +201,7 @@ with lib; let
     gkar = "gitk --all --date-order --remotes";
     gkas = "gitk --all --date-order --since=\"2 weeks ago\"";
   };
-  githubCliAliases = lib.mkIf config.programs.gh.enable {
+  githubCliAliases = {
     ghrc = "gh repo clone";
     ghrl = "gh repo list";
     ghrv = "gh repo view";
