@@ -29,14 +29,35 @@ in {
             type = types.listOf types.str;
             description = "List of host names for this known host entry";
           };
+          user = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            description = "Username to use when connecting to this host";
+          };
           publicKey = mkOption {
-            type = types.str;
-            description = "Public key for the host";
+            type = types.nullOr types.str;
+            default = null;
+            description = "Public key for the host (for verification)";
+          };
+          port = mkOption {
+            type = types.nullOr types.port;
+            default = null;
+            description = "Port to use when connecting to this host";
+          };
+          identityFile = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            description = "Path to the private key to use for this host";
+          };
+          identitiesOnly = mkOption {
+            type = types.nullOr types.bool;
+            default = null;
+            description = "Whether to use only the specified identity file";
           };
         };
       });
       default = {};
-      description = "Known hosts configuration";
+      description = "Known hosts configuration with per-host settings";
     };
 
     extraConfig = mkOption {
@@ -56,35 +77,51 @@ in {
     programs.ssh = {
       enable = true;
       
-      # Combine default configuration, known hosts, and user-provided config
+      # Generate clean SSH configuration without duplicates
       extraConfig = ''
-        # Default SSH configuration
+        # Default SSH configuration for all hosts
         Host *
           AddKeysToAgent yes
           IdentitiesOnly yes
           ForwardAgent no
           Compression no
-          ServerAliveInterval 0
+          ServerAliveInterval 15
           ServerAliveCountMax 3
           HashKnownHosts no
           UserKnownHostsFile ~/.ssh/known_hosts
-          ControlMaster no
-          ControlPath ~/.ssh/master-%r@%n:%p
-          ControlPersist no
+          ControlMaster auto
+          ControlPath ~/.ssh/controlmasters/%r@%h:%p
+          ControlPersist 10m
+          TCPKeepAlive yes
+          ServerAliveInterval 15
+          ServerAliveCountMax 3
+          GSSAPIAuthentication no
+          GSSAPIKeyExchange no
+          AddressFamily inet
+          Protocol 2
+          Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+          MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com
+          KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
 
         # Local development
         Host *.local
           Port ${toString cfg.port}
+          User ${config.home.username}
+          StrictHostKeyChecking no
+          UserKnownHostsFile /dev/null
 
-        # Known hosts
+        # Known hosts configuration
         ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: host: ''
           # ${name}
           Host ${lib.concatStringsSep " " host.hostNames}
-            HostKeyAlias ${name}
+            ${lib.optionalString (host ? user) "User ${host.user}"}
             ${if host ? publicKey then "HostKey ${host.publicKey}" else ""}
+            ${if host ? port then "Port ${toString host.port}" else ""}
+            ${if host ? identityFile then "IdentityFile ${host.identityFile}" else ""}
+            ${if host ? identitiesOnly then "IdentitiesOnly ${if host.identitiesOnly then "yes" else "no"}" else ""}
         '') cfg.knownHosts)}
 
-        # User-provided configuration
+        # User-provided configuration (overrides above settings)
         ${cfg.extraConfig}
       '';
       
