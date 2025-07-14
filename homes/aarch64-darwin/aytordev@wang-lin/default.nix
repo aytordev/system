@@ -86,11 +86,6 @@
   # SSH configuration
   applications.terminal.tools.ssh.enable = true;
     
-  # Add your public keys here (they'll be added to ~/.ssh/authorized_keys)
-  applications.terminal.tools.ssh.authorizedKeys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILsKijb0PXKfsAmPu0t0jIsiYqfvhyiwPdrWWIwCSzpJ"
-  ];
-    
   # Known hosts configuration with enhanced options
   applications.terminal.tools.ssh.knownHosts = {
     github = {

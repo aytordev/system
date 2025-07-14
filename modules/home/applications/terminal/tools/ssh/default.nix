@@ -132,10 +132,19 @@ in {
       ];
     };
 
-    # Set up authorized_keys if any keys are provided
-    home.file = lib.mkIf (cfg.authorizedKeys != []) {
-      ".ssh/authorized_keys".text = lib.concatStringsSep "\n" cfg.authorizedKeys;
-    };
+    # Set up SSH related files and directories
+    home.file = lib.mkMerge [
+      # Set up authorized_keys if any keys are provided
+      (lib.optionalAttrs (cfg.authorizedKeys != []) {
+        ".ssh/authorized_keys".text = lib.concatStringsSep "\n" cfg.authorizedKeys;
+      })
+    ];
+    
+    # Create controlmasters directory for connection sharing
+    home.activation.createSshControlmastersDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      mkdir -p ~/.ssh/controlmasters
+      chmod 700 ~/.ssh/controlmasters
+    '';
 
     # Shell aliases for SSH key management
     home.shellAliases = {
