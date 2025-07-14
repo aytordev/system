@@ -9,7 +9,7 @@
 in {
   options.applications.terminal.tools.ssh = {
     enable = mkEnableOption "SSH configuration";
-    
+
     port = mkOption {
       type = types.port;
       default = 2222;
@@ -73,10 +73,10 @@ in {
     };
   };
 
-  config = lib.mkIf cfg.enable {    
+  config = lib.mkIf cfg.enable {
     programs.ssh = {
       enable = true;
-      
+
       forwardAgent = false;
       compression = false;
       serverAliveInterval = 15;
@@ -85,7 +85,7 @@ in {
       controlMaster = "auto";
       controlPath = "~/.ssh/controlmasters/%r@%h:%p";
       controlPersist = "10m";
-      
+
       # Security settings
       extraOptionOverrides = {
         Ciphers = "chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr";
@@ -95,9 +95,9 @@ in {
         AddressFamily = "inet";
         TCPKeepAlive = "yes";
       };
-      
+
       extraConfig = cfg.extraConfig;
-      
+
       matchBlocks = lib.mkMerge [
         # Configuración para hosts locales
         {
@@ -110,23 +110,26 @@ in {
             };
           };
         }
-        
+
         # Convertir knownHosts a matchBlocks
         (lib.mapAttrs' (name: host: {
-          name = lib.concatStringsSep " " host.hostNames;
-          value = {
-            user = host.user or null;
-            port = host.port or null;
-            identityFile = host.identityFile or null;
-            identitiesOnly = host.identitiesOnly or null;
-            extraOptions = lib.optionalAttrs (host ? publicKey) {
-              # Use HostKeyAlias for proper host key verification
-              HostKeyAlias = lib.head host.hostNames;
-              # The public key will be added to known_hosts by Home Manager
-            } // (host.extraOptions or {});
-          };
-        }) cfg.knownHosts)
-        
+            name = lib.concatStringsSep " " host.hostNames;
+            value = {
+              user = host.user or null;
+              port = host.port or null;
+              identityFile = host.identityFile or null;
+              identitiesOnly = host.identitiesOnly or null;
+              extraOptions =
+                lib.optionalAttrs (host ? publicKey) {
+                  # Use HostKeyAlias for proper host key verification
+                  HostKeyAlias = lib.head host.hostNames;
+                  # The public key will be added to known_hosts by Home Manager
+                }
+                // (host.extraOptions or {});
+            };
+          })
+          cfg.knownHosts)
+
         # Configuración adicional del usuario
         cfg.matchBlocks
       ];
@@ -139,7 +142,7 @@ in {
         ".ssh/authorized_keys".text = lib.concatStringsSep "\n" cfg.authorizedKeys;
       })
     ];
-    
+
     # Create controlmasters directory for connection sharing
     home.activation.createSshControlmastersDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
       mkdir -p ~/.ssh/controlmasters

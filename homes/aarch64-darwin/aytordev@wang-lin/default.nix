@@ -85,7 +85,7 @@
 
   # SSH configuration
   applications.terminal.tools.ssh.enable = true;
-    
+
   # Known hosts configuration with enhanced options
   applications.terminal.tools.ssh.knownHosts = {
     github = {
@@ -97,7 +97,7 @@
       port = 22;
     };
   };
-    
+
   # Additional SSH configuration
   applications.terminal.tools.ssh.extraConfig = ''
     # Additional SSH configuration can be added here
