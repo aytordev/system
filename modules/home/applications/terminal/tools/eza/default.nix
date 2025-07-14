@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-let
+with lib; let
   cfg = config.applications.terminal.tools.eza;
 in {
   options.applications.terminal.tools.eza = {
@@ -15,7 +12,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [ eza ];
+    home.packages = with pkgs; [eza];
 
     programs.eza = {
       enable = true;
