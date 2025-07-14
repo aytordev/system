@@ -1,15 +1,17 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkEnableOption mkIf;
-
 in {
   options.applications.terminal.tools.fastfetch = {
     enable = mkEnableOption "fastfetch";
   };
 
   config = mkIf config.applications.terminal.tools.fastfetch.enable {
-    home.packages = with pkgs; [ fastfetchMinimal ];
+    home.packages = with pkgs; [fastfetchMinimal];
 
     programs.fastfetch = {
       enable = true;
