@@ -83,6 +83,37 @@
   # Enable carapace for shell completions
   applications.terminal.tools.carapace.enable = true;
 
+  # SSH configuration
+  applications.terminal.tools.ssh.enable = true;
+    
+  # Add your public keys here (they'll be added to ~/.ssh/authorized_keys)
+  applications.terminal.tools.ssh.authorizedKeys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILsKijb0PXKfsAmPu0t0jIsiYqfvhyiwPdrWWIwCSzpJ"
+  ];
+    
+  # Known hosts configuration
+  applications.terminal.tools.ssh.knownHosts = {
+    github = {
+      hostNames = ["github.com"];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILsKijb0PXKfsAmPu0t0jIsiYqfvhyiwPdrWWIwCSzpJ";
+    };
+  };
+  
+  # Host-specific configurations
+  applications.terminal.tools.ssh.matchBlocks = {
+    # GitHub configuration
+    "github.com" = {
+      user = "git";
+      identityFile = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
+      identitiesOnly = true;
+    };
+  };
+    
+  # Additional SSH configuration
+  applications.terminal.tools.ssh.extraConfig = ''
+    # Add any additional SSH configuration here
+  '';
+
   # Example configurations (commented out for reference):
   # ====================================================
   #
