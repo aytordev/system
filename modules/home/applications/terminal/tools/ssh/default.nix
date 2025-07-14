@@ -120,7 +120,9 @@ in {
             identityFile = host.identityFile or null;
             identitiesOnly = host.identitiesOnly or null;
             extraOptions = lib.optionalAttrs (host ? publicKey) {
-              HostKey = host.publicKey;
+              # Use HostKeyAlias for proper host key verification
+              HostKeyAlias = lib.head host.hostNames;
+              # The public key will be added to known_hosts by Home Manager
             } // (host.extraOptions or {});
           };
         }) cfg.knownHosts)
