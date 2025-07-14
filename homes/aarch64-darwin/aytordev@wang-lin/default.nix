@@ -50,4 +50,5 @@
   applications.terminal.tools.direnv.enable = true;
   applications.terminal.tools.direnv.nix-direnv = true;
   applications.terminal.tools.direnv.silent = true;
+  applications.terminal.tools.eza.enable = true;
 }
