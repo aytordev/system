@@ -33,6 +33,7 @@
   applications.terminal.tools.bottom.enable = true;
   applications.terminal.tools.btop.enable = true;
   applications.terminal.tools.carapace.enable = true;
+  applications.terminal.tools.comma.enable = true;
   applications.terminal.tools.ssh.enable = true;
   applications.terminal.tools.ssh.knownHosts = {
     github = {
