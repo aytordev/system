@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   inherit (lib) mkEnableOption mkOption types;
@@ -124,12 +125,17 @@ in {
       mkdir -p ~/.ssh/controlmasters
       chmod 700 ~/.ssh/controlmasters
     '';
+    home.packages = [
+      (pkgs.writeShellScriptBin "ssh-fix-perms" ''
+        #!/bin/sh
+        find "$HOME/.ssh" -type f -not -name "*.pub" -exec chmod 600 {} +
+        find "$HOME/.ssh" -type d -exec chmod 700 {} +
+        find "$HOME/.ssh" -name "*.pub" -exec chmod 644 {} + 2>/dev/null
+      '')
+    ];
+    
     home.shellAliases = {
-      ssh-fix-perms = ''
-        find ~/.ssh -type f -not -name "*.pub" -exec chmod 600 {} \; && \
-        find ~/.ssh -type d -exec chmod 700 {} \; && \
-        find ~/.ssh -name "*.pub" -exec chmod 644 {} \;
-      '';
+      ssh-fix-perms = "${config.home.profileDirectory}/bin/ssh-fix-perms";
     };
   };
 }
