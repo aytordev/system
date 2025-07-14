@@ -4,13 +4,9 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-let
+with lib; let
   cfg = config.applications.terminal.tools.gh;
-in
-{
+in {
   options.applications.terminal.tools.gh = {
     enable = mkEnableOption "GitHub CLI tool";
 
