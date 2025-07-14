@@ -101,7 +101,7 @@ in {
           text = shell-aliases.generateGitAliasesFile shell-aliases.allAliases;
           executable = true;
         };
-        
+
         # For backward compatibility, also set shell aliases
         home.shellAliases = shell-aliases.allAliases;
       })
