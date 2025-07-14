@@ -78,6 +78,7 @@
         "modules/home/applications/terminal/tools/bottom/default.nix"
         "modules/home/applications/terminal/tools/btop/default.nix"
         "modules/home/applications/terminal/tools/carapace/default.nix"
+        "modules/home/applications/terminal/tools/ssh/default.nix"
 
         ## Shells
         "modules/home/applications/terminal/shells/zsh/default.nix"

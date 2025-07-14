@@ -83,6 +83,27 @@
   # Enable carapace for shell completions
   applications.terminal.tools.carapace.enable = true;
 
+  # SSH configuration
+  applications.terminal.tools.ssh.enable = true;
+
+  # Known hosts configuration with enhanced options
+  applications.terminal.tools.ssh.knownHosts = {
+    github = {
+      hostNames = ["github.com"];
+      user = "git";
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILsKijb0PXKfsAmPu0t0jIsiYqfvhyiwPdrWWIwCSzpJ";
+      identityFile = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
+      identitiesOnly = true;
+      port = 22;
+    };
+  };
+
+  # Additional SSH configuration
+  applications.terminal.tools.ssh.extraConfig = ''
+    # Additional SSH configuration can be added here
+    # These settings will override the defaults
+  '';
+
   # Example configurations (commented out for reference):
   # ====================================================
   #
