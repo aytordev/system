@@ -133,7 +133,7 @@ in {
         find "$HOME/.ssh" -name "*.pub" -exec chmod 644 {} + 2>/dev/null
       '')
     ];
-    
+
     home.shellAliases = {
       ssh-fix-perms = "${config.home.profileDirectory}/bin/ssh-fix-perms";
     };
