@@ -73,60 +73,61 @@ in {
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {    
     programs.ssh = {
       enable = true;
       
-      # Generate clean SSH configuration without duplicates
-      extraConfig = ''
-        # Default SSH configuration for all hosts
-        Host *
-          AddKeysToAgent yes
-          IdentitiesOnly yes
-          ForwardAgent no
-          Compression no
-          ServerAliveInterval 15
-          ServerAliveCountMax 3
-          HashKnownHosts no
-          UserKnownHostsFile ~/.ssh/known_hosts
-          ControlMaster auto
-          ControlPath ~/.ssh/controlmasters/%r@%h:%p
-          ControlPersist 10m
-          TCPKeepAlive yes
-          ServerAliveInterval 15
-          ServerAliveCountMax 3
-          GSSAPIAuthentication no
-          GSSAPIKeyExchange no
-          AddressFamily inet
-          Protocol 2
-          Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
-          MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com
-          KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
-
-        # Local development
-        Host *.local
-          Port ${toString cfg.port}
-          User ${config.home.username}
-          StrictHostKeyChecking no
-          UserKnownHostsFile /dev/null
-
-        # Known hosts configuration
-        ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: host: ''
-          # ${name}
-          Host ${lib.concatStringsSep " " host.hostNames}
-            ${lib.optionalString (host ? user) "User ${host.user}"}
-            ${if host ? publicKey then "HostKey ${host.publicKey}" else ""}
-            ${if host ? port then "Port ${toString host.port}" else ""}
-            ${if host ? identityFile then "IdentityFile ${host.identityFile}" else ""}
-            ${if host ? identitiesOnly then "IdentitiesOnly ${if host.identitiesOnly then "yes" else "no"}" else ""}
-        '') cfg.knownHosts)}
-
-        # User-provided configuration (overrides above settings)
-        ${cfg.extraConfig}
-      '';
+      forwardAgent = false;
+      compression = false;
+      serverAliveInterval = 15;
+      serverAliveCountMax = 3;
+      hashKnownHosts = false;
+      controlMaster = "auto";
+      controlPath = "~/.ssh/controlmasters/%r@%h:%p";
+      controlPersist = "10m";
       
-      # User-defined match blocks
-      matchBlocks = cfg.matchBlocks;
+      # Security settings
+      extraOptionOverrides = {
+        Ciphers = "chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr";
+        MACs = "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com";
+        KexAlgorithms = "curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256";
+        Protocol = "2";
+        AddressFamily = "inet";
+        TCPKeepAlive = "yes";
+      };
+      
+      extraConfig = cfg.extraConfig;
+      
+      matchBlocks = lib.mkMerge [
+        # Configuración para hosts locales
+        {
+          "*.local" = {
+            user = config.home.username;
+            port = cfg.port;
+            extraOptions = {
+              StrictHostKeyChecking = "no";
+              UserKnownHostsFile = "/dev/null";
+            };
+          };
+        }
+        
+        # Convertir knownHosts a matchBlocks
+        (lib.mapAttrs' (name: host: {
+          name = lib.concatStringsSep " " host.hostNames;
+          value = {
+            user = host.user or null;
+            port = host.port or null;
+            identityFile = host.identityFile or null;
+            identitiesOnly = host.identitiesOnly or null;
+            extraOptions = lib.optionalAttrs (host ? publicKey) {
+              HostKey = host.publicKey;
+            } // (host.extraOptions or {});
+          };
+        }) cfg.knownHosts)
+        
+        # Configuración adicional del usuario
+        cfg.matchBlocks
+      ];
     };
 
     # Set up authorized_keys if any keys are provided
