@@ -1,8 +1,4 @@
-# Git ignore patterns
-# Returns a list of gitignore patterns to be used in the git configuration
-# Base ignore patterns
 [
-  # Common temporary files
   "*~"
   "*.swp"
   "*.swo"
@@ -11,8 +7,6 @@
   "*.backup"
   "*.tmp"
   "*.temp"
-
-  # System files
   ".DS_Store"
   ".DS_Store?"
   "Thumbs.db"
@@ -20,8 +14,6 @@
   "Desktop.ini"
   "$RECYCLE.BIN/"
   "*.stackdump"
-
-  # Build artifacts and logs
   "*.o"
   "*.pyc"
   "*.pyo"
@@ -29,8 +21,6 @@
   "*.so"
   "*.dll"
   "*.dylib"
-
-  # Environment and package directories
   ".direnv/"
   ".env"
   ".venv"
@@ -41,8 +31,6 @@
   "build/"
   "*.egg-info/"
   "__pycache__/"
-
-  # IDE/Editor files
   ".vscode/"
   "!.vscode/extensions.json"
   "!.vscode/*.code-snippets"
@@ -55,8 +43,6 @@
   "*.kdev4"
   ".kdev4/"
   "*.kdev4.*"
-
-  # Version control
   ".git/"
   ".gitattributes"
   ".gitconfig"
@@ -64,14 +50,9 @@
   ".gitmodules"
   ".gitkeep"
   ".git-rewrite/"
-
-  # Language specific
-  # Nix
   "result/"
   "result-*/"
   "shell.nix"
-
-  # Node.js
   "node_modules/"
   "npm-debug.log*"
   "yarn-debug.log*"
@@ -83,15 +64,11 @@
   "!.yarn/releases"
   "!.yarn/sdks"
   "!.yarn/versions"
-
-  # Logs and databases
   "*.log"
   "logs/"
   "*.sqlite"
   "*.sqlite3"
   "*.db"
-
-  # Project specific
   ".env.local"
   ".env.development"
   ".env.test"

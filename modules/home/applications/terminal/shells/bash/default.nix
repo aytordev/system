@@ -9,55 +9,29 @@ with lib; let
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
   xdgCacheHome = "${config.xdg.cacheHome}";
-
-  # Define bash configuration directories
   bashConfigDir = "${xdgConfigHome}/bash";
   bashDataDir = "${xdgDataHome}/bash";
   bashCacheDir = "${xdgCacheHome}/bash";
-
-  # Define configuration files
   bashrc = ''
-    # This file is managed by NixOS/Home Manager
-    # All Bash configuration is centralized here for XDG compliance
-
-    # Set up XDG directories
     export XDG_CONFIG_HOME="${xdgConfigHome}"
     export XDG_DATA_HOME="${xdgDataHome}"
     export XDG_CACHE_HOME="${xdgCacheHome}"
-
-    # Set up Bash specific directories
     export BASH_CONFIG_DIR="${bashConfigDir}"
     export BASH_DATA_DIR="${bashDataDir}"
     export BASH_CACHE_DIR="${bashCacheDir}"
     export BASH_SESSION_DIR="${bashDataDir}/sessions"
-
-    # History configuration
     export HISTFILE="${bashDataDir}/history"
     export HISTSIZE=10000
     export HISTFILESIZE=100000
     export HISTCONTROL=ignoredups:erasedups
     shopt -s histappend
-
-    # Shell options
     shopt -s checkwinsize extglob globstar checkjobs autocd cdspell dirspell nocaseglob
-
-    # Set inputrc location
     export INPUTRC="${bashConfigDir}/inputrc"
-
-    # Source system-wide bashrc if it exists
     [ -f /etc/bashrc ] && . /etc/bashrc
-
-    # Completions are handled by carapace
-
-    # Source additional configs from conf.d if they exist
-    # Load configurations in order:
     for f in "${bashConfigDir}/conf.d/"*.sh; do
       [ -f "$f" ] && . "$f"
     done
-
-    # For macOS Terminal.app session restoration
     if [ "$(uname -s)" = "Darwin" ] && [ -n "$TERM_SESSION_ID" ]; then
-      # Just ensure the symlink exists (handled by home.activation)
       :
     fi
   '';
@@ -65,63 +39,43 @@ in {
   options.applications.terminal.shells.bash = {
     enable = mkEnableOption "Bash shell with useful defaults";
   };
-
   config = mkIf cfg.enable (mkMerge [
     {
       home.packages = with pkgs; [
         bash
       ];
-
-      # Disable programs.bash to avoid conflicts with our XDG configuration
       programs.bash = {
         enable = false;
       };
-
-      # Create main bash configuration files
       home.file.".config/bash/.bashrc" = {
         text = bashrc;
       };
-
-      # Create minimal stubs in $HOME that source our XDG config
       home.file.".bashrc" = {
         force = true;
         text = ''
-          # This is a minimal .bashrc that sources the XDG config
-          # All configuration is in ~/.config/bash/.bashrc
           [ -f "$HOME/.config/bash/.bashrc" ] && . "$HOME/.config/bash/.bashrc"
         '';
       };
-
       home.file.".bash_profile" = {
         force = true;
         text = ''
-          # This is a minimal .bash_profile that sources the XDG config
           [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
         '';
       };
-
       home.file.".profile" = {
         force = true;
         text = ''
-          # This is a minimal .profile that sources the XDG config
           [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
         '';
       };
-
-      # Create necessary directories with proper permissions
       home.activation.bashDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        # Create XDG base directories
         $DRY_RUN_CMD mkdir -p "${bashConfigDir}/conf.d"
         $DRY_RUN_CMD mkdir -p "${bashDataDir}/sessions"
         $DRY_RUN_CMD mkdir -p "${bashCacheDir}"
-
-        # Set secure permissions
         $DRY_RUN_CMD chmod 700 "${bashConfigDir}"
         $DRY_RUN_CMD chmod 700 "${bashDataDir}"
         $DRY_RUN_CMD chmod 700 "${bashDataDir}/sessions"
         $DRY_RUN_CMD chmod 700 "${bashCacheDir}"
-
-        # Handle macOS Terminal.app session directory
         if [ "$(uname -s)" = "Darwin" ]; then
           OLD_SESSION_DIR="$HOME/.bash_sessions"
           if [ -d "$OLD_SESSION_DIR" ] && [ ! -L "$OLD_SESSION_DIR" ]; then
@@ -132,22 +86,16 @@ in {
             $DRY_RUN_CMD ln -sf "${bashDataDir}/sessions" "$OLD_SESSION_DIR"
           fi
         fi
-
-        # Create readline configuration
         if [ ! -f "${bashConfigDir}/inputrc" ]; then
           $DRY_RUN_CMD echo "# Bash readline settings" > "${bashConfigDir}/inputrc"
           $DRY_RUN_CMD echo "set completion-ignore-case on" >> "${bashConfigDir}/inputrc"
           $DRY_RUN_CMD echo "set show-all-if-ambiguous on" >> "${bashConfigDir}/inputrc"
           $DRY_RUN_CMD echo "set show-all-if-unmodified on" >> "${bashConfigDir}/inputrc"
         fi
-
-        # Create a sample custom config if conf.d is empty
         if [ ! -f "${bashConfigDir}/conf.d/example.sh" ]; then
           $DRY_RUN_CMD echo "# Add your custom Bash configurations here" > "${bashConfigDir}/conf.d/example.sh"
           $DRY_RUN_CMD echo "# This file will be automatically sourced by .bashrc" >> "${bashConfigDir}/conf.d/example.sh"
         fi
-
-        # Create a sample history configuration
         if [ ! -f "${bashDataDir}/history" ]; then
           $DRY_RUN_CMD touch "${bashDataDir}/history"
           $DRY_RUN_CMD chmod 600 "${bashDataDir}/history"

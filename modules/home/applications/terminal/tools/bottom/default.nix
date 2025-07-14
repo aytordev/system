@@ -10,18 +10,13 @@ in {
   options.applications.terminal.tools.bottom = {
     enable = lib.mkEnableOption "bottom";
   };
-
   config = mkIf cfg.enable {
-    # Ensure the bottom package is installed
     home.packages = with pkgs; [bottom];
-
     programs.bottom = {
       enable = true;
       package = pkgs.bottom;
-
       settings = {
         flags.group_processes = true;
-
         row = [
           {
             ratio = 3;
@@ -44,10 +39,7 @@ in {
         ];
       };
     };
-
-    # Add bash configuration
     home.file.".config/bash/conf.d/bottom.sh".text = ''
-      # Use btm as a modern alternative to htop
       alias htop="${pkgs.bottom}/bin/btm"
     '';
   };

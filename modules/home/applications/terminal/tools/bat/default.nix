@@ -10,7 +10,6 @@ in {
   options.applications.terminal.tools.bat = {
     enable = lib.mkEnableOption "bat";
   };
-
   config = mkIf cfg.enable {
     programs.bat = {
       enable = true;
@@ -26,11 +25,9 @@ in {
         prettybat
       ];
     };
-
     home.shellAliases = {
       cat = "${getExe pkgs.bat} --style=auto";
     };
-
     home.file.".config/bash/conf.d/bat.sh".text = ''
       alias cat="${pkgs.bat}/bin/bat --style=auto"
     '';
