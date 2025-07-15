@@ -49,6 +49,7 @@
         "modules/home/applications/terminal/tools/gh/default.nix"
         "modules/home/applications/terminal/tools/git-crypt/default.nix"
         "modules/home/applications/terminal/tools/jq/default.nix"
+        "modules/home/applications/terminal/tools/jujutsu/default.nix"
         "modules/home/applications/terminal/shells/zsh/default.nix"
         "modules/home/applications/terminal/shells/bash/default.nix"
         "modules/home/applications/terminal/shells/fish/default.nix"
