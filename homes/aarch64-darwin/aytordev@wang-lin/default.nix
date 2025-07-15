@@ -55,4 +55,6 @@
   applications.terminal.tools.eza.enable = true;
   applications.terminal.tools.gh.enable = true;
   applications.terminal.tools.git-crypt.enable = true;
+  applications.terminal.tools.jujutsu.enable = true;
+  applications.terminal.tools.jujutsu.signByDefault = true;
 }
