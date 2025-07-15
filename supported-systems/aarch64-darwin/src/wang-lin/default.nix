@@ -49,6 +49,7 @@
         "modules/home/applications/terminal/tools/gh/default.nix"
         "modules/home/applications/terminal/tools/git-crypt/default.nix"
         "modules/home/applications/terminal/tools/jq/default.nix"
+        "modules/home/applications/terminal/tools/navi/default.nix"
         "modules/home/applications/terminal/tools/jujutsu/default.nix"
         "modules/home/applications/terminal/tools/lazygit/default.nix"
         "modules/home/applications/terminal/tools/lazydocker/default.nix"
