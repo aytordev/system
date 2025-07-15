@@ -48,6 +48,7 @@
   applications.terminal.tools.direnv.nix-direnv = true;
   applications.terminal.tools.direnv.silent = true;
   applications.terminal.tools.eza.enable = true;
+  applications.terminal.tools.nh.enable = true;
   applications.terminal.tools.gh.enable = true;
   applications.terminal.tools.git-crypt.enable = true;
   applications.terminal.tools.jujutsu.enable = true;
