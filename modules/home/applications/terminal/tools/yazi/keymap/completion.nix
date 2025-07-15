@@ -19,7 +19,6 @@
         ];
         desc = "Submit the completion and input";
       }
-
       {
         on = ["<A-k>"];
         run = "arrow -1";
@@ -30,7 +29,6 @@
         run = "arrow 1";
         desc = "Move cursor down";
       }
-
       {
         on = ["<Up>"];
         run = "arrow -1";
@@ -41,7 +39,6 @@
         run = "arrow 1";
         desc = "Move cursor down";
       }
-
       {
         on = ["~"];
         run = "help";

@@ -7,13 +7,10 @@
 }: let
   cfg = config.applications.terminal.tools.nh;
   inherit (lib) mkIf;
-
-  # Default configuration values
   defaultConfig = {
     clean.enable = true;
     flake = "/Users/${inputs.secrets.username}";
   };
-
   nhPackage = pkgs.nh.overrideAttrs {
     patches = [
       (pkgs.fetchpatch {
@@ -22,8 +19,6 @@
       })
     ];
   };
-
-  # Platform-specific nixre alias
   nixreAlias = "nh ${
     if pkgs.stdenv.hostPlatform.isLinux
     then "os"
@@ -45,7 +40,6 @@ in {
       description = "Path to the flake to use with nh";
     };
   };
-
   config = mkIf cfg.enable {
     programs.nh = {
       enable = true;
@@ -53,7 +47,6 @@ in {
       clean.enable = cfg.clean.enable;
       flake = cfg.flake;
     };
-
     home = {
       sessionVariables = {
         NH_SEARCH_PLATFORM = 1;

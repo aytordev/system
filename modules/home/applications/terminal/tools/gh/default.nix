@@ -9,7 +9,6 @@ with lib; let
 in {
   options.applications.terminal.tools.gh = {
     enable = mkEnableOption "GitHub CLI tool";
-
     gitCredentialHelper = {
       hosts = mkOption {
         type = with types; listOf str;
@@ -24,7 +23,6 @@ in {
       };
     };
   };
-
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       gh
@@ -34,7 +32,6 @@ in {
       gh-notify
       gh-dash
     ];
-
     programs.gh = {
       enable = true;
       gitCredentialHelper = {

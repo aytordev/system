@@ -9,14 +9,11 @@ in {
   options.applications.terminal.tools.fastfetch = {
     enable = mkEnableOption "fastfetch";
   };
-
   config = mkIf config.applications.terminal.tools.fastfetch.enable {
     home.packages = with pkgs; [fastfetchMinimal];
-
     programs.fastfetch = {
       enable = true;
       package = pkgs.fastfetchMinimal;
-
       settings = {
         "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json";
         logo = {
@@ -149,9 +146,8 @@ in {
             }
             {
               type = "custom";
-              format = "   {#39}   {#34}    {#36}    {#35}    {#34}    {#33}    {#32}    {#31} ";
+              format = "   {\"key\": \"value\"}";
             }
-            "break"
           ];
       };
     };

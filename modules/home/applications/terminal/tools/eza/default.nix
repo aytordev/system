@@ -10,10 +10,8 @@ in {
   options.applications.terminal.tools.eza = {
     enable = mkEnableOption "eza";
   };
-
   config = mkIf cfg.enable {
     home.packages = with pkgs; [eza];
-
     programs.eza = {
       enable = true;
       package = pkgs.eza;
@@ -29,12 +27,10 @@ in {
       git = true;
       icons = "auto";
     };
-
     home.shellAliases = {
       la = "${getExe pkgs.eza} -lah --tree";
       tree = "${getExe pkgs.eza} --tree --icons=always";
     };
-
     home.file.".config/bash/conf.d/eza.sh" = {
       text = ''
         if command -v eza &> /dev/null; then

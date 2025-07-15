@@ -8,15 +8,12 @@
   options.applications.terminal.tools.lazygit = {
     enable = lib.mkEnableOption "lazygit";
   };
-
   config = lib.mkIf config.applications.terminal.tools.lazygit.enable {
     home.packages = with pkgs; [
       lazygit
     ];
-
     programs.lazygit = {
       enable = true;
-
       settings = {
         gui = {
           authorColors = {
@@ -35,11 +32,9 @@
         };
       };
     };
-
     home.shellAliases = {
       lg = "lazygit";
     };
-
     home.file.".config/bash/conf.d/lazygit.sh" = {
       text = ''
         if command -v lazygit &> /dev/null; then

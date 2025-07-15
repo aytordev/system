@@ -5,8 +5,6 @@
 }: let
   cfg = config.applications.terminal.tools.navi;
   inherit (lib) mkIf;
-
-  # Default configuration values
   defaultStyle = {
     tag = {
       color = "green";
@@ -77,7 +75,6 @@ in {
       };
     };
   };
-
   config = mkIf cfg.enable {
     programs.navi = {
       enable = true;

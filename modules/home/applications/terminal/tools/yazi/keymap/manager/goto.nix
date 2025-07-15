@@ -12,14 +12,12 @@
   }: let
     defaultDesc =
       if isCommand
-      then null # Commands must provide their own descriptions
+      then null
       else "Go to the ${path} directory";
-
     description =
       if desc != null
       then desc
       else defaultDesc;
-
     runCmd =
       if isCommand
       then path
@@ -32,8 +30,6 @@
     run = runCmd;
     desc = description;
   };
-
-  # Define all goto locations with minimal required information
   gotoLocations = [
     {
       key = "D";

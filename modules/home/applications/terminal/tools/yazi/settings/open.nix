@@ -26,7 +26,6 @@
       "xz"
       "zip"
     ];
-
     generateArchiveRule = ext: {
       name = "*.${ext}";
       use = [
@@ -34,7 +33,6 @@
         "reveal"
       ];
     };
-
     archiveRules = map generateArchiveRule archiveExtensions;
   in {
     rules =
