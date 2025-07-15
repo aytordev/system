@@ -38,5 +38,9 @@
       url = "github:mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    yazi-flavors = {
+      url = "github:yazi-rs/flavors";
+      flake = false;
+    };
   };
 }
