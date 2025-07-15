@@ -35,6 +35,9 @@
   applications.terminal.tools.btop.enable = true;
   applications.terminal.tools.carapace.enable = true;
   applications.terminal.tools.comma.enable = true;
+  applications.terminal.emulators.ghostty.enable = true;
+  applications.terminal.emulators.ghostty.theme = "catppuccin-mocha";
+  applications.terminal.emulators.ghostty.enableThemes = true;
   applications.terminal.tools.ssh.enable = true;
   applications.terminal.tools.ssh.knownHosts.github.hostNames = ["github.com"];
   applications.terminal.tools.ssh.knownHosts.github.user = "git";
