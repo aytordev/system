@@ -13,86 +13,86 @@
                 # Pane Navigation using Alt + hjkl
                 {
                   bind = {
-                    _args = [ "Alt h" ];
-                    _children = [ { MoveFocus._args = [ "Left" ]; } ];
+                    _args = ["Alt h"];
+                    _children = [{MoveFocus._args = ["Left"];}];
                   };
                 }
                 {
                   bind = {
-                    _args = [ "Alt j" ];
-                    _children = [ { MoveFocus._args = [ "Down" ]; } ];
+                    _args = ["Alt j"];
+                    _children = [{MoveFocus._args = ["Down"];}];
                   };
                 }
                 {
                   bind = {
-                    _args = [ "Alt k" ];
-                    _children = [ { MoveFocus._args = [ "Up" ]; } ];
+                    _args = ["Alt k"];
+                    _children = [{MoveFocus._args = ["Up"];}];
                   };
                 }
                 {
                   bind = {
-                    _args = [ "Alt l" ];
-                    _children = [ { MoveFocus._args = [ "Right" ]; } ];
+                    _args = ["Alt l"];
+                    _children = [{MoveFocus._args = ["Right"];}];
                   };
                 }
 
                 # Pane Management (like :split and :vsplit)
                 {
                   bind = {
-                    _args = [ "Alt n" ];
-                    _children = [ { NewPane = { }; } ];
+                    _args = ["Alt n"];
+                    _children = [{NewPane = {};}];
                   };
                 } # New pane below (horizontal split)
                 {
                   bind = {
-                    _args = [ "Alt v" ];
-                    _children = [ { NewPane._props.direction = "Right"; } ];
+                    _args = ["Alt v"];
+                    _children = [{NewPane._props.direction = "Right";}];
                   };
                 } # New pane to the right (vertical split)
                 {
                   bind = {
-                    _args = [ "Alt x" ];
-                    _children = [ { CloseFocus = { }; } ];
+                    _args = ["Alt x"];
+                    _children = [{CloseFocus = {};}];
                   };
                 } # Close focused pane
                 {
                   bind = {
-                    _args = [ "Alt z" ];
-                    _children = [ { ToggleFocusFullscreen = { }; } ];
+                    _args = ["Alt z"];
+                    _children = [{ToggleFocusFullscreen = {};}];
                   };
                 } # Zoom/unzoom pane
 
                 # Tab Management
                 {
                   bind = {
-                    _args = [ "Alt t" ];
-                    _children = [ { NewTab = { }; } ];
+                    _args = ["Alt t"];
+                    _children = [{NewTab = {};}];
                   };
                 } # New tab
                 {
                   bind = {
-                    _args = [ "Ctrl l" ];
-                    _children = [ { GoToNextTab = { }; } ];
+                    _args = ["Ctrl l"];
+                    _children = [{GoToNextTab = {};}];
                   };
                 } # Go to next tab
                 {
                   bind = {
-                    _args = [ "Ctrl h" ];
-                    _children = [ { GoToPreviousTab = { }; } ];
+                    _args = ["Ctrl h"];
+                    _children = [{GoToPreviousTab = {};}];
                   };
                 } # Go to previous tab
 
                 # Enter other modes
                 {
                   bind = {
-                    _args = [ "Alt s" ];
-                    _children = [ { SwitchToMode._args = [ "Scroll" ]; } ];
+                    _args = ["Alt s"];
+                    _children = [{SwitchToMode._args = ["Scroll"];}];
                   };
                 }
                 {
                   bind = {
-                    _args = [ "Alt r" ];
-                    _children = [ { SwitchToMode._args = [ "RenamePane" ]; } ];
+                    _args = ["Alt r"];
+                    _children = [{SwitchToMode._args = ["RenamePane"];}];
                   };
                 }
               ];
@@ -107,7 +107,7 @@
                       "j"
                       "Down"
                     ];
-                    _children = [ { ScrollDown = { }; } ];
+                    _children = [{ScrollDown = {};}];
                   };
                 }
                 {
@@ -116,7 +116,7 @@
                       "k"
                       "Up"
                     ];
-                    _children = [ { ScrollUp = { }; } ];
+                    _children = [{ScrollUp = {};}];
                   };
                 }
                 {
@@ -125,7 +125,7 @@
                       "q"
                       "Esc"
                     ];
-                    _children = [ { SwitchToMode._args = [ "Locked" ]; } ];
+                    _children = [{SwitchToMode._args = ["Locked"];}];
                   };
                 }
               ];
@@ -136,17 +136,17 @@
               _children = [
                 {
                   bind = {
-                    _args = [ "Enter" ];
-                    _children = [ { SwitchToMode._args = [ "Locked" ]; } ];
+                    _args = ["Enter"];
+                    _children = [{SwitchToMode._args = ["Locked"];}];
                   };
                 }
                 {
                   bind = {
-                    _args = [ "Esc" ];
+                    _args = ["Esc"];
                     # This demonstrates multiple actions for a single bind
                     _children = [
-                      { UndoRenamePane = { }; }
-                      { SwitchToMode._args = [ "Locked" ]; }
+                      {UndoRenamePane = {};}
+                      {SwitchToMode._args = ["Locked"];}
                     ];
                   };
                 }

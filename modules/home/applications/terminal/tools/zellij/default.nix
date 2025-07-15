@@ -3,9 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-
-let
+}: let
   inherit (lib) mkIf;
 
   cfg = config.applications.terminal.tools.zellij;
@@ -16,8 +14,7 @@ let
     session_name=$(basename "$(pwd)")
     zellij attach --create "$session_name" options --default-cwd "$(pwd)"
   '';
-in
-{
+in {
   imports = [
     ./keybinds.nix
     ./layouts/dev.nix
@@ -43,10 +40,9 @@ in
         settings = {
           # clipboard provider
           copy_command =
-            if pkgs.stdenv.hostPlatform.isDarwin then
-              "pbcopy"
-            else
-              "";
+            if pkgs.stdenv.hostPlatform.isDarwin
+            then "pbcopy"
+            else "";
 
           auto_layouts = true;
           default_layout = "dev";

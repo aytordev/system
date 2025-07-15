@@ -18,7 +18,7 @@
                           };
                         };
                       }
-                      { "children" = { }; }
+                      {"children" = {};}
                       {
                         pane = {
                           size = 2;

@@ -18,7 +18,7 @@
                           };
                         };
                       }
-                      { "children" = { }; }
+                      {"children" = {};}
                       {
                         pane = {
                           size = 2;
@@ -64,7 +64,7 @@
                           ];
                         };
                       }
-                      { "children" = { }; }
+                      {"children" = {};}
                       {
                         pane = {
                           size = 2;
@@ -87,7 +87,7 @@
                         pane = {
                           split_direction = "horizontal";
                           _children = [
-                            { "children" = { }; }
+                            {"children" = {};}
                             {
                               pane = {
                                 command = "zsh";
