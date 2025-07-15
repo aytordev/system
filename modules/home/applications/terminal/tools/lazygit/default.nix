@@ -4,22 +4,19 @@
   inputs,
   pkgs,
   ...
-}:
-
-{
+}: {
   options.applications.terminal.tools.lazygit = {
     enable = lib.mkEnableOption "lazygit";
   };
 
   config = lib.mkIf config.applications.terminal.tools.lazygit.enable {
-
     home.packages = with pkgs; [
       lazygit
     ];
 
     programs.lazygit = {
       enable = true;
-      
+
       settings = {
         gui = {
           authorColors = {
