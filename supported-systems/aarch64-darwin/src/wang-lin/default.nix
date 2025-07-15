@@ -32,6 +32,7 @@
       (map libraries.relativeToRoot [
         "modules/home/user/default.nix"
         "modules/darwin/home/default.nix"
+        "modules/home/applications/terminal/emulators/warp/default.nix"
         "modules/home/applications/terminal/tools/git/default.nix"
         "modules/home/applications/terminal/tools/starship/default.nix"
         "modules/home/applications/terminal/tools/fzf/default.nix"
