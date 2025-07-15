@@ -1,11 +1,13 @@
-{ config, lib, pkgs, inputs, ... }:
-
-with lib;
-
-let
-  cfg = config.applications.terminal.tools.jujutsu;
-in
 {
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
+with lib; let
+  cfg = config.applications.terminal.tools.jujutsu;
+in {
   options.applications.terminal.tools.jujutsu = {
     enable = mkEnableOption "jujutsu version control system";
 
@@ -42,28 +44,30 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ cfg.package pkgs.lazyjj ];
+    home.packages = [cfg.package pkgs.lazyjj];
 
     programs.jujutsu = {
       enable = true;
       package = cfg.package;
 
-      settings = {
-        user = {
-          name = cfg.userName;
-          email = cfg.userEmail;
+      settings =
+        {
+          user = {
+            name = cfg.userName;
+            email = cfg.userEmail;
+          };
+          fetch.prune = true;
+          init.default_branch = "main";
+          lfs.enable = true;
+          push = {
+            # autoSetupRemote = true;
+            default = "current";
+          };
+          rebase.auto_stash = true;
+        }
+        // optionalAttrs cfg.signByDefault {
+          operation.signing_key = cfg.signingKey;
         };
-        fetch.prune = true;
-        init.default_branch = "main";
-        lfs.enable = true;
-        push = {
-          # autoSetupRemote = true;
-          default = "current";
-        };
-        rebase.auto_stash = true;
-      } // optionalAttrs cfg.signByDefault {
-        operation.signing_key = cfg.signingKey;
-      };
     };
   };
 }
