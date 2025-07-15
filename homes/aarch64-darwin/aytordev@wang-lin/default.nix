@@ -66,4 +66,5 @@
   applications.terminal.tools.navi.settings.style.snippet.width_percentage = 42;
   applications.terminal.tools.navi.settings.style.snippet.min_width = 45;
   applications.terminal.tools.ripgrep.enable = true;
+  applications.terminal.tools.yazi.enable = true;
 }
