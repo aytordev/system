@@ -11,7 +11,6 @@ with lib; let
     commit = "git commit";
     pull = "git pull";
     push = "git push";
-    status = "git status";
     st = "git status -sb";
     d = "git diff";
     gdiff = "git diff HEAD";
@@ -138,7 +137,6 @@ with lib; let
     grv = "git remote -v";
     gru = "git remote update";
     grup = "git remote update --prune";
-    grt = "cd $(git rev-parse --show-toplevel || echo \".\")";
   };
   resetAliases = {
     grs = "git reset --soft";
@@ -150,7 +148,6 @@ with lib; let
     gR = "git reset";
     gRh = "git reset --hard";
     gRs = "git reset --soft";
-    gpristine = "git reset --hard && git clean -dffx";
   };
   removeAliases = {
     grm = "git rm";
