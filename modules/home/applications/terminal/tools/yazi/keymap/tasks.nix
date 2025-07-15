@@ -16,7 +16,6 @@
         run = "close";
         desc = "Hide the task manager";
       }
-
       {
         on = ["k"];
         run = "arrow -1";
@@ -27,7 +26,6 @@
         run = "arrow 1";
         desc = "Move cursor down";
       }
-
       {
         on = ["<Up>"];
         run = "arrow -1";
@@ -38,7 +36,6 @@
         run = "arrow 1";
         desc = "Move cursor down";
       }
-
       {
         on = ["<Enter>"];
         run = "inspect";
@@ -49,7 +46,6 @@
         run = "cancel";
         desc = "Cancel the task";
       }
-
       {
         on = ["~"];
         run = "help";

@@ -10,13 +10,11 @@ in {
   options.applications.terminal.tools.comma = {
     enable = mkEnableOption "comma";
   };
-
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       comma
       nix-index
     ];
-
     programs = {
       nix-index = {
         enable = true;

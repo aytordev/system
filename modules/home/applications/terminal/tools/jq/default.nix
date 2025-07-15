@@ -10,7 +10,6 @@ in {
   options.applications.terminal.tools.jq = {
     enable = mkEnableOption "jq";
   };
-
   config = mkIf cfg.enable {
     programs.jq = {
       enable = true;

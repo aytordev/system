@@ -4,13 +4,8 @@
       zellij = {
         settings = {
           keybinds = {
-            # This clears all default keybindings to start fresh.
-            # _props.clear-defaults = true;
-
-            # Keybindings for the "locked" mode (Vim's normal mode equivalent)
             locked = {
               _children = [
-                # Pane Navigation using Alt + hjkl
                 {
                   bind = {
                     _args = ["Alt h"];
@@ -35,54 +30,48 @@
                     _children = [{MoveFocus._args = ["Right"];}];
                   };
                 }
-
-                # Pane Management (like :split and :vsplit)
                 {
                   bind = {
                     _args = ["Alt n"];
                     _children = [{NewPane = {};}];
                   };
-                } # New pane below (horizontal split)
+                }
                 {
                   bind = {
                     _args = ["Alt v"];
                     _children = [{NewPane._props.direction = "Right";}];
                   };
-                } # New pane to the right (vertical split)
+                }
                 {
                   bind = {
                     _args = ["Alt x"];
                     _children = [{CloseFocus = {};}];
                   };
-                } # Close focused pane
+                }
                 {
                   bind = {
                     _args = ["Alt z"];
                     _children = [{ToggleFocusFullscreen = {};}];
                   };
-                } # Zoom/unzoom pane
-
-                # Tab Management
+                }
                 {
                   bind = {
                     _args = ["Alt t"];
                     _children = [{NewTab = {};}];
                   };
-                } # New tab
+                }
                 {
                   bind = {
                     _args = ["Ctrl l"];
                     _children = [{GoToNextTab = {};}];
                   };
-                } # Go to next tab
+                }
                 {
                   bind = {
                     _args = ["Ctrl h"];
                     _children = [{GoToPreviousTab = {};}];
                   };
-                } # Go to previous tab
-
-                # Enter other modes
+                }
                 {
                   bind = {
                     _args = ["Alt s"];
@@ -97,8 +86,6 @@
                 }
               ];
             };
-
-            # Keybindings for "scroll" mode (for scrolling up/down the buffer)
             scroll = {
               _children = [
                 {
@@ -130,8 +117,6 @@
                 }
               ];
             };
-
-            # Keybindings for renaming a pane
             renamepane = {
               _children = [
                 {
@@ -143,7 +128,6 @@
                 {
                   bind = {
                     _args = ["Esc"];
-                    # This demonstrates multiple actions for a single bind
                     _children = [
                       {UndoRenamePane = {};}
                       {SwitchToMode._args = ["Locked"];}

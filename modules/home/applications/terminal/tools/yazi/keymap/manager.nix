@@ -4,8 +4,7 @@
   pkgs,
   ...
 }: let
-  enabledPlugins = config.programs.yazi.plugins; # Default to empty set if not defined
-
+  enabledPlugins = config.programs.yazi.plugins;
   goto = import ./manager/goto.nix {
     inherit config lib pkgs;
   };
@@ -37,7 +36,6 @@ in {
           run = "plugin smart-enter";
           desc = "Enter the child directory, or open the file";
         }
-
         {
           on = ["<Right>"];
           run = "plugin smart-enter";
@@ -67,11 +65,6 @@ in {
         run = "plugin toggle-pane min-preview";
         desc = "Hide or show preview";
       }
-      # {
-      #   on = [ "T" ];
-      #   run = "plugin toggle-pane max-preview";
-      #   desc = "Maximize or restore preview";
-      # }
       ++ lib.optional (lib.hasAttr "jump-to-char" enabledPlugins) {
         on = ["f"];
         run = "plugin jump-to-char";

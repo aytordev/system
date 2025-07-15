@@ -2,7 +2,7 @@
   config,
   lib,
 }: let
-  enabledPlugins = config.programs.yazi.plugins; # Default to empty set if not defined
+  enabledPlugins = config.programs.yazi.plugins;
 in {
   plugin = {
     prepend_fetchers =
@@ -24,7 +24,6 @@ in {
         run = "mime-ext";
         prio = "high";
       };
-
     prepend_preloaders =
       []
       ++ lib.optionals (lib.hasAttr "duckdb" enabledPlugins) (
@@ -52,9 +51,7 @@ in {
             })
             regularFileTypes)
       );
-
     preloaders = [
-      # Image
       {
         mime = "image/vnd.djvu";
         run = "noop";
@@ -63,18 +60,15 @@ in {
         mime = "image/*";
         run = "image";
       }
-      # Video
       {
         mime = "video/*";
         run = "video";
       }
-      # PDF
       {
         mime = "application/pdf";
         run = "pdf";
       }
     ];
-
     prepend_previewers =
       lib.optionals (lib.hasAttr "duckdb" enabledPlugins) (
         let
@@ -117,14 +111,12 @@ in {
           })
           mimeTypes
       );
-
     previewers = [
       {
         name = "*/";
         run = "folder";
         sync = true;
       }
-      # Code
       {
         mime = "text/*";
         run = "code";
@@ -141,12 +133,10 @@ in {
         mime = "*/wine-extension-ini";
         run = "code";
       }
-      # JSON
       {
         mime = "application/json";
         run = "json";
       }
-      # Image
       {
         mime = "image/vnd.djvu";
         run = "noop";
@@ -155,22 +145,18 @@ in {
         mime = "image/*";
         run = "image";
       }
-      # Video
       {
         mime = "video/*";
         run = "video";
       }
-      # PDF
       {
         mime = "application/pdf";
         run = "pdf";
       }
-      # Archive
       {
         mime = "application/gzip";
         run = "archive";
       }
-      # Fallback
       {
         name = "*";
         run = "file";

@@ -7,13 +7,11 @@
 }: let
   inherit (lib) mkIf;
   inherit (inputs) yazi-flavors;
-
   cfg = config.applications.terminal.tools.yazi;
 in {
   options.applications.terminal.tools.yazi = {
     enable = lib.mkEnableOption "yazi";
   };
-
   config = mkIf cfg.enable {
     home.packages = let
       optionalPluginPackage = plugin: package: lib.optional (builtins.hasAttr plugin config.programs.yazi.plugins) package;
@@ -24,18 +22,13 @@ in {
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         pkgs.xdragon
       ];
-
     programs.yazi = {
       enable = true;
-
-      # NOTE: wrapper alias is yy
       enableBashIntegration = true;
       enableFishIntegration = true;
       enableNushellIntegration = true;
       enableZshIntegration = true;
-
       inherit (import ./init.nix {inherit config lib;}) initLua;
-
       keymap = lib.mkMerge [
         (import ./keymap/completion.nix)
         (import ./keymap/help.nix)
@@ -45,12 +38,10 @@ in {
         (import ./keymap/select.nix)
         (import ./keymap/tasks.nix)
       ];
-
       flavors = {
         dark = "${yazi-flavors}/catppuccin-macchiato.yazi";
         light = "${yazi-flavors}/catppuccin-frappe.yazi";
       };
-
       plugins = {
         "arrow-parent" = ./plugins/arrow-parent.yazi;
         inherit
@@ -60,10 +51,7 @@ in {
           duckdb
           full-border
           git
-          # glow
           jump-to-char
-          # Faster, less accurate
-          # mime-ext
           mount
           ouch
           restore
@@ -75,7 +63,6 @@ in {
           yatline-githead
           yatline-catppuccin
           ;
-        # TODO: remove when upstream is fixed
         glow = pkgs.yaziPlugins.glow.overrideAttrs {
           patches = [
             (pkgs.fetchpatch {
@@ -85,7 +72,6 @@ in {
           ];
         };
       };
-
       settings = lib.mkMerge [
         (import ./settings/input.nix)
         (import ./settings/open.nix)
@@ -97,7 +83,6 @@ in {
           log = {
             enabled = false;
           };
-
           mgr = {
             ratio = [
               1
@@ -112,7 +97,6 @@ in {
             sort_reverse = false;
             sort_sensitive = false;
           };
-
           pick = {
             open_title = "Open with:";
             open_origin = "hovered";
@@ -123,7 +107,6 @@ in {
               7
             ];
           };
-
           preview = {
             tab_size = 2;
             max_width = 600;
@@ -140,19 +123,17 @@ in {
             ];
             wrap = "yes";
           };
-
           tasks = {
             micro_workers = 10;
             macro_workers = 25;
             bizarre_retry = 5;
-            image_alloc = 536870912; # 512MB
+            image_alloc = 536870912;
             image_bound = [
               0
               0
             ];
             suppress_preload = false;
           };
-
           which = {
             sort_by = "none";
             sort_sensitive = false;
