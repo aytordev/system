@@ -12,7 +12,6 @@
   shell-aliases = import ./shell-aliases.nix {inherit config lib pkgs;};
   gitPackages = with pkgs; [
     git-absorb
-    git-crypt
     git-filter-repo
     git-lfs
     gitflow
