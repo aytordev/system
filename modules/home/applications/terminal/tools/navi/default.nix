@@ -18,8 +18,7 @@
       color = "white";
     };
   };
-in
-{
+in {
   options.applications.terminal.tools.navi = {
     enable = lib.mkEnableOption "navi";
     settings = {
