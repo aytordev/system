@@ -67,4 +67,5 @@
   applications.terminal.tools.navi.settings.style.snippet.min_width = 45;
   applications.terminal.tools.ripgrep.enable = true;
   applications.terminal.tools.yazi.enable = true;
+  applications.terminal.tools.zellij.enable = true;
 }

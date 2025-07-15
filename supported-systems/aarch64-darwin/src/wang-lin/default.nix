@@ -55,6 +55,7 @@
         "modules/home/applications/terminal/tools/lazygit/default.nix"
         "modules/home/applications/terminal/tools/lazydocker/default.nix"
         "modules/home/applications/terminal/tools/ripgrep/default.nix"
+        "modules/home/applications/terminal/tools/zellij/default.nix"
         "modules/home/applications/terminal/tools/yazi/default.nix"
         "modules/home/applications/terminal/shells/zsh/default.nix"
         "modules/home/applications/terminal/shells/bash/default.nix"
