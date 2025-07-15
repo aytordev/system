@@ -17,7 +17,7 @@
       lazygit
     ];
 
-    applications.terminal.tools.lazygit = {
+    programs.lazygit = {
       enable = true;
       
       settings = {
