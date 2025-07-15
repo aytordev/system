@@ -36,18 +36,13 @@
   applications.terminal.tools.carapace.enable = true;
   applications.terminal.tools.comma.enable = true;
   applications.terminal.tools.ssh.enable = true;
-  applications.terminal.tools.ssh.knownHosts = {
-    github = {
-      hostNames = ["github.com"];
-      user = "git";
-      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILsKijb0PXKfsAmPu0t0jIsiYqfvhyiwPdrWWIwCSzpJ";
-      identityFile = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
-      identitiesOnly = true;
-      port = 22;
-    };
-  };
-  applications.terminal.tools.ssh.extraConfig = ''
-  '';
+  applications.terminal.tools.ssh.knownHosts.github.hostNames = ["github.com"];
+  applications.terminal.tools.ssh.knownHosts.github.user = "git";
+  applications.terminal.tools.ssh.knownHosts.github.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILsKijb0PXKfsAmPu0t0jIsiYqfvhyiwPdrWWIwCSzpJ";
+  applications.terminal.tools.ssh.knownHosts.github.identityFile = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
+  applications.terminal.tools.ssh.knownHosts.github.identitiesOnly = true;
+  applications.terminal.tools.ssh.knownHosts.github.port = 22;
+  applications.terminal.tools.ssh.extraConfig = '''';
   applications.terminal.tools.jq.enable = true;
   applications.terminal.tools.direnv.enable = true;
   applications.terminal.tools.direnv.nix-direnv = true;
@@ -59,4 +54,14 @@
   applications.terminal.tools.jujutsu.signByDefault = true;
   applications.terminal.tools.lazygit.enable = true;
   applications.terminal.tools.lazydocker.enable = true;
+  applications.terminal.tools.navi.enable = true;
+  applications.terminal.tools.navi.settings.style.tag.color = "green";
+  applications.terminal.tools.navi.settings.style.tag.width_percentage = 26;
+  applications.terminal.tools.navi.settings.style.tag.min_width = 20;
+  applications.terminal.tools.navi.settings.style.comment.color = "blue";
+  applications.terminal.tools.navi.settings.style.comment.width_percentage = 42;
+  applications.terminal.tools.navi.settings.style.comment.min_width = 45;
+  applications.terminal.tools.navi.settings.style.snippet.color = "white";
+  applications.terminal.tools.navi.settings.style.snippet.width_percentage = 42;
+  applications.terminal.tools.navi.settings.style.snippet.min_width = 45;
 }
