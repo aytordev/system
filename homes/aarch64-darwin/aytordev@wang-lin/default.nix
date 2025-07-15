@@ -57,4 +57,5 @@
   applications.terminal.tools.git-crypt.enable = true;
   applications.terminal.tools.jujutsu.enable = true;
   applications.terminal.tools.jujutsu.signByDefault = true;
+  applications.terminal.tools.lazygit.enable = true;
 }
