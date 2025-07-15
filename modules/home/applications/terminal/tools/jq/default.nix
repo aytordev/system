@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-let
+with lib; let
   cfg = config.applications.terminal.tools.jq;
 in {
   options.applications.terminal.tools.jq = {
