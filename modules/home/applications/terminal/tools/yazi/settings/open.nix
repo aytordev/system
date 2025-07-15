@@ -1,45 +1,45 @@
 {
-  open =
-    let
-      archiveExtensions = [
-        "7z"
-        "ace"
-        "ar"
-        "arc"
-        "bz2"
-        "cab"
-        "cpio"
-        "cpt"
-        "deb"
-        "dgc"
-        "dmg"
-        "gz"
-        "iso"
-        "jar"
-        "msi"
-        "pkg"
-        "rar"
-        "shar"
-        "tar"
-        "tgz"
-        "xar"
-        "xpi"
-        "xz"
-        "zip"
+  open = let
+    archiveExtensions = [
+      "7z"
+      "ace"
+      "ar"
+      "arc"
+      "bz2"
+      "cab"
+      "cpio"
+      "cpt"
+      "deb"
+      "dgc"
+      "dmg"
+      "gz"
+      "iso"
+      "jar"
+      "msi"
+      "pkg"
+      "rar"
+      "shar"
+      "tar"
+      "tgz"
+      "xar"
+      "xpi"
+      "xz"
+      "zip"
+    ];
+
+    generateArchiveRule = ext: {
+      name = "*.${ext}";
+      use = [
+        "extract"
+        "reveal"
       ];
+    };
 
-      generateArchiveRule = ext: {
-        name = "*.${ext}";
-        use = [
-          "extract"
-          "reveal"
-        ];
-      };
-
-      archiveRules = map generateArchiveRule archiveExtensions;
-    in
-    {
-      rules = archiveRules ++ [
+    archiveRules = map generateArchiveRule archiveExtensions;
+  in {
+    rules =
+      archiveRules
+      ++ [
         {
           name = "*.dmg";
           use = [
@@ -169,5 +169,5 @@
           ];
         }
       ];
-    };
+  };
 }

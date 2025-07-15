@@ -1,8 +1,10 @@
-{ config, lib, ... }:
-let
-  enabledPlugins = config.programs.yazi.plugins;
-in
 {
+  config,
+  lib,
+  ...
+}: let
+  enabledPlugins = config.programs.yazi.plugins;
+in {
   prepend_keymap =
     lib.optionals (lib.hasAttr "sudo" enabledPlugins) [
       {

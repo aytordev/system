@@ -2,56 +2,56 @@
   select = {
     prepend_keymap = [
       {
-        on = [ "<C-q>" ];
+        on = ["<C-q>"];
         run = "close";
         desc = "Cancel selection";
       }
       {
-        on = [ "<Esc>" ];
+        on = ["<Esc>"];
         run = "close";
         desc = "Cancel selection";
       }
       {
-        on = [ "<Enter>" ];
+        on = ["<Enter>"];
         run = "close --submit";
         desc = "Submit the selection";
       }
 
       {
-        on = [ "k" ];
+        on = ["k"];
         run = "arrow -1";
         desc = "Move cursor up";
       }
       {
-        on = [ "j" ];
+        on = ["j"];
         run = "arrow 1";
         desc = "Move cursor down";
       }
 
       {
-        on = [ "K" ];
+        on = ["K"];
         run = "arrow -5";
         desc = "Move cursor up 5 lines";
       }
       {
-        on = [ "J" ];
+        on = ["J"];
         run = "arrow 5";
         desc = "Move cursor down 5 lines";
       }
 
       {
-        on = [ "<Up>" ];
+        on = ["<Up>"];
         run = "arrow -1";
         desc = "Move cursor up";
       }
       {
-        on = [ "<Down>" ];
+        on = ["<Down>"];
         run = "arrow 1";
         desc = "Move cursor down";
       }
 
       {
-        on = [ "~" ];
+        on = ["~"];
         run = "help";
         desc = "Open help";
       }

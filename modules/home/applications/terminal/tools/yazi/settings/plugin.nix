@@ -1,11 +1,9 @@
 {
   config,
   lib,
-}:
-let
-  enabledPlugins = config.programs.yazi.plugins;  # Default to empty set if not defined
-in
-{
+}: let
+  enabledPlugins = config.programs.yazi.plugins; # Default to empty set if not defined
+in {
   plugin = {
     prepend_fetchers =
       lib.optionals (lib.hasAttr "git" enabledPlugins) [
@@ -27,7 +25,8 @@ in
         prio = "high";
       };
 
-    prepend_preloaders = []
+    prepend_preloaders =
+      []
       ++ lib.optionals (lib.hasAttr "duckdb" enabledPlugins) (
         let
           multiFileTypes = [
@@ -41,15 +40,17 @@ in
             "duckdb"
           ];
         in
-        (map (ext: {
-          name = "*.${ext}";
-          run = "duckdb";
-          multi = false;
-        }) multiFileTypes)
-        ++ (map (ext: {
-          name = "*.${ext}";
-          run = "duckdb";
-        }) regularFileTypes)
+          (map (ext: {
+              name = "*.${ext}";
+              run = "duckdb";
+              multi = false;
+            })
+            multiFileTypes)
+          ++ (map (ext: {
+              name = "*.${ext}";
+              run = "duckdb";
+            })
+            regularFileTypes)
       );
 
     preloaders = [
@@ -84,10 +85,11 @@ in
             "parquet"
           ];
         in
-        map (ext: {
-          name = "*.${ext}";
-          run = "duckdb";
-        }) fileTypes
+          map (ext: {
+            name = "*.${ext}";
+            run = "duckdb";
+          })
+          fileTypes
       )
       ++ lib.optional (lib.hasAttr "glow" enabledPlugins) {
         name = "*.md";
@@ -109,10 +111,11 @@ in
             "application/zip"
           ];
         in
-        map (mime: {
-          inherit mime;
-          run = "ouch";
-        }) mimeTypes
+          map (mime: {
+            inherit mime;
+            run = "ouch";
+          })
+          mimeTypes
       );
 
     previewers = [

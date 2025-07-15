@@ -2,58 +2,58 @@
   help = {
     prepend_keymap = [
       {
-        on = [ "q" ];
+        on = ["q"];
         run = "close";
         desc = "Exit the process";
       }
 
       # Navigation
       {
-        on = [ "k" ];
+        on = ["k"];
         run = "arrow -1";
         desc = "Move cursor up";
       }
       {
-        on = [ "j" ];
+        on = ["j"];
         run = "arrow 1";
         desc = "Move cursor down";
       }
 
       {
-        on = [ "K" ];
+        on = ["K"];
         run = "arrow -5";
         desc = "Move cursor up 5 lines";
       }
       {
-        on = [ "J" ];
+        on = ["J"];
         run = "arrow 5";
         desc = "Move cursor down 5 lines";
       }
 
       {
-        on = [ "<Up>" ];
+        on = ["<Up>"];
         run = "arrow -1";
         desc = "Move cursor up";
       }
       {
-        on = [ "<Down>" ];
+        on = ["<Down>"];
         run = "arrow 1";
         desc = "Move cursor down";
       }
       {
-        on = [ "<S-Up>" ];
+        on = ["<S-Up>"];
         run = "arrow -5";
         desc = "Move cursor up 5 lines";
       }
       {
-        on = [ "<S-Down>" ];
+        on = ["<S-Down>"];
         run = "arrow 5";
         desc = "Move cursor down 5 lines";
       }
 
       # Filtering
       {
-        on = [ "/" ];
+        on = ["/"];
         run = "filter";
         desc = "Apply a filter for the help items";
       }

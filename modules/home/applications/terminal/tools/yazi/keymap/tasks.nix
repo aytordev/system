@@ -2,56 +2,56 @@
   tasks = {
     prepend_keymap = [
       {
-        on = [ "<Esc>" ];
+        on = ["<Esc>"];
         run = "close";
         desc = "Hide the task manager";
       }
       {
-        on = [ "<C-q>" ];
+        on = ["<C-q>"];
         run = "close";
         desc = "Hide the task manager";
       }
       {
-        on = [ "w" ];
+        on = ["w"];
         run = "close";
         desc = "Hide the task manager";
       }
 
       {
-        on = [ "k" ];
+        on = ["k"];
         run = "arrow -1";
         desc = "Move cursor up";
       }
       {
-        on = [ "j" ];
+        on = ["j"];
         run = "arrow 1";
         desc = "Move cursor down";
       }
 
       {
-        on = [ "<Up>" ];
+        on = ["<Up>"];
         run = "arrow -1";
         desc = "Move cursor up";
       }
       {
-        on = [ "<Down>" ];
+        on = ["<Down>"];
         run = "arrow 1";
         desc = "Move cursor down";
       }
 
       {
-        on = [ "<Enter>" ];
+        on = ["<Enter>"];
         run = "inspect";
         desc = "Inspect the task";
       }
       {
-        on = [ "x" ];
+        on = ["x"];
         run = "cancel";
         desc = "Cancel the task";
       }
 
       {
-        on = [ "~" ];
+        on = ["~"];
         run = "help";
         desc = "Open help";
       }

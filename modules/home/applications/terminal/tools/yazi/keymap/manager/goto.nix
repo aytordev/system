@@ -3,34 +3,35 @@
   lib,
   pkgs,
   ...
-}:
-let
-  mkGotoKeymap =
-    {
-      key,
-      path,
-      desc ? null,
-      isCommand ? false,
-    }:
-    let
-      defaultDesc =
-        if isCommand then
-          null # Commands must provide their own descriptions
-        else
-          "Go to the ${path} directory";
+}: let
+  mkGotoKeymap = {
+    key,
+    path,
+    desc ? null,
+    isCommand ? false,
+  }: let
+    defaultDesc =
+      if isCommand
+      then null # Commands must provide their own descriptions
+      else "Go to the ${path} directory";
 
-      description = if desc != null then desc else defaultDesc;
+    description =
+      if desc != null
+      then desc
+      else defaultDesc;
 
-      runCmd = if isCommand then path else "cd ${path}";
-    in
-    {
-      on = [
-        "g"
-        key
-      ];
-      run = runCmd;
-      desc = description;
-    };
+    runCmd =
+      if isCommand
+      then path
+      else "cd ${path}";
+  in {
+    on = [
+      "g"
+      key
+    ];
+    run = runCmd;
+    desc = description;
+  };
 
   # Define all goto locations with minimal required information
   gotoLocations = [
@@ -57,7 +58,6 @@ let
       path = "~/.local/share/wallpapers";
     }
   ];
-in
-{
+in {
   prepend_keymap = map mkGotoKeymap gotoLocations;
 }

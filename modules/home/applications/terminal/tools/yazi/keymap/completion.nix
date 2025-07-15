@@ -2,17 +2,17 @@
   cmp = {
     prepend_keymap = [
       {
-        on = [ "<C-q>" ];
+        on = ["<C-q>"];
         run = "close";
         desc = "Cancel completion";
       }
       {
-        on = [ "<Tab>" ];
+        on = ["<Tab>"];
         run = "close --submit";
         desc = "Submit the completion";
       }
       {
-        on = [ "<Enter>" ];
+        on = ["<Enter>"];
         run = [
           "close --submit"
           "input:close --submit"
@@ -21,29 +21,29 @@
       }
 
       {
-        on = [ "<A-k>" ];
+        on = ["<A-k>"];
         run = "arrow -1";
         desc = "Move cursor up";
       }
       {
-        on = [ "<A-j>" ];
+        on = ["<A-j>"];
         run = "arrow 1";
         desc = "Move cursor down";
       }
 
       {
-        on = [ "<Up>" ];
+        on = ["<Up>"];
         run = "arrow -1";
         desc = "Move cursor up";
       }
       {
-        on = [ "<Down>" ];
+        on = ["<Down>"];
         run = "arrow 1";
         desc = "Move cursor down";
       }
 
       {
-        on = [ "~" ];
+        on = ["~"];
         run = "help";
         desc = "Open help";
       }

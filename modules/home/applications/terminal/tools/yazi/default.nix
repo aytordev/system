@@ -4,24 +4,20 @@
   pkgs,
   inputs,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
   inherit (inputs) yazi-flavors;
 
   cfg = config.applications.terminal.tools.yazi;
-in
-{
+in {
   options.applications.terminal.tools.yazi = {
     enable = lib.mkEnableOption "yazi";
   };
 
   config = mkIf cfg.enable {
-    home.packages =
-      let
-        optionalPluginPackage =
-          plugin: package: lib.optional (builtins.hasAttr plugin config.programs.yazi.plugins) package;
-      in
+    home.packages = let
+      optionalPluginPackage = plugin: package: lib.optional (builtins.hasAttr plugin config.programs.yazi.plugins) package;
+    in
       optionalPluginPackage "ouch" pkgs.ouch
       ++ optionalPluginPackage "glow" pkgs.glow
       ++ optionalPluginPackage "duckdb" pkgs.duckdb
@@ -38,7 +34,7 @@ in
       enableNushellIntegration = true;
       enableZshIntegration = true;
 
-      inherit (import ./init.nix { inherit config lib; }) initLua;
+      inherit (import ./init.nix {inherit config lib;}) initLua;
 
       keymap = lib.mkMerge [
         (import ./keymap/completion.nix)
@@ -57,7 +53,8 @@ in
 
       plugins = {
         "arrow-parent" = ./plugins/arrow-parent.yazi;
-        inherit (pkgs.yaziPlugins)
+        inherit
+          (pkgs.yaziPlugins)
           chmod
           diff
           duckdb
@@ -95,7 +92,7 @@ in
         (import ./settings/opener.nix {
           inherit config lib pkgs;
         })
-        (import ./settings/plugin.nix { inherit config lib; })
+        (import ./settings/plugin.nix {inherit config lib;})
         {
           log = {
             enabled = false;
