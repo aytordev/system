@@ -24,8 +24,11 @@
   };
 
   # Platform-specific nixre alias
-  nixreAlias = "nh ${if pkgs.stdenv.hostPlatform.isLinux then "os" else "darwin"} switch";
-
+  nixreAlias = "nh ${
+    if pkgs.stdenv.hostPlatform.isLinux
+    then "os"
+    else "darwin"
+  } switch";
 in {
   options.applications.terminal.tools.nh = {
     enable = lib.mkEnableOption "nh";
