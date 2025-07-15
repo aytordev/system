@@ -48,6 +48,7 @@
   };
   applications.terminal.tools.ssh.extraConfig = ''
   '';
+  applications.terminal.tools.jq.enable = true;
   applications.terminal.tools.direnv.enable = true;
   applications.terminal.tools.direnv.nix-direnv = true;
   applications.terminal.tools.direnv.silent = true;
