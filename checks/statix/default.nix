@@ -11,7 +11,7 @@
     echo "Running statix checks..."
     if ! ${statix}/bin/statix check ${checkPath}; then
       echo -e "\n''${RED}✗ Statix found issues in one or more files''${NC}"
-      echo -e "To fix issues, run: nix run github:nerdypepper/statix
+      echo -e "To fix issues, run: nix run github:nerdypepper/statix"
       exit 1
     else
       echo -e "''${GREEN}✓ No statix issues found''${NC}"

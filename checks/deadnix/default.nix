@@ -14,7 +14,6 @@
     "./modules"
     "./outputs"
     "./supported-systems"
-    "./variables"
   ];
   filesToCheck = lib.lists.flatten (map (
       dir:
@@ -40,7 +39,7 @@
     fi
     if ! ${deadnix}/bin/deadnix --quiet ${filesToCheckStr}; then
       echo -e "\n''${RED}✗ Deadnix found unused code in one or more files''${NC}"
-      echo -e "To fix issues, run: nix run github:astro/deadnix
+      echo -e "To fix issues, run: nix run github:astro/deadnix"
       exit 1
     else
       echo -e "''${GREEN}✓ No dead code found''${NC}"

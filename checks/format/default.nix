@@ -14,7 +14,6 @@
     "./modules"
     "./outputs"
     "./supported-systems"
-    "./variables"
   ];
   filesToCheck = lib.lists.flatten (map (
       dir:
@@ -38,7 +37,7 @@
     }
     echo "Checking Nix file formatting..."
     for file in ${toString filesToCheck}; do
-      rel_path="''${file
+      rel_path="$file"
       echo "Checking $rel_path"
       if ! ${alejandra}/bin/alejandra --check "$file"; then
         error "File requires formatting: $rel_path"
