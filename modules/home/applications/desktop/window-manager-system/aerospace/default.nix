@@ -42,7 +42,7 @@ in {
         gaps.inner.horizontal = 8;
         gaps.inner.vertical = 8;
         gaps.outer.left = 8;
-        gaps.outer.bottom = 32;
+        gaps.outer.bottom = 40;
         gaps.outer.top = 8;
         gaps.outer.right = 8;
         key-mapping.preset = "qwerty";
