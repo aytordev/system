@@ -1,4 +1,5 @@
 local bar_position = require("bar-position")
+local default_font = require("theme.default_font")
 
 local top_bar_settings = {
 	bar_position = "top",
@@ -18,17 +19,13 @@ local top_bar_settings = {
   popup_y_offset = 4,
 
 	font = {
-		text = "JetBrainsMono Nerd Font", -- Used for text
-		numbers = "JetBrainsMono Nerd Font", -- Used for numbers
+		text = default_font.text, -- Used for text
+		numbers = default_font.numbers, -- Used for numbers
 		size = 14.0,
-		style_map = {
-			["Regular"] = "Regular",
-			["Semibold"] = "Medium",
-			["Bold"] = "SemiBold",
-			["Heavy"] = "Bold",
-			["Black"] = "ExtraBold",
-		},
+		style_map = default_font.style_map,
 	},
+
+	icons = default_font.icons,
 }
 
 local bottom_bar_settings = {
@@ -49,17 +46,13 @@ local bottom_bar_settings = {
   popup_y_offset = -4,
 
 	font = {
-		text = "JetBrainsMono Nerd Font", -- Used for text
-		numbers = "JetBrainsMono Nerd Font", -- Used for numbers
+		text = default_font.text, -- Used for text
+		numbers = default_font.numbers, -- Used for numbers
 		size = 14.0,
-		style_map = {
-			["Regular"] = "Regular",
-			["Semibold"] = "Medium",
-			["Bold"] = "SemiBold",
-			["Heavy"] = "Bold",
-			["Black"] = "ExtraBold",
-		},
+		style_map = default_font.style_map,
 	},
+
+	icons = default_font.icons,
 }
 
 return bar_position == "top" and top_bar_settings or bottom_bar_settings

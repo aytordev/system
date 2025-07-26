@@ -5,6 +5,8 @@ local config_path = script_path:gsub("/helpers/?$", "")
 
 package.path = package.path .. ";" .. config_path .. "/?.lua"
 package.path = package.path .. ";" .. config_path .. "/lua/?.lua"
+package.path = package.path .. ";" .. config_path .. "/lua/?/init.lua"
+package.path = package.path .. ";" .. config_path .. "/lua/?/?.lua"
 
 local function safe_require(module)
     local status, result = pcall(require, module)

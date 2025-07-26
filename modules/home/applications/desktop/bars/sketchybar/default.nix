@@ -98,6 +98,9 @@ in
           require("init")
         '';
         "sketchybar/sketchybarrc".executable = true;
+
+        "sketchybar/helpers/icon_map.lua".source =
+        "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
       };
     }
   ]);

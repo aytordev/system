@@ -22,6 +22,10 @@ if not safe_require("default") then
     print("⚠️  Could not load default.lua")
 end
 
+if not safe_require("items") then
+    print("⚠️  Could not load items.lua")
+end
+
 Sbar.end_config()
 print("✅ Configuration loaded successfully")
 
