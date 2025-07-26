@@ -29,12 +29,12 @@ in {
 
       userSettings = {
         accordion-padding = 32;
-        after-login-command = [ ];
-        after-startup-command = [ "exec-and-forget sketchybar" ];
+        after-login-command = [];
+        after-startup-command = ["exec-and-forget sketchybar"];
         automatically-unhide-macos-hidden-apps = false;
         default-root-container-layout = "tiles";
         default-root-container-orientation = "auto";
-        exec-on-workspace-change = [ 
+        exec-on-workspace-change = [
           "/bin/bash"
           "-c"
           "sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE"
@@ -72,8 +72,8 @@ in {
         mode.main.binding.alt-shift-8 = "move-node-to-workspace 8";
         mode.main.binding.up = "volume up";
         mode.main.binding.down = "volume down";
-        on-focused-monitor-changed = [ "move-mouse monitor-lazy-center" ];
-        on-focus-changed = [ "exec-and-forget sketchybar --trigger aerospace_focus_change" ];
+        on-focused-monitor-changed = ["move-mouse monitor-lazy-center"];
+        on-focus-changed = ["exec-and-forget sketchybar --trigger aerospace_focus_change"];
         start-at-login = true;
       };
     };
