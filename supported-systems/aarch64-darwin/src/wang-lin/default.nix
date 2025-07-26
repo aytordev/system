@@ -63,6 +63,7 @@
         "modules/home/applications/terminal/shells/bash/default.nix"
         "modules/home/applications/terminal/shells/fish/default.nix"
         "modules/home/applications/terminal/shells/nu-shell/default.nix"
+        "modules/home/applications/desktop/bars/sketchybar/default.nix"
       ])
       ++ (map libraries.relativeToRoot [
         "homes/aarch64-darwin/aytordev@wang-lin/default.nix"

@@ -20,6 +20,7 @@
     cascadia-code
     monaspace
     nerd-fonts.symbols-only
+    nerd-fonts.monaspace
   ];
 in {
   options.system.fonts = with types; {
