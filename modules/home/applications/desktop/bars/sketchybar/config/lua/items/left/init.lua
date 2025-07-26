@@ -8,4 +8,10 @@ if not safe_require("items.left.logo") then
     print("⚠️  Could not load logo.lua")
 end
 
+print("🔄 Loading spaces...")
+if not safe_require("items.left.spaces") then
+    print("⚠️  Could not load spaces.lua")
+end
+
+
 
