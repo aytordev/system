@@ -70,8 +70,8 @@ in {
         mode.main.binding.alt-shift-6 = "move-node-to-workspace 6";
         mode.main.binding.alt-shift-7 = "move-node-to-workspace 7";
         mode.main.binding.alt-shift-8 = "move-node-to-workspace 8";
-        mode.main.binding.up = "volume up";
-        mode.main.binding.down = "volume down";
+        mode.main.binding.cmd-up = "volume up";
+        mode.main.binding.cmd-down = "volume down";
         on-focused-monitor-changed = ["move-mouse monitor-lazy-center"];
         on-focus-changed = ["exec-and-forget sketchybar --trigger aerospace_focus_change"];
         start-at-login = true;
