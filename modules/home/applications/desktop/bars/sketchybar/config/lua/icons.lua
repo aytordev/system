@@ -95,8 +95,11 @@ local icons = {
   },
 }
 
-if not (settings.icons == "Nerd Font") then
-  return icons.sf_symbols
-else
+-- Case-insensitive check for Nerd Font
+local is_nerd_font = string.lower(settings.icons):match("nerd") ~= nil
+
+if is_nerd_font then
   return icons.nerdfont
+else
+  return icons.sf_symbols
 end
