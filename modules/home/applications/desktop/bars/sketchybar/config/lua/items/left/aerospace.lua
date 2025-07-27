@@ -1,118 +1,175 @@
+-- Aerospace Workspace Manager for SketchyBar
+-- Manages workspace visualization and interaction with Aerospace window manager
+
+-- Dependencies
 local icons = require("icons")
 local colors = require("colors")
 local animations = require("animations")
 local settings = require("settings")
 
-local spaces = {}
-local workspaces = {}
-local current_workspace = ""
+-- Constants
+local UPDATE_DELAY = 0.5      -- Delay for UI updates after changes (seconds)
+local POLLING_INTERVAL = 1    -- Workspace polling interval (seconds)
 
--- Function to update workspace display
-local function update_workspaces()
-    -- Get current workspace
+-- Icon configuration
+local ICON_CONFIG = {
+    focused = {
+        size = 14.0 * 1.15,   -- Larger size for focused workspace
+        color = colors.theme.c8,
+        icon = icons.focused_space
+    },
+    unfocused = {
+        size = 12.0,          -- Default size for unfocused workspaces
+        color = colors.theme.fg,
+        icon = icons.space
+    }
+}
+
+-- Application state
+local state = {
+    spaces = {},
+    current_workspace = "",
+    workspace_subscriber = nil
+}
+
+--- Escapes a workspace name for use in shell commands
+-- @param name string Workspace name to escape
+-- @return string Escaped name
+local function escape_workspace_name(name)
+    return name:gsub("'", "'\\''")
+end
+
+--- Creates a new workspace item in the bar
+-- @param ws_name string Name of the workspace
+-- @param is_focused boolean Whether this workspace is currently focused
+-- @return table Reference to the created item
+local function create_workspace_item(ws_name, is_focused)
+    local config = is_focused and ICON_CONFIG.focused or ICON_CONFIG.unfocused
+    
+    local item = Sbar.add("item", "aerospace.space." .. ws_name, {
+        icon = { 
+            string = config.icon,
+            color = config.color,
+            font = { 
+                size = config.size
+            }
+        },
+        label = { drawing = false },
+        background = { color = colors.transparent, shadow = { drawing = false } },
+        padding_left = 0,
+        padding_right = 0,
+        click_script = string.format("aerospace workspace '%s' 2>/dev/null", escape_workspace_name(ws_name))
+    })
+    
+    return item
+end
+
+--- Updates the visual appearance of a workspace item
+-- @param item table Reference to the item to update
+-- @param is_focused boolean Whether the workspace is now focused
+local function update_workspace_appearance(item, is_focused)
+    local config = is_focused and ICON_CONFIG.focused or ICON_CONFIG.unfocused
+    item:set({
+        icon = {
+            string = config.icon,
+            color = config.color,
+            font = { 
+                size = config.size
+            }
+        }
+    })
+end
+
+--- Sets up event handlers for a workspace item
+-- @param item table Reference to the item
+-- @param ws_name string Name of the workspace
+local function setup_workspace_handlers(item, ws_name)
+    -- Click handler for switching workspaces
+    item:subscribe("mouse.clicked", function()
+        -- Update UI immediately for better responsiveness
+        for other_ws_name, other_item in pairs(state.spaces) do
+            update_workspace_appearance(other_item, other_ws_name == ws_name)
+        end
+        state.current_workspace = ws_name
+        
+        -- Click animation
+        local begin_set = { y_offset = -2 }
+        local end_set = { y_offset = 0 }
+        animations.custom_animation(
+            item,
+            settings.base_animation,
+            settings.base_animation_duration,
+            begin_set,
+            end_set
+        )
+        
+        -- Delayed update to ensure sync with Aerospace
+        Sbar.delay(UPDATE_DELAY, update_workspaces)
+    end)
+    
+    -- Hover effects
+    item:subscribe("mouse.entered", function()
+        animations.base_hover_animation(item)
+    end)
+    
+    item:subscribe("mouse.exited", function()
+        animations.base_leave_hover_animation(item)
+    end)
+end
+
+--- Updates the list of workspaces from Aerospace
+function update_workspaces()
+    -- Get currently focused workspace
     Sbar.exec("aerospace list-workspaces --focused", function(focused_ws)
-        current_workspace = focused_ws:match("^%s*(.-)%s*$")
+        if focused_ws then
+            state.current_workspace = focused_ws:match("^%s*(.-)%s*$")
+        end
         
         -- Get all workspaces
         Sbar.exec("aerospace list-workspaces --all", function(ws_list)
-            -- Clear existing spaces
-            for _, space in pairs(spaces) do
-                space:remove()
-            end
-            spaces = {}
+            if not ws_list then return end
             
-            -- Parse workspaces
+            -- Clear existing spaces
+            for _, item in pairs(state.spaces) do
+                item:remove()
+            end
+            state.spaces = {}
+            
+            -- Process workspace list
             for ws in ws_list:gmatch("[^\n]+") do
                 local ws_name = ws:match("^%s*(.-)%s*$")
-                if ws_name ~= "" then
-                    local icon, color
-                    if ws_name == current_workspace then
-                        icon, color = icons.focused_space, colors.theme.c8
-                    else
-                        icon, color = icons.space, colors.theme.fg
-                    end
+                if ws_name and ws_name ~= "" then
+                    local is_focused = ws_name == state.current_workspace
                     
-                    -- Create space item
-                    local space = Sbar.add("item", "aerospace.space." .. ws_name, {
-                        icon = {
-                            string = icon,
-                            color = color,
-                        },
-                        label = { drawing = false },
-                        background = {
-                            color = colors.transparent,
-                            shadow = { drawing = false },
-                        },
-                        padding_left = 0,
-                        padding_right = 0,
-                        click_script = "aerospace workspace '" .. ws_name:gsub("'", "'\\''") .. "' 2>/dev/null"
-                    })
-                    
-                    spaces[ws_name] = space
-                    
-                    -- Set up mouse interactions
-                    space:subscribe("mouse.clicked", function()
-                        -- Update UI immediately for better responsiveness
-                        for other_ws_name, s in pairs(spaces) do
-                            s:set({
-                                icon = {
-                                    string = (other_ws_name == ws_name and icons.focused_space or icons.space),
-                                    color = (other_ws_name == ws_name and colors.theme.c8 or colors.theme.fg)
-                                }
-                            })
-                        end
-                        current_workspace = ws_name  -- Update current workspace
-                        
-                        -- Trigger animation
-                        local begin_set = { y_offset = -2 }
-                        local end_set = { y_offset = 0 }
-                        animations.custom_animation(
-                            space,
-                            settings.base_animation,
-                            settings.base_animation_duration,
-                            begin_set,
-                            end_set
-                        )
-                        
-                        -- Force update after a short delay to ensure everything is in sync
-                        Sbar.delay(0.5, function()
-                            update_workspaces()
-                        end)
-                    end)
-                    
-                    space:subscribe("mouse.entered", function()
-                        animations.base_hover_animation(space)
-                    end)
-                    
-                    space:subscribe("mouse.exited", function()
-                        animations.base_leave_hover_animation(space)
-                    end)
+                    -- Create and configure the workspace item
+                    local item = create_workspace_item(ws_name, is_focused)
+                    setup_workspace_handlers(item, ws_name)
+                    state.spaces[ws_name] = item
                 end
             end
         end)
     end)
 end
 
--- Initial update
-update_workspaces()
+--- Initializes the workspace manager
+local function init()
+    -- Create hidden subscriber for workspace events
+    state.workspace_subscriber = Sbar.add("item", {
+        drawing = false,
+        updates = true,
+    })
+    
+    -- Set up periodic updates
+    state.workspace_subscriber:subscribe("routine", function()
+        update_workspaces()
+    end)
+    
+    -- Update on workspace changes
+    state.workspace_subscriber:subscribe("workspace_change", update_workspaces)
+    
+    -- Initial update after a short delay
+    Sbar.delay(1, update_workspaces)
+end
 
--- Subscribe to workspace changes
-local workspace_subscriber = Sbar.add("item", {
-    drawing = false,
-    updates = true,
-})
-
--- Update workspaces every second to catch changes
-workspace_subscriber:subscribe("routine", function()
-    update_workspaces()
-end)
-
--- Also update on workspace change events
-workspace_subscriber:subscribe("workspace_change", function()
-    update_workspaces()
-end)
-
--- Initial update after a short delay to ensure everything is loaded
-Sbar.delay(1, function()
-    update_workspaces()
-end)
+-- Initialize the workspace manager
+init()
