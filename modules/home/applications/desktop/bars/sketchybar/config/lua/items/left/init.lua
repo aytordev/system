@@ -20,7 +20,7 @@ Sbar.add("item", "space.padding.left", {
 	background = { drawing = false },
 })
 
-require("items.left.apps")
+-- require("items.left.apps")
 
 
 

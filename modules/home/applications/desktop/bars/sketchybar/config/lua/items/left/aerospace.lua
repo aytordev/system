@@ -129,22 +129,40 @@ function update_workspaces()
         Sbar.exec("aerospace list-workspaces --all", function(ws_list)
             if not ws_list then return end
             
-            -- Clear existing spaces
-            for _, item in pairs(state.spaces) do
-                item:remove()
+            -- Create a set of current workspaces for comparison
+            local current_workspaces = {}
+            for ws in ws_list:gmatch("[^\n]+") do
+                local ws_name = ws:match("^%s*(.-)%s*$")
+                if ws_name and ws_name ~= "" then
+                    current_workspaces[ws_name] = true
+                end
             end
-            state.spaces = {}
             
-            -- Process workspace list
+            -- Remove workspaces that no longer exist
+            for ws_name, item in pairs(state.spaces) do
+                if not current_workspaces[ws_name] then
+                    if item and type(item) == "table" and item.remove then
+                        item:remove()
+                        state.spaces[ws_name] = nil
+                    end
+                end
+            end
+            
+            -- Add or update existing workspaces
             for ws in ws_list:gmatch("[^\n]+") do
                 local ws_name = ws:match("^%s*(.-)%s*$")
                 if ws_name and ws_name ~= "" then
                     local is_focused = ws_name == state.current_workspace
                     
-                    -- Create and configure the workspace item
-                    local item = create_workspace_item(ws_name, is_focused)
-                    setup_workspace_handlers(item, ws_name)
-                    state.spaces[ws_name] = item
+                    if state.spaces[ws_name] then
+                        -- Update existing workspace
+                        update_workspace_appearance(state.spaces[ws_name], is_focused)
+                    else
+                        -- Create new workspace item
+                        local item = create_workspace_item(ws_name, is_focused)
+                        setup_workspace_handlers(item, ws_name)
+                        state.spaces[ws_name] = item
+                    end
                 end
             end
         end)

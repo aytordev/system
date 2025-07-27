@@ -43,7 +43,7 @@ M.base_leave_hover_animation = function(item)
 	end)
 end
 
-M.custom_animaiton = function(item, animation, duration, begin_set, end_set)
+M.custom_animation = function(item, animation, duration, begin_set, end_set)
 	Sbar.animate(animation, duration, function()
 		item:set(begin_set)
 		item:set(end_set)
