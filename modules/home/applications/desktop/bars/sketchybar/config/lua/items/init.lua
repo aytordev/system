@@ -12,4 +12,3 @@ print("🔄 Loading right items...")
 if not safe_require("items.right") then
     print("⚠️  Could not load right items")
 end
-

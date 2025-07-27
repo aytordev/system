@@ -8,10 +8,27 @@ if not safe_require("items.left.logo") then
     print("⚠️  Could not load logo.lua")
 end
 
-print("🔄 Loading spaces...")
-if not safe_require("items.left.spaces") then
-    print("⚠️  Could not load spaces.lua")
+Sbar.add("item", "logo.padding.left", {
+	position = "left",
+	width = settings.group_paddings,
+	icon = { drawing = false },
+	label = { drawing = false },
+	background = { drawing = false },
+})
+
+print("🔄 Loading aerospace...")
+if not safe_require("items.left.aerospace") then
+    print("⚠️  Could not load aerospace.lua")
 end
+
+Sbar.add("item", "space.padding.left", {
+	position = "left",
+	width = settings.group_paddings,
+	icon = { drawing = false },
+	label = { drawing = false },
+	background = { drawing = false },
+})
+
 
 
 
