@@ -23,8 +23,7 @@ let
 
   # Shell aliases for common operations
   shellAliases = {
-    push = ''command git push && ${getExe finalPackage} --trigger git_push'';
-    "restart-sketchybar" = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.sketchybar'';
+    restart-sketchybar = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.sketchybar'';
   };
 
   cfg = config.applications.desktop.bars.sketchybar;
