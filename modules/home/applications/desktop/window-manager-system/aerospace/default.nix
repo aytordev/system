@@ -58,7 +58,7 @@ in {
         mode.main.binding.cmd-ctrl-4 = "workspace 4";
         # mode.main.binding.cmd-ctrl-5 = "workspace 5";
         # mode.main.binding.cmd-ctrl-6 = "workspace 6";
-        # mode.main.binding.cmd-ctrl-7 = "workspace 7";
+        # mode.mainx.binding.cmd-ctrl-7 = "workspace 7";
         # mode.main.binding.cmd-ctrl-8 = "workspace 8";
         mode.main.binding.cmd-ctrl-left = "workspace --wrap-around prev";
         mode.main.binding.cmd-ctrl-right = "workspace --wrap-around next";

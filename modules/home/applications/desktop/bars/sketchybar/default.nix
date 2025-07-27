@@ -8,20 +8,6 @@
 let
   inherit (lib) mkIf getExe;
 
-  # Get the final package with proper path wrapping
-  finalPackage = pkgs.sketchybar.overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ pkgs.makeWrapper ];
-    postInstall = (old.postInstall or "") + ''
-      wrapProgram $out/bin/sketchybar \
-        --prefix PATH : ${lib.makeBinPath [
-          pkgs.coreutils
-          pkgs.gnused
-          pkgs.gnugrep
-        ]}
-    '';
-  });
-
-  # Shell aliases for common operations
   shellAliases = {
     restart-sketchybar = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.sketchybar'';
   };
@@ -29,7 +15,6 @@ let
   cfg = config.applications.desktop.bars.sketchybar;
 in
 {
-  # Define the module options under the expected path
   options.applications.desktop.bars.sketchybar = {
     enable = lib.mkEnableOption "Sketchybar status bar";
     
@@ -49,7 +34,8 @@ in
 
   config = lib.mkIf cfg.enable (lib.mkMerge [
     {
-      # Internal configuration using home-manager's programs.sketchybar module
+      home.shellAliases = shellAliases;
+
       programs.sketchybar = {
         enable = true;
         configType = "lua";
@@ -57,38 +43,14 @@ in
         sbarLuaPackage = pkgs.sbarlua;
 
         extraPackages = with pkgs; [
-            blueutil
-            coreutils
-            curl
-            gh
-            gh-notify
-            gnugrep
-            gnused
-            jankyborders
-        ] ++ cfg.extraPackages
-          ++ lib.optionals (osConfig.services ? yabai && osConfig.services.yabai.enable) [
-            osConfig.services.yabai.package
-          ]
-          ++ lib.optionals (config.programs ? aerospace && config.programs.aerospace.enable) [
-            config.programs.aerospace.package
-          ];
+          sbarlua
+        ];
 
         config = {
           source = ./config;
           recursive = true;
         };
       };
-    }
-    {
-      programs.zsh.initContent = ''
-        brew() {
-          command brew "$@" && ${getExe finalPackage} --trigger brew_update
-        }
-
-        mas() {
-          command mas "$@" && ${getExe finalPackage} --trigger brew_update
-        }
-      '';
     }
     {
       xdg.configFile = {

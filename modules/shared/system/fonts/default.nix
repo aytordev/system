@@ -21,6 +21,7 @@
     monaspace
     nerd-fonts.symbols-only
     nerd-fonts.monaspace
+    sketchybar-app-font
   ];
 in {
   options.system.fonts = with types; {
