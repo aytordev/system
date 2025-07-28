@@ -15,4 +15,10 @@ Sbar.add("bracket", "left.bracket.battery.volume.wifi", {
 	background = { color = colors.theme.c2 },
 })
 
+Sbar.add("item", "left.bracket.battery.volume.wifi.padding.left", {
+	position = "right",
+	width = settings.group_paddings,
+})
+
+require("items.right.cpu")
 

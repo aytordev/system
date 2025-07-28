@@ -68,6 +68,7 @@ in
             gnugrep
             gnused
             jankyborders
+            switchaudio-osx
         ] ++ cfg.extraPackages
           ++ lib.optionals (osConfig.services ? yabai && osConfig.services.yabai.enable) [
             osConfig.services.yabai.package

@@ -165,24 +165,34 @@ local function on_mouse_exit()
 end
 
 local function on_copy_click(env)
-    local label = Sbar.query(env.NAME).label.value
-    os.execute('echo "' .. label .. '" | pbcopy')
+    -- Get the current item's state
+    local item = Sbar.query(env.NAME)
+    local label_text = item.label.value
     
-    local original_label = env.NAME:gsub("^.*%.", "")
+    -- Copy the text to clipboard
+    os.execute('echo "' .. label_text .. '" | pbcopy')
+    
+    -- Store the original label configuration
+    local original_config = {
+        string = item.label.string,
+        color = item.label.color,
+        font = item.label.font,
+        drawing = true
+    }
+    
+    -- Show clipboard icon as feedback
     Sbar.set(env.NAME, { 
-        label = { 
-            string = icons.clipboard, 
-            align = "center" 
-        } 
+        label = {
+            string = icons.clipboard,
+            color = colors.theme.c8,
+            align = "center"
+        }
     })
     
+    -- Restore the original label after a short delay
     Sbar.delay(1, function()
-        Sbar.set(env.NAME, { 
-            label = { 
-                string = original_label, 
-                align = "right" 
-            } 
-        })
+        -- Re-fetch the current network info to ensure we have the latest values
+        update_network_info()
     end)
 end
 
