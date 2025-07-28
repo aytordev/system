@@ -35,10 +35,10 @@ local function create_ui_components()
     -- Main WiFi item
     components.wifi = Sbar.add("item", "left.wifi", {
         position = "right",
-        icon = { color = colors.theme.c8 },
+        icon = { color = colors.theme.c8, font = { size = 16.0 } },
         label = { drawing = false },
-        padding_right = 0,
-        padding_left = 0,
+        padding_right = settings.group_paddings,
+        padding_left = settings.group_paddings,
         background = { shadow = { drawing = false } }
     })
 

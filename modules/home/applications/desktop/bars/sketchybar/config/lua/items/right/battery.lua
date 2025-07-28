@@ -39,12 +39,16 @@ local function create_ui_components()
     -- Main battery item
     components.battery = Sbar.add("item", "left.battery", {
         position = "right",
-        icon = {},
+        icon = {
+            font = {
+                size = 16.0,
+            },
+        },
         label = { drawing = false },
         update_freq = UPDATE_FREQUENCY,
         popup = { align = "center" },
-        padding_left = 0,
-        padding_right = 0,
+        padding_left = settings.group_paddings,
+        padding_right = settings.group_paddings,
         background = { shadow = { drawing = false } }
     })
 

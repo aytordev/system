@@ -60,10 +60,13 @@ local function create_ui_components()
             color = colors.theme.c9,
             padding_left = 0,
             padding_right = 0,
+            font = {
+                size = 16.0,
+            },
         },
         label = { drawing = false },
-        padding_left = 0,
-        padding_right = 0,
+        padding_left = settings.group_paddings,
+        padding_right = settings.group_paddings,
         background = { shadow = { drawing = false } }
     })
 
