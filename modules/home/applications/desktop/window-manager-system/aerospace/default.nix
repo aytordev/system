@@ -42,8 +42,8 @@ in {
         gaps.inner.horizontal = 8;
         gaps.inner.vertical = 8;
         gaps.outer.left = 8;
-        gaps.outer.bottom = 40;
-        gaps.outer.top = 8;
+        gaps.outer.bottom = 8;
+        gaps.outer.top = 40;
         gaps.outer.right = 8;
         key-mapping.preset = "qwerty";
         mode.main.binding.alt-shift-j = "move up";

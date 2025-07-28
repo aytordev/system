@@ -21,4 +21,6 @@ Sbar.add("item", "left.bracket.battery.volume.wifi.padding.left", {
 })
 
 require("items.right.cpu")
+require("items.right.media")
+
 
