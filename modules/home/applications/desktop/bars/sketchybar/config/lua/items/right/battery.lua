@@ -3,120 +3,246 @@ local colors = require("colors")
 local animations = require("animations")
 local settings = require("settings")
 
-local popup_width = 200
+-- Constants
+local POPUP_WIDTH = 200
+local HALF_WIDTH = POPUP_WIDTH / 2
+local UPDATE_FREQUENCY = 180 -- seconds
 
-local battery = Sbar.add("item", "left.battery", {
-	position = "right",
-	icon = {},
-	label = {
-		drawing = false,
-	},
-	update_freq = 180,
-	popup = { align = "center" },
-	padding_left = 0,
-	padding_right = 0,
-	background = {
-		shadow = {
-			drawing = false,
-		},
-	},
-})
+-- Configuration
+local config = {
+    animation = {
+        begin = { y_offset = -2 },
+        end_state = { y_offset = 0 }
+    },
+    battery = {
+        low_threshold = 20,
+        medium_threshold = 40,
+        high_threshold = 80,
+        critical_color = colors.red,
+        warning_color = colors.orange,
+        normal_color = colors.green
+    }
+}
 
-local battery_percentage = Sbar.add("item", {
-	position = "popup." .. battery.name,
-	icon = {
-		width = popup_width / 2,
-		string = "Battery:",
-		align = "left",
-	},
-	label = {
-		width = popup_width / 2,
-		string = "??%",
-		align = "right",
-	},
-	background = { drawing = false },
-})
+-- State
+local state = {
+    battery = nil,
+    percentage = nil,
+    time_remaining = nil,
+    is_charging = false
+}
 
-local remaining_time = Sbar.add("item", {
-	position = "popup." .. battery.name,
-	icon = {
-		width = popup_width / 2,
-		string = "Time remaining:",
-		align = "left",
-	},
-	label = {
-		width = popup_width / 2,
-		string = "??:??h",
-		align = "right",
-	},
-	background = { drawing = false },
-})
+-- UI Components
+local function create_ui_components()
+    local components = {}
+    
+    -- Main battery item
+    components.battery = Sbar.add("item", "left.battery", {
+        position = "right",
+        icon = {},
+        label = { drawing = false },
+        update_freq = UPDATE_FREQUENCY,
+        popup = { align = "center" },
+        padding_left = 0,
+        padding_right = 0,
+        background = { shadow = { drawing = false } }
+    })
 
-battery:subscribe({ "routine", "power_source_change", "system_woke" }, function()
-	Sbar.exec("pmset -g batt", function(batt_info)
-		local icon = "!"
-		local label = "?"
+    -- Battery percentage item
+    components.percentage = Sbar.add("item", {
+        position = "popup." .. components.battery.name,
+        icon = {
+            width = HALF_WIDTH,
+            string = "Battery:",
+            align = "left",
+        },
+        label = {
+            width = HALF_WIDTH,
+            string = "??%",
+            align = "right",
+        },
+        background = { drawing = false },
+    })
 
-		local found, _, charge = batt_info:find("(%d+)%%")
-		if found then
-			charge = tonumber(charge)
-			label = charge .. "%"
-		end
+    -- Remaining time item
+    components.time_remaining = Sbar.add("item", {
+        position = "popup." .. components.battery.name,
+        icon = {
+            width = HALF_WIDTH,
+            string = "Time remaining:",
+            align = "left",
+        },
+        label = {
+            width = HALF_WIDTH,
+            string = "??:??h",
+            align = "right",
+        },
+        background = { drawing = false },
+    })
 
-		local color = colors.green
-		local charging, _, _ = batt_info:find("AC Power")
+    return components
+end
 
-		if charging then
-			icon = icons.battery.charging
-		else
-			if found and charge > 80 then
-				icon = icons.battery._100
-			elseif found and charge > 60 then
-				icon = icons.battery._75
-			elseif found and charge > 40 then
-				icon = icons.battery._50
-			elseif found and charge > 20 then
-				icon = icons.battery._25
-				color = colors.orange
-			else
-				icon = icons.battery._0
-				color = colors.red
-			end
-		end
+-- Battery Functions
+local function update_battery_icon(charge, is_charging)
+    local icon = icons.battery._0
+    local color = config.battery.critical_color
+    
+    if is_charging then
+        icon = icons.battery.charging
+        color = config.battery.normal_color
+    elseif charge > config.battery.high_threshold then
+        icon = icons.battery._100
+        color = config.battery.normal_color
+    elseif charge > config.battery.medium_threshold then
+        icon = icons.battery._75
+        color = config.battery.normal_color
+    elseif charge > config.battery.low_threshold then
+        icon = icons.battery._50
+        color = config.battery.normal_color
+    elseif charge > 0 then
+        icon = icons.battery._25
+        color = config.battery.warning_color
+    end
+    
+    return icon, color
+end
 
-		local lead = ""
-		if found and charge < 10 then
-			lead = "0"
-		end
+local function parse_battery_info(output)
+    -- Check if there's no battery (different macOS versions report this differently)
+    if output:find("No battery") or output:find("Battery Not Present") or not output:match("%d+%%") then
+        return {
+            has_battery = false,
+            charge = 0,
+            is_charging = false,
+            time_remaining = "N/A"
+        }
+    end
+    
+    local charge = 0
+    local is_charging = false
+    local time_remaining = "No estimate"
+    
+    -- Extract charge percentage
+    local charge_match = output:match("(%d+)%%")
+    if charge_match then
+        charge = tonumber(charge_match)
+    end
+    
+    -- Check if charging
+    is_charging = output:find("AC Power") ~= nil
+    
+    -- Extract time remaining if available
+    local time_match = output:match("(%d+:%d+) remaining")
+    if time_match then
+        time_remaining = time_match .. "h"
+    end
+    
+    return {
+        has_battery = true,
+        charge = charge,
+        is_charging = is_charging,
+        time_remaining = time_remaining
+    }
+end
 
-		battery:set({
-			icon = {
-				string = icon,
-				color = color,
-			},
-		})
-		battery_percentage:set({ label = { string = lead .. label } })
-	end)
-end)
+local function update_battery_display()
+    Sbar.exec("pmset -g batt", function(output)
+        local info = parse_battery_info(output)
+        
+        -- Update state
+        state.is_charging = info.is_charging
+        
+        if info.has_battery then
+            -- Update battery icon and color for systems with battery
+            local icon, color = update_battery_icon(info.charge, info.is_charging)
+            
+            -- Update UI
+            state.battery:set({
+                icon = {
+                    string = icon,
+                    color = color
+                }
+            })
+            
+            -- Update percentage with leading zero if needed
+            local charge_text = string.format("%d%%", info.charge)
+            local display_charge = info.charge < 10 and "0" .. charge_text or charge_text
+            state.percentage:set({ 
+                label = { string = display_charge } 
+            })
+        else
+            -- For systems without battery, show a power plug icon and infinity symbol
+            state.battery:set({
+                icon = {
+                    string = icons.battery.charging, -- Show power plug icon
+                    color = colors.theme.fg
+                }
+            })
+            
+            -- Show infinity symbol in the percentage and time remaining
+            state.percentage:set({ 
+                label = { string = "∞" } 
+            })
+        end
+        
+        -- Update time remaining in popup if visible
+        if state.battery:query().popup.drawing == "on" then
+            state.time_remaining:set({ 
+                label = { 
+                    string = info.has_battery and info.time_remaining or "∞"
+                } 
+            })
+        end
+    end)
+end
 
-battery:subscribe("mouse.clicked", function()
-	local begin_set = { y_offset = -2 }
-	local end_set = { y_offset = 0 }
-	animations.custom_animation(battery, settings.base_animation, settings.base_animation_duration, begin_set, end_set)
-	local drawing = battery:query().popup.drawing
-	battery:set({ popup = { drawing = "toggle" } })
+-- Event Handlers
+local function on_battery_update()
+    update_battery_display()
+end
 
-	if drawing == "off" then
-		Sbar.exec("pmset -g batt", function(batt_info)
-			local found, _, remaining = batt_info:find(" (%d+:%d+) remaining")
-			local label = found and remaining .. "h" or "No estimate"
-			remaining_time:set({ label = label })
-		end)
-	end
-end)
+local function on_click()
+    local begin_set = config.animation.begin
+    local end_set = config.animation.end_state
+    
+    animations.custom_animation(
+        state.battery,
+        settings.base_animation,
+        settings.base_animation_duration,
+        begin_set,
+        end_set
+    )
+    
+    local is_visible = state.battery:query().popup.drawing == "on"
+    state.battery:set({ popup = { drawing = not is_visible } })
+    
+    -- Force update when showing popup
+    if not is_visible then
+        update_battery_display()
+    end
+end
 
-battery:subscribe("mouse.exited.global", function()
-	battery:set({ popup = { drawing = false } })
-end)
+-- Initialize
+local function init()
+    -- Create UI components
+    local components = create_ui_components()
+    for k, v in pairs(components) do
+        state[k] = v
+    end
 
-return battery
+    -- Set up event subscriptions
+    state.battery:subscribe({ "routine", "power_source_change", "system_woke" }, on_battery_update)
+    state.battery:subscribe("mouse.clicked", on_click)
+    state.battery:subscribe("mouse.exited.global", function()
+        state.battery:set({ popup = { drawing = false } })
+    end)
+
+    -- Initial update
+    on_battery_update()
+end
+
+-- Initialize the module
+init()
+
+return state.battery
