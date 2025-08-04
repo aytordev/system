@@ -83,7 +83,6 @@ in {
         mode.resize.binding.esc = "mode main";
         mode.resize.binding.minus = "resize smart -50";
 
-
         mode.service.binding.alt-shift-h = ["join-with left" "mode main"];
         mode.service.binding.alt-shift-j = ["join-with down" "mode main"];
         mode.service.binding.alt-shift-k = ["join-with up" "mode main"];
@@ -98,7 +97,7 @@ in {
 
         on-focus-changed = ["move-mouse window-lazy-center" "exec-and-forget sketchybar --trigger aerospace_focus_change"];
         on-focused-monitor-changed = ["move-mouse monitor-lazy-center"];
-        
+
         start-at-login = true;
       };
     };

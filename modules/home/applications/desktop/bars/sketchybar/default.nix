@@ -2,23 +2,24 @@
   config,
   lib,
   pkgs,
-  osConfig ? { },
+  osConfig ? {},
   ...
-}:
-let
+}: let
   inherit (lib) mkIf getExe;
 
   # Get the final package with proper path wrapping
   finalPackage = pkgs.sketchybar.overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ pkgs.makeWrapper ];
-    postInstall = (old.postInstall or "") + ''
-      wrapProgram $out/bin/sketchybar \
-        --prefix PATH : ${lib.makeBinPath [
+    nativeBuildInputs = (old.nativeBuildInputs or []) ++ [pkgs.makeWrapper];
+    postInstall =
+      (old.postInstall or "")
+      + ''
+        wrapProgram $out/bin/sketchybar \
+          --prefix PATH : ${lib.makeBinPath [
           pkgs.coreutils
           pkgs.gnused
           pkgs.gnugrep
         ]}
-    '';
+      '';
   });
 
   # Shell aliases for common operations
@@ -27,19 +28,18 @@ let
   };
 
   cfg = config.applications.desktop.bars.sketchybar;
-in
-{
+in {
   # Define the module options under the expected path
   options.applications.desktop.bars.sketchybar = {
     enable = lib.mkEnableOption "Sketchybar status bar";
-    
+
     package = lib.mkOption {
       type = lib.types.package;
       default = pkgs.sketchybar;
       defaultText = lib.literalExpression "pkgs.sketchybar";
       description = "The Sketchybar package to use.";
     };
-    
+
     extraPackages = lib.mkOption {
       type = with lib.types; listOf package;
       default = [];
@@ -58,7 +58,8 @@ in
         package = cfg.package;
         sbarLuaPackage = pkgs.sbarlua;
 
-        extraPackages = with pkgs; [
+        extraPackages = with pkgs;
+          [
             blueutil
             coreutils
             lua54Packages.dkjson
@@ -69,7 +70,8 @@ in
             gnused
             jankyborders
             switchaudio-osx
-        ] ++ cfg.extraPackages
+          ]
+          ++ cfg.extraPackages
           ++ lib.optionals (osConfig.services ? yabai && osConfig.services.yabai.enable) [
             osConfig.services.yabai.package
           ]
@@ -102,8 +104,7 @@ in
         '';
         "sketchybar/sketchybarrc".executable = true;
 
-        "sketchybar/helpers/icon_map.lua".source =
-        "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
+        "sketchybar/helpers/icon_map.lua".source = "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
       };
     }
   ]);
