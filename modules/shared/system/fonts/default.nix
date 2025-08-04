@@ -22,6 +22,7 @@
     nerd-fonts.symbols-only
     nerd-fonts.monaspace
     sketchybar-app-font
+    maple-mono.variable
   ];
 in {
   options.system.fonts = with types; {

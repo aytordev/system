@@ -39,6 +39,10 @@
     if pkgs.stdenv.hostPlatform.isDarwin
     then "Monaspace Xenon Var"
     else "MonaspaceXenon";
+  mapleMono =
+    if pkgs.stdenv.hostPlatform.isDarwin
+    then "Maple Mono"
+    else "MapleMono";
 
   # Function to create theme symlinks for XDG
   mkThemeSymlink = theme: {
@@ -57,15 +61,15 @@
   # Base settings for Ghostty
   baseSettings = {
     "adw-toolbar-style" = "flat";
-    "background-opacity" = lib.mkDefault 0.8;
+    "background-opacity" = lib.mkDefault 1;
     "clipboard-trim-trailing-spaces" = true;
     "copy-on-select" = "clipboard";
     "focus-follows-mouse" = true;
-    "font-size" = lib.mkDefault 13;
-    "font-family" = lib.mkForce monaspaceNeon;
-    "font-family-bold" = lib.mkForce monaspaceXenon;
-    "font-family-italic" = lib.mkForce monaspaceRadon;
-    "font-family-bold-italic" = lib.mkForce monaspaceKrypton;
+    "font-size" = lib.mkDefault 16;
+    "font-family" = lib.mkForce mapleMono;
+    "font-family-bold" = lib.mkForce mapleMono;
+    "font-family-italic" = lib.mkForce mapleMono;
+    "font-family-bold-italic" = lib.mkForce mapleMono;
     "font-feature" = "+ss01,+ss02,+ss03,+ss04,+ss05,+ss06,+ss07,+ss08,+ss09,+ss10,+liga,+dlig,+calt";
     "gtk-single-instance" = false;
     "macos-titlebar-style" = "hidden";
@@ -89,7 +93,7 @@ in {
       type = types.nullOr (types.enum availableThemes);
       default =
         if availableThemes != []
-        then "catppuccin-macchiato"
+        then "catppuccin-mocha"
         else null;
       description = "Theme to use for Ghostty. Available themes: ${builtins.concatStringsSep ", " availableThemes}";
     };

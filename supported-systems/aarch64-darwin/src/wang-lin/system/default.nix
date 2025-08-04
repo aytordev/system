@@ -26,5 +26,5 @@ in {
   darwin.user.email = inputs.secrets.useremail;
   darwin.user.fullName = inputs.secrets.userfullname;
   darwin.user.uid = 501;
-  homebrew.casks = ["docker-desktop" "ghostty"];
+  homebrew.casks = ["docker-desktop" "ghostty" "sf-symbols"];
 }
