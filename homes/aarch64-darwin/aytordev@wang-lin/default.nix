@@ -14,23 +14,7 @@
   applications.desktop.bars.sketchybar.enable = true;
   applications.desktop.window-manager-system.aerospace.enable = true;
   applications.desktop.communications.discord.enable = true;
-  applications.desktop.communications.thunderbird = {
-    enable = true;
-    # Example configuration - customize with your accounts
-    # emailAccounts = {
-    #   "personal" = {
-    #     address = "user@example.com";
-    #     flavor = "gmail.com";  # or "outlook.office365.com", "fastmail.com", etc.
-    #   };
-    # };
-    # calendarAccounts = {
-    #   "Work" = {
-    #     url = "https://example.com/caldav/calendars/user/events/";
-    #     type = "caldav";
-    #     color = "#ff6b6b";
-    #   };
-    # };
-  };
+  applications.desktop.communications.thunderbird.enable = true;
   # applications.desktop.communications.vesktop.enable = true;
   applications.terminal.tools.git.enable = true;
   applications.terminal.tools.git.signingKey = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
