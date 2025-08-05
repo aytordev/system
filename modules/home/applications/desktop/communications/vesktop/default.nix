@@ -1,14 +1,16 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkEnableOption mkIf mkOption types;
-  
-  cfg = config.applications.desktop.communications.vesktop;
 
+  cfg = config.applications.desktop.communications.vesktop;
 in {
   options.applications.desktop.communications.vesktop = {
     enable = mkEnableOption "Vesktop";
-    
+
     package = mkOption {
       type = types.package;
       default = pkgs.vesktop;
@@ -18,8 +20,8 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ cfg.package ];
-    
+    home.packages = [cfg.package];
+
     # For backward compatibility with existing configurations
     programs.vesktop = {
       enable = true;
@@ -30,7 +32,7 @@ in {
           autoUpdate = false;
           autoUpdateNotification = false;
           useQuickCss = true;
-          themeLinks = [ ];
+          themeLinks = [];
           eagerPatches = false;
           enableReactDevtools = true;
           frameless = false;
@@ -38,7 +40,7 @@ in {
           winCtrlQ = false;
           disableMinSize = true;
           winNativeTitleBar = false;
-          
+
           plugins = {
             CommandsAPI.enabled = true;
             MessageAccessoriesAPI.enabled = true;
@@ -67,7 +69,7 @@ in {
               settingsLocation = "aboveNitro";
             };
           };
-          
+
           notifications = {
             timeout = 5000;
             position = "bottom-right";
