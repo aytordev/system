@@ -18,6 +18,7 @@
           "modules/darwin/security/sops/default.nix"
           "modules/darwin/security/sudo/default.nix"
           "modules/darwin/services/openssh/default.nix"
+          "modules/darwin/services/protonmail-bridge/default.nix"
           "modules/darwin/tools/homebrew/default.nix"
           "modules/darwin/user/default.nix"
           "modules/darwin/applications/terminal/tools/ssh/default.nix"

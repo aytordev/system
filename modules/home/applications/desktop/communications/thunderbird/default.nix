@@ -1,10 +1,13 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkEnableOption mkOption types mkIf;
-  
-  cfg = config.programs.thunderbird;
-  
+
+  cfg = config.applications.desktop.communications.thunderbird;
+
   calendarType = types.submodule {
     options = {
       url = mkOption {
@@ -12,7 +15,7 @@ let
         description = "Calendar URL";
       };
       type = mkOption {
-        type = types.enum [ "caldav" "http" ];
+        type = types.enum ["caldav" "http"];
         description = "Calendar type";
       };
       color = mkOption {
@@ -38,18 +41,15 @@ let
           "yandex.com"
           "outlook.office365.com"
           "davmail"
-          "protonmail.com"
-          "icloud.com"
         ];
         description = "Email service provider";
       };
     };
   };
-
 in {
-  options.programs.thunderbird = {
+  options.applications.desktop.communications.thunderbird = {
     enable = mkEnableOption "Thunderbird email client";
-    
+
     accountsOrder = mkOption {
       type = types.listOf types.str;
       default = [];
@@ -77,45 +77,55 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; lib.optionals stdenv.hostPlatform.isLinux [ birdtray ];
+    home.packages = with pkgs; lib.optionals stdenv.hostPlatform.isLinux [birdtray];
 
-    accounts.calendar.accounts = 
-      let
-        mkCalendarConfig = name: { url, type, color, ... }: {
-          remote = { inherit url type; };
-          local = { inherit color; };
-          thunderbird = {
-            enable = true;
-            inherit color;
-          };
+    accounts.calendar.accounts = let
+      mkCalendarConfig = name: {
+        url,
+        type,
+        color,
+        ...
+      }: {
+        remote = {inherit url type;};
+        local = {inherit color;};
+        thunderbird = {
+          enable = true;
+          inherit color;
         };
-      in
-        lib.mapAttrs mkCalendarConfig cfg.calendarAccounts;
+      };
+    in
+      lib.mapAttrs mkCalendarConfig cfg.calendarAccounts;
 
-    accounts.email.accounts = 
-      let
-        mkEmailConfig = _: { address, flavor, ... }: {
-          inherit address;
-          flavor = if flavor == "davmail" then "plain" else flavor;
-          realName = config.home.username;
-          userName = lib.mkIf (flavor == "davmail") address;
-          imap = lib.mkIf (flavor == "davmail") {
-            host = "localhost";
-            port = 1143;
-            tls.enable = false;
-          };
-          smtp = lib.mkIf (flavor == "davmail") {
-            host = "localhost";
-            port = 1025;
-            tls.enable = false;
-          };
-          thunderbird = {
-            enable = true;
-            settings = _: {};
-          };
+    accounts.email.accounts = let
+      mkEmailConfig = _: {
+        address,
+        flavor,
+        ...
+      }: {
+        inherit address;
+        flavor =
+          if flavor == "davmail"
+          then "plain"
+          else flavor;
+        realName = config.home.username;
+        userName = lib.mkIf (flavor == "davmail") address;
+        imap = lib.mkIf (flavor == "davmail") {
+          host = "localhost";
+          port = 1143;
+          tls.enable = false;
         };
-      in
-        lib.mapAttrs mkEmailConfig cfg.emailAccounts;
+        smtp = lib.mkIf (flavor == "davmail") {
+          host = "localhost";
+          port = 1025;
+          tls.enable = false;
+        };
+        thunderbird = {
+          enable = true;
+          settings = _: {};
+        };
+      };
+    in
+      lib.mapAttrs mkEmailConfig cfg.emailAccounts;
 
     programs.thunderbird = {
       enable = true;

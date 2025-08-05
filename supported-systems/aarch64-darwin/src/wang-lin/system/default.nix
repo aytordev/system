@@ -26,5 +26,24 @@ in {
   darwin.user.email = inputs.secrets.useremail;
   darwin.user.fullName = inputs.secrets.userfullname;
   darwin.user.uid = 501;
+
+  # ProtonMail Bridge configuration
+  darwin.security.sops.secrets.protonmail_bridge_user_name = {
+    key = "protonmail_bridge.user.name";
+    sopsFile = "${sopsFolder}/${inputs.secrets.username}.yaml";
+    owner = "${inputs.secrets.username}";
+    mode = "0400";
+  };
+  darwin.security.sops.secrets.protonmail_bridge_user_password = {
+    key = "protonmail_bridge.user.password";
+    sopsFile = "${sopsFolder}/${inputs.secrets.username}.yaml";
+    owner = "${inputs.secrets.username}";
+    mode = "0400";
+  };
+  darwin.services.protonmail-bridge = {
+    enable = true;
+    usernameFile = "${darwin.security.sops.secrets.protonmail_bridge_user_name.path}";
+    passwordFile = "${darwin.security.sops.secrets.protonmail_bridge_user_password.path}";
+  };
   homebrew.casks = ["docker-desktop" "ghostty" "sf-symbols"];
 }
