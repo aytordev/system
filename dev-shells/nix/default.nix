@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  name = "just";
+  name = "nix";
   description = "Task runner shell with just";
   packages = with pkgs; [
     just
