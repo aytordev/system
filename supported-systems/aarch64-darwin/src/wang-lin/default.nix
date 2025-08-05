@@ -47,6 +47,7 @@
         "modules/home/applications/terminal/tools/comma/default.nix"
         "modules/home/applications/terminal/tools/direnv/default.nix"
         "modules/home/applications/desktop/communications/discord/default.nix"
+        "modules/home/applications/desktop/communications/thunderbird/default.nix"
         # "modules/home/applications/desktop/communications/vesktop/default.nix"
         "modules/home/applications/terminal/tools/eza/default.nix"
         "modules/home/applications/terminal/tools/fastfetch/default.nix"
