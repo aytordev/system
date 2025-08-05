@@ -27,31 +27,18 @@ in {
   darwin.user.email = inputs.secrets.useremail;
   darwin.user.fullName = inputs.secrets.userfullname;
   darwin.user.uid = 501;
-
-  # ProtonMail Bridge configuration
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_username" = {
-    key = "thunderbird_protonmail_bridge_username";
-    sopsFile = "${sopsFolder}/shared.yaml";
-    path = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.username";
-    owner = "${inputs.secrets.username}";
-    mode = "0400";
-  };
-
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_password" = {
-    key = "thunderbird_protonmail_bridge_password";
-    sopsFile = "${sopsFolder}/shared.yaml";
-    path = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.password";
-    owner = "${inputs.secrets.username}";
-    mode = "0400";
-  };
-
-  darwin.services.protonmail-bridge = {
-    enable = true;
-    usernameFile = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.username";
-    passwordFile = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.password";
-  };
-
-
-
+  darwin.security.sops.secrets."thunderbird_protonmail_bridge_username".key = "thunderbird_protonmail_bridge_username";
+  darwin.security.sops.secrets."thunderbird_protonmail_bridge_username".sopsFile = "${sopsFolder}/shared.yaml";
+  darwin.security.sops.secrets."thunderbird_protonmail_bridge_username".path = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.username";
+  darwin.security.sops.secrets."thunderbird_protonmail_bridge_username".owner = "${inputs.secrets.username}";
+  darwin.security.sops.secrets."thunderbird_protonmail_bridge_username".mode = "0400";
+  darwin.security.sops.secrets."thunderbird_protonmail_bridge_password".key = "thunderbird_protonmail_bridge_password";
+  darwin.security.sops.secrets."thunderbird_protonmail_bridge_password".sopsFile = "${sopsFolder}/shared.yaml";
+  darwin.security.sops.secrets."thunderbird_protonmail_bridge_password".path = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.password";
+  darwin.security.sops.secrets."thunderbird_protonmail_bridge_password".owner = "${inputs.secrets.username}";
+  darwin.security.sops.secrets."thunderbird_protonmail_bridge_password".mode = "0400";
+  darwin.services.protonmail-bridge.enable = true;
+  darwin.services.protonmail-bridge.usernameFile = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.username";
+  darwin.services.protonmail-bridge.passwordFile = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.password";
   homebrew.casks = ["docker-desktop" "ghostty" "sf-symbols"];
 }
