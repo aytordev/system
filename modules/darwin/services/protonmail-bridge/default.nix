@@ -33,7 +33,6 @@ in {
       default = null;
       description = "Path to a file containing the ProtonMail password (recommended: use sops-nix).";
     };
-
   };
 
   config = mkIf cfg.enable {
@@ -42,12 +41,25 @@ in {
     # Service configuration
     launchd.user.agents.protonmail-bridge = {
       serviceConfig = {
-        ProgramArguments = [
-          "${pkgs.protonmail-bridge}/bin/protonmail-bridge"
-          "--noninteractive"
-        ]
-        ++ (if cfg.usernameFile != null then [ "--username-file" cfg.usernameFile ] else if cfg.username != "" then [ "--username" cfg.username ] else [])
-        ++ (if cfg.passwordFile != null then [ "--password-file" cfg.passwordFile ] else if cfg.password != "" then [ "--password" cfg.password ] else []);
+        ProgramArguments =
+          [
+            "${pkgs.protonmail-bridge}/bin/protonmail-bridge"
+            "--noninteractive"
+          ]
+          ++ (
+            if cfg.usernameFile != null
+            then ["--username-file" cfg.usernameFile]
+            else if cfg.username != ""
+            then ["--username" cfg.username]
+            else []
+          )
+          ++ (
+            if cfg.passwordFile != null
+            then ["--password-file" cfg.passwordFile]
+            else if cfg.password != ""
+            then ["--password" cfg.password]
+            else []
+          );
         KeepAlive = true;
         RunAtLoad = true;
         ProcessType = "Background";

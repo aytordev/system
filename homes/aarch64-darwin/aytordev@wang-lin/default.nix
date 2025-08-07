@@ -16,6 +16,7 @@
   applications.desktop.communications.discord.enable = true;
   applications.desktop.communications.thunderbird.enable = true;
   # applications.desktop.communications.vesktop.enable = true;
+  applications.desktop.editors.vscode.enable = true;
   applications.terminal.tools.git.enable = true;
   applications.terminal.tools.git.signingKey = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
   applications.terminal.shells.zsh.enable = true;

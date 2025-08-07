@@ -68,6 +68,7 @@
         "modules/home/applications/terminal/shells/fish/default.nix"
         "modules/home/applications/terminal/shells/nu-shell/default.nix"
         "modules/home/applications/desktop/bars/sketchybar/default.nix"
+        "modules/home/applications/desktop/editors/vscode/default.nix"
         "modules/home/applications/desktop/window-manager-system/aerospace/default.nix"
       ])
       ++ (map libraries.relativeToRoot [
