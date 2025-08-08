@@ -17,6 +17,10 @@ in {
       enable = true;
       package = pkgs.brave;
 
+      extensions = [
+        "nngceckbapebfimnlniiiahkandclblb" # Bitwarden Password Manager
+      ];
+
       commandLineArgs = [
         # Performance
         "--gtk-version=4"

@@ -63,7 +63,7 @@ in {
       ];
 
       extensions = [
-        # You can add extension IDs here if needed
+        "nngceckbapebfimnlniiiahkandclblb" # Bitwarden Password Manager
         # "cjpalhdlnbpafiamejdnhcphjbkeiagm" # uBlock Origin
       ];
     };
