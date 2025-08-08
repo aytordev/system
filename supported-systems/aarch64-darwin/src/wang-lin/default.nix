@@ -15,6 +15,7 @@
           "modules/darwin/system/interface/default.nix"
           "modules/darwin/system/input/default.nix"
           "modules/darwin/system/networking/default.nix"
+          "modules/darwin/system/rosetta/default.nix"
           "modules/darwin/security/sops/default.nix"
           "modules/darwin/security/sudo/default.nix"
           "modules/darwin/services/openssh/default.nix"
