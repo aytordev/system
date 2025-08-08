@@ -17,19 +17,16 @@ final: prev: {
 
     src = prev.fetchurl {
       url = "https://dl.google.com/chrome/mac/dev/googlechromedev.dmg";
-      sha256 = "0000000000000000000000000000000000000000000000000000"; # <--- UPDATE THIS HASH
+      sha256 = "sha256-fQt65ml8GmhPhn58C8hcnMJvHEAM7TFJoFxEwQSMimQ=";
     };
 
-    phases = ["unpackPhase" "installPhase"];
+    nativeBuildInputs = [ prev.undmg ];
 
-    unpackPhase = ''
-      hdiutil attach $src -mountpoint /Volumes/GoogleChromeDev
-    '';
+    sourceRoot = "Google Chrome Dev.app";
 
     installPhase = ''
       mkdir -p $out/Applications
-      cp -r "/Volumes/Google Chrome Dev/Google Chrome Dev.app" $out/Applications/
-      hdiutil detach /Volumes/GoogleChromeDev
+      cp -r . $out/Applications/Google\ Chrome\ Dev.app
     '';
 
     meta = with prev.lib; {
