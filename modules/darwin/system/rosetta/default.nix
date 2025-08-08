@@ -26,7 +26,6 @@ in {
       extra-platforms = x86_64-darwin aarch64-darwin
     '';
 
-    # Allow unsupported system packages when needed
-    nixpkgs.config.allowUnsupportedSystem = true;
+
   };
 }
