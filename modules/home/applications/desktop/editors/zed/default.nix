@@ -13,6 +13,12 @@ in {
       enable = true;
       package = pkgs.zed-editor;
 
+      # Extensions - https://github.com/zed-industries/extensions/tree/main/extensions
+      extensions = [
+        "catppuccin"
+        "catppuccin-icons"
+      ];
+
       # Main settings
       userSettings = {
         # settings.json, generated at Sat Mar 22 2025 17:00:58 GMT+0800 (Singapore Standard Time)
