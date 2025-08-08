@@ -71,6 +71,7 @@ in {
       '');
   in
     builtins.mapAttrs (name: shell: mkShell shell) allShells);
+  overlays = import (libraries.relativeToRoot "overlays");
   packages = forAllSystems (system: let
     pkgs = pkgsFor system;
   in {
