@@ -17,10 +17,6 @@ in {
       enable = true;
       package = pkgs.google-chrome;
 
-      extensions = [
-        "nngceckbapebfimnlniiiahkandclblb" # Bitwarden Password Manager
-      ];
-
       commandLineArgs = [
         # Performance
         "--gtk-version=4"

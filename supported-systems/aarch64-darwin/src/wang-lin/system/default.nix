@@ -8,6 +8,7 @@
 in {
   nixpkgs.overlays = [
     inputs.self.overlays.google-chrome-dev
+    inputs.self.overlays.ungoogled-chromium
   ];
 
   system.stateVersion = 6;
