@@ -6,9 +6,7 @@
 }: let
   sopsFolder = builtins.toString inputs.secrets + "/hard-secrets";
 in {
-  nixpkgs.overlays = [
-    inputs.self.overlays.google-chrome-dev
-  ];
+
   system.stateVersion = 6;
   system.networking.hostName = "wang-lin";
   system.networking.computerName = "Mac Studio M3 Ultra (2025)";

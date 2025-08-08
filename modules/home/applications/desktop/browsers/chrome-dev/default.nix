@@ -2,6 +2,7 @@
   pkgs,
   lib,
   config,
+  inputs,
   ...
 }: let
   inherit (lib) mkEnableOption mkIf;
@@ -13,6 +14,10 @@ in {
   };
 
   config = mkIf cfg.enable {
+    nixpkgs.overlays = [
+      inputs.self.overlays.google-chrome-dev
+    ];
+
     programs.chromium = {
       enable = true;
       package = pkgs.google-chrome-dev;
