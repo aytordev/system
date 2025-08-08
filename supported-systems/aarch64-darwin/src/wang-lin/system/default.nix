@@ -15,6 +15,7 @@ in {
   system.networking.computerName = "Mac Studio M3 Ultra (2025)";
   system.networking.localHostName = "wang-lin";
   system.primaryUser = inputs.secrets.username;
+  system.rosetta.enable = true;
   darwin.tools.homebrew.enable = true;
   darwin.security.sops.enable = true;
   darwin.security.sops.defaultSopsFile = "${sopsFolder}/${inputs.secrets.username}.yaml";

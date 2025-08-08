@@ -20,7 +20,7 @@ final: prev: {
       sha256 = "sha256-fQt65ml8GmhPhn58C8hcnMJvHEAM7TFJoFxEwQSMimQ=";
     };
 
-    nativeBuildInputs = [ prev.undmg ];
+    nativeBuildInputs = [prev.undmg];
 
     sourceRoot = "Google Chrome Dev.app";
 
