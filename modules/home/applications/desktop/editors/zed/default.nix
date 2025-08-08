@@ -211,7 +211,7 @@ in {
             "space s w" = "pane::DeploySearch";
 
             # Chat with AI
-            "space a c" = "assistant::ToggleFocus";
+            "space a c" = "agent::ToggleFocus";
 
             # Go to file with `gf`
             "g f" = "editor::OpenExcerpts";
@@ -268,7 +268,7 @@ in {
             "ctrl-q" = "pane::CloseActiveItem";
             "space b d" = "pane::CloseActiveItem";
             # Close other items
-            "space b o" = "pane::CloseInactiveItems";
+            "space b o" = "pane::CloseOtherItems";
             # Save file
             "ctrl-s" = "workspace::Save";
 
