@@ -7,24 +7,24 @@
   inherit (lib) mkEnableOption mkIf;
 
   cfg = config.applications.desktop.browsers.chromium;
-
-  # Use overlay version on macOS, nixpkgs version on Linux
-  chromiumPackage =
-    if pkgs.stdenv.isDarwin
-    then pkgs.ungoogled-chromium # From overlay
-    else pkgs.ungoogled-chromium; # From nixpkgs
 in {
   options.applications.desktop.browsers.chromium = {
     enable = mkEnableOption "Whether or not to enable Chromium (ungoogled-chromium)";
   };
 
-  config = mkIf cfg.enable {
-    programs.chromium = {
+  config = {
+    # On macOS, install the pre-built app directly
+    home.packages = mkIf (cfg.enable && pkgs.stdenv.isDarwin) [
+      pkgs.ungoogled-chromium-macos
+    ];
+
+    # On Linux, use Home Manager's chromium program
+    programs.chromium = mkIf (cfg.enable && !pkgs.stdenv.isDarwin) {
       enable = true;
-      package = chromiumPackage;
+      package = pkgs.ungoogled-chromium;
 
       commandLineArgs = [
-        # Basic flags for macOS compatibility
+        # Basic flags
         "--no-first-run"
         "--disable-sync"
         "--disable-default-apps"

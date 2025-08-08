@@ -12,15 +12,15 @@ final: prev: {
   # This overlay installs the app in $out/Applications.
   # The app will be available as ungoogled-chromium package.
 
-  ungoogled-chromium = prev.stdenv.mkDerivation rec {
-    pname = "ungoogled-chromium";
+  ungoogled-chromium-macos = prev.stdenv.mkDerivation rec {
+    pname = "ungoogled-chromium-macos";
     version = "138.0.7204.183-1.1";
 
     src = prev.fetchurl (
       if prev.stdenv.isAarch64
       then {
         url = "https://github.com/ungoogled-software/ungoogled-chromium-macos/releases/download/${version}/ungoogled-chromium_${version}_arm64-macos.dmg";
-        sha256 = "sha256-vTdhq+NmlzXVqC6wqE1Es+Xoll98lcocHkug/PCFKNI=";
+        sha256 = "sha256-vTdhq+NmlzXVqC6wqE1Es+XolZfIlcoeS6gPzwhajRI=";
       }
       else {
         url = "https://github.com/ungoogled-software/ungoogled-chromium-macos/releases/download/${version}/ungoogled-chromium_${version}_x86_64-macos.dmg";
@@ -38,7 +38,7 @@ final: prev: {
 
       # Create a symlink in bin for command line access
       mkdir -p $out/bin
-      ln -s $out/Applications/Chromium.app/Contents/MacOS/Chromium $out/bin/ungoogled-chromium
+      ln -s $out/Applications/Chromium.app/Contents/MacOS/Chromium $out/bin/chromium
     '';
 
     meta = with prev.lib; {
@@ -52,10 +52,6 @@ final: prev: {
       license = licenses.bsd3;
       platforms = ["aarch64-darwin" "x86_64-darwin"];
       maintainers = [];
-
-      # Note: This is unfree due to bundled codecs and other components
-      # even though the source code modifications are free
-      # unfree = true;
     };
   };
 }
