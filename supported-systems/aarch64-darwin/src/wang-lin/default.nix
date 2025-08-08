@@ -86,6 +86,7 @@
     // args
     // {
       hostName = name;
+      specialArgs = genSpecialArgs system;
     };
 in {
   darwinConfigurations.${name} = libraries.macosSystem systemArgs;
