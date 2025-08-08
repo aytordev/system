@@ -6,20 +6,22 @@
 }: let
   inherit (lib) mkEnableOption mkIf;
 
-  cfg = config.applications.desktop.browsers.brave;
+  cfg = config.applications.desktop.browsers.chromium;
 in {
-  options.applications.desktop.browsers.brave = {
-    enable = mkEnableOption "Whether or not to enable Brave";
+  options.applications.desktop.browsers.chromium = {
+    enable = mkEnableOption "Whether or not to enable Chromium (ungoogled-chromium)";
   };
 
-  config = mkIf cfg.enable {
-    programs.brave = {
-      enable = true;
-      package = pkgs.brave;
+  config = {
+    # On macOS, install the pre-built app directly
+    home.packages = mkIf (cfg.enable && pkgs.stdenv.isDarwin) [
+      pkgs.ungoogled-chromium-macos
+    ];
 
-      extensions = [
-        "nngceckbapebfimnlniiiahkandclblb" # Bitwarden Password Manager
-      ];
+    # On Linux, use Home Manager's chromium program
+    programs.chromium = mkIf (cfg.enable && !pkgs.stdenv.isDarwin) {
+      enable = true;
+      package = pkgs.ungoogled-chromium;
 
       commandLineArgs = [
         # Performance
@@ -53,6 +55,11 @@ in {
         "AutofillPaymentCardBenefits"
         "AutofillPaymentCvcStorage"
         "AutofillPaymentCardBenefits"
+      ];
+
+      extensions = [
+        "nngceckbapebfimnlniiiahkandclblb" # Bitwarden Password Manager
+        # "cjpalhdlnbpafiamejdnhcphjbkeiagm" # uBlock Origin
       ];
     };
   };

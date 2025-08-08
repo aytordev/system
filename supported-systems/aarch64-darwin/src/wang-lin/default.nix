@@ -72,6 +72,7 @@
         "modules/home/applications/desktop/browsers/chrome/default.nix"
         "modules/home/applications/desktop/browsers/chrome-dev/default.nix"
         "modules/home/applications/desktop/browsers/brave/default.nix"
+        "modules/home/applications/desktop/browsers/chromium/default.nix"
         "modules/home/applications/desktop/editors/vscode/default.nix"
         "modules/home/applications/desktop/editors/zed/default.nix"
         "modules/home/applications/desktop/window-manager-system/aerospace/default.nix"
@@ -85,6 +86,7 @@
     // args
     // {
       hostName = name;
+      specialArgs = genSpecialArgs system;
     };
 in {
   darwinConfigurations.${name} = libraries.macosSystem systemArgs;

@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: let
+} @ args: let
+  pkgs-stable = args.pkgs-stable or pkgs;
   inherit (lib) mkEnableOption mkIf;
 
   cfg = config.applications.desktop.editors.zed;
@@ -15,7 +16,7 @@ in {
   config = mkIf cfg.enable {
     programs.zed-editor = {
       enable = true;
-      package = pkgs.zed-editor;
+      package = pkgs-stable.zed-editor;
 
       # Extensions - https://github.com/zed-industries/extensions/tree/main/extensions
       extensions = [
