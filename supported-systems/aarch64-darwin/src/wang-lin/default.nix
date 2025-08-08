@@ -76,6 +76,7 @@
         "modules/home/applications/desktop/browsers/firefox/default.nix"
         "modules/home/applications/desktop/editors/vscode/default.nix"
         "modules/home/applications/desktop/editors/zed/default.nix"
+        "modules/home/applications/desktop/launchers/raycast/default.nix"
         "modules/home/applications/desktop/window-manager-system/aerospace/default.nix"
       ])
       ++ (map libraries.relativeToRoot [
