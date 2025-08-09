@@ -152,9 +152,9 @@ in {
       };
 
       pinentry = lib.mkOption {
-        type = lib.types.package;
-        default = if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3;
-        example = lib.literalExpression "pkgs.pinentry-curses";
+        type = lib.types.str;
+        default = if pkgs.stdenv.isDarwin then "pinentry-mac" else "pinentry-gnome3";
+        example = "pinentry-curses";
         description = ''
           Pinentry program to use for password prompts.
         '';
@@ -166,7 +166,10 @@ in {
     # Only install bitwarden-cli package if rbw is not enabled (to avoid broken package)
     # rbw can be used as a standalone alternative
     home.packages = lib.optionals (!cfg.rbw.enable) [cfg.package] 
-                    ++ lib.optionals cfg.rbw.enable [cfg.rbw.package];
+                    ++ lib.optionals cfg.rbw.enable [
+                      cfg.rbw.package
+                      (if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3)
+                    ];
 
     # Configure Bitwarden CLI settings
     home.sessionVariables = lib.mkMerge [
@@ -317,7 +320,7 @@ in {
       settings = {
         email = config.user.email or "";
         base_url = cfg.settings.server;
-        pinentry = cfg.rbw.pinentry.pname or "pinentry";
+        pinentry = cfg.rbw.pinentry;
         sync_interval = 3600;
       };
     };
