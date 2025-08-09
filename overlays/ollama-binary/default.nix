@@ -14,7 +14,7 @@ final: prev: {
       fetchSubmodules = true;
     };
     
-    vendorHash = "sha256-IgEf/WOc1eNGCif1fViIFxbgZAd6mHBqfxcaqH/WvGg=";
+    vendorHash = "sha256-SlaDsu001TUW+t9WRp7LqxUSQSGDF1Lqu9M1bgILoX4=";
     
     nativeBuildInputs = with final; [
       cmake
