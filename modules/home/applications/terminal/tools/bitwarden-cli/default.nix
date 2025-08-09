@@ -163,10 +163,10 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    # Only install bitwarden-cli package if it's not broken
+    # Only install bitwarden-cli package if rbw is not enabled (to avoid broken package)
     # rbw can be used as a standalone alternative
-    home.packages = lib.optional (!cfg.rbw.enable) cfg.package 
-                    ++ lib.optional cfg.rbw.enable cfg.rbw.package;
+    home.packages = lib.optionals (!cfg.rbw.enable) [cfg.package] 
+                    ++ lib.optionals cfg.rbw.enable [cfg.rbw.package];
 
     # Configure Bitwarden CLI settings
     home.sessionVariables = lib.mkMerge [
