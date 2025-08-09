@@ -21,6 +21,10 @@
         inherit system;
         config.allowUnfree = true;
       };
+      pkgs-ollama = import inputs.nixpkgs-ollama {
+        inherit system;
+        config.allowUnfree = true;
+      };
     };
   args = {
     inherit
