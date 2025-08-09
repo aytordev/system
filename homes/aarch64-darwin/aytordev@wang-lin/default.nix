@@ -92,7 +92,9 @@
   applications.desktop.security.bitwarden.biometricUnlock.enable = true;
   applications.desktop.security.bitwarden.vault.timeout = 30;
   applications.desktop.security.bitwarden.vault.timeoutAction = "lock";
-  applications.terminal.tools.bitwarden-cli.enable = true;
+  # Bitwarden CLI is temporarily disabled due to broken package in nixpkgs
+  # Using rbw as alternative CLI client
+  applications.terminal.tools.bitwarden-cli.enable = false;
   applications.terminal.tools.bitwarden-cli.shellIntegration.enable = true;
   applications.terminal.tools.bitwarden-cli.shellIntegration.enableZshIntegration = true;
   applications.terminal.tools.bitwarden-cli.shellIntegration.enableBashIntegration = true;

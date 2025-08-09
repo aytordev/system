@@ -137,9 +137,10 @@ in {
     rbw = {
       enable = lib.mkOption {
         type = lib.types.bool;
-        default = false;
+        default = true;
         description = ''
           Enable rbw, an unofficial Bitwarden CLI client with better session management.
+          This is a great alternative when the official bitwarden-cli is broken or unavailable.
         '';
       };
 
@@ -162,7 +163,10 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [cfg.package] ++ lib.optional cfg.rbw.enable cfg.rbw.package;
+    # Only install bitwarden-cli package if it's not broken
+    # rbw can be used as a standalone alternative
+    home.packages = lib.optional (!cfg.rbw.enable) cfg.package 
+                    ++ lib.optional cfg.rbw.enable cfg.rbw.package;
 
     # Configure Bitwarden CLI settings
     home.sessionVariables = lib.mkMerge [
@@ -196,6 +200,14 @@ in {
         # Auto-completion for Bitwarden CLI
         if command -v bw &> /dev/null; then
           eval "$(bw completion --shell zsh)"
+        fi
+        
+        # rbw aliases if using rbw instead of bw
+        if command -v rbw &> /dev/null && ! command -v bw &> /dev/null; then
+          alias bw="rbw"
+          alias bwl="rbw login"
+          alias bwu="rbw unlock"
+          alias bws="rbw sync"
         fi
 
         ${lib.optionalString cfg.aliases.enable ''
@@ -233,6 +245,14 @@ in {
         if command -v bw &> /dev/null; then
           eval "$(bw completion --shell bash)"
         fi
+        
+        # rbw aliases if using rbw instead of bw
+        if command -v rbw &> /dev/null && ! command -v bw &> /dev/null; then
+          alias bw="rbw"
+          alias bwl="rbw login"
+          alias bwu="rbw unlock"
+          alias bws="rbw sync"
+        fi
 
         ${lib.optionalString cfg.aliases.enable ''
           # Bitwarden aliases
@@ -268,6 +288,14 @@ in {
         # Auto-completion for Bitwarden CLI
         if command -v bw &> /dev/null
           bw completion --shell fish | source
+        end
+        
+        # rbw aliases if using rbw instead of bw
+        if command -v rbw &> /dev/null; and not command -v bw &> /dev/null
+          alias bw="rbw"
+          alias bwl="rbw login"
+          alias bwu="rbw unlock"
+          alias bws="rbw sync"
         end
 
         ${lib.optionalString cfg.aliases.enable ''
