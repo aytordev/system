@@ -1,17 +1,74 @@
 final: prev: {
-  # Override ollama to disable tests on Darwin ARM64 to fix build issues
+  # Override ollama to use version 0.4.10 instead of broken 0.11.3
+  # Version 0.11.3 has test failures on Darwin ARM64 with Metal
   # See: https://github.com/NixOS/nixpkgs/issues/431464
-  ollama = prev.ollama.overrideAttrs (oldAttrs: {
-    # Disable the check phase which is failing on Darwin ARM64
-    # The Metal test fails with: computeFunction must not be nil
-    doCheck = false;
+  ollama = final.buildGoModule rec {
+    pname = "ollama";
+    version = "0.4.10";
     
-    # Also skip the install check phase
+    src = final.fetchFromGitHub {
+      owner = "ollama";
+      repo = "ollama";
+      rev = "v${version}";
+      hash = "sha256-Xw/t2VlBWHTwmBnm3yeSj1MzRgnBhdIClM0SP2YKl0A=";
+      fetchSubmodules = true;
+    };
+    
+    vendorHash = "sha256-hSxcREAujhvzHVNwnRTfhi0MKI3s8HNavER2VLz6SYk=";
+    
+    nativeBuildInputs = with final; [
+      cmake
+    ] ++ lib.optionals final.stdenv.isDarwin [
+      darwin.apple_sdk.frameworks.Accelerate
+      darwin.apple_sdk.frameworks.MetalKit
+      darwin.apple_sdk.frameworks.MetalPerformanceShaders
+    ];
+    
+    buildInputs = with final; [
+      final.stdenv.cc.cc.lib
+    ] ++ lib.optionals final.stdenv.isDarwin [
+      darwin.apple_sdk.frameworks.Accelerate
+      darwin.apple_sdk.frameworks.MetalKit
+      darwin.apple_sdk.frameworks.MetalPerformanceShaders
+    ];
+    
+    # Disable tests on Darwin ARM64 due to Metal test failures
+    doCheck = false;
     doInstallCheck = false;
     
-    # Add a note about why we're disabling tests
-    meta = oldAttrs.meta // {
-      description = oldAttrs.meta.description + " (tests disabled on Darwin ARM64)";
+    # Set build flags
+    ldflags = [
+      "-s"
+      "-w"
+      "-X=github.com/ollama/ollama/version.Version=${version}"
+      "-X=github.com/ollama/ollama/server.mode=release"
+    ];
+    
+    # Build tags for Metal support on Darwin
+    tags = lib.optionals final.stdenv.isDarwin [ "metal" ];
+    
+    # Environment variables for build
+    preBuild = ''
+      export HOME=$TMPDIR
+    '' + lib.optionalString final.stdenv.isDarwin ''
+      export CGO_ENABLED=1
+    '';
+    
+    postInstall = ''
+      # Install shell completions if they exist
+      installShellCompletion --cmd ollama \
+        --bash <($out/bin/ollama completion bash 2>/dev/null || true) \
+        --fish <($out/bin/ollama completion fish 2>/dev/null || true) \
+        --zsh <($out/bin/ollama completion zsh 2>/dev/null || true)
+    '';
+    
+    meta = with final.lib; {
+      description = "Get up and running with large language models locally (pinned to v0.4.10 due to v0.11.3 test failures on Darwin ARM64)";
+      homepage = "https://github.com/ollama/ollama";
+      changelog = "https://github.com/ollama/ollama/releases/tag/v${version}";
+      license = licenses.mit;
+      platforms = platforms.unix;
+      mainProgram = "ollama";
     };
-  });
+  };
 }
