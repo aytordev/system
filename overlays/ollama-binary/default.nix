@@ -1,20 +1,20 @@
 final: prev: {
-  # Override ollama to use version 0.4.10 instead of broken 0.11.3
+  # Override ollama to use version 0.10.0 instead of broken 0.11.3
   # Version 0.11.3 has test failures on Darwin ARM64 with Metal
   # See: https://github.com/NixOS/nixpkgs/issues/431464
   ollama = final.buildGoModule rec {
     pname = "ollama";
-    version = "0.4.10";
+    version = "0.10.0";
     
     src = final.fetchFromGitHub {
       owner = "ollama";
       repo = "ollama";
       rev = "v${version}";
-      hash = "sha256-Xw/t2VlBWHTwmBnm3yeSj1MzRgnBhdIClM0SP2YKl0A=";
+      hash = "sha256-4CF84h0TdR4y4tpPnRgdNM5EVpvnQlmDqCcf2ePKotk=";
       fetchSubmodules = true;
     };
     
-    vendorHash = "sha256-hSxcREAujhvzHVNwnRTfhi0MKI3s8HNavER2VLz6SYk=";
+    vendorHash = "sha256-IgEf/WOc1eNGCif1fViIFxbgZAd6mHBqfxcaqH/WvGg=";
     
     nativeBuildInputs = with final; [
       cmake
@@ -65,7 +65,7 @@ final: prev: {
     '';
     
     meta = with final.lib; {
-      description = "Get up and running with large language models locally (pinned to v0.4.10 due to v0.11.3 test failures on Darwin ARM64)";
+      description = "Get up and running with large language models locally (pinned to v0.10.0 due to v0.11.3 test failures on Darwin ARM64)";
       homepage = "https://github.com/ollama/ollama";
       changelog = "https://github.com/ollama/ollama/releases/tag/v${version}";
       license = licenses.mit;
