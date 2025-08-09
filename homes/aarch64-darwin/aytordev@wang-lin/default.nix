@@ -101,4 +101,7 @@
   applications.terminal.tools.bitwarden-cli.shellIntegration.enableFishIntegration = true;
   applications.terminal.tools.bitwarden-cli.aliases.enable = true;
   applications.terminal.tools.bitwarden-cli.rbw.enable = true;
+  applications.terminal.tools.bitwarden-cli.settings.apiKey.useSops = true;
+  applications.terminal.tools.bitwarden-cli.settings.apiKey.clientIdPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_id";
+  applications.terminal.tools.bitwarden-cli.settings.apiKey.clientSecretPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_secret";
 }
