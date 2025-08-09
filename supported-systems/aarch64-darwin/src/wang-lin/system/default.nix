@@ -9,7 +9,6 @@ in {
   nixpkgs.overlays = [
     inputs.self.overlays.google-chrome-dev
     inputs.self.overlays.ungoogled-chromium
-    inputs.self.overlays.ollama-fix
   ];
 
   system.stateVersion = 6;
