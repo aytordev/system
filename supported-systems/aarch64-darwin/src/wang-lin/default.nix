@@ -51,6 +51,8 @@
         "modules/home/applications/desktop/communications/discord/default.nix"
         "modules/home/applications/desktop/communications/thunderbird/default.nix"
         # "modules/home/applications/desktop/communications/vesktop/default.nix"
+        "modules/home/applications/desktop/security/bitwarden/default.nix"
+        "modules/home/applications/terminal/tools/bitwarden-cli/default.nix"
         "modules/home/applications/terminal/tools/eza/default.nix"
         "modules/home/applications/terminal/tools/fastfetch/default.nix"
         "modules/home/applications/terminal/tools/gh/default.nix"
