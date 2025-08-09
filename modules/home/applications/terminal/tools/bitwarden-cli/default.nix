@@ -261,14 +261,16 @@ in {
           ${lib.optionalString cfg.settings.apiKey.useSops ''
           if [[ -f "${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}" ]] && \
              [[ -f "${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}" ]]; then
-            BW_CLIENTID=$(cat "${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}")
-            BW_CLIENTSECRET=$(cat "${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}")
-            echo "$BW_CLIENTSECRET" | rbw login --apikey "$BW_CLIENTID"
+            export BW_CLIENTID=$(cat "${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}")
+            export BW_CLIENTSECRET=$(cat "${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}")
+            rbw login
           ''} 
           ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
           if [[ -f "$HOME/.config/rbw/apikey" ]]; then
             source "$HOME/.config/rbw/apikey"
-            echo "$BW_CLIENTSECRET" | rbw login --apikey "$BW_CLIENTID"
+            export BW_CLIENTID
+            export BW_CLIENTSECRET
+            rbw login
           ''}
           else
             echo "API key not configured. Use 'rbw login' for password login."
@@ -371,14 +373,16 @@ in {
           ${lib.optionalString cfg.settings.apiKey.useSops ''
           if test -f "${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}" -a \
                   -f "${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}"
-            set BW_CLIENTID (cat "${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}")
-            set BW_CLIENTSECRET (cat "${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}")
-            echo "$BW_CLIENTSECRET" | rbw login --apikey "$BW_CLIENTID"
+            set -gx BW_CLIENTID (cat "${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}")
+            set -gx BW_CLIENTSECRET (cat "${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}")
+            rbw login
           ''}
           ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
           if test -f "$HOME/.config/rbw/apikey"
             source "$HOME/.config/rbw/apikey"
-            echo "$BW_CLIENTSECRET" | rbw login --apikey "$BW_CLIENTID"
+            set -gx BW_CLIENTID $BW_CLIENTID
+            set -gx BW_CLIENTSECRET $BW_CLIENTSECRET
+            rbw login
           ''}
           else
             echo "API key not configured. Use 'rbw login' for password login."
@@ -483,7 +487,9 @@ in {
         CLIENT_ID=$(cat "$CLIENT_ID_PATH")
         CLIENT_SECRET=$(cat "$CLIENT_SECRET_PATH")
         
-        echo "$CLIENT_SECRET" | rbw login --apikey "$CLIENT_ID"
+        export BW_CLIENTID="$CLIENT_ID"
+        export BW_CLIENTSECRET="$CLIENT_SECRET"
+        rbw login
       '';
     };
 
