@@ -25,6 +25,17 @@ in {
   darwin.security.sops.secrets.github_ssh_private_key.path = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
   darwin.security.sops.secrets.github_ssh_private_key.mode = "0600";
   darwin.security.sops.secrets.github_ssh_private_key.owner = "${inputs.secrets.username}";
+  # Bitwarden API credentials for rbw CLI (from shared.yaml)
+  darwin.security.sops.secrets.bitwarden_api_client_id.sopsFile = "${sopsFolder}/shared.yaml";
+  darwin.security.sops.secrets.bitwarden_api_client_id.key = "bitwarden_api_client_id";
+  darwin.security.sops.secrets.bitwarden_api_client_id.path = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_id";
+  darwin.security.sops.secrets.bitwarden_api_client_id.mode = "0600";
+  darwin.security.sops.secrets.bitwarden_api_client_id.owner = "${inputs.secrets.username}";
+  darwin.security.sops.secrets.bitwarden_api_client_secret.sopsFile = "${sopsFolder}/shared.yaml";
+  darwin.security.sops.secrets.bitwarden_api_client_secret.key = "bitwarden_api_client_secret";
+  darwin.security.sops.secrets.bitwarden_api_client_secret.path = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_secret";
+  darwin.security.sops.secrets.bitwarden_api_client_secret.mode = "0600";
+  darwin.security.sops.secrets.bitwarden_api_client_secret.owner = "${inputs.secrets.username}";
   applications.terminal.tools.ssh.knownHosts."github".hostNames = ["github.com"];
   applications.terminal.tools.ssh.knownHosts."github".publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILsKijb0PXKfsAmPu0t0jIsiYqfvhyiwPdrWWIwCSzpJ";
   darwin.security.sudo.enable = true;

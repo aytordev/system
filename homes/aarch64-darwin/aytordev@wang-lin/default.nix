@@ -85,4 +85,23 @@
   applications.terminal.tools.yazi.enable = true;
   applications.terminal.emulators.warp.enable = true;
   applications.terminal.tools.zellij.enable = true;
+  # Bitwarden password manager
+  applications.desktop.security.bitwarden.enable = true;
+  applications.desktop.security.bitwarden.enableBrowserIntegration = true;
+  applications.desktop.security.bitwarden.enableTrayIcon = true;
+  applications.desktop.security.bitwarden.biometricUnlock.enable = true;
+  applications.desktop.security.bitwarden.vault.timeout = 30;
+  applications.desktop.security.bitwarden.vault.timeoutAction = "lock";
+  # Bitwarden CLI is temporarily disabled due to broken package in nixpkgs
+  # Using rbw as alternative CLI client
+  applications.terminal.tools.bitwarden-cli.enable = true;
+  applications.terminal.tools.bitwarden-cli.shellIntegration.enable = true;
+  applications.terminal.tools.bitwarden-cli.shellIntegration.enableZshIntegration = true;
+  applications.terminal.tools.bitwarden-cli.shellIntegration.enableBashIntegration = true;
+  applications.terminal.tools.bitwarden-cli.shellIntegration.enableFishIntegration = true;
+  applications.terminal.tools.bitwarden-cli.aliases.enable = true;
+  applications.terminal.tools.bitwarden-cli.rbw.enable = true;
+  applications.terminal.tools.bitwarden-cli.settings.apiKey.useSops = true;
+  applications.terminal.tools.bitwarden-cli.settings.apiKey.clientIdPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_id";
+  applications.terminal.tools.bitwarden-cli.settings.apiKey.clientSecretPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_secret";
 }
