@@ -12,7 +12,7 @@ final: prev: {
     };
     
     # Update vendor hash for the new version
-    vendorHash = "sha256-hSxcREAujhvzHVNwnRTfhi0MKI3s8HNavER2VLz6SYk=";
+    vendorHash = "sha256-SlaDsu001TUW+t9WRp7LqxUSQSGDF1Lqu9M1bgILoX4=";
     
     # Keep tests disabled on Darwin ARM64 just in case
     doCheck = false;
