@@ -33,18 +33,14 @@ in {
   darwin.user.email = inputs.secrets.useremail;
   darwin.user.fullName = inputs.secrets.userfullname;
   darwin.user.uid = 501;
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_username".key = "thunderbird_protonmail_bridge_username";
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_username".sopsFile = "${sopsFolder}/shared.yaml";
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_username".path = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.username";
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_username".owner = "${inputs.secrets.username}";
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_username".mode = "0400";
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_password".key = "thunderbird_protonmail_bridge_password";
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_password".sopsFile = "${sopsFolder}/shared.yaml";
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_password".path = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.password";
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_password".owner = "${inputs.secrets.username}";
-  darwin.security.sops.secrets."thunderbird_protonmail_bridge_password".mode = "0400";
+  # ProtonMail Bridge configuration
+  # NOTE: ProtonMail Bridge must be configured manually first:
+  # 1. Run `protonmail-bridge` (without --noninteractive) to set up your account
+  # 2. Login with your ProtonMail credentials
+  # 3. Configure mail client settings
+  # 4. After initial setup, the service below will keep it running in background
   darwin.services.protonmail-bridge.enable = true;
-  darwin.services.protonmail-bridge.usernameFile = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.username";
-  darwin.services.protonmail-bridge.passwordFile = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.password";
+  darwin.services.protonmail-bridge.logLevel = "info";  # Options: panic, fatal, error, warn, info, debug
+  darwin.services.protonmail-bridge.enableGrpc = false;  # Enable if you need programmatic control
   homebrew.casks = ["docker-desktop" "ghostty" "sf-symbols" "spotify"];
 }
