@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }: let
   cfg = config.applications.terminal.tools.bitwarden-cli;
@@ -346,7 +347,7 @@ in {
       enable = true;
       package = cfg.rbw.package;
       settings = {
-        email = config.user.email or "";
+        email = inputs.secrets.useremail or "";
         base_url = cfg.settings.server;
         pinentry = cfg.rbw.pinentry;
         sync_interval = 3600;
