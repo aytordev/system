@@ -18,7 +18,7 @@ final: prev: {
     
     nativeBuildInputs = with final; [
       cmake
-    ] ++ lib.optionals final.stdenv.isDarwin [
+    ] ++ final.lib.optionals final.stdenv.isDarwin [
       darwin.apple_sdk.frameworks.Accelerate
       darwin.apple_sdk.frameworks.MetalKit
       darwin.apple_sdk.frameworks.MetalPerformanceShaders
@@ -26,7 +26,7 @@ final: prev: {
     
     buildInputs = with final; [
       final.stdenv.cc.cc.lib
-    ] ++ lib.optionals final.stdenv.isDarwin [
+    ] ++ final.lib.optionals final.stdenv.isDarwin [
       darwin.apple_sdk.frameworks.Accelerate
       darwin.apple_sdk.frameworks.MetalKit
       darwin.apple_sdk.frameworks.MetalPerformanceShaders
@@ -45,12 +45,12 @@ final: prev: {
     ];
     
     # Build tags for Metal support on Darwin
-    tags = lib.optionals final.stdenv.isDarwin [ "metal" ];
+    tags = final.lib.optionals final.stdenv.isDarwin [ "metal" ];
     
     # Environment variables for build
     preBuild = ''
       export HOME=$TMPDIR
-    '' + lib.optionalString final.stdenv.isDarwin ''
+    '' + final.lib.optionalString final.stdenv.isDarwin ''
       export CGO_ENABLED=1
     '';
     
