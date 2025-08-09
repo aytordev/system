@@ -54,5 +54,5 @@ in {
   darwin.services.protonmail-bridge.enable = true;
   darwin.services.protonmail-bridge.logLevel = "info";  # Options: panic, fatal, error, warn, info, debug
   darwin.services.protonmail-bridge.enableGrpc = false;  # Enable if you need programmatic control
-  homebrew.casks = ["docker-desktop" "ghostty" "sf-symbols" "spotify"];
+  homebrew.casks = ["docker-desktop" "ghostty" "ollama" "sf-symbols" "spotify"];
 }

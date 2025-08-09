@@ -1,119 +1,50 @@
 final: prev: {
-  ollama = prev.ollama.overrideAttrs (oldAttrs: rec {
-    version = "0.11.4";
-    
-    # Use prebuilt binary for Darwin ARM64 to avoid compilation issues
-    src = if prev.stdenv.isDarwin && prev.stdenv.isAarch64 then
-      prev.fetchurl {
-        url = "https://github.com/ollama/ollama/releases/download/v${version}/Ollama-darwin.zip";
-        sha256 = "0d3865in9i209dmdzkk2nkqbsxzffdxlrqwm4wd2gdip98kb7229";
-      }
-    else
-      oldAttrs.src;
-    
-    # Skip build phase for Darwin ARM64 binary
-    dontBuild = prev.stdenv.isDarwin && prev.stdenv.isAarch64;
-    
-    # For Darwin ARM64, extract and install the binary
-    installPhase = if prev.stdenv.isDarwin && prev.stdenv.isAarch64 then ''
-      runHook preInstall
+  # On Darwin, create a wrapper for Homebrew-installed Ollama
+  # This allows us to use the Homebrew cask (which includes the full app)
+  # while still managing configuration through Nix
+  ollama = if prev.stdenv.isDarwin then
+    prev.stdenv.mkDerivation rec {
+      pname = "ollama";
+      version = "0.11.4";
       
-      unzip $src
-      mkdir -p $out/bin
-      cp Ollama.app/Contents/MacOS/ollama $out/bin/ollama || cp ollama $out/bin/ollama || true
-      chmod +x $out/bin/ollama
+      # No source needed - we're wrapping the Homebrew installation
+      dontUnpack = true;
+      dontBuild = true;
       
-      # Create completions
-      mkdir -p $out/share/bash-completion/completions
-      mkdir -p $out/share/fish/vendor_completions.d
-      mkdir -p $out/share/zsh/site-functions
+      nativeBuildInputs = with prev; [ makeWrapper ];
       
-      $out/bin/ollama completion bash > $out/share/bash-completion/completions/ollama
-      $out/bin/ollama completion fish > $out/share/fish/vendor_completions.d/ollama.fish
-      $out/bin/ollama completion zsh > $out/share/zsh/site-functions/_ollama
+      installPhase = ''
+        runHook preInstall
+        
+        mkdir -p $out/bin
+        
+        # Create a wrapper script that uses the Homebrew-installed ollama
+        makeWrapper /opt/homebrew/bin/ollama $out/bin/ollama \
+          --prefix PATH : ${prev.lib.makeBinPath []} \
+          --set-default OLLAMA_HOST "127.0.0.1:11434"
+        
+        # Try to generate completions from the Homebrew ollama
+        mkdir -p $out/share/bash-completion/completions
+        mkdir -p $out/share/fish/vendor_completions.d
+        mkdir -p $out/share/zsh/site-functions
+        
+        if [ -x /opt/homebrew/bin/ollama ]; then
+          /opt/homebrew/bin/ollama completion bash > $out/share/bash-completion/completions/ollama 2>/dev/null || true
+          /opt/homebrew/bin/ollama completion fish > $out/share/fish/vendor_completions.d/ollama.fish 2>/dev/null || true
+          /opt/homebrew/bin/ollama completion zsh > $out/share/zsh/site-functions/_ollama 2>/dev/null || true
+        fi
+        
+        runHook postInstall
+      '';
       
-      runHook postInstall
-    '' else oldAttrs.installPhase;
-    
-    # Remove build dependencies for Darwin ARM64
-    nativeBuildInputs = if prev.stdenv.isDarwin && prev.stdenv.isAarch64 then
-      [ prev.makeWrapper prev.unzip ]
-    else
-      oldAttrs.nativeBuildInputs or [];
-    
-    buildInputs = if prev.stdenv.isDarwin && prev.stdenv.isAarch64 then
-      []
-    else
-      oldAttrs.buildInputs or [];
-  });
-  
-  # Alternative: Use ollama-bin package if available
-  ollama-bin = prev.stdenv.mkDerivation rec {
-    pname = "ollama-bin";
-    version = "0.11.4";
-    
-    src = if prev.stdenv.isDarwin then
-      prev.fetchurl {
-        url = "https://github.com/ollama/ollama/releases/download/v${version}/Ollama-darwin.zip";
-        sha256 = "0d3865in9i209dmdzkk2nkqbsxzffdxlrqwm4wd2gdip98kb7229";
-      }
-    else if prev.stdenv.isLinux && prev.stdenv.isAarch64 then
-      prev.fetchurl {
-        url = "https://github.com/ollama/ollama/releases/download/v${version}/ollama-linux-arm64.tgz";
-        sha256 = "sha256-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC="; # Replace with actual hash
-      }
-    else
-      prev.fetchurl {
-        url = "https://github.com/ollama/ollama/releases/download/v${version}/ollama-linux-amd64.tgz";
-        sha256 = "sha256-DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD="; # Replace with actual hash
+      meta = with prev.lib; {
+        description = "Get up and running with large language models locally (Homebrew wrapper)";
+        homepage = "https://ollama.ai";
+        license = licenses.mit;
+        platforms = [ "x86_64-darwin" "aarch64-darwin" ];
+        mainProgram = "ollama";
       };
-    
-    dontBuild = true;
-    
-    nativeBuildInputs = with prev; [ makeWrapper ] 
-      ++ (if prev.stdenv.isDarwin then [ unzip ] else [ gnutar gzip ]);
-    
-    unpackPhase = if prev.stdenv.isDarwin then ''
-      unzip $src
-    '' else ''
-      tar -xzf $src
-    '';
-    
-    installPhase = ''
-      runHook preInstall
-      
-      mkdir -p $out/bin
-      if [ -d "Ollama.app" ]; then
-        # macOS app bundle
-        cp Ollama.app/Contents/MacOS/ollama $out/bin/ollama || cp Ollama.app/Contents/Resources/ollama $out/bin/ollama
-      else
-        # Linux binary
-        cp ollama $out/bin/ollama || cp bin/ollama $out/bin/ollama
-      fi
-      chmod +x $out/bin/ollama
-      
-      # Wrap the binary to ensure it finds required libraries
-      wrapProgram $out/bin/ollama \
-        --prefix PATH : ${prev.lib.makeBinPath (with prev; [ ])}
-      
-      # Generate shell completions
-      mkdir -p $out/share/bash-completion/completions
-      mkdir -p $out/share/fish/vendor_completions.d
-      mkdir -p $out/share/zsh/site-functions
-      
-      $out/bin/ollama completion bash > $out/share/bash-completion/completions/ollama || true
-      $out/bin/ollama completion fish > $out/share/fish/vendor_completions.d/ollama.fish || true
-      $out/bin/ollama completion zsh > $out/share/zsh/site-functions/_ollama || true
-      
-      runHook postInstall
-    '';
-    
-    meta = with prev.lib; {
-      description = "Get up and running with large language models locally";
-      homepage = "https://ollama.ai";
-      license = licenses.mit;
-      platforms = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
-      mainProgram = "ollama";
-    };
-  };
+    }
+  else
+    prev.ollama; # Use original package for non-Darwin systems
 }
