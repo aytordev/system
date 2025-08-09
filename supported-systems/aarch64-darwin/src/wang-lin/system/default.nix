@@ -46,5 +46,5 @@ in {
   darwin.services.protonmail-bridge.enable = true;
   darwin.services.protonmail-bridge.usernameFile = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.username";
   darwin.services.protonmail-bridge.passwordFile = "/Users/${inputs.secrets.username}/.config/protonmail-bridge/user.password";
-  homebrew.casks = ["docker-desktop" "ghostty" "sf-symbols"];
+  homebrew.casks = ["docker-desktop" "ghostty" "sf-symbols" "spotify"];
 }
