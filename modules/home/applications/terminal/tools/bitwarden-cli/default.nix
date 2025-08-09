@@ -152,9 +152,9 @@ in {
       };
 
       pinentry = lib.mkOption {
-        type = lib.types.str;
-        default = if pkgs.stdenv.isDarwin then "pinentry-mac" else "pinentry-gnome3";
-        example = "pinentry-curses";
+        type = lib.types.package;
+        default = if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3;
+        example = lib.literalExpression "pkgs.pinentry-curses";
         description = ''
           Pinentry program to use for password prompts.
         '';
@@ -317,7 +317,7 @@ in {
       settings = {
         email = config.user.email or "";
         base_url = cfg.settings.server;
-        pinentry = cfg.rbw.pinentry;
+        pinentry = cfg.rbw.pinentry.pname or "pinentry";
         sync_interval = 3600;
       };
     };
