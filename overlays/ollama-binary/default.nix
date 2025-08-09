@@ -10,7 +10,7 @@ final: prev: {
       owner = "ollama";
       repo = "ollama";
       rev = "v${version}";
-      hash = "sha256-4CF84h0TdR4y4tpPnRgdNM5EVpvnQlmDqCcf2ePKotk=";
+      hash = "sha256-BoT4WUapxakETHAlHP64okcReMIhQ+PzKaSVpELvrcI=";
       fetchSubmodules = true;
     };
     
