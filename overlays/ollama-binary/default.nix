@@ -18,19 +18,21 @@ final: prev: {
     
     nativeBuildInputs = with final; [
       cmake
-    ] ++ final.lib.optionals final.stdenv.isDarwin [
-      darwin.apple_sdk.frameworks.Accelerate
-      darwin.apple_sdk.frameworks.MetalKit
-      darwin.apple_sdk.frameworks.MetalPerformanceShaders
-    ];
+    ] ++ final.lib.optionals final.stdenv.isDarwin (with final.darwin.apple_sdk_11_0.frameworks; [
+      Accelerate
+      Metal
+      MetalKit
+      MetalPerformanceShaders
+    ]);
     
     buildInputs = with final; [
       final.stdenv.cc.cc.lib
-    ] ++ final.lib.optionals final.stdenv.isDarwin [
-      darwin.apple_sdk.frameworks.Accelerate
-      darwin.apple_sdk.frameworks.MetalKit
-      darwin.apple_sdk.frameworks.MetalPerformanceShaders
-    ];
+    ] ++ final.lib.optionals final.stdenv.isDarwin (with final.darwin.apple_sdk_11_0.frameworks; [
+      Accelerate
+      Metal
+      MetalKit
+      MetalPerformanceShaders
+    ]);
     
     # Disable tests on Darwin ARM64 due to Metal test failures
     doCheck = false;
