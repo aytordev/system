@@ -181,9 +181,9 @@ in {
       }
     ];
 
-    # Shell integration for Zsh
-    programs.zsh = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
-      initExtra = ''
+    # Shell integration scripts
+    home.file.".config/bitwarden-cli/zsh-integration.sh" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
+      text = ''
         # Bitwarden CLI session management
         export BW_SESSION=""
         
@@ -211,6 +211,8 @@ in {
           alias bwl="rbw login"
           alias bwu="rbw unlock"
           alias bws="rbw sync"
+          alias bwg="rbw get"
+          alias bwp="rbw get --field password"
         fi
 
         ${lib.optionalString cfg.aliases.enable ''
@@ -225,9 +227,8 @@ in {
       '';
     };
 
-    # Shell integration for Bash
-    programs.bash = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
-      initExtra = ''
+    home.file.".config/bitwarden-cli/bash-integration.sh" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
+      text = ''
         # Bitwarden CLI session management
         export BW_SESSION=""
         
@@ -255,6 +256,8 @@ in {
           alias bwl="rbw login"
           alias bwu="rbw unlock"
           alias bws="rbw sync"
+          alias bwg="rbw get"
+          alias bwp="rbw get --field password"
         fi
 
         ${lib.optionalString cfg.aliases.enable ''
@@ -269,9 +272,8 @@ in {
       '';
     };
 
-    # Shell integration for Fish
-    programs.fish = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
-      interactiveShellInit = ''
+    home.file.".config/bitwarden-cli/fish-integration.fish" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
+      text = ''
         # Bitwarden CLI session management
         set -gx BW_SESSION ""
         
@@ -299,6 +301,8 @@ in {
           alias bwl="rbw login"
           alias bwu="rbw unlock"
           alias bws="rbw sync"
+          alias bwg="rbw get"
+          alias bwp="rbw get --field password"
         end
 
         ${lib.optionalString cfg.aliases.enable ''
@@ -310,6 +314,30 @@ in {
           alias bwp="${cfg.aliases.bwp}"
           alias bwc="${cfg.aliases.bwc}"
         ''}
+      '';
+    };
+
+    # Add sourcing instructions to shell configs
+    programs.zsh = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
+      initExtra = ''
+        # Source Bitwarden CLI integration
+        [[ -f "$HOME/.config/bitwarden-cli/zsh-integration.sh" ]] && source "$HOME/.config/bitwarden-cli/zsh-integration.sh"
+      '';
+    };
+
+    programs.bash = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
+      initExtra = ''
+        # Source Bitwarden CLI integration
+        [[ -f "$HOME/.config/bitwarden-cli/bash-integration.sh" ]] && source "$HOME/.config/bitwarden-cli/bash-integration.sh"
+      '';
+    };
+
+    programs.fish = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
+      interactiveShellInit = ''
+        # Source Bitwarden CLI integration
+        if test -f "$HOME/.config/bitwarden-cli/fish-integration.fish"
+          source "$HOME/.config/bitwarden-cli/fish-integration.fish"
+        end
       '';
     };
 
