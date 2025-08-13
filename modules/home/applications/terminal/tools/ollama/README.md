@@ -2,6 +2,8 @@
 
 A simple NixOS/nix-darwin module for running Large Language Models (LLMs) locally using [Ollama](https://ollama.ai).
 
+> **Note**: This module has been refactored following SOLID, DRY, KISS, and YAGNI principles for better maintainability and simplicity.
+
 ## 📋 Table of Contents
 
 - [Installation](#-installation)
@@ -9,6 +11,7 @@ A simple NixOS/nix-darwin module for running Large Language Models (LLMs) locall
 - [Usage](#-usage)
 - [Model Management](#-model-management)
 - [Optional Features](#-optional-features)
+- [Module Architecture](#-module-architecture)
 
 ## ✨ Features
 
@@ -216,6 +219,67 @@ ollama pull llama3.2
 - [Ollama Documentation](https://github.com/ollama/ollama)
 - [Model Library](https://ollama.ai/library)
 
+## 🏗️ Module Architecture
+
+This module follows a modular architecture with clear separation of concerns:
+
+```
+ollama/
+├── default.nix          # Main module configuration
+├── utils.nix           # Common utilities and constants
+├── models.nix          # Model presets and management
+├── scripts.nix         # Essential CLI tools (chat, code)
+├── service.nix         # Systemd service configuration
+├── integrations.nix    # Optional editor integrations
+├── advanced-scripts.nix # Optional advanced tools (RAG, API, benchmark)
+├── validate.nix        # Configuration validation script
+└── README.md           # This documentation
+```
+
+### Design Principles Applied
+
+- **SOLID**: Each module has a single responsibility
+- **DRY**: Common utilities extracted to prevent duplication
+- **KISS**: Focus on essential functionality, complex features are optional
+- **YAGNI**: Advanced features disabled by default
+
+### Module Dependencies
+
+```mermaid
+graph TD
+    A[default.nix] --> B[utils.nix]
+    A --> C[models.nix]
+    A --> D[scripts.nix]
+    A --> E[service.nix]
+    A --> F[integrations.nix]
+    A --> G[advanced-scripts.nix]
+    A --> H[validate.nix]
+    
+    C --> B
+    D --> B
+    E --> B
+    F --> A
+    G --> B
+    H --> A
+```
+
 ## 🤝 Contributing
 
 Follow the project's [contributing guidelines](../../../../../CONTRIBUTING.md) when making changes to this module.
+
+### Adding New Features
+
+1. **Core features**: Add to appropriate existing module
+2. **Optional features**: Create new module and import in `default.nix`
+3. **Scripts**: Add to `scripts.nix` for essential tools, `advanced-scripts.nix` for optional ones
+4. **Utilities**: Add common functions to `utils.nix`
+
+### Testing Changes
+
+```bash
+# Validate syntax and build
+just darwin-build wang-lin
+
+# Test module functionality
+ollama-validate
+```
