@@ -16,6 +16,8 @@ in
     ./scripts.nix
     ./integrations.nix
     ./service.nix
+    ./advanced-scripts.nix
+    ./validate.nix
   ];
   
   options.applications.terminal.tools.ollama = {
