@@ -36,17 +36,27 @@ in
           exit 1
         fi
         
-        # Check service status
-        if systemctl --user is-enabled ollama.service &> /dev/null; then
-          echo -e "''${GREEN}✅ Ollama service is enabled''${NC}"
-          
-          if systemctl --user is-active ollama.service &> /dev/null; then
-            echo -e "''${GREEN}✅ Ollama service is running''${NC}"
+        # Check service status (macOS uses launchd, Linux uses systemd)
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+          # macOS launchd check
+          if launchctl list | grep -q "ollama" 2>/dev/null; then
+            echo -e "''${GREEN}✅ Ollama service is running (launchd)''${NC}"
           else
-            echo -e "''${YELLOW}⚠️  Ollama service is not running''${NC}"
+            echo -e "''${YELLOW}⚠️  Ollama service not found in launchd (running manually is fine)''${NC}"
           fi
         else
-          echo -e "''${RED}❌ Ollama service is not enabled''${NC}"
+          # Linux systemd check
+          if systemctl --user is-enabled ollama.service &> /dev/null; then
+            echo -e "''${GREEN}✅ Ollama service is enabled''${NC}"
+            
+            if systemctl --user is-active ollama.service &> /dev/null; then
+              echo -e "''${GREEN}✅ Ollama service is running''${NC}"
+            else
+              echo -e "''${YELLOW}⚠️  Ollama service is not running''${NC}"
+            fi
+          else
+            echo -e "''${RED}❌ Ollama service is not enabled''${NC}"
+          fi
         fi
         
         # Check API connectivity
