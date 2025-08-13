@@ -131,10 +131,11 @@ M.PRESETS = {
 }
 
 -- Common popup configuration
-function M.create_popup_config(align, y_offset)
+function M.create_popup_config(align, y_offset, horizontal)
   return {
     align = align or "center",
     y_offset = y_offset or 2,
+    horizontal = horizontal ~= nil and horizontal or false,  -- Default to vertical layout
   }
 end
 

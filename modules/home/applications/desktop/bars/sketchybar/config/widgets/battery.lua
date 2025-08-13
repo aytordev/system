@@ -10,7 +10,11 @@ local battery = sbar.add("item", "widgets.battery", {
   padding_left = 8,
   padding_right = 4,
   update_freq = 180,
-  popup = utils.create_popup_config("center", 4),
+  popup = {
+    align = "center",
+    horizontal = false,
+    y_offset = 4,
+  },
 })
 
 local remaining_time = sbar.add("item", {
