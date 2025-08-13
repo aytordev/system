@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  pkgs-stable,
   ...
 }:
 with lib; let
@@ -18,7 +19,7 @@ in {
     
     package = mkOption {
       type = types.package;
-      default = pkgs.ollama or pkgs.ollama-bin;
+      default = pkgs-stable.ollama;
       description = "The Ollama package to use";
     };
     

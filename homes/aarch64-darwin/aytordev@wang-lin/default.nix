@@ -116,17 +116,13 @@
   ];
   applications.terminal.tools.ollama.service.enable = true;
   applications.terminal.tools.ollama.service.autoStart = true;
-  applications.terminal.tools.ollama.shellAliases.enable = true;
-  applications.terminal.tools.ollama.shellAliases.aliases = {
-    ai = "ollama run llama3.2";
-    ai-code = "ollama run codellama";
-    ai-chat = "ollama-chat llama3.2";
-  };
+  applications.terminal.tools.ollama.shellAliases = true;
+  # Shell aliases are now handled automatically by the module
   applications.terminal.tools.ollama.environmentVariables = {
      OLLAMA_NUM_PARALLEL = "2";
      OLLAMA_MAX_LOADED_MODELS = "2";
      OLLAMA_KEEP_ALIVE = "5m";
   };
-  applications.terminal.tools.ollama.integrations.zed = true;
+  # Zed integration removed - configure manually if needed
   applications.terminal.tools.ollama.modelPresets = [ "general" "coding" ];
 }
