@@ -21,7 +21,7 @@
   ];
   gitConfig = {
     enable = true;
-    package = pkgs.gitFull;
+    package = pkgs.git;
     aliases = aliases;
     ignores = ignores;
     userName = inputs.secrets.username;

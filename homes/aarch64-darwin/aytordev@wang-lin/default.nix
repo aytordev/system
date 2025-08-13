@@ -104,4 +104,26 @@
   applications.terminal.tools.bitwarden-cli.settings.apiKey.useSops = true;
   applications.terminal.tools.bitwarden-cli.settings.apiKey.clientIdPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_id";
   applications.terminal.tools.bitwarden-cli.settings.apiKey.clientSecretPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_secret";
+
+  # Ollama - Local LLM Runner
+  # Disabled: Using Homebrew cask version instead for better macOS integration
+  applications.terminal.tools.ollama.enable = true;
+  applications.terminal.tools.ollama.acceleration = "metal"; # Use Metal for GPU acceleration on macOS
+  applications.terminal.tools.ollama.models = [
+    "llama3.2"      # General purpose 3B model
+    "codellama"     # Code generation
+    "mistral"       # 7B general model
+  ];
+  applications.terminal.tools.ollama.service.enable = true;
+  applications.terminal.tools.ollama.service.autoStart = true;
+  applications.terminal.tools.ollama.shellAliases = true;
+  # Shell aliases are now handled automatically by the module
+  applications.terminal.tools.ollama.environmentVariables = {
+     OLLAMA_NUM_PARALLEL = "2";
+     OLLAMA_MAX_LOADED_MODELS = "2";
+     OLLAMA_KEEP_ALIVE = "5m";
+  };
+  # Enable Zed integration through new module structure
+  applications.terminal.tools.ollama.integrations.zed = true;
+  applications.terminal.tools.ollama.modelPresets = [ "general" "coding" ];
 }
