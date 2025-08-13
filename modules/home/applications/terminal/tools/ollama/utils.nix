@@ -107,15 +107,17 @@ with lib; let
     ${shellUtils.errorHandling}
     
     echo -e "''${CYAN}🤖 Ollama Service Status:''${NC}"
-    systemctl --user status ollama.service --no-pager | head -n 5
-    echo ""
     
-    if systemctl --user is-active --quiet ollama.service; then
+    # Check if API is responding (works on both macOS and Linux)
+    if curl -s http://127.0.0.1:11434/api/tags > /dev/null 2>&1; then
+      echo -e "''${GREEN}✅ Ollama is running and API is responding''${NC}"
+      echo ""
       ${modelOperations.showRunning}
       echo ""
       ${modelOperations.listModels}
     else
-      echo -e "''${YELLOW}Service is not running''${NC}"
+      echo -e "''${YELLOW}⚠️  Ollama is not running or API is not responding''${NC}"
+      echo "Try starting it with: ollama serve"
     fi
   '';
   
