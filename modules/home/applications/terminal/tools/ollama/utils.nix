@@ -136,12 +136,14 @@ with lib; let
   '';
   
 in {
-  # Export utilities for use in other modules
-  _module.args.ollamaUtils = {
-    inherit constants shellUtils modelOperations;
-    createModelPullScript = createModelPullScript;
-    createStatusScript = createStatusScript;
-    createRestartScript = createRestartScript;
-    createLogsScript = createLogsScript;
+  config = {
+    # Export utilities for use in other modules
+    _module.args.ollamaUtils = {
+      inherit constants shellUtils modelOperations;
+      createModelPullScript = createModelPullScript;
+      createStatusScript = createStatusScript;
+      createRestartScript = createRestartScript;
+      createLogsScript = createLogsScript;
+    };
   };
 }
