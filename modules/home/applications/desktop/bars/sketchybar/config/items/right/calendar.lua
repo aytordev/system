@@ -1,8 +1,9 @@
 local icons = require("icons")
 local colors = require("colors").sections.calendar
 local settings = require("settings")
+local utils = require("utils")
 
-local cal = sbar.add("item", {
+local cal = sbar.add("item", utils.PRESETS.icon_item({
   icon = {
     padding_left = 8,
     padding_right = 4,
@@ -20,34 +21,19 @@ local cal = sbar.add("item", {
   position = "right",
   update_freq = 30,
   click_script = "open -a 'Calendar'",
-})
+}))
 
-cal:subscribe("mouse.clicked", function()
-  sbar.animate("tanh", 8, function()
-    cal:set {
-      background = {
-        shadow = {
-          distance = 0,
-        },
-      },
-      y_offset = -4,
-      padding_left = 14,
-      padding_right = 0,
-    }
-    cal:set {
-      background = {
-        shadow = {
-          distance = 4,
-        },
-      },
-      y_offset = 0,
-      padding_left = 10,
-      padding_right = 4,
-    }
-  end)
+-- Click animation with custom padding for calendar
+local click_config = {
+  pressed_padding_left = 14,
+  normal_padding_left = 10,
+}
+
+cal:subscribe(utils.EVENTS.MOUSE_CLICK, function()
+  utils.animate_click(cal, click_config)
 end)
 
--- english date
-cal:subscribe({ "forced", "routine", "system_woke" }, function()
-  cal:set { icon = os.date "%H:%M", label = icons.calendar }
+-- Update time display
+cal:subscribe({ utils.EVENTS.FORCED, utils.EVENTS.ROUTINE, utils.EVENTS.SYSTEM_WOKE }, function()
+  cal:set({ icon = os.date("%H:%M"), label = icons.calendar })
 end)

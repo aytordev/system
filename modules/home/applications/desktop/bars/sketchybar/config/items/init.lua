@@ -1,8 +1,16 @@
---left
-require("items.left")
+-- Sketchybar items configuration
+-- Simplified structure following KISS principle
 
---center
-require("items.center")
+-- Left panel items
+require("items.left.apple")
+require("items.left.spaces") 
+require("items.left.menus")
 
---right (reverse order)
-require("items.right")
+-- Center panel items (consolidated)
+require("items.center.notifications")
+
+-- Right panel items (reverse order for right-to-left placement)
+require("items.right.calendar")
+require("widgets")
+require("items.right.wifi")
+require("items.right.media")
