@@ -123,6 +123,7 @@
      OLLAMA_MAX_LOADED_MODELS = "2";
      OLLAMA_KEEP_ALIVE = "5m";
   };
-  # Zed integration removed - configure manually if needed
+  # Enable Zed integration through new module structure
+  applications.terminal.tools.ollama.integrations.zed = true;
   applications.terminal.tools.ollama.modelPresets = [ "general" "coding" ];
 }
