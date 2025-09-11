@@ -70,14 +70,7 @@ in {
   config = lib.mkIf cfg.enable {
     programs.ssh = {
       enable = true;
-      forwardAgent = false;
-      compression = false;
-      serverAliveInterval = 15;
-      serverAliveCountMax = 3;
-      hashKnownHosts = false;
-      controlMaster = "auto";
-      controlPath = "~/.ssh/controlmasters/%r@%h:%p";
-      controlPersist = "10m";
+      enableDefaultConfig = false;
       extraOptionOverrides = {
         Ciphers = "chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr";
         MACs = "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com";
@@ -89,6 +82,16 @@ in {
       extraConfig = cfg.extraConfig;
       matchBlocks = lib.mkMerge [
         {
+          "*" = {
+            forwardAgent = false;
+            compression = false;
+            serverAliveInterval = 15;
+            serverAliveCountMax = 3;
+            hashKnownHosts = false;
+            controlMaster = "auto";
+            controlPath = "~/.ssh/controlmasters/%r@%h:%p";
+            controlPersist = "10m";
+          };
           "*.local" = {
             user = config.home.username;
             port = cfg.port;

@@ -38,7 +38,7 @@ in {
     };
   };
   config = mkIf cfg.enable {
-    home.packages = [cfg.package pkgs.lazyjj];
+    home.packages = [cfg.package];
     programs.jujutsu = {
       enable = true;
       package = cfg.package;

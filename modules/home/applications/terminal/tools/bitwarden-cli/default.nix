@@ -221,7 +221,7 @@ in {
   config = lib.mkIf cfg.enable {
     # Only install bitwarden-cli package if rbw is not enabled (to avoid broken package)
     # rbw can be used as a standalone alternative
-    home.packages = lib.optionals (!cfg.rbw.enable) [cfg.package] 
+    home.packages = lib.optionals (!cfg.rbw.enable) [cfg.package]
                     ++ lib.optionals cfg.rbw.enable [
                       cfg.rbw.package
                       cfg.rbw.pinentry
@@ -242,7 +242,7 @@ in {
       text = ''
         # Bitwarden CLI session management
         export BW_SESSION=""
-        
+
         # Function to unlock Bitwarden and export session
         bw-unlock() {
           export BW_SESSION=$(bw unlock --raw)
@@ -264,7 +264,7 @@ in {
             export BW_CLIENTID=$(cat "${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}")
             export BW_CLIENTSECRET=$(cat "${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}")
             rbw login
-          ''} 
+          ''}
           ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
           if [[ -f "$HOME/.config/rbw/apikey" ]]; then
             source "$HOME/.config/rbw/apikey"
@@ -282,7 +282,7 @@ in {
         if command -v bw &> /dev/null; then
           eval "$(bw completion --shell zsh)"
         fi
-        
+
         # rbw aliases if using rbw instead of bw
         if command -v rbw &> /dev/null && ! command -v bw &> /dev/null; then
           alias bw="rbw"
@@ -309,7 +309,7 @@ in {
       text = ''
         # Bitwarden CLI session management
         export BW_SESSION=""
-        
+
         # Function to unlock Bitwarden and export session
         bw-unlock() {
           export BW_SESSION=$(bw unlock --raw)
@@ -327,7 +327,7 @@ in {
         if command -v bw &> /dev/null; then
           eval "$(bw completion --shell bash)"
         fi
-        
+
         # rbw aliases if using rbw instead of bw
         if command -v rbw &> /dev/null && ! command -v bw &> /dev/null; then
           alias bw="rbw"
@@ -354,7 +354,7 @@ in {
       text = ''
         # Bitwarden CLI session management
         set -gx BW_SESSION ""
-        
+
         # Function to unlock Bitwarden and export session
         function bw-unlock
           set -gx BW_SESSION (bw unlock --raw)
@@ -394,7 +394,7 @@ in {
         if command -v bw &> /dev/null
           bw completion --shell fish | source
         end
-        
+
         # rbw aliases if using rbw instead of bw
         if command -v rbw &> /dev/null; and not command -v bw &> /dev/null
           alias bw="rbw"
@@ -419,7 +419,7 @@ in {
 
     # Add sourcing instructions to shell configs
     programs.zsh = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
-      initExtra = ''
+      initContent = ''
         # Source Bitwarden CLI integration
         [[ -f "$HOME/.config/bitwarden-cli/zsh-integration.sh" ]] && source "$HOME/.config/bitwarden-cli/zsh-integration.sh"
       '';
@@ -468,10 +468,10 @@ in {
       text = ''
         #!/usr/bin/env bash
         # Helper script to unlock rbw using sops-managed API keys
-        
+
         CLIENT_ID_PATH="${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}"
         CLIENT_SECRET_PATH="${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}"
-        
+
         if [[ ! -f "$CLIENT_ID_PATH" ]] || [[ ! -f "$CLIENT_SECRET_PATH" ]]; then
           echo "Error: Bitwarden API keys not found in sops secrets"
           echo "Expected locations:"
@@ -483,10 +483,10 @@ in {
           echo "  bitwarden_api_client_secret: your-client-secret"
           exit 1
         fi
-        
+
         CLIENT_ID=$(cat "$CLIENT_ID_PATH")
         CLIENT_SECRET=$(cat "$CLIENT_SECRET_PATH")
-        
+
         export BW_CLIENTID="$CLIENT_ID"
         export BW_CLIENTSECRET="$CLIENT_SECRET"
         rbw login
