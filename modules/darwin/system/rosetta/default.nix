@@ -7,7 +7,11 @@ with lib; let
   cfg = config.system.rosetta;
 in {
   options.system.rosetta = {
-    enable = mkEnableOption "automatic Rosetta 2 installation and configuration";
+    enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Enable automatic Rosetta 2 installation and configuration (auto-enabled when module is imported)";
+    };
   };
 
   config = mkIf cfg.enable {
