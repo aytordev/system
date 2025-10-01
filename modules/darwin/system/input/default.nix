@@ -103,7 +103,11 @@ in {
   options.system.input =
     inputTypes
     // {
-      enable = mkEnableOption "system input configuration";
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable system input configuration (auto-enabled when module is imported)";
+      };
     };
   config = mkIf config.system.input.enable {
     system.defaults = {

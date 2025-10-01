@@ -201,7 +201,11 @@ with lib; let
   mkHotCorners = corners: mapAttrs' (pos: action: nameValuePair "wvous-${pos}-corner" action) corners;
 in {
   options.system.interface = {
-    enable = mkEnableOption "system interface configuration";
+    enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Enable system interface configuration (auto-enabled when module is imported)";
+    };
     activityMonitor = mkOption {
       type = interfaceTypes.activityMonitorType;
       default = defaults.activityMonitor;
@@ -259,7 +263,7 @@ in {
               orientation = config.system.interface.dock.orientation;
               tilesize = config.system.interface.dock.tilesize;
               persistent-apps = [
-                "/System/Applications/Launchpad.app"
+                "/System/Applications/Apps.app"
                 "/System/Applications/Utilities/Terminal.app"
               ];
               persistent-others = [];
