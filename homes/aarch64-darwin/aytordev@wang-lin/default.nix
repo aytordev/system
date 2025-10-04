@@ -11,7 +11,7 @@
   home.enable = true;
   home.files = {};
   home.configs = {};
-  applications.desktop.bars.sketchybar.enable = true;
+  # applications.desktop.bars.sketchybar.enable = true;
   applications.desktop.browsers.chrome.enable = true;
   applications.desktop.browsers.chrome-dev.enable = true;
   applications.desktop.browsers.brave.enable = true;
@@ -83,7 +83,7 @@
   applications.terminal.tools.navi.settings.style.snippet.min_width = 45;
   applications.terminal.tools.ripgrep.enable = true;
   applications.terminal.tools.yazi.enable = true;
-  applications.terminal.emulators.warp.enable = true;
+  # applications.terminal.emulators.warp.enable = true;
   applications.terminal.tools.zellij.enable = true;
   # Bitwarden password manager
   applications.desktop.security.bitwarden.enable = true;
