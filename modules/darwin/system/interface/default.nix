@@ -298,7 +298,7 @@ in {
             "com.apple.keyboard.fnState" = false;
             "com.apple.mouse.tapBehavior" = 1;
             "com.apple.swipescrolldirection" = true;
-            _HIHideMenuBar = true;
+            _HIHideMenuBar = false;
             NSAutomaticWindowAnimationsEnabled = true;
             NSDocumentSaveNewDocumentsToCloud = false;
             NSNavPanelExpandedStateForSaveMode = true;
