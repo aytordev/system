@@ -34,7 +34,7 @@
       (map libraries.relativeToRoot [
         "modules/home/user/default.nix"
         "modules/darwin/home/default.nix"
-        "modules/home/applications/terminal/emulators/warp/default.nix"
+        # "modules/home/applications/terminal/emulators/warp/default.nix"
         "modules/home/applications/terminal/emulators/ghostty/default.nix"
         "modules/home/applications/terminal/tools/git/default.nix"
         "modules/home/applications/terminal/tools/starship/default.nix"
@@ -71,7 +71,7 @@
         "modules/home/applications/terminal/shells/bash/default.nix"
         "modules/home/applications/terminal/shells/fish/default.nix"
         "modules/home/applications/terminal/shells/nu-shell/default.nix"
-        "modules/home/applications/desktop/bars/sketchybar/default.nix"
+        # "modules/home/applications/desktop/bars/sketchybar/default.nix"
         "modules/home/applications/desktop/browsers/chrome/default.nix"
         "modules/home/applications/desktop/browsers/chrome-dev/default.nix"
         "modules/home/applications/desktop/browsers/brave/default.nix"
