@@ -264,9 +264,11 @@ in {
               tilesize = config.system.interface.dock.tilesize;
               persistent-apps = [
                 "/System/Applications/Apps.app"
-                "/System/Applications/Utilities/Terminal.app"
+                "/Applications/Ghostty.app"
               ];
-              persistent-others = [];
+              persistent-others = [
+                "/System/Applications/System Settings.app"
+              ];
             }
             // mkHotCorners config.system.interface.dock.hotCorners;
         }
@@ -297,7 +299,7 @@ in {
             "com.apple.keyboard.fnState" = false;
             "com.apple.mouse.tapBehavior" = 1;
             "com.apple.swipescrolldirection" = true;
-            _HIHideMenuBar = true;
+            _HIHideMenuBar = false;
             NSAutomaticWindowAnimationsEnabled = true;
             NSDocumentSaveNewDocumentsToCloud = false;
             NSNavPanelExpandedStateForSaveMode = true;
