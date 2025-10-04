@@ -265,9 +265,10 @@ in {
               persistent-apps = [
                 "/System/Applications/Apps.app"
                 "/Applications/Ghostty.app"
+              ];
+              persistent-others = [
                 "/System/Applications/System Settings.app"
               ];
-              persistent-others = [];
             }
             // mkHotCorners config.system.interface.dock.hotCorners;
         }
