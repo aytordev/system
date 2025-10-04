@@ -140,3 +140,39 @@ nix develop
 ```
 
 For permanent installation, the repository includes system-level package definitions.
+
+## Quick Start
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/aytordev/system.git
+cd system
+```
+
+### 2. Review Available Systems
+
+```bash
+nix flake show
+```
+
+### 3. Build a System Configuration
+
+```bash
+# For NixOS
+sudo nixos-rebuild switch --flake .#hostname
+
+# For macOS  
+just darwin-build hostname
+just darwin-switch hostname
+```
+
+### 4. Enter Development Environment
+
+```bash
+# Default development shell
+nix develop
+
+# Specific development environment
+nix develop .#devShells.aarch64-darwin.node-22-lts
+```
