@@ -16,7 +16,7 @@ in {
   config = mkIf cfg.enable {
     programs.zed-editor = {
       enable = true;
-      package = pkgs-stable.zed-editor;
+      package = pkgs.zed-editor;
 
       # Extensions - https://github.com/zed-industries/extensions/tree/main/extensions
       extensions = [
