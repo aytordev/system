@@ -264,7 +264,8 @@ in {
               tilesize = config.system.interface.dock.tilesize;
               persistent-apps = [
                 "/System/Applications/Apps.app"
-                "/System/Applications/Utilities/Terminal.app"
+                "/Applications/Ghostty.app"
+                "/System/Applications/System Settings.app"
               ];
               persistent-others = [];
             }
