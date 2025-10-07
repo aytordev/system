@@ -19,13 +19,13 @@ in
     ./advanced-scripts.nix
     ./validate.nix
   ];
-  
+
   options.applications.terminal.tools.ollama = {
     enable = mkEnableOption "Ollama - Run large language models locally";
 
     package = mkOption {
       type = types.package;
-      default = pkgs-stable.ollama;
+      default = pkgs.ollama;
       description = "The Ollama package to use";
     };
 
@@ -67,7 +67,7 @@ in
       description = "Enable shell aliases for Ollama";
     };
   };
-  
+
   config = mkIf cfg.enable (
     let
       inherit (config._module.args.ollamaUtils)
