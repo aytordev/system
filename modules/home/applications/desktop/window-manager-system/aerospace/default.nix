@@ -41,12 +41,12 @@ in {
           "-c"
           "sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE"
         ];
-        gaps.inner.horizontal = 5;
-        gaps.inner.vertical = 5;
-        gaps.outer.left = 5;
-        gaps.outer.bottom = 5;
-        gaps.outer.top = 45;
-        gaps.outer.right = 5;
+        gaps.inner.horizontal = 8;
+        gaps.inner.vertical = 8;
+        gaps.outer.left = 8;
+        gaps.outer.bottom = 8;
+        gaps.outer.top = 8;
+        gaps.outer.right = 8;
         key-mapping.preset = "qwerty";
         mode.main.binding.alt-1 = "workspace 1";
         mode.main.binding.alt-2 = "workspace 2";
