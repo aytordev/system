@@ -22,32 +22,23 @@
   gitConfig = {
     enable = true;
     package = pkgs.git;
-    aliases = aliases;
+    settings.alias = aliases;
     ignores = ignores;
-    userName = inputs.secrets.username;
-    userEmail = inputs.secrets.useremail;
+    settings.user.name = inputs.secrets.username;
+    settings.user.email = inputs.secrets.useremail;
     maintenance.enable = true;
-    delta.enable = true;
-    delta.options.dark = true;
-    delta.options.features = mkForce "decorations side-by-side navigate catppuccin-macchiato";
-    delta.options.line-numbers = true;
-    delta.options.navigate = true;
-    delta.options.side-by-side = true;
-    difftastic.enableAsDifftool = true;
-    difftastic.background = "dark";
-    difftastic.display = "inline";
-    extraConfig.branch.sort = "-committerdate";
-    extraConfig.core.editor = "nano";
-    extraConfig.useHttpPath.enable = true;
-    extraConfig.fetch.prune = true;
-    extraConfig.init.defaultBranch = "main";
-    extraConfig.lfs.enable = true;
-    extraConfig.pull.rebase = true;
-    extraConfig.push.autoSetupRemote = true;
-    extraConfig.push.default = "current";
-    extraConfig.rerere.enabled = true;
-    extraConfig.rebase.autostash = true;
-    extraConfig.safe.directory = [
+    settings.branch.sort = "-committerdate";
+    settings.core.editor = "nano";
+    settings.useHttpPath.enable = true;
+    settings.fetch.prune = true;
+    settings.init.defaultBranch = "main";
+    settings.lfs.enable = true;
+    settings.pull.rebase = true;
+    settings.push.autoSetupRemote = true;
+    settings.push.default = "current";
+    settings.rerere.enabled = true;
+    settings.rebase.autostash = true;
+    settings.safe.directory = [
       "/Users/${inputs.secrets.username}/"
       "/etc/nixos"
       "/etc/nix-darwin"
@@ -92,6 +83,16 @@ in {
       {
         home.packages = gitPackages;
         programs.git = gitConfig;
+        programs.delta.enable = true;
+        programs.delta.enableGitIntegration = true;
+        programs.delta.options.dark = true;
+        programs.delta.options.features = mkForce "decorations side-by-side navigate catppuccin-macchiato";
+        programs.delta.options.line-numbers = true;
+        programs.delta.options.navigate = true;
+        programs.delta.options.side-by-side = true;
+        programs.difftastic.git.diffToolMode = true;
+        programs.difftastic.options.background = "dark";
+        programs.difftastic.options.display = "inline";
         programs.mergiraf.enable = true;
       }
       (lib.mkIf (shell-aliases.allAliases != {}) {

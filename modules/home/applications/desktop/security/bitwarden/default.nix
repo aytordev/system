@@ -11,8 +11,8 @@ in {
 
     package = lib.mkOption {
       type = lib.types.package;
-      default = pkgs.bitwarden;
-      defaultText = lib.literalExpression "pkgs.bitwarden";
+      default = pkgs.bitwarden-desktop;
+      defaultText = lib.literalExpression "pkgs.bitwarden-desktop";
       description = "The Bitwarden package to install.";
     };
 
