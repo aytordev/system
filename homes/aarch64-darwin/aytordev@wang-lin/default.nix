@@ -21,7 +21,8 @@
   applications.desktop.communications.discord.enable = true;
   applications.desktop.communications.thunderbird.enable = true;
   # applications.desktop.communications.vesktop.enable = true;
-  applications.desktop.editors.vscode.enable = true;
+  applications.desktop.editors.vscode.enable = false;
+  applications.desktop.editors.antigravity.enable = true;
   applications.desktop.editors.zed.enable = true;
   applications.desktop.launchers.raycast.enable = true;
   applications.terminal.tools.git.enable = true;
@@ -107,7 +108,7 @@
 
   # Ollama - Local LLM Runner
   # Disabled: Using Homebrew cask version instead for better macOS integration
-  applications.terminal.tools.ollama.enable = true;
+  applications.terminal.tools.ollama.enable = false;
   applications.terminal.tools.ollama.acceleration = "metal"; # Use Metal for GPU acceleration on macOS
   applications.terminal.tools.ollama.models = [
     "llama3.2"      # General purpose 3B model
