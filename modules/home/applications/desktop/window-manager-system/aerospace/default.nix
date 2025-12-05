@@ -27,7 +27,7 @@ in {
       package = pkgs.aerospace;
       launchd.enable = true;
 
-      userSettings = {
+      settings = {
         accordion-padding = 30;
         after-login-command = [];
         after-startup-command = ["exec-and-forget sketchybar"];
