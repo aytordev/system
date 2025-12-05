@@ -2,225 +2,92 @@
   config,
   lib,
   pkgs,
-  osConfig ? {},
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption mkIf mkOption types;
 
   cfg = config.applications.desktop.editors.antigravity;
+
+  defaultSettings = import ./settings.nix {inherit lib pkgs;};
+  finalSettings = lib.recursiveUpdate defaultSettings cfg.userSettings;
+
+  commonExtensions = with pkgs.vscode-extensions; [
+    catppuccin.catppuccin-vsc
+    catppuccin.catppuccin-vsc-icons
+    github.copilot
+    github.copilot-chat
+    arrterian.nix-env-selector
+    bbenoist.nix
+    mkhl.direnv
+  ];
 in {
   options.applications.desktop.editors.antigravity = {
     enable = mkEnableOption "Whether or not to enable google-antigravity";
+
+    package = mkOption {
+      type = types.package;
+      default = pkgs.antigravity;
+      description = "The Antigravity package to use.";
+    };
+
+    userSettings = mkOption {
+      type = types.attrs;
+      default = {};
+      description = "Additional settings to merge with the default configuration.";
+    };
+
+    extensions = mkOption {
+      type = types.listOf types.package;
+      default = commonExtensions;
+      description = "List of extensions to install.";
+    };
   };
 
   config = mkIf cfg.enable {
-    programs.vscode = {
-      enable = true;
-      package = pkgs.antigravity;
+    home.packages = [cfg.package];
 
-      profiles = let
-        commonExtensions = with pkgs.vscode-extensions; [
-          catppuccin.catppuccin-vsc
-          catppuccin.catppuccin-vsc-icons
-          github.copilot
-          github.copilot-chat
-        ];
+    xdg.configFile = {
+      "antigravity/User/settings.json".text = builtins.toJSON finalSettings;
+    };
 
-        commonSettings = {
-          # Breadcrumbs
-          "breadcrumbs.filePath" = "off";
-          "breadcrumbs.enabled" = true;
+    home.activation.antigravityConflictResolution = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
+      if [ -d "${config.home.homeDirectory}/Library/Application Support/Antigravity/User" ] && [ ! -L "${config.home.homeDirectory}/Library/Application Support/Antigravity/User" ]; then
+        echo "Backing up existing Antigravity User directory..."
+        mv "${config.home.homeDirectory}/Library/Application Support/Antigravity/User" "${config.home.homeDirectory}/Library/Application Support/Antigravity/User.bak"
+      fi
+    '';
 
-          # Catppuccin
-          "catppuccin.accentColor" = lib.mkDefault "sapphire";
+    home.activation.installAntigravityExtensions = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      # Ensure extensions directory is writable (not a symlink from previous Nix installs)
+      if [ -L "${config.home.homeDirectory}/.antigravity/extensions" ]; then
+        echo "Removing existing Antigravity extensions symlink..."
+        rm "${config.home.homeDirectory}/.antigravity/extensions"
+      fi
 
-          # Debug
-          "debug.console.fontFamily" = lib.mkForce "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
-          "debug.openDebug" = "neverOpen";
-          "debug.showInStatusBar" = "never";
-          "debug.toolBarLocation" = "hidden";
-          "debug.console.fontSize" = 18;
+      mkdir -p "${config.home.homeDirectory}/.antigravity/extensions"
 
-          # Editor
-          "editor.bracketPairColorization.enabled" = true;
-          "editor.codeActionsOnSave" = {
-            "source.organizeImports" = "explicit";
-          };
-          "editor.formatOnSave" = true;
-          "editor.guides.indentation" = true;
-          "editor.renderLineHighlight" = "gutter";
-          "editor.hideCursorInOverviewRuler" = true;
-          "editor.scrollBeyondLastLine" = false;
-          "editor.lineHeight" = 32;
-          "editor.occurrencesHighlight" = "off";
-          "editor.overviewRulerBorder" = false;
-          "editor.folding" = false;
-          "editor.inlayHints.fontFamily" = lib.mkForce "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
-          "editor.inlineSuggest.enabled" = true;
-          "editor.snippetSuggestions" = "top";
-          "editor.lightbulb.enabled" = "off";
-          "editor.guides.bracketPairs" = true;
-          "editor.minimap.enabled" = false;
-          "editor.minimap.renderCharacters" = false;
-          "editor.smoothScrolling" = true;
-          "editor.suggestSelection" = "first";
-          "editor.cursorBlinking" = "solid";
-          "editor.cursorStyle" = "line";
-          "editor.fontFamily" =
-            lib.mkForce "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
-          "editor.codeLensFontFamily" =
-            lib.mkForce "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
-          "editor.fontLigatures" = true;
-          "editor.fontSize" = 16;
+      ${lib.concatMapStringsSep "\n" (ext: ''
+        # We use the extension publisher.name as ID.
+        # Note: This assumes the package name matches the extension ID or we can derive it.
+        # Since we are using nixpkgs extensions, they usually have 'vscode-extension-publisher-name' format or similar.
+        # A more robust way for imperative install is just passing the extension VSIX if available or name.
+        # However, 'code --install-extension' expects an ID or path.
+        # For simplicity in this decoupled mode, we try to install by ID if we can guess it,
+        # OR we just rely on the user to install them manually if this is too brittle.
+        # BUT the user asked for this.
+        # Let's try to find the vsix in the store path.
 
-          "editor.defaultFormatter" = "esbenp.prettier-vscode";
-          "[dockerfile]" = {
-            "editor.defaultFormatter" = "ms-azuretools.vscode-docker";
-          };
-          "[gitconfig]" = {
-            "editor.defaultFormatter" = "yy0931.gitconfig-lsp";
-          };
-          "[html]" = {
-            "editor.defaultFormatter" = "vscode.html-language-features";
-          };
-          "[javascript]" = {
-            "editor.defaultFormatter" = "vscode.typescript-language-features";
-          };
-          "[json]" = {
-            "editor.defaultFormatter" = "vscode.json-language-features";
-          };
-          "[lua]" = {
-            "editor.defaultFormatter" = "yinfei.luahelper";
-          };
-          "[shellscript]" = {
-            "editor.defaultFormatter" = "foxundermoon.shell-format";
-          };
-          "[xml]" = {
-            "editor.defaultFormatter" = "redhat.vscode-xml";
-          };
+        for vsix in "${ext}/share/vscode/extensions/"*.vsix; do
+          if [ -f "$vsix" ]; then
+            echo "Installing extension from $vsix..."
+            ${cfg.package}/bin/antigravity --install-extension "$vsix" || true
+          fi
+        done
+      '') cfg.extensions}
+    '';
 
-          # Error Lens
-          "errorLens.enableOnDiffView" = true;
-          "errorLens.fontFamily" = "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
-          "errorLens.fontSize" = "16px";
-          "errorLens.fontStyleItalic" = true;
-          "errorLens.gutterIconSet" = "defaultOutline";
-
-          # Explorer
-          "explorer.openEditors.visible" = 0;
-          "explorer.confirmDelete" = false;
-          "explorer.confirmDragAndDrop" = false;
-          "explorer.decorations.badges" = false;
-          "extensions.ignoreRecommendations" = true;
-
-          # Files
-          "files.exclude" = {
-            "**/node_modules/" = false;
-            "**/.git" = true;
-            "**/.next" = true;
-            "**/.DS_Store" = true;
-            "**/package-lock.json" = false;
-            "**/yarn.lock" = true;
-            "vendor" = true;
-            "**/npm-debug.log" = true;
-            "**/dist" = false;
-            "**/*.bs.js" = true;
-          };
-          "files.associations" = {
-            "*.toml" = "toml";
-            "*.njk" = "html";
-            ".env*" = "dotenv";
-          };
-          "files.trimTrailingWhitespace" = true;
-          "files.insertFinalNewline" = true;
-          "files.eol" = "\n";
-
-          # Git settings
-          "git.allowForcePush" = true;
-          "git.autofetch" = true;
-          "git.blame.editorDecoration.enabled" = true;
-          "git.confirmSync" = false;
-          "git.enableSmartCommit" = true;
-          "git.openRepositoryInParentFolders" = "always";
-          "gitlens.gitCommands.skipConfirmations" = [
-            "fetch:command"
-            "stash-push:command"
-            "switch:command"
-            "branch-create:command"
-          ];
-
-          # Github Copilot
-          "github.copilot.advanced" = {};
-          "github.copilot.enable" = {
-            "*" = true;
-            "yaml" = false;
-            "plaintext" = false;
-            "markdown" = false;
-          };
-
-          # Search
-          "search.quickOpen.includeHistory" = false;
-          "search.searchEditor.defaultNumberOfContextLines" = null;
-          "search.smartCase" = true;
-          "search.exclude" = {
-            "**/node_modules" = true;
-            "**/.git" = true;
-            "dist" = true;
-            "out" = true;
-            "coverage" = true;
-          };
-
-          # Terminal
-          "terminal.external.osxExec" = "ghostty.app";
-          "terminal.integrated.fontFamily" =
-            lib.mkForce "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
-          "terminal.integrated.copyOnSelection" = true;
-          "terminal.integrated.fontSize" = 16;
-          "terminal.integrated.inheritEnv" = false;
-          "terminal.integrated.cursorBlinking" = true;
-          "terminal.integrated.defaultProfile.linux" = "fish";
-          "terminal.integrated.enableVisualBell" = false;
-          "terminal.integrated.gpuAcceleration" = "on";
-
-          # Window
-          "window.autoDetectColorScheme" = true;
-          "window.restoreWindows" = "all";
-          "window.newWindowDimensions" = "maximized";
-
-          # Workbench
-          "workbench.editor.enablePreviewFromQuickOpen" = true;
-          "workbench.editor.tabCloseButton" = "left";
-          "workbench.colorTheme" = lib.mkDefault "Catppuccin Mocha";
-          "workbench.preferredDarkColorTheme" = lib.mkDefault "Catppuccin Mocha";
-          "workbench.preferredLightColorTheme" = lib.mkDefault "Catppuccin Latte";
-          "workbench.list.horizontalScrolling" = true;
-          "workbench.panel.defaultLocation" = "right";
-          "workbench.fontAliasing" = "antialiased";
-          "workbench.startupEditor" = "none";
-          "workbench.settings.editor" = "json";
-          "workbench.editor.showIcons" = true;
-          "workbench.editor.showTabs" = "single";
-          "workbench.settings.enableNaturalLanguageSearch" = false; # formatting only supports LF line endings
-          "workbench.sideBar.location" = "right";
-          "workbench.iconTheme" = "catppuccin-mocha";
-        };
-      in {
-        default = {
-          extensions = commonExtensions;
-          enableUpdateCheck = false;
-          enableExtensionUpdateCheck = false;
-          userSettings = commonSettings;
-        };
-        Nix = {
-          extensions = with pkgs.vscode-extensions;
-            commonExtensions
-            ++ [
-              arrterian.nix-env-selector
-              bbenoist.nix
-              mkhl.direnv
-            ];
-        };
-      };
+    home.file = mkIf pkgs.stdenv.isDarwin {
+      "Library/Application Support/Antigravity/User".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/antigravity/User";
     };
   };
 }
