@@ -19,6 +19,14 @@ let
     in
     lib.filter (name: hasSuffix ".nix" name) (builtins.attrNames entries);
 
+  # Get only directories from a path (filtering out files)
+  getDirectories' =
+    dirPath:
+    let
+      entries = builtins.readDir dirPath;
+    in
+    lib.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
+
   mergeAttrs' = attrsList: lib.foldl' (acc: attrs: acc // attrs) { } attrsList;
 in
 {
@@ -51,6 +59,11 @@ in
     Get all .nix files from a directory.
   */
   getNixFiles = getNixFiles';
+
+  /**
+    Get only subdirectory names from a directory (filtering out files).
+  */
+  getDirectories = getDirectories';
 
   /**
     Merge a list of attribute sets into a single attribute set.
@@ -116,14 +129,13 @@ in
   parseSystemConfigurations =
     systemsPath:
     let
-      entries = builtins.readDir systemsPath;
-      systemArchs = lib.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
+      systemArchs = getDirectories' systemsPath;
 
       generateSystemConfigs =
         system:
         let
           systemPath = systemsPath + "/${system}";
-          hosts = builtins.attrNames (builtins.readDir systemPath);
+          hosts = getDirectories' systemPath;
         in
         genAttrs hosts (hostname: {
           inherit system hostname;
@@ -156,14 +168,13 @@ in
   parseHomeConfigurations =
     homesPath:
     let
-      entries = builtins.readDir homesPath;
-      systemArchs = lib.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
+      systemArchs = getDirectories' homesPath;
 
       generateHomeConfigs =
         system:
         let
           systemPath = homesPath + "/${system}";
-          userAtHosts = builtins.attrNames (builtins.readDir systemPath);
+          userAtHosts = getDirectories' systemPath;
 
           parseUserAtHost =
             userAtHost:
@@ -187,3 +198,4 @@ in
     in
     builtins.foldl' (acc: system: acc // generateHomeConfigs system) { } systemArchs;
 }
+

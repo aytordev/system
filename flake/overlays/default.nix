@@ -4,27 +4,31 @@
   ...
 }:
 let
-  overlaysPath = ../overlays;
+  overlaysPath = ../../overlays;
+
+  # Read overlay directories (skip default.nix)
   dynamicOverlaysSet =
     if builtins.pathExists overlaysPath then
       let
-        overlayDirs = builtins.attrNames (builtins.readDir overlaysPath);
+        entries = builtins.readDir overlaysPath;
+        overlayDirs = lib.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
       in
       lib.genAttrs overlayDirs (
         name:
         let
           overlayPath = overlaysPath + "/${name}";
-          overlayFn = import overlayPath;
         in
-        if lib.isFunction overlayFn then overlayFn { inherit inputs; } else overlayFn
+        # Existing overlays are already final: prev: functions
+        import overlayPath
       )
     else
       { };
 
+  # Create aytordev packages overlay
   aytordevPackagesOverlay =
     final: prev:
     let
-      directory = ../packages;
+      directory = ../../packages;
       packageFunctions = prev.lib.filesystem.packagesFromDirectoryRecursive {
         inherit directory;
         callPackage = file: _args: import file;
@@ -38,8 +42,6 @@ let
         ) packageFunctions
       );
     };
-
-  allOverlays = (lib.attrValues dynamicOverlaysSet) ++ [ aytordevPackagesOverlay ];
 in
 {
   flake.overlays = dynamicOverlaysSet // {

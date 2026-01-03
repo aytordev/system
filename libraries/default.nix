@@ -21,6 +21,7 @@ in
       scanDir
       getFile
       getNixFiles
+      getDirectories
       mergeAttrs
       importFiles
       importDir

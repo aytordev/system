@@ -7,7 +7,7 @@
 let
   inherit (self.lib.file) parseHomeConfigurations;
 
-  homesPath = ../homes;
+  homesPath = ../../homes;
   allHomes = parseHomeConfigurations homesPath;
 
   generateHomeConfiguration =
@@ -40,7 +40,7 @@ in
 
   flake = {
     homeModules = {
-      default = ../modules/home;
+      default = ../../modules/home;
     };
 
     # Dynamically generated home configurations

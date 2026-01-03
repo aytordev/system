@@ -7,7 +7,7 @@
 let
   inherit (self.lib.file) parseSystemConfigurations filterNixOSSystems filterDarwinSystems;
 
-  systemsPath = ../systems;
+  systemsPath = ../../systems;
   allSystems = parseSystemConfigurations systemsPath;
 in
 {

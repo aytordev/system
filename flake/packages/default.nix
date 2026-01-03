@@ -7,8 +7,9 @@
   perSystem =
     { pkgs, ... }:
     let
+      directory = ../../packages;
       packageFunctions = lib.filesystem.packagesFromDirectoryRecursive {
-        directory = ../packages;
+        inherit directory;
         callPackage = file: _args: import file;
       };
 
