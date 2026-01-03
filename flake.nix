@@ -1,5 +1,5 @@
 {
-  description = "Ryan Yin's nix configuration for both NixOS & macOS";
+  description = "aytordev's nix configuration for both NixOS & macOS";
   outputs = inputs: import ./outputs/default.nix inputs;
   nixConfig = {
     extra-substituters = [
