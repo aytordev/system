@@ -67,7 +67,7 @@
   aytordev.applications.terminal.tools.git-crypt.enable = true;
   aytordev.applications.terminal.tools.jujutsu.enable = true;
   aytordev.applications.terminal.tools.jujutsu.signByDefault = true;
-  applications.terminal.tools.lazygit.enable = true;
+  aytordev.applications.terminal.tools.lazygit.enable = true;
   aytordev.applications.terminal.tools.lazydocker.enable = true;
   applications.terminal.tools.navi.enable = true;
   applications.terminal.tools.navi.settings.style.tag.color = "green";

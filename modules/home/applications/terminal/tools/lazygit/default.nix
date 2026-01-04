@@ -5,10 +5,10 @@
   pkgs,
   ...
 }: {
-  options.applications.terminal.tools.lazygit = {
+  options.aytordev.applications.terminal.tools.lazygit = {
     enable = lib.mkEnableOption "lazygit";
   };
-  config = lib.mkIf config.applications.terminal.tools.lazygit.enable {
+  config = lib.mkIf config.aytordev.applications.terminal.tools.lazygit.enable {
     home.packages = with pkgs; [
       lazygit
     ];
