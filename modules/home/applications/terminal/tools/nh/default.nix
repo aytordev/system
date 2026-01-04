@@ -5,7 +5,7 @@
   inputs,
   ...
 }: let
-  cfg = config.applications.terminal.tools.nh;
+  cfg = config.aytordev.applications.terminal.tools.nh;
   inherit (lib) mkIf;
   defaultConfig = {
     clean.enable = true;
@@ -18,7 +18,7 @@
     else "darwin"
   } switch";
 in {
-  options.applications.terminal.tools.nh = {
+  options.aytordev.applications.terminal.tools.nh = {
     enable = lib.mkEnableOption "nh";
     clean = {
       enable = lib.mkOption {

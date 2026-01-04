@@ -62,7 +62,7 @@
   aytordev.applications.terminal.tools.direnv.nix-direnv = true;
   aytordev.applications.terminal.tools.direnv.silent = true;
   aytordev.applications.terminal.tools.eza.enable = true;
-  applications.terminal.tools.nh.enable = true;
+  aytordev.applications.terminal.tools.nh.enable = true;
   aytordev.applications.terminal.tools.gh.enable = true;
   aytordev.applications.terminal.tools.git-crypt.enable = true;
   aytordev.applications.terminal.tools.jujutsu.enable = true;
