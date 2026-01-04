@@ -5,9 +5,9 @@
   ...
 }: let
   inherit (lib) mkEnableOption mkIf mkOption types;
-  cfg = config.darwin.services.openssh;
+  cfg = config.aytordev.darwin.services.openssh;
 in {
-  options.darwin.services.openssh = {
+  options.aytordev.darwin.services.openssh = {
     extraConfig = mkOption {
       type = types.lines;
       default = "";
