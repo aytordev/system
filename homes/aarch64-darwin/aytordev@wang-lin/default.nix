@@ -18,7 +18,7 @@
   aytordev.applications.desktop.communications.discord.enable = true;
   aytordev.applications.desktop.communications.thunderbird.enable = true;
   # aytordev.applications.desktop.communications.vesktop.enable = true;
-  applications.desktop.editors.vscode.enable = false;
+  aytordev.applications.desktop.editors.vscode.enable = false;
   aytordev.applications.desktop.editors.antigravity.enable = true;
   applications.desktop.editors.zed.enable = true;
   applications.desktop.launchers.raycast.enable = true;
