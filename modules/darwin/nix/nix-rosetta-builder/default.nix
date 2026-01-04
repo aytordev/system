@@ -19,16 +19,6 @@ in
       default = "8GiB";
       description = "Memory to use for the builder.";
     };
-    sshProtocol = lib.mkOption {
-      type = lib.types.str;
-      default = "ssh";
-      description = "SSH protocol to use for the builder.";
-    };
-    speedFactor = lib.mkOption {
-      type = lib.types.int;
-      default = 15;
-      description = "Speed factor for the builder.";
-    };
   };
 
   config = {
@@ -37,8 +27,6 @@ in
         enable
         cores
         memory
-        speedFactor
-        sshProtocol
         ;
 
       onDemand = true;
