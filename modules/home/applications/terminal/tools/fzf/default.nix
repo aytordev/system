@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.fzf;
+  cfg = config.aytordev.applications.terminal.tools.fzf;
   defaultOptions = [
     "--layout=reverse"
     "--exact"
@@ -57,7 +57,7 @@ with lib; let
     ]))
   '';
 in {
-  options.applications.terminal.tools.fzf = {
+  options.aytordev.applications.terminal.tools.fzf = {
     enable = mkEnableOption "fuzzy finder";
     defaultCommand = mkOption {
       type = types.str;
