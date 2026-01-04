@@ -7,6 +7,7 @@
 in {
   imports = [sharedNix];
   config = {
+    aytordev.nix.enable = true;
     nix = {
       extraOptions = ''
         connect-timeout = 10
