@@ -4,39 +4,26 @@
   pkgs,
   inputs,
   ...
-}: let
-  inherit (lib) types mkEnableOption mkOption;
-  cfg = config.darwin.user;
-in {
-  options.darwin.user = {
-    enable = mkEnableOption "user configuration";
-    name = mkOption {
-      type = types.str;
-      default = inputs.secrets.username;
-      description = "The username for the user account.";
-    };
-    email = mkOption {
-      type = types.str;
-      default = inputs.secrets.useremail;
-      description = "The email address of the user.";
-    };
-    fullName = mkOption {
-      type = types.str;
-      default = inputs.secrets.userfullname;
-      description = "The full name of the user.";
-    };
-    uid = mkOption {
-      type = types.nullOr types.int;
-      default = 501;
-      description = "The UID for the user account. Set to null for automatic assignment.";
-    };
+}:
+let
+  inherit (lib) types mkIf;
+  inherit (lib.aytordev) mkOpt;
+
+  cfg = config.aytordev.user;
+in
+{
+  options.aytordev.user = {
+    name = mkOpt types.str inputs.secrets.username "The user account.";
+    email = mkOpt types.str inputs.secrets.useremail "The email of the user.";
+    fullName = mkOpt types.str inputs.secrets.userfullname "The full name of the user.";
+    uid = mkOpt (types.nullOr types.int) 501 "The uid for the user account.";
   };
-  config = lib.mkIf cfg.enable {
-    users.users.${inputs.secrets.username} = {
-      inherit (cfg) uid;
-      home = "/Users/${inputs.secrets.username}";
+
+  config = {
+    users.users.${cfg.name} = {
+      uid = mkIf (cfg.uid != null) cfg.uid;
       shell = pkgs.zsh;
-      description = inputs.secrets.userfullname;
+      home = "/Users/${cfg.name}";
     };
   };
 }

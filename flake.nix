@@ -1,6 +1,17 @@
 {
-  description = "Ryan Yin's nix configuration for both NixOS & macOS";
-  outputs = inputs: import ./outputs/default.nix inputs;
+  description = "aytordev's nix configuration for both NixOS & macOS";
+
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [
+        "x86_64-linux"
+        "aarch64-darwin"
+      ];
+      imports = [
+        ./flake
+      ];
+    };
+
   nixConfig = {
     extra-substituters = [
       "https://anyrun.cachix.org"
@@ -9,9 +20,14 @@
       "anyrun.cachix.org-1:pqBobmOjI7nKlsUMV25u9QHa9btJK65/C8vnO3p346s="
     ];
   };
+
   inputs = {
     nixpkgs = {
       url = "github:nixos/nixpkgs/nixos-unstable";
+    };
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
     nixpkgs-unstable = {
       url = "github:nixos/nixpkgs/nixos-unstable";

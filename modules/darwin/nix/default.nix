@@ -1,10 +1,9 @@
 {
   config,
-  libraries,
   lib,
   ...
 }: let
-  sharedNix = import (libraries.relativeToRoot "modules/shared/nix/default.nix");
+  sharedNix = import (lib.getFile "modules/shared/nix/default.nix");
 in {
   imports = [sharedNix];
   config = {
