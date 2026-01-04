@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.carapace;
+  cfg = config.aytordev.applications.terminal.tools.carapace;
 in {
-  options.applications.terminal.tools.carapace = {
+  options.aytordev.applications.terminal.tools.carapace = {
     enable = mkEnableOption "carapace - multi-shell command argument completer";
   };
   config = mkIf cfg.enable {
