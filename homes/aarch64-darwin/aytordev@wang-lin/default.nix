@@ -45,7 +45,7 @@
   aytordev.applications.terminal.tools.bottom.enable = true;
   aytordev.applications.terminal.tools.btop.enable = true;
   aytordev.applications.terminal.tools.carapace.enable = true;
-  applications.terminal.tools.comma.enable = true;
+  aytordev.applications.terminal.tools.comma.enable = true;
   applications.terminal.emulators.ghostty.enable = true;
   applications.terminal.emulators.ghostty.theme = "catppuccin-mocha";
   applications.terminal.emulators.ghostty.enableThemes = true;
