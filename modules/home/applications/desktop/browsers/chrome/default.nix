@@ -6,9 +6,9 @@
 }: let
   inherit (lib) mkEnableOption mkIf;
 
-  cfg = config.applications.desktop.browsers.chrome;
+  cfg = config.aytordev.applications.desktop.browsers.chrome;
 in {
-  options.applications.desktop.browsers.chrome = {
+  options.aytordev.applications.desktop.browsers.chrome = {
     enable = mkEnableOption "Whether or not to enable Chromium";
   };
 
