@@ -26,7 +26,7 @@
     **For aytordev repository detection:**
     - Check if current directory contains `flake.nix` with aytordev-specific content
     - Look for `modules/` directory with `common/`, `nixos/`, `darwin/`, `home/` subdirs
-    - Check for `CLAUDE.md` file indicating aytordev project
+    - Check for `AGENTS.md` file indicating aytordev project
 
     **Actions based on detection:**
     ```

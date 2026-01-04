@@ -225,7 +225,7 @@ instructions in:
 
 - `CONTRIBUTING.md` - Contribution guidelines
 - `README.md` - Project overview and setup instructions
-- `CLAUDE.md` - Project-specific AI agent instructions
+- `AGENTS.md` - Project-specific AI agent instructions
 - `.github/PULL_REQUEST_TEMPLATE.md` - PR requirements
 - Style guides and linting configurations
 

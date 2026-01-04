@@ -158,9 +158,9 @@ documentation and reference material
 }
 ```
 
-### 4. Document in Root CLAUDE.md
+### 4. Document in Root AGENTS.md
 
-Add to the "Specialized Agents" section in `/CLAUDE.md`.
+Add to the "Specialized Agents" section in `/AGENTS.md`.
 
 ## Creating New Commands
 
@@ -214,9 +214,9 @@ Add to the "Specialized Agents" section in `/CLAUDE.md`.
 }
 ```
 
-### 4. Document in Root CLAUDE.md
+### 4. Document in Root AGENTS.md
 
-Add to "Custom Commands" section in `/CLAUDE.md`.
+Add to "Custom Commands" section in `/AGENTS.md`.
 
 ## Creating New Skills
 
@@ -315,7 +315,7 @@ claude
 - [ ] Prompt is clear and actionable
 - [ ] Examples are provided
 - [ ] Exported in agents.nix/commands.nix
-- [ ] Documented in root CLAUDE.md
+- [ ] Documented in root AGENTS.md
 
 ## Common Patterns
 
@@ -375,7 +375,7 @@ When repository patterns change:
 1. Update affected agent/command prompts
 2. Update examples in prompts
 3. Test with representative tasks
-4. Update root CLAUDE.md if interface changed
+4. Update root AGENTS.md if interface changed
 
 ### Deprecating Agents/Commands
 
@@ -383,7 +383,7 @@ When removing:
 
 1. Keep file with deprecation notice for 1-2 releases
 2. Remove from exports in agents.nix/commands.nix
-3. Remove from root CLAUDE.md documentation
+3. Remove from root AGENTS.md documentation
 4. Provide migration path if replaced
 
 ## Architecture Decisions
