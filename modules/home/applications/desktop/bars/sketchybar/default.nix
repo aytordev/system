@@ -8,7 +8,7 @@
   inherit (lib) mkIf mkEnableOption mkOption getExe;
   inherit (lib.types) package listOf;
 
-  cfg = config.applications.desktop.bars.sketchybar;
+  cfg = config.aytordev.applications.desktop.bars.sketchybar;
 
   # Base packages required for sketchybar functionality
   basePackages = with pkgs; [
@@ -52,7 +52,7 @@
     }
   '';
 in {
-  options.applications.desktop.bars.sketchybar = {
+  options.aytordev.applications.desktop.bars.sketchybar = {
     enable = mkEnableOption "Sketchybar status bar";
 
     package = mkOption {
