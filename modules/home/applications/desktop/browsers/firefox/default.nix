@@ -69,7 +69,7 @@ in {
 
           # Downloads
           "browser.download.useDownloadDir" = false;
-          "browser.download.dir" = "/Users/${config.user.name}/Downloads";
+          "browser.download.dir" = "/Users/${config.aytordev.user.name}/Downloads";
 
           # Search
           "browser.search.suggest.enabled" = true;

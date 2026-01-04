@@ -7,7 +7,7 @@
   inherit (lib) mkIf mkOption types mkEnableOption mkMerge mkDefault mkForce;
   inherit (lib.types) str package bool nullOr;
   inherit (builtins) baseNameOf;
-  cfg = config.user;
+  cfg = config.aytordev.user;
   home-directory =
     if cfg.name == null
     then throw "user.name must be set"
@@ -15,7 +15,7 @@
     then "/Users/${cfg.name}"
     else "/home/${cfg.name}";
 in {
-  options.user = {
+  options.aytordev.user = {
     enable = mkEnableOption "user account configuration";
     home = mkOption {
       type = nullOr str;
