@@ -15,7 +15,7 @@
   aytordev.applications.desktop.browsers.chromium.enable = true;
   aytordev.applications.desktop.browsers.firefox.enable = true;
   applications.desktop.window-manager-system.aerospace.enable = true;
-  applications.desktop.communications.discord.enable = true;
+  aytordev.applications.desktop.communications.discord.enable = true;
   applications.desktop.communications.thunderbird.enable = true;
   # applications.desktop.communications.vesktop.enable = true;
   applications.desktop.editors.vscode.enable = false;
