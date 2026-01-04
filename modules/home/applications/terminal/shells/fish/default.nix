@@ -5,12 +5,12 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.shells.fish;
+  cfg = config.aytordev.applications.terminal.shells.fish;
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
   xdgCacheHome = "${config.xdg.cacheHome}";
 in {
-  options.applications.terminal.shells.fish = {
+  options.aytordev.applications.terminal.shells.fish = {
     enable = mkEnableOption "Fish shell with useful defaults";
   };
   config = mkIf cfg.enable (mkMerge [

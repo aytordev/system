@@ -26,7 +26,7 @@
   aytordev.applications.terminal.tools.git.signingKey = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
   applications.terminal.shells.zsh.enable = true;
   aytordev.applications.terminal.shells.bash.enable = true;
-  applications.terminal.shells.fish.enable = true;
+  aytordev.applications.terminal.shells.fish.enable = true;
   applications.terminal.shells.nu.enable = true;
   aytordev.applications.terminal.tools.starship.enable = true;
   aytordev.applications.terminal.tools.starship.enableZshIntegration = true;
