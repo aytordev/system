@@ -17,7 +17,7 @@
   applications.desktop.window-manager-system.aerospace.enable = true;
   aytordev.applications.desktop.communications.discord.enable = true;
   aytordev.applications.desktop.communications.thunderbird.enable = true;
-  # applications.desktop.communications.vesktop.enable = true;
+  # aytordev.applications.desktop.communications.vesktop.enable = true;
   applications.desktop.editors.vscode.enable = false;
   applications.desktop.editors.antigravity.enable = true;
   applications.desktop.editors.zed.enable = true;

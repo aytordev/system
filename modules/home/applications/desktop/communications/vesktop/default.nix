@@ -6,9 +6,9 @@
 }: let
   inherit (lib) mkEnableOption mkIf mkOption types;
 
-  cfg = config.applications.desktop.communications.vesktop;
+  cfg = config.aytordev.applications.desktop.communications.vesktop;
 in {
-  options.applications.desktop.communications.vesktop = {
+  options.aytordev.applications.desktop.communications.vesktop = {
     enable = mkEnableOption "Vesktop";
 
     package = mkOption {
