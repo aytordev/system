@@ -61,6 +61,16 @@ in
           };
           sharedModules = [
             { _module.args.lib = extendedLib; }
+          ]
+          ++ (
+            if isNixOS then
+              [
+                inputs.home-manager.flakeModules.home-manager
+              ]
+            else
+              [ ]
+          )
+          ++ [
             inputs.sops-nix.homeManagerModules.sops
           ]
           ++ (extendedLib.importModulesRecursive ../../../modules/home);
@@ -74,7 +84,15 @@ in
                   if isNixOS then "/home/${homeConfig.username}" else "/Users/${homeConfig.username}"
                 );
               };
-            };
+            }
+            // (
+              if isNixOS then
+                {
+                  _module.args.username = homeConfig.username;
+                }
+              else
+                { }
+            );
           }) matchingHomes;
         };
       }
