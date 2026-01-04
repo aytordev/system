@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  cfg = config.applications.terminal.tools.navi;
+  cfg = config.aytordev.applications.terminal.tools.navi;
   inherit (lib) mkIf;
   defaultStyle = {
     tag = {
@@ -17,7 +17,7 @@
     };
   };
 in {
-  options.applications.terminal.tools.navi = {
+  options.aytordev.applications.terminal.tools.navi = {
     enable = lib.mkEnableOption "navi";
     settings = {
       style = {
