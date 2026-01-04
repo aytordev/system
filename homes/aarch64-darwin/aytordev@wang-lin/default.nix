@@ -84,12 +84,12 @@
   # aytordev.applications.terminal.emulators.warp.enable = true;
   aytordev.applications.terminal.tools.zellij.enable = true;
   # Bitwarden password manager
-  applications.desktop.security.bitwarden.enable = true;
-  applications.desktop.security.bitwarden.enableBrowserIntegration = true;
-  applications.desktop.security.bitwarden.enableTrayIcon = true;
-  applications.desktop.security.bitwarden.biometricUnlock.enable = true;
-  applications.desktop.security.bitwarden.vault.timeout = 30;
-  applications.desktop.security.bitwarden.vault.timeoutAction = "lock";
+  aytordev.applications.desktop.security.bitwarden.enable = true;
+  aytordev.applications.desktop.security.bitwarden.enableBrowserIntegration = true;
+  aytordev.applications.desktop.security.bitwarden.enableTrayIcon = true;
+  aytordev.applications.desktop.security.bitwarden.biometricUnlock.enable = true;
+  aytordev.applications.desktop.security.bitwarden.vault.timeout = 30;
+  aytordev.applications.desktop.security.bitwarden.vault.timeoutAction = "lock";
   # Bitwarden CLI is temporarily disabled due to broken package in nixpkgs
   # Using rbw as alternative CLI client
   aytordev.applications.terminal.tools.bitwarden-cli.enable = true;
