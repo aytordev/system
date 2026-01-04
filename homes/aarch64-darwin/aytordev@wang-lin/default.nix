@@ -81,7 +81,7 @@
   aytordev.applications.terminal.tools.navi.settings.style.snippet.min_width = 45;
   aytordev.applications.terminal.tools.ripgrep.enable = true;
   aytordev.applications.terminal.tools.yazi.enable = true;
-  # applications.terminal.emulators.warp.enable = true;
+  # aytordev.applications.terminal.emulators.warp.enable = true;
   aytordev.applications.terminal.tools.zellij.enable = true;
   # Bitwarden password manager
   applications.desktop.security.bitwarden.enable = true;

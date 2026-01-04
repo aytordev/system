@@ -4,9 +4,9 @@
   pkgs,
   ...
 }: let
-  cfg = config.applications.terminal.emulators.warp;
+  cfg = config.aytordev.applications.terminal.emulators.warp;
 in {
-  options.applications.terminal.emulators.warp = {
+  options.aytordev.applications.terminal.emulators.warp = {
     enable = lib.mkEnableOption "Warp terminal emulator";
   };
 
