@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.darwin.services.protonmail-bridge;
+  cfg = config.aytordev.services.protonmail-bridge;
 in {
-  options.darwin.services.protonmail-bridge = {
+  options.aytordev.services.protonmail-bridge = {
     enable = mkEnableOption "ProtonMail Bridge";
 
     # Note: ProtonMail Bridge does not support automatic authentication via command-line arguments.
