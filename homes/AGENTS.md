@@ -34,7 +34,7 @@ in
     # User-specific overrides
     environments.home-network = enabled;
 
-    programs.graphical.wms.hyprland = {
+    applications.graphical.wms.hyprland = {
       enable = true;
       prependConfig = "monitor=DP-1,5120x1440@120,0x0,1";
     };
@@ -67,7 +67,7 @@ in
 **Example - User-specific overrides:**
 
 ```nix
-aytordev.programs.graphical = {
+aytordev.applications.graphical = {
   # User's monitor setup
   wms.hyprland.prependConfig = ''
     monitor=DP-3, 3840x2160@60, 1420x0, 2
@@ -135,7 +135,7 @@ aytordev.programs.graphical = {
 
     environments.home-network = enabled;
 
-    programs.graphical.wms.hyprland = {
+    applications.graphical.wms.hyprland = {
       enable = true;
       prependConfig = "monitor=DP-1,5120x1440@120,0x0,1";
     };
@@ -164,10 +164,10 @@ aytordev.programs.graphical = {
 }
 ```
 
-### Disabling Unwanted Programs
+### Disabling Unwanted applications
 
 ```nix
-aytordev.programs.terminal = {
+aytordev.applications.terminal = {
   # Disable tools not needed by this user
   emulators.kitty.enable = false;
   tools.jujutsu.enable = false;
@@ -176,7 +176,7 @@ aytordev.programs.terminal = {
 
 ## Suites
 
-Suites enable groups of related programs. Common suites:
+Suites enable groups of related applications. Common suites:
 
 - `common` - Essential CLI tools
 - `desktop` - Desktop applications

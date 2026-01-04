@@ -88,7 +88,7 @@ All options follow `aytordev.{category}.{subcategory}.{option}` structure.
 **Example:**
 
 ```nix
-aytordev.programs.terminal.tools.claude-code.enable = true;
+aytordev.applications.terminal.tools.claude-code.enable = true;
 ```
 
 **Reduce repetition:**

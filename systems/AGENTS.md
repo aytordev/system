@@ -142,7 +142,7 @@ aytordev = {
 
 **User configuration** (belongs in `homes/`):
 
-- User-specific programs
+- User-specific applications
 - Per-user preferences
 - User secrets
 - Suite selections for specific users
@@ -218,7 +218,7 @@ For alternate boot configurations:
 ```nix
 {
   specialisation.no-wayland.configuration = {
-    aytordev.programs.graphical.wms.hyprland.enable = lib.mkForce false;
+    aytordev.applications.graphical.wms.hyprland.enable = lib.mkForce false;
   };
 }
 ```

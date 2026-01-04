@@ -181,9 +181,9 @@ Common configs go in `modules/common/`, platform-specific in `modules/darwin/`:
 
 **Example: Git config**
 
-- Base config: `modules/common/programs/terminal/git/`
-- macOS keychain: `modules/darwin/programs/terminal/git/`
-- Linux credential helper: `modules/nixos/programs/terminal/git/`
+- Base config: `modules/common/applications/terminal/git/`
+- macOS keychain: `modules/darwin/applications/terminal/git/`
+- Linux credential helper: `modules/nixos/applications/terminal/git/`
 
 ### Path Differences
 
