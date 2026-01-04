@@ -6,7 +6,7 @@
   ...
 }: let
   inherit (lib) mkEnableOption mkIf mkForce mkOption;
-  cfg = config.applications.terminal.tools.git;
+  cfg = config.aytordev.applications.terminal.tools.git;
   aliases = import ./aliases.nix {inherit lib;};
   ignores = import ./git-ignore.nix;
   shell-aliases = import ./shell-aliases.nix {inherit config lib pkgs;};
@@ -48,7 +48,7 @@
     signing.signByDefault = cfg.signByDefault;
   };
 in {
-  options.applications.terminal.tools.git = {
+  options.aytordev.applications.terminal.tools.git = {
     enable =
       mkEnableOption "Git configuration"
       // {
@@ -76,7 +76,7 @@ in {
     };
   };
   config = let
-    cfg = config.applications.terminal.tools.git;
+    cfg = config.aytordev.applications.terminal.tools.git;
     bashConfigDir = "${config.xdg.configHome}/bash/conf.d";
   in
     lib.mkIf cfg.enable (lib.mkMerge [
