@@ -55,5 +55,9 @@
       url = "github:yazi-rs/flavors";
       flake = false;
     };
+    nix-rosetta-builder = {
+      url = "github:cpick/nix-rosetta-builder";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 }

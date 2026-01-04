@@ -32,17 +32,23 @@ with lib; let
     warn-dirty = false;
     experimental-features = ["nix-command" "flakes"];
   };
+
+  cfg = config.aytordev.nix;
 in {
-  environment.systemPackages = essentialPackages;
-  nix = {
-    package = pkgs.nixVersions.latest;
-    checkConfig = true;
-    distributedBuilds = true;
-    gc = {
-      automatic = true;
-      options = "--delete-older-than 7d";
+  options.aytordev.nix.enable = mkEnableOption "Common Nix configuration";
+
+  config = mkIf cfg.enable {
+    environment.systemPackages = essentialPackages;
+    nix = {
+      package = pkgs.nixVersions.latest;
+      checkConfig = true;
+      distributedBuilds = true;
+      gc = {
+        automatic = true;
+        options = "--delete-older-than 7d";
+      };
+      optimise.automatic = true;
+      settings = nixDaemonSettings;
     };
-    optimise.automatic = true;
-    settings = nixDaemonSettings;
   };
 }
