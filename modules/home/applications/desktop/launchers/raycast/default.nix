@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.desktop.launchers.raycast;
+  cfg = config.aytordev.applications.desktop.launchers.raycast;
 in {
-  options.applications.desktop.launchers.raycast = {
+  options.aytordev.applications.desktop.launchers.raycast = {
     enable = mkEnableOption "Raycast launcher";
 
     package = mkOption {

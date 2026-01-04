@@ -21,7 +21,7 @@
   aytordev.applications.desktop.editors.vscode.enable = false;
   aytordev.applications.desktop.editors.antigravity.enable = true;
   aytordev.applications.desktop.editors.zed.enable = true;
-  applications.desktop.launchers.raycast.enable = true;
+  aytordev.applications.desktop.launchers.raycast.enable = true;
   aytordev.applications.terminal.tools.git.enable = true;
   aytordev.applications.terminal.tools.git.signingKey = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
   aytordev.applications.terminal.shells.zsh.enable = true;
