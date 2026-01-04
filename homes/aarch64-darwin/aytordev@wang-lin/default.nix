@@ -57,7 +57,7 @@
   aytordev.applications.terminal.tools.ssh.knownHosts.github.identitiesOnly = true;
   aytordev.applications.terminal.tools.ssh.knownHosts.github.port = 22;
   aytordev.applications.terminal.tools.ssh.extraConfig = '''';
-  applications.terminal.tools.jq.enable = true;
+  aytordev.applications.terminal.tools.jq.enable = true;
   aytordev.applications.terminal.tools.direnv.enable = true;
   aytordev.applications.terminal.tools.direnv.nix-direnv = true;
   aytordev.applications.terminal.tools.direnv.silent = true;
