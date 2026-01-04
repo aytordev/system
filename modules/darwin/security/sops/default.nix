@@ -7,7 +7,7 @@
 }: let
   inherit (lib) mkEnableOption mkOption types mkIf mkMerge;
   inherit (builtins) isString;
-  cfg = config.darwin.security.sops;
+  cfg = config.aytordev.darwin.security.sops;
   secretOptions = {
     sopsFile = mkOption {
       type = types.nullOr types.path;
@@ -68,7 +68,7 @@
     sops.secrets = lib.mapAttrs mapSecret cfg.secrets;
   };
 in {
-  options.darwin.security.sops = {
+  options.aytordev.darwin.security.sops = {
     enable = mkEnableOption "SOPS secrets management";
     defaultSopsFile = mkOption {
       type = types.path;
