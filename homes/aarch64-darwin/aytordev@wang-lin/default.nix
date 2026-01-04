@@ -10,7 +10,7 @@
   aytordev.user.home = "/Users/${inputs.secrets.username}";
   # aytordev.applications.desktop.bars.sketchybar.enable = true;
   aytordev.applications.desktop.browsers.chrome.enable = true;
-  applications.desktop.browsers.chrome-dev.enable = true;
+  aytordev.applications.desktop.browsers.chrome-dev.enable = true;
   aytordev.applications.desktop.browsers.brave.enable = true;
   applications.desktop.browsers.chromium.enable = true;
   aytordev.applications.desktop.browsers.firefox.enable = true;
