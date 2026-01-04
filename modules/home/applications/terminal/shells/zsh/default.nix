@@ -5,12 +5,12 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.shells.zsh;
+  cfg = config.aytordev.applications.terminal.shells.zsh;
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
   xdgCacheHome = "${config.xdg.cacheHome}";
 in {
-  options.applications.terminal.shells.zsh = {
+  options.aytordev.applications.terminal.shells.zsh = {
     enable = mkEnableOption "Z shell with useful defaults";
   };
   config = mkIf cfg.enable (mkMerge [
