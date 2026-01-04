@@ -25,7 +25,7 @@ let
       remote-user-id = if remote.system == "darwin" then "501" else "1000";
 
       forward-gpg =
-        lib.optionalString (config.programs.gnupg.agent.enable && remote.gpgAgent)
+        lib.optionalString (config.applications.gnupg.agent.enable && remote.gpgAgent)
           "  RemoteForward /run/user/${remote-user-id}/gnupg/S.gpg-agent /run/user/${user-id}/gnupg/S.gpg-agent.extra\n  RemoteForward /run/user/${remote-user-id}/gnupg/S.gpg-agent.ssh /run/user/${user-id}/gnupg/S.gpg-agent.ssh";
       port-expr = lib.optionalString (remote.system == "nixos") "  Port ${toString cfg.port}";
     in
@@ -58,7 +58,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    programs.ssh = {
+    applications.ssh = {
       extraConfig = ''
         ${other-hosts-config}${
           lib.optionalString (cfg.extraConfig != "") ''
@@ -135,7 +135,7 @@ in
 
     aytordev = {
       home.extraOptions = {
-        programs.zsh.shellAliases = lib.foldl (
+        applications.zsh.shellAliases = lib.foldl (
           aliases: system: aliases // { "ssh-${system}" = "ssh ${system} -t tmux a"; }
         ) { } (builtins.attrNames other-hosts);
       };
