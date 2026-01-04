@@ -58,9 +58,9 @@
   aytordev.applications.terminal.tools.ssh.knownHosts.github.port = 22;
   aytordev.applications.terminal.tools.ssh.extraConfig = '''';
   applications.terminal.tools.jq.enable = true;
-  applications.terminal.tools.direnv.enable = true;
-  applications.terminal.tools.direnv.nix-direnv = true;
-  applications.terminal.tools.direnv.silent = true;
+  aytordev.applications.terminal.tools.direnv.enable = true;
+  aytordev.applications.terminal.tools.direnv.nix-direnv = true;
+  aytordev.applications.terminal.tools.direnv.silent = true;
   applications.terminal.tools.eza.enable = true;
   applications.terminal.tools.nh.enable = true;
   applications.terminal.tools.gh.enable = true;
