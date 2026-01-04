@@ -6,9 +6,9 @@
 }: let
   inherit (lib) mkEnableOption mkIf;
 
-  cfg = config.applications.desktop.browsers.brave;
+  cfg = config.aytordev.applications.desktop.browsers.brave;
 in {
-  options.applications.desktop.browsers.brave = {
+  options.aytordev.applications.desktop.browsers.brave = {
     enable = mkEnableOption "Whether or not to enable Brave";
   };
 

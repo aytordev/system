@@ -11,7 +11,7 @@
   # aytordev.applications.desktop.bars.sketchybar.enable = true;
   applications.desktop.browsers.chrome.enable = true;
   applications.desktop.browsers.chrome-dev.enable = true;
-  applications.desktop.browsers.brave.enable = true;
+  aytordev.applications.desktop.browsers.brave.enable = true;
   applications.desktop.browsers.chromium.enable = true;
   aytordev.applications.desktop.browsers.firefox.enable = true;
   applications.desktop.window-manager-system.aerospace.enable = true;
