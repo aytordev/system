@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) types mkOption;
+  inherit (lib) types mkOption mkEnableOption;
   commonFonts = with pkgs; [
     corefonts
     b612
@@ -25,7 +25,8 @@
     maple-mono.variable
   ];
 in {
-  options.system.fonts = with types; {
+  options.aytordev.system.fonts = with types; {
+    enable = mkEnableOption "System fonts configuration";
     fonts = mkOption {
       type = listOf package;
       default = commonFonts;

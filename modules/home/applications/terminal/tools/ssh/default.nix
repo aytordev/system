@@ -5,9 +5,9 @@
   ...
 }: let
   inherit (lib) mkEnableOption mkOption types;
-  cfg = config.applications.terminal.tools.ssh;
+  cfg = config.aytordev.applications.terminal.tools.ssh;
 in {
-  options.applications.terminal.tools.ssh = {
+  options.aytordev.applications.terminal.tools.ssh = {
     enable = mkEnableOption "SSH configuration";
     port = mkOption {
       type = types.port;
