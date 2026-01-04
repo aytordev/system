@@ -14,14 +14,14 @@ in {
     home.packages = with pkgs; [
       carapace
     ];
-    programs.carapace = {
+    applications.carapace = {
       enable = true;
       enableBashIntegration = true;
       enableFishIntegration = true;
       enableZshIntegration = true;
       enableNushellIntegration = true;
     };
-    programs.zsh.initContent = ''
+    applications.zsh.initContent = ''
       if [ -n "$ZSH_VERSION" ]; then
         export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
         if [[ $- == *i* ]]; then

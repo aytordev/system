@@ -13,7 +13,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    programs.brave = {
+    applications.brave = {
       enable = true;
       package = pkgs.brave;
 

@@ -36,7 +36,7 @@ in {
       '';
     })
     {
-      programs.direnv = {
+      applications.direnv = {
         enable = true;
         nix-direnv.enable = cfg.nix-direnv;
         silent = cfg.silent;

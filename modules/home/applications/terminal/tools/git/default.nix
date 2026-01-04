@@ -82,18 +82,18 @@ in {
     lib.mkIf cfg.enable (lib.mkMerge [
       {
         home.packages = gitPackages;
-        programs.git = gitConfig;
-        programs.delta.enable = true;
-        programs.delta.enableGitIntegration = true;
-        programs.delta.options.dark = true;
-        programs.delta.options.features = mkForce "decorations side-by-side navigate catppuccin-macchiato";
-        programs.delta.options.line-numbers = true;
-        programs.delta.options.navigate = true;
-        programs.delta.options.side-by-side = true;
-        programs.difftastic.git.diffToolMode = true;
-        programs.difftastic.options.background = "dark";
-        programs.difftastic.options.display = "inline";
-        programs.mergiraf.enable = true;
+        applications.git = gitConfig;
+        applications.delta.enable = true;
+        applications.delta.enableGitIntegration = true;
+        applications.delta.options.dark = true;
+        applications.delta.options.features = mkForce "decorations side-by-side navigate catppuccin-macchiato";
+        applications.delta.options.line-numbers = true;
+        applications.delta.options.navigate = true;
+        applications.delta.options.side-by-side = true;
+        applications.difftastic.git.diffToolMode = true;
+        applications.difftastic.options.background = "dark";
+        applications.difftastic.options.display = "inline";
+        applications.mergiraf.enable = true;
       }
       (lib.mkIf (shell-aliases.allAliases != {}) {
         home.file."${bashConfigDir}/git-aliases.sh" = {

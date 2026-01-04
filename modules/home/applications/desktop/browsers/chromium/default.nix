@@ -19,7 +19,7 @@ in {
     ];
 
     # On Linux, use Home Manager's chromium program
-    programs.chromium = mkIf (cfg.enable && !pkgs.stdenv.isDarwin) {
+    applications.chromium = mkIf (cfg.enable && !pkgs.stdenv.isDarwin) {
       enable = true;
       package = pkgs.ungoogled-chromium;
 

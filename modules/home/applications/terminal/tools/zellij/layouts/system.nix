@@ -1,6 +1,6 @@
 {
   config = {
-    programs = {
+    applications = {
       zellij = {
         layouts = {
           system = {

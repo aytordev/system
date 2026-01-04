@@ -65,7 +65,7 @@
         for = "unix";
       }
       {
-        run = "${lib.getExe config.programs.mpv.package} \"$@\"";
+        run = "${lib.getExe config.applications.mpv.package} \"$@\"";
         orphan = true;
         for = "unix";
       }

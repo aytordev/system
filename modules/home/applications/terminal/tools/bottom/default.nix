@@ -12,7 +12,7 @@ in {
   };
   config = mkIf cfg.enable {
     home.packages = with pkgs; [bottom];
-    programs.bottom = {
+    applications.bottom = {
       enable = true;
       package = pkgs.bottom;
       settings = {

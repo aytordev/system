@@ -12,7 +12,7 @@
     home.packages = with pkgs; [
       lazygit
     ];
-    programs.lazygit = {
+    applications.lazygit = {
       enable = true;
       settings = {
         gui = {

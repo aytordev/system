@@ -13,7 +13,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    programs.firefox = {
+    applications.firefox = {
       enable = true;
       package = pkgs.firefox;
 

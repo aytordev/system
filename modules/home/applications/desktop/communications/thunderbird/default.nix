@@ -17,7 +17,7 @@ in {
       thunderbird-latest
     ];
 
-    programs.thunderbird = {
+    applications.thunderbird = {
       enable = true;
       package = pkgs.thunderbird-latest;
       profiles = {};

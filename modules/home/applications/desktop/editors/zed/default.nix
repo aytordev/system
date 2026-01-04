@@ -14,7 +14,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    programs.zed-editor = {
+    applications.zed-editor = {
       enable = true;
       package = pkgs.zed-editor;
 

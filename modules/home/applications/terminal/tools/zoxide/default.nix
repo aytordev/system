@@ -24,7 +24,7 @@ in {
     home.activation.createZoxideDataDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
       mkdir -p "${config.xdg.dataHome}/zoxide"
     '';
-    programs.zoxide = {
+    applications.zoxide = {
       enable = true;
       package = cfg.package;
       enableBashIntegration = true;
@@ -41,10 +41,10 @@ in {
         eval "$(${cfg.package}/bin/zoxide init --cmd cd bash)"
       '';
     };
-    programs.zsh.initContent = mkBefore ''
+    applications.zsh.initContent = mkBefore ''
       eval "$(${cfg.package}/bin/zoxide init --cmd cd zsh)"
     '';
-    programs.fish.shellInit = mkBefore ''
+    applications.fish.shellInit = mkBefore ''
       ${cfg.package}/bin/zoxide init --cmd cd fish | source
     '';
   };

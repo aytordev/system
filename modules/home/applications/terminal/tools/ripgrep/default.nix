@@ -8,7 +8,7 @@
     enable = lib.mkEnableOption "ripgrep";
   };
   config = lib.mkIf config.aytordev.applications.terminal.tools.ripgrep.enable {
-    programs.ripgrep = {
+    applications.ripgrep = {
       enable = true;
       package = pkgs.ripgrep;
       arguments = [

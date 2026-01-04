@@ -32,7 +32,7 @@ in {
       gh-notify
       gh-dash
     ];
-    programs.gh = {
+    applications.gh = {
       enable = true;
       gitCredentialHelper = {
         enable = true;

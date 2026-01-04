@@ -22,7 +22,7 @@ in {
         zsh-autosuggestions
         zsh-syntax-highlighting
       ];
-      programs.zsh = {
+      applications.zsh = {
         enable = true;
         dotDir = "${config.xdg.configHome}/zsh";
         enableCompletion = true;

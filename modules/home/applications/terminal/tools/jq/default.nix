@@ -11,7 +11,7 @@ in {
     enable = mkEnableOption "jq";
   };
   config = mkIf cfg.enable {
-    programs.jq = {
+    applications.jq = {
       enable = true;
       package = pkgs.jq;
     };

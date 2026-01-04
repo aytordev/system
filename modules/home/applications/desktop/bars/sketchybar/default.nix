@@ -29,8 +29,8 @@
     lib.optionals (osConfig.services ? yabai && osConfig.services.yabai.enable) [
       osConfig.services.yabai.package
     ]
-    ++ lib.optionals (config.programs ? aerospace && config.programs.aerospace.enable) [
-      config.programs.aerospace.package
+    ++ lib.optionals (config.applications ? aerospace && config.applications.aerospace.enable) [
+      config.applications.aerospace.package
     ];
 
   # All packages needed for sketchybar
@@ -72,10 +72,10 @@ in {
   config = mkIf cfg.enable {
     # Shell integration
     home.shellAliases = shellAliases;
-    programs.zsh.initContent = brewIntegration;
+    applications.zsh.initContent = brewIntegration;
 
     # Main sketchybar configuration
-    programs.sketchybar = {
+    applications.sketchybar = {
       enable = true;
       configType = "lua";
       package = cfg.package;

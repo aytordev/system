@@ -13,7 +13,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    programs.google-chrome = {
+    applications.google-chrome = {
       enable = true;
       package = pkgs.google-chrome;
 
