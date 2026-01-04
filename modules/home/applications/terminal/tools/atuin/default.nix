@@ -4,9 +4,9 @@
   ...
 }: let
   inherit (lib) mkIf mkEnableOption optionalAttrs;
-  cfg = config.applications.terminal.tools.atuin;
+  cfg = config.aytordev.applications.terminal.tools.atuin;
 in {
-  options.applications.terminal.tools.atuin = {
+  options.aytordev.applications.terminal.tools.atuin = {
     enable = mkEnableOption "atuin";
     enableDebug = mkEnableOption "atuin daemon debug logging";
     enableBashIntegration = mkEnableOption "atuin bash integration";

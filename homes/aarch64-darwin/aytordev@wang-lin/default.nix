@@ -36,12 +36,12 @@
   aytordev.applications.terminal.tools.fzf.enable = true;
   aytordev.applications.terminal.tools.zoxide.enable = true;
   aytordev.applications.terminal.tools.bat.enable = true;
-  applications.terminal.tools.atuin.enable = true;
-  applications.terminal.tools.atuin.enableBashIntegration = true;
-  applications.terminal.tools.atuin.enableFishIntegration = true;
+  aytordev.applications.terminal.tools.atuin.enable = true;
+  aytordev.applications.terminal.tools.atuin.enableBashIntegration = true;
+  aytordev.applications.terminal.tools.atuin.enableFishIntegration = true;
   applications.terminal.tools.fastfetch.enable = true;
-  applications.terminal.tools.atuin.enableZshIntegration = true;
-  applications.terminal.tools.atuin.enableNushellIntegration = true;
+  aytordev.applications.terminal.tools.atuin.enableZshIntegration = true;
+  aytordev.applications.terminal.tools.atuin.enableNushellIntegration = true;
   applications.terminal.tools.bottom.enable = true;
   applications.terminal.tools.btop.enable = true;
   applications.terminal.tools.carapace.enable = true;
