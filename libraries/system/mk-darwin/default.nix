@@ -56,6 +56,7 @@ inputs.nix-darwin.lib.darwinSystem {
 
     inputs.home-manager.darwinModules.home-manager
     inputs.sops-nix.darwinModules.sops
+    inputs.nix-rosetta-builder.darwinModules.default
 
     # Auto-inject home configurations for this system+hostname
     homeManagerConfig
