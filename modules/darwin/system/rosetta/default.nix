@@ -3,15 +3,14 @@
   lib,
   ...
 }:
-with lib; let
-  cfg = config.system.rosetta;
-in {
-  options.system.rosetta = {
-    enable = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable automatic Rosetta 2 installation and configuration (auto-enabled when module is imported)";
-    };
+let
+  inherit (lib) mkIf mkEnableOption;
+
+  cfg = config.aytordev.system.rosetta;
+in
+{
+  options.aytordev.system.rosetta = {
+    enable = mkEnableOption "Rosetta 2";
   };
 
   config = mkIf cfg.enable {
