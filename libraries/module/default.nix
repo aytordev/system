@@ -79,7 +79,7 @@ rec {
     }:
     { lib, ... }:
     {
-      options.khanelinix.${name} = lib.mkOption {
+      options.aytordev.${name} = lib.mkOption {
         type = lib.types.submodule {
           options = {
             enable = lib.mkEnableOption description;
@@ -89,10 +89,10 @@ rec {
         default = { };
       };
 
-      config = lib.mkIf config.khanelinix.${name}.enable config;
+      config = lib.mkIf config.aytordev.${name}.enable config;
     };
 
-  # Migrated khanelinix utilities
+  # Migrated aytordev utilities
   # Option creation helpers
 
   /**

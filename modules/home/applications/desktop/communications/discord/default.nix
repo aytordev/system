@@ -35,9 +35,9 @@ in {
     home.packages = with pkgs; [
       (
         if cfg.canary.enable
-        then khanelinix.discord-canary
+        then aytordev.discord-canary
         else if cfg.firefox.enable
-        then khanelinix.discord-firefox
+        then aytordev.discord-firefox
         else discord
       )
     ];
