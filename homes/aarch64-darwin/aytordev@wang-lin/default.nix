@@ -79,7 +79,7 @@
   aytordev.applications.terminal.tools.navi.settings.style.snippet.color = "white";
   aytordev.applications.terminal.tools.navi.settings.style.snippet.width_percentage = 42;
   aytordev.applications.terminal.tools.navi.settings.style.snippet.min_width = 45;
-  applications.terminal.tools.ripgrep.enable = true;
+  aytordev.applications.terminal.tools.ripgrep.enable = true;
   applications.terminal.tools.yazi.enable = true;
   # applications.terminal.emulators.warp.enable = true;
   applications.terminal.tools.zellij.enable = true;
