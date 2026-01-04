@@ -6,9 +6,9 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.jujutsu;
+  cfg = config.aytordev.applications.terminal.tools.jujutsu;
 in {
-  options.applications.terminal.tools.jujutsu = {
+  options.aytordev.applications.terminal.tools.jujutsu = {
     enable = mkEnableOption "jujutsu version control system";
     package = mkOption {
       type = types.package;
