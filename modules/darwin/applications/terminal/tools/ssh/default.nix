@@ -1,5 +1,5 @@
 { lib, ... }: {
   imports = [
-    (lib.getFile "modules/shared/applications/terminal/tools/ssh")
+    (lib.getFile "modules/common/applications/terminal/tools/ssh")
   ];
 }
