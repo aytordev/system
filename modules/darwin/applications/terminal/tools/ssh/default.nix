@@ -1,5 +1,5 @@
-{libraries, ...}: {
+{ lib, ... }: {
   imports = [
-    (libraries.relativeToRoot "modules/shared/applications/terminal/tools/ssh")
+    (lib.getFile "modules/shared/applications/terminal/tools/ssh")
   ];
 }

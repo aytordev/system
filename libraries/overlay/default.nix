@@ -1,4 +1,5 @@
-{ inputs, ... }:
+{ inputs }:
+_final: _prev:
 let
   aytordevLib = import ../default.nix {
     inherit inputs;
@@ -6,25 +7,48 @@ let
     self = inputs.self;
   };
 in
-_final: _prev: {
-  # Expose as lib.aytordev namespace
-  aytordev = aytordevLib.flake.lib;
+{
+  # Expose aytordev module functions directly (like khanelinix.mkOpt)
+  aytordev = aytordevLib.flake.lib.module;
 
-  # Direct access to commonly used functions
+  # Expose all aytordev lib namespaces
+  inherit (aytordevLib.flake.lib)
+    file
+    system
+    ;
+
+  inherit (aytordevLib.flake.lib.file)
+    getFile
+    getNixFiles
+    getDirectories
+    importFiles
+    importDir
+    importModulesRecursive
+    mergeAttrs
+    parseSystemConfigurations
+    parseHomeConfigurations
+    ;
+
+  inherit (aytordevLib.flake.lib.module)
+    mkOpt
+    mkOpt'
+    mkBoolOpt
+    mkBoolOpt'
+    enabled
+    disabled
+    capitalize
+    boolToNum
+    default-attrs
+    force-attrs
+    nested-default-attrs
+    nested-force-attrs
+    ;
+
+  # Path utilities
   inherit (aytordevLib.flake.lib)
     relativeToRoot
     ;
 
-  inherit (aytordevLib.flake.lib.file)
-    parseSystemConfigurations
-    parseHomeConfigurations
-    importModulesRecursive
-    ;
-
-  inherit (aytordevLib.flake.lib.module)
-    enabled
-    disabled
-    mkOpt
-    mkBoolOpt
-    ;
+  # Add home-manager lib functions
+  inherit (inputs.home-manager.lib) hm;
 }

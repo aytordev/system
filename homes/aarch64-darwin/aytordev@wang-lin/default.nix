@@ -8,9 +8,6 @@
   user.enable = true;
   user.name = inputs.secrets.username;
   user.home = "/Users/${inputs.secrets.username}";
-  home.enable = true;
-  home.files = {};
-  home.configs = {};
   # applications.desktop.bars.sketchybar.enable = true;
   applications.desktop.browsers.chrome.enable = true;
   applications.desktop.browsers.chrome-dev.enable = true;

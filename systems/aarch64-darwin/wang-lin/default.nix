@@ -12,6 +12,9 @@
   networking.hostName = "wang-lin";
   networking.localHostName = "wang-lin";
 
+  # Required by nix-darwin for user-specific system defaults
+  system.primaryUser = config.aytordev.user.name;
+
   nix.settings.cores = 8;
   nix.settings.max-jobs = 4;
 

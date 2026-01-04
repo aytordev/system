@@ -2,11 +2,10 @@
   config,
   lib,
   pkgs,
-  libraries,
   ...
 }: let
   inherit (lib) types mkIf mkOption;
-  sharedFonts = import (libraries.relativeToRoot "modules/shared/system/fonts");
+  sharedFonts = import (lib.getFile "modules/shared/system/fonts");
   cfg = config.system.fonts;
 in {
   imports = [sharedFonts];
