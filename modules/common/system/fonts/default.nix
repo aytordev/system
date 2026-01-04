@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) types mkOption;
+  inherit (lib) types mkOption mkEnableOption;
   commonFonts = with pkgs; [
     corefonts
     b612
@@ -26,6 +26,7 @@
   ];
 in {
   options.aytordev.system.fonts = with types; {
+    enable = mkEnableOption "System fonts configuration";
     fonts = mkOption {
       type = listOf package;
       default = commonFonts;
