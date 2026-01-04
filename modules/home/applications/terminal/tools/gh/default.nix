@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.gh;
+  cfg = config.aytordev.applications.terminal.tools.gh;
 in {
-  options.applications.terminal.tools.gh = {
+  options.aytordev.applications.terminal.tools.gh = {
     enable = mkEnableOption "GitHub CLI tool";
     gitCredentialHelper = {
       hosts = mkOption {

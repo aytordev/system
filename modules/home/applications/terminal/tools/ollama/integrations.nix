@@ -6,11 +6,11 @@
 }:
 with lib;
 let
-  cfg = config.applications.terminal.tools.ollama;
+  cfg = config.aytordev.applications.terminal.tools.ollama;
   integrationsCfg = cfg.integrations;
 in
 {
-  options.applications.terminal.tools.ollama.integrations = {
+  options.aytordev.applications.terminal.tools.ollama.integrations = {
     zed = mkOption {
       type = types.bool;
       default = false;

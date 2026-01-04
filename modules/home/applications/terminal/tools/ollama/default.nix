@@ -7,7 +7,7 @@
 }:
 with lib;
 let
-  cfg = config.applications.terminal.tools.ollama;
+  cfg = config.aytordev.applications.terminal.tools.ollama;
 in
 {
   imports = [
@@ -20,7 +20,7 @@ in
     ./validate.nix
   ];
 
-  options.applications.terminal.tools.ollama = {
+  options.aytordev.applications.terminal.tools.ollama = {
     enable = mkEnableOption "Ollama - Run large language models locally";
 
     package = mkOption {

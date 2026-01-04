@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.direnv;
+  cfg = config.aytordev.applications.terminal.tools.direnv;
 in {
-  options.applications.terminal.tools.direnv = {
+  options.aytordev.applications.terminal.tools.direnv = {
     enable = mkEnableOption "direnv - A shell extension that manages your environment";
     nix-direnv = mkOption {
       type = types.bool;

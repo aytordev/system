@@ -5,9 +5,9 @@
   ...
 }: let
   inherit (lib) mkEnableOption mkIf;
-  cfg = config.applications.terminal.tools.comma;
+  cfg = config.aytordev.applications.terminal.tools.comma;
 in {
-  options.applications.terminal.tools.comma = {
+  options.aytordev.applications.terminal.tools.comma = {
     enable = mkEnableOption "comma";
   };
   config = mkIf cfg.enable {

@@ -5,9 +5,9 @@
   ...
 }: let
   inherit (lib) mkIf;
-  cfg = config.applications.terminal.tools.bottom;
+  cfg = config.aytordev.applications.terminal.tools.bottom;
 in {
-  options.applications.terminal.tools.bottom = {
+  options.aytordev.applications.terminal.tools.bottom = {
     enable = lib.mkEnableOption "bottom";
   };
   config = mkIf cfg.enable {

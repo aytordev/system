@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.git-crypt;
+  cfg = config.aytordev.applications.terminal.tools.git-crypt;
 in {
-  options.applications.terminal.tools.git-crypt = {
+  options.aytordev.applications.terminal.tools.git-crypt = {
     enable = mkEnableOption "git-crypt - Transparent file encryption in git";
   };
   config = mkIf cfg.enable {

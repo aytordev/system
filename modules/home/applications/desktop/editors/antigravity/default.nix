@@ -6,7 +6,7 @@
 }: let
   inherit (lib) mkEnableOption mkIf mkOption types;
 
-  cfg = config.applications.desktop.editors.antigravity;
+  cfg = config.aytordev.applications.desktop.editors.antigravity;
 
   defaultSettings = import ./settings.nix {inherit lib pkgs;};
   finalSettings = lib.recursiveUpdate defaultSettings cfg.userSettings;
@@ -21,7 +21,7 @@
     mkhl.direnv
   ];
 in {
-  options.applications.desktop.editors.antigravity = {
+  options.aytordev.applications.desktop.editors.antigravity = {
     enable = mkEnableOption "Whether or not to enable google-antigravity";
 
     package = mkOption {

@@ -6,9 +6,9 @@
 }: let
   inherit (lib) mkEnableOption mkIf;
 
-  cfg = config.applications.desktop.browsers.firefox;
+  cfg = config.aytordev.applications.desktop.browsers.firefox;
 in {
-  options.applications.desktop.browsers.firefox = {
+  options.aytordev.applications.desktop.browsers.firefox = {
     enable = mkEnableOption "Whether or not to enable Firefox";
   };
 
@@ -69,7 +69,7 @@ in {
 
           # Downloads
           "browser.download.useDownloadDir" = false;
-          "browser.download.dir" = "/Users/${config.user.name}/Downloads";
+          "browser.download.dir" = "/Users/${config.aytordev.user.name}/Downloads";
 
           # Search
           "browser.search.suggest.enabled" = true;

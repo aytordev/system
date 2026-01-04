@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib) mkIf;
-  cfg = config.applications.terminal.tools.zellij;
+  cfg = config.aytordev.applications.terminal.tools.zellij;
   zns = "zellij -s $(basename $(pwd)) options --default-cwd $(pwd)";
   zas = "zellij a $(basename $(pwd))";
   zo = ''
@@ -18,7 +18,7 @@ in {
     ./layouts/dev.nix
     ./layouts/system.nix
   ];
-  options.applications.terminal.tools.zellij = {
+  options.aytordev.applications.terminal.tools.zellij = {
     enable = lib.mkEnableOption "zellij";
   };
   config = mkIf cfg.enable {

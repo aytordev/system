@@ -4,9 +4,9 @@
   pkgs,
   ...
 }: let
-  cfg = config.applications.desktop.security.bitwarden;
+  cfg = config.aytordev.applications.desktop.security.bitwarden;
 in {
-  options.applications.desktop.security.bitwarden = {
+  options.aytordev.applications.desktop.security.bitwarden = {
     enable = lib.mkEnableOption "Bitwarden password manager desktop application";
 
     package = lib.mkOption {

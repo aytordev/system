@@ -5,9 +5,9 @@
   ...
 }: let
   inherit (lib) getExe mkIf;
-  cfg = config.applications.terminal.tools.bat;
+  cfg = config.aytordev.applications.terminal.tools.bat;
 in {
-  options.applications.terminal.tools.bat = {
+  options.aytordev.applications.terminal.tools.bat = {
     enable = lib.mkEnableOption "bat";
   };
   config = mkIf cfg.enable {

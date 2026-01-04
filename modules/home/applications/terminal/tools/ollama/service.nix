@@ -7,12 +7,12 @@
 }:
 with lib;
 let
-  cfg = config.applications.terminal.tools.ollama;
+  cfg = config.aytordev.applications.terminal.tools.ollama;
   serviceCfg = cfg.service;
   inherit (config._module.args.ollamaUtils) createModelPullScript;
 in
 {
-  options.applications.terminal.tools.ollama.service = {
+  options.aytordev.applications.terminal.tools.ollama.service = {
     enable = mkOption {
       type = types.bool;
       default = true;
@@ -25,7 +25,7 @@ in
       description = "Start Ollama service automatically on login";
     };
   };
-  
+
   config = mkIf (cfg.enable && serviceCfg.enable) {
     # Systemd user service
     systemd.user.services.ollama = {

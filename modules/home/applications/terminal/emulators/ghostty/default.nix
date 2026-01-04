@@ -21,7 +21,7 @@
   # Create a list of theme names by removing the .conf extension
   availableThemes = map (file: builtins.replaceStrings [".conf"] [""] file) themeFiles;
 
-  cfg = config.applications.terminal.emulators.ghostty;
+  cfg = config.aytordev.applications.terminal.emulators.ghostty;
 
   monaspaceKrypton =
     if pkgs.stdenv.hostPlatform.isDarwin
@@ -86,7 +86,7 @@
   # Combine all settings
   ghosttySettings = baseSettings // themeSettings;
 in {
-  options.applications.terminal.emulators.ghostty = {
+  options.aytordev.applications.terminal.emulators.ghostty = {
     enable = mkEnableOption "ghostty terminal emulator";
 
     theme = mkOption {

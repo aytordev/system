@@ -7,9 +7,9 @@
 }: let
   inherit (lib) mkEnableOption mkIf;
 
-  cfg = config.applications.desktop.editors.vscode;
+  cfg = config.aytordev.applications.desktop.editors.vscode;
 in {
-  options.applications.desktop.editors.vscode = {
+  options.aytordev.applications.desktop.editors.vscode = {
     enable = mkEnableOption "Whether or not to enable vscode";
   };
 

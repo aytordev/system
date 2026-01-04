@@ -6,31 +6,31 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.ollama;
+  cfg = config.aytordev.applications.terminal.tools.ollama;
   advancedCfg = cfg.advancedScripts;
   inherit (config._module.args.ollamaUtils) constants shellUtils;
 in {
-  options.applications.terminal.tools.ollama.advancedScripts = {
+  options.aytordev.applications.terminal.tools.ollama.advancedScripts = {
     enable = mkOption {
       type = types.bool;
       default = false;
       description = "Enable advanced Ollama scripts (RAG, API client, benchmarking)";
     };
   };
-  
+
   config = mkIf (cfg.enable && advancedCfg.enable) {
     home.packages = with pkgs; [
       # RAG (Retrieval Augmented Generation) script
       (writeShellScriptBin "ollama-rag" ''
         #!/usr/bin/env bash
         set -e
-        
+
         ${shellUtils.colors}
         ${shellUtils.errorHandling}
-        
+
         MODEL=''${OLLAMA_RAG_MODEL:-llama3.2}
         EMBEDDINGS_DIR="$HOME/.ollama/embeddings"
-        
+
         case "$1" in
           index)
             mkdir -p "$EMBEDDINGS_DIR"
@@ -46,7 +46,7 @@ in {
             if [ -z "$(ls -A "$EMBEDDINGS_DIR" 2>/dev/null)" ]; then
               handle_error "No documents indexed. Use 'ollama-rag index <file>' first."
             fi
-            
+
             context=$(grep -l -i "$*" "$EMBEDDINGS_DIR"/*.txt 2>/dev/null | head -3 | xargs cat)
             prompt="Based on this context, answer: $*\n\nContext:\n$context"
             echo "$prompt" | ${cfg.package}/bin/ollama run "$MODEL"
@@ -65,15 +65,15 @@ in {
             ;;
         esac
       '')
-      
+
       # API client script
       (writeShellScriptBin "ollama-api" ''
         #!/usr/bin/env bash
         set -e
-        
+
         ${shellUtils.colors}
         BASE_URL="${constants.baseUrl}"
-        
+
         case "$1" in
           generate)
             curl -s -X POST "$BASE_URL/api/generate" \
@@ -96,25 +96,25 @@ in {
             ;;
         esac
       '')
-      
+
       # Simple benchmark script
       (writeShellScriptBin "ollama-benchmark" ''
         #!/usr/bin/env bash
         set -e
-        
+
         ${shellUtils.colors}
-        
+
         PROMPT="Write a simple hello world function"
         models=$(${cfg.package}/bin/ollama list | tail -n +2 | awk '{print $1}')
-        
+
         if [ -z "$models" ]; then
           echo "No models installed"
           exit 1
         fi
-        
+
         echo -e "''${CYAN}🏁 Benchmarking models with: $PROMPT''${NC}"
         echo ""
-        
+
         for model in $models; do
           echo -e "''${BLUE}Testing $model...''${NC}"
           start_time=$(date +%s)
@@ -125,7 +125,7 @@ in {
         done
       '')
     ];
-    
+
     # Advanced aliases
     home.shellAliases = mkIf cfg.shellAliases {
       ai-rag = mkDefault "ollama-rag";

@@ -4,10 +4,10 @@
   pkgs,
   ...
 }: {
-  options.applications.terminal.tools.lazydocker = {
+  options.aytordev.applications.terminal.tools.lazydocker = {
     enable = lib.mkEnableOption "lazydocker";
   };
-  config = lib.mkIf config.applications.terminal.tools.lazydocker.enable {
+  config = lib.mkIf config.aytordev.applications.terminal.tools.lazydocker.enable {
     home.packages = with pkgs; [
       lazydocker
     ];

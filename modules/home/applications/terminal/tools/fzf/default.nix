@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.fzf;
+  cfg = config.aytordev.applications.terminal.tools.fzf;
   defaultOptions = [
     "--layout=reverse"
     "--exact"
@@ -57,7 +57,7 @@ with lib; let
     ]))
   '';
 in {
-  options.applications.terminal.tools.fzf = {
+  options.aytordev.applications.terminal.tools.fzf = {
     enable = mkEnableOption "fuzzy finder";
     defaultCommand = mkOption {
       type = types.str;
@@ -107,7 +107,7 @@ in {
         }
       '';
     };
-    home.file.".config/bash/conf.d/fzf.sh" = lib.mkIf config.applications.terminal.shells.bash.enable {
+    home.file.".config/bash/conf.d/fzf.sh" = lib.mkIf config.aytordev.applications.terminal.shells.bash.enable {
       text = ''
         if [[ -f "${pkgs.fzf}/share/fzf/key-bindings.bash" ]]; then
           source "${pkgs.fzf}/share/fzf/key-bindings.bash"

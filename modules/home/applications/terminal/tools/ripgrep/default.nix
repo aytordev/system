@@ -4,10 +4,10 @@
   pkgs,
   ...
 }: {
-  options.applications.terminal.tools.ripgrep = {
+  options.aytordev.applications.terminal.tools.ripgrep = {
     enable = lib.mkEnableOption "ripgrep";
   };
-  config = lib.mkIf config.applications.terminal.tools.ripgrep.enable {
+  config = lib.mkIf config.aytordev.applications.terminal.tools.ripgrep.enable {
     programs.ripgrep = {
       enable = true;
       package = pkgs.ripgrep;

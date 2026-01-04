@@ -5,9 +5,9 @@
   ...
 }: let
   inherit (lib) mkIf mkEnableOption mkBefore;
-  cfg = config.applications.terminal.tools.zoxide;
+  cfg = config.aytordev.applications.terminal.tools.zoxide;
 in {
-  options.applications.terminal.tools.zoxide = {
+  options.aytordev.applications.terminal.tools.zoxide = {
     enable = mkEnableOption "zoxide, a smarter cd command";
     package = lib.mkOption {
       type = lib.types.package;
@@ -36,7 +36,7 @@ in {
         "--no-aliases"
       ];
     };
-    home.file.".config/bash/conf.d/tools/zoxide.sh" = lib.mkIf config.applications.terminal.shells.bash.enable {
+    home.file.".config/bash/conf.d/tools/zoxide.sh" = lib.mkIf config.aytordev.applications.terminal.shells.bash.enable {
       text = ''
         eval "$(${cfg.package}/bin/zoxide init --cmd cd bash)"
       '';

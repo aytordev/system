@@ -6,7 +6,7 @@
 }: let
   inherit (lib) mkEnableOption mkIf;
 
-  cfg = config.applications.desktop.communications.discord;
+  cfg = config.aytordev.applications.desktop.communications.discord;
 
   # Check if betterdiscordctl is available for the current platform
   betterdiscordctlAvailable =
@@ -15,7 +15,7 @@
     ++ (pkgs.betterdiscordctl.meta.badPlatforms or [])
     == [];
 in {
-  options.applications.desktop.communications.discord = {
+  options.aytordev.applications.desktop.communications.discord = {
     enable = mkEnableOption "Discord";
     canary.enable = mkEnableOption "Discord Canary";
     firefox.enable = mkEnableOption "the Firefox version of Discord";
