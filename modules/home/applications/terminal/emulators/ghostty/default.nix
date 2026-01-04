@@ -120,7 +120,7 @@ in {
     # Add theme symlinks to XDG config if themes are enabled
     xdg.configFile = lib.mkIf cfg.enableThemes themeSymlinks;
 
-    programs.ghostty = {
+    applications.ghostty = {
       enable = true;
       package = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin null;
 

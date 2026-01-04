@@ -24,7 +24,7 @@ in {
         fishPlugins.pure
         fishPlugins.z
       ];
-      programs.fish = {
+      applications.fish = {
         enable = true;
         functions = {
           __ensure_xdg_dirs = ''

@@ -15,7 +15,7 @@ in {
       comma
       nix-index
     ];
-    programs = {
+    applications = {
       nix-index = {
         enable = true;
         package = pkgs.nix-index;

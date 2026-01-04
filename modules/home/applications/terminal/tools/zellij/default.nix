@@ -22,7 +22,7 @@ in {
     enable = lib.mkEnableOption "zellij";
   };
   config = mkIf cfg.enable {
-    programs = {
+    applications = {
       bash.shellAliases = {
         inherit zns zas zo;
       };

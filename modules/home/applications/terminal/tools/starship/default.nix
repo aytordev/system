@@ -148,7 +148,7 @@ in {
       '';
     }
     (mkIf (cfg.enable && cfg.enableZshIntegration) {
-      programs.zsh.initContent = ''
+      applications.zsh.initContent = ''
         if [ -n "$commands[starship]" ]; then
           export STARSHIP_CONFIG="${starshipConfigFile}"
           export STARSHIP_CONFIG_DIR="${starshipConfigDir}"
@@ -163,7 +163,7 @@ in {
       '';
     })
     (mkIf (cfg.enable && cfg.enableFishIntegration) {
-      programs.fish.interactiveShellInit = ''
+      applications.fish.interactiveShellInit = ''
         if command -q starship
           set -gx STARSHIP_CONFIG "${starshipConfigFile}"
           set -gx STARSHIP_CONFIG_DIR "${starshipConfigDir}"
@@ -178,7 +178,7 @@ in {
       '';
     })
     (mkIf (cfg.enable && cfg.enableNushellIntegration) {
-      programs.nushell.extraConfig = ''
+      applications.nushell.extraConfig = ''
         $env.STARSHIP_CONFIG = "${starshipConfigFile}"
         $env.STARSHIP_CONFIG_DIR = "${starshipConfigDir}"
         $env.STARSHIP_CACHE = "${xdgCacheHome}/starship"

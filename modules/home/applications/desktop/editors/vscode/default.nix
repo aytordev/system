@@ -14,7 +14,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    programs.vscode = {
+    applications.vscode = {
       enable = true;
       package = pkgs.vscode;
 

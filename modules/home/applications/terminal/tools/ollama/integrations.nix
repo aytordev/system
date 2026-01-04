@@ -20,7 +20,7 @@ in
 
   config = mkIf (cfg.enable && integrationsCfg.zed) {
     # Zed editor integration
-    programs.zed-editor.userSettings = mkIf (config.programs.zed-editor.enable or false) {
+    applications.zed-editor.userSettings = mkIf (config.applications.zed-editor.enable or false) {
       assistant = {
         default_model = mkDefault {
           provider = "ollama";

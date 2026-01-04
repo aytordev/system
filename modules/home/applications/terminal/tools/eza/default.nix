@@ -12,7 +12,7 @@ in {
   };
   config = mkIf cfg.enable {
     home.packages = with pkgs; [eza];
-    programs.eza = {
+    applications.eza = {
       enable = true;
       package = pkgs.eza;
       enableZshIntegration = true;

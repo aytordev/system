@@ -76,7 +76,7 @@ in {
     };
   };
   config = mkIf cfg.enable {
-    programs.navi = {
+    applications.navi = {
       enable = true;
       settings = cfg.settings;
     };

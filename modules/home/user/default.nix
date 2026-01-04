@@ -125,7 +125,7 @@ in
           vdir = "${getExe' pkgs.coreutils "vdir"} --color=auto";
 
           # Misc
-          clear = "clear && ${getExe config.programs.fastfetch.package}";
+          clear = "clear && ${getExe config.applications.fastfetch.package}";
           clr = "clear";
           pls = "sudo";
           psg = "${getExe pkgs.ps} aux | grep";
@@ -139,7 +139,7 @@ in
         username = mkDefault cfg.name;
       };
 
-      programs.home-manager = enabled;
+      applications.home-manager = enabled;
     }
   ]);
 }

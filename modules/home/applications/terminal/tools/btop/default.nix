@@ -12,7 +12,7 @@ in {
   };
   config = mkIf cfg.enable {
     home.packages = with pkgs; [btop];
-    programs.btop = {
+    applications.btop = {
       enable = true;
       package = pkgs.btop;
       settings = {

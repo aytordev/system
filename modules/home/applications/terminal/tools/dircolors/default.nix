@@ -8,7 +8,7 @@
     enable = lib.mkEnableOption "dircolors";
   };
   config = lib.mkIf config.aytordev.applications.terminal.tools.dircolors.enable {
-    programs.dircolors = {
+    applications.dircolors = {
       enable = true;
     };
   };

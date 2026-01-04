@@ -34,7 +34,7 @@ in {
     };
   };
   config = mkIf cfg.enable {
-    programs.nh = {
+    applications.nh = {
       enable = true;
       package = nhPackage;
       clean.enable = cfg.clean.enable;

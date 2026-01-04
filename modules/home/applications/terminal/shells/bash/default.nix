@@ -44,7 +44,7 @@ in {
       home.packages = with pkgs; [
         bash
       ];
-      programs.bash = {
+      applications.bash = {
         enable = false;
       };
       home.file.".config/bash/.bashrc" = {

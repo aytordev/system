@@ -2,7 +2,7 @@
   config,
   lib,
 }: let
-  enabledPlugins = config.programs.yazi.plugins;
+  enabledPlugins = config.applications.yazi.plugins;
 in {
   plugin = {
     prepend_fetchers =

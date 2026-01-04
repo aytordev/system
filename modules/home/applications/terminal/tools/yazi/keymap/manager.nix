@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  enabledPlugins = config.programs.yazi.plugins;
+  enabledPlugins = config.applications.yazi.plugins;
   goto = import ./manager/goto.nix {
     inherit config lib pkgs;
   };

@@ -79,12 +79,12 @@ in {
     home.activation.createFzfDataDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
       mkdir -p "${config.xdg.dataHome}/fzf"
     '';
-    programs.fzf = {
+    applications.fzf = {
       enable = true;
       inherit (cfg) defaultCommand;
       defaultOptions = defaultOptions ++ cfg.extraOptions;
     };
-    programs.zsh = {
+    applications.zsh = {
       plugins = [
         {
           name = "fzf-tab";
@@ -124,7 +124,7 @@ in {
         }
       '';
     };
-    programs.fish = {
+    applications.fish = {
       plugins = [
         {
           name = "fzf-fish";
@@ -138,7 +138,7 @@ in {
         set -gx FZF_CTRL_R_OPTS "--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
       '';
     };
-    programs.nushell = {
+    applications.nushell = {
       extraConfig = ''
         ${nuFzfBindings}
       '';

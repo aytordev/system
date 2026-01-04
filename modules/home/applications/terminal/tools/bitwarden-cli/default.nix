@@ -418,21 +418,21 @@ in {
     };
 
     # Add sourcing instructions to shell configs
-    programs.zsh = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
+    applications.zsh = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
       initContent = ''
         # Source Bitwarden CLI integration
         [[ -f "$HOME/.config/bitwarden-cli/zsh-integration.sh" ]] && source "$HOME/.config/bitwarden-cli/zsh-integration.sh"
       '';
     };
 
-    programs.bash = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
+    applications.bash = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
       initExtra = ''
         # Source Bitwarden CLI integration
         [[ -f "$HOME/.config/bitwarden-cli/bash-integration.sh" ]] && source "$HOME/.config/bitwarden-cli/bash-integration.sh"
       '';
     };
 
-    programs.fish = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
+    applications.fish = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
       interactiveShellInit = ''
         # Source Bitwarden CLI integration
         if test -f "$HOME/.config/bitwarden-cli/fish-integration.fish"
@@ -442,7 +442,7 @@ in {
     };
 
     # Configure rbw if enabled
-    programs.rbw = lib.mkIf cfg.rbw.enable {
+    applications.rbw = lib.mkIf cfg.rbw.enable {
       enable = true;
       package = cfg.rbw.package;
       settings = {

@@ -68,7 +68,7 @@ in {
     };
   };
   config = lib.mkIf cfg.enable {
-    programs.ssh = {
+    applications.ssh = {
       enable = true;
       enableDefaultConfig = false;
       extraOptionOverrides = {

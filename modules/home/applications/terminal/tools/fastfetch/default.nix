@@ -11,7 +11,7 @@ in {
   };
   config = mkIf config.aytordev.applications.terminal.tools.fastfetch.enable {
     home.packages = with pkgs; [fastfetchMinimal];
-    programs.fastfetch = {
+    applications.fastfetch = {
       enable = true;
       package = pkgs.fastfetchMinimal;
       settings = {

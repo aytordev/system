@@ -21,7 +21,7 @@ in {
         nushellPlugins.formats
         nushellPlugins.polars
       ];
-      programs.nushell = {
+      applications.nushell = {
         enable = true;
         envFile = {
           text = ''

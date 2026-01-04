@@ -11,7 +11,7 @@ in {
     enable = lib.mkEnableOption "bat";
   };
   config = mkIf cfg.enable {
-    programs.bat = {
+    applications.bat = {
       enable = true;
       config = {
         style = "auto,header-filesize";

@@ -23,7 +23,7 @@ in {
     home.packages = [cfg.package];
 
     # For backward compatibility with existing configurations
-    programs.vesktop = {
+    applications.vesktop = {
       enable = true;
       package = cfg.package;
 

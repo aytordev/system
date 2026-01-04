@@ -15,7 +15,7 @@ in {
     enableNushellIntegration = mkEnableOption "atuin nushell integration";
   };
   config = mkIf cfg.enable {
-    programs.atuin = {
+    applications.atuin = {
       enable = true;
       enableBashIntegration = cfg.enableBashIntegration;
       enableFishIntegration = cfg.enableFishIntegration;

@@ -46,7 +46,7 @@ aytordev.applications.terminal.shells.{shell}.enable = true;
 
 #### Desktop Applications (`applications/desktop/`)
 
-GUI applications and desktop programs.
+GUI applications and desktop applications.
 
 **Key categories:**
 
@@ -202,7 +202,7 @@ Three common patterns for enabling features:
 aytordev.applications.terminal.tools.git.enable = true;
 ```
 
-**2. Suite enable (bundles multiple programs):**
+**2. Suite enable (bundles multiple applications):**
 
 ```nix
 aytordev.suites.development.enable = true;

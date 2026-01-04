@@ -14,7 +14,7 @@ in {
   };
   config = mkIf cfg.enable {
     home.packages = let
-      optionalPluginPackage = plugin: package: lib.optional (builtins.hasAttr plugin config.programs.yazi.plugins) package;
+      optionalPluginPackage = plugin: package: lib.optional (builtins.hasAttr plugin config.applications.yazi.plugins) package;
     in
       optionalPluginPackage "ouch" pkgs.ouch
       ++ optionalPluginPackage "glow" pkgs.glow
@@ -22,7 +22,7 @@ in {
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         pkgs.xdragon
       ];
-    programs.yazi = {
+    applications.yazi = {
       enable = true;
       enableBashIntegration = true;
       enableFishIntegration = true;

@@ -5,7 +5,7 @@
   ...
 }: let
   cfg = config.aytordev.applications.desktop.window-manager-system.aerospace;
-  sketchybar = "${config.programs.sketchybar.package}/bin/sketchybar";
+  sketchybar = "${config.applications.sketchybar.package}/bin/sketchybar";
 in {
   options = {
     aytordev.applications.desktop.window-manager-system.aerospace = {
@@ -22,7 +22,7 @@ in {
       aerospace
     ];
 
-    programs.aerospace = {
+    applications.aerospace = {
       enable = true;
       package = pkgs.aerospace;
       launchd.enable = true;

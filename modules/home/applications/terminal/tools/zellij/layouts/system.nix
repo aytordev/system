@@ -1,6 +1,6 @@
 {
   config = {
-    programs = {
+    applications = {
       zellij = {
         layouts = {
           system = {
@@ -106,9 +106,9 @@
                 {
                   tab = {
                     _props = {
-                      name = "khanelinix";
+                      name = "aytordev";
                       focus = true;
-                      cwd = "$HOME/khanelinix/";
+                      cwd = "$HOME/aytordev/";
                     };
                     _children = [
                       {
@@ -124,7 +124,7 @@
                     _props = {
                       name = "Git";
                       split_direction = "horizontal";
-                      cwd = "$HOME/khanelinix/";
+                      cwd = "$HOME/aytordev/";
                     };
                     _children = [
                       {
@@ -156,7 +156,7 @@
                     _props = {
                       name = "Shell";
                       split_direction = "horizontal";
-                      cwd = "$HOME/khanelinix/";
+                      cwd = "$HOME/aytordev/";
                     };
                     _children = [
                       {

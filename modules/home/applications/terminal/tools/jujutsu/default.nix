@@ -39,7 +39,7 @@ in {
   };
   config = mkIf cfg.enable {
     home.packages = [cfg.package];
-    programs.jujutsu = {
+    applications.jujutsu = {
       enable = true;
       package = cfg.package;
       settings =

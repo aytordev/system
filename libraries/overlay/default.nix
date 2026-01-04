@@ -8,7 +8,7 @@ let
   };
 in
 {
-  # Expose aytordev module functions directly (like khanelinix.mkOpt)
+  # Expose aytordev module functions directly (like aytordev.mkOpt)
   aytordev = aytordevLib.flake.lib.module;
 
   # Expose all aytordev lib namespaces
