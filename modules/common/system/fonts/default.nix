@@ -25,7 +25,7 @@
     maple-mono.variable
   ];
 in {
-  options.system.fonts = with types; {
+  options.aytordev.system.fonts = with types; {
     fonts = mkOption {
       type = listOf package;
       default = commonFonts;
