@@ -5,9 +5,9 @@
   inputs,
   ...
 }: let
-  cfg = config.applications.terminal.tools.bitwarden-cli;
+  cfg = config.aytordev.applications.terminal.tools.bitwarden-cli;
 in {
-  options.applications.terminal.tools.bitwarden-cli = {
+  options.aytordev.applications.terminal.tools.bitwarden-cli = {
     enable = lib.mkEnableOption "Bitwarden CLI for terminal-based password management";
 
     package = lib.mkOption {

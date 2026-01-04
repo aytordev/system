@@ -92,16 +92,16 @@
   applications.desktop.security.bitwarden.vault.timeoutAction = "lock";
   # Bitwarden CLI is temporarily disabled due to broken package in nixpkgs
   # Using rbw as alternative CLI client
-  applications.terminal.tools.bitwarden-cli.enable = true;
-  applications.terminal.tools.bitwarden-cli.shellIntegration.enable = true;
-  applications.terminal.tools.bitwarden-cli.shellIntegration.enableZshIntegration = true;
-  applications.terminal.tools.bitwarden-cli.shellIntegration.enableBashIntegration = true;
-  applications.terminal.tools.bitwarden-cli.shellIntegration.enableFishIntegration = true;
-  applications.terminal.tools.bitwarden-cli.aliases.enable = true;
-  applications.terminal.tools.bitwarden-cli.rbw.enable = true;
-  applications.terminal.tools.bitwarden-cli.settings.apiKey.useSops = true;
-  applications.terminal.tools.bitwarden-cli.settings.apiKey.clientIdPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_id";
-  applications.terminal.tools.bitwarden-cli.settings.apiKey.clientSecretPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_secret";
+  aytordev.applications.terminal.tools.bitwarden-cli.enable = true;
+  aytordev.applications.terminal.tools.bitwarden-cli.shellIntegration.enable = true;
+  aytordev.applications.terminal.tools.bitwarden-cli.shellIntegration.enableZshIntegration = true;
+  aytordev.applications.terminal.tools.bitwarden-cli.shellIntegration.enableBashIntegration = true;
+  aytordev.applications.terminal.tools.bitwarden-cli.shellIntegration.enableFishIntegration = true;
+  aytordev.applications.terminal.tools.bitwarden-cli.aliases.enable = true;
+  aytordev.applications.terminal.tools.bitwarden-cli.rbw.enable = true;
+  aytordev.applications.terminal.tools.bitwarden-cli.settings.apiKey.useSops = true;
+  aytordev.applications.terminal.tools.bitwarden-cli.settings.apiKey.clientIdPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_id";
+  aytordev.applications.terminal.tools.bitwarden-cli.settings.apiKey.clientSecretPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_secret";
 
   # Ollama - Local LLM Runner
   # Disabled: Using Homebrew cask version instead for better macOS integration
