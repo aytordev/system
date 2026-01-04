@@ -19,7 +19,7 @@
   aytordev.applications.desktop.communications.thunderbird.enable = true;
   # aytordev.applications.desktop.communications.vesktop.enable = true;
   applications.desktop.editors.vscode.enable = false;
-  applications.desktop.editors.antigravity.enable = true;
+  aytordev.applications.desktop.editors.antigravity.enable = true;
   applications.desktop.editors.zed.enable = true;
   applications.desktop.launchers.raycast.enable = true;
   aytordev.applications.terminal.tools.git.enable = true;
