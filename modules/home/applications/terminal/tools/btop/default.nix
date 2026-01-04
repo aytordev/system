@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.btop;
+  cfg = config.aytordev.applications.terminal.tools.btop;
 in {
-  options.applications.terminal.tools.btop = {
+  options.aytordev.applications.terminal.tools.btop = {
     enable = mkEnableOption "btop - A resource monitor that shows usage and stats for processor, memory, disks, network and processes";
   };
   config = mkIf cfg.enable {

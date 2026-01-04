@@ -43,7 +43,7 @@
   aytordev.applications.terminal.tools.atuin.enableZshIntegration = true;
   aytordev.applications.terminal.tools.atuin.enableNushellIntegration = true;
   aytordev.applications.terminal.tools.bottom.enable = true;
-  applications.terminal.tools.btop.enable = true;
+  aytordev.applications.terminal.tools.btop.enable = true;
   applications.terminal.tools.carapace.enable = true;
   applications.terminal.tools.comma.enable = true;
   applications.terminal.emulators.ghostty.enable = true;
