@@ -30,7 +30,7 @@ The recommended way to combine all tools:
       pkgs = nixpkgs.legacyPackages.''${system};
       treefmtEval = treefmt-nix.lib.evalModule pkgs {
         projectRootFile = "flake.nix";
-        programs = {
+        applications = {
           nixfmt.enable = true;  # or nixfmt-rfc-style
           deadnix.enable = true;
           statix.enable = true;

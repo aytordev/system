@@ -50,13 +50,13 @@ Example: `homes/x86_64-linux/khaneliman@khanelimain/default.nix`
 
 ```nix
 # In module (low priority - can be overridden)
-programs.git.userName = lib.mkDefault "Default Name";
+applications.git.userName = lib.mkDefault "Default Name";
 
 # In host config (overrides module default)
-programs.git.userName = "Host Specific";
+applications.git.userName = "Host Specific";
 
 # Force (highest priority - rarely needed)
-programs.git.userName = lib.mkForce "Forced Value";
+applications.git.userName = lib.mkForce "Forced Value";
 ```
 
 ## Best Practice

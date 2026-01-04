@@ -301,7 +301,7 @@
 
     ```bash
     # Generate basic home manager module
-    /module-scaffold modules/home/programs/example/default.nix
+    /module-scaffold modules/home/applications/example/default.nix
 
     # Generate advanced NixOS module with comprehensive options
     /module-scaffold modules/nixos/services/myservice.nix --template=advanced --with-options

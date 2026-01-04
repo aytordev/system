@@ -18,12 +18,12 @@ description: "Nix conditional patterns: mkIf, optionals, optionalString, mkMerge
 
 ```nix
 config = lib.mkIf cfg.enable {
-  programs.git.enable = true;
+  applications.git.enable = true;
   home.packages = [ pkgs.git ];
 };
 
 # Nested conditional
-programs.vim = lib.mkIf cfg.enableVim {
+applications.vim = lib.mkIf cfg.enableVim {
   enable = true;
 };
 ```
@@ -44,7 +44,7 @@ home.packages = [
 ## optionalString - Conditional Strings
 
 ```nix
-programs.bash.initExtra = '''
+applications.bash.initExtra = '''
   # Always included
   export EDITOR=vim
 ''' + lib.optionalString cfg.enableAliases '''
@@ -58,16 +58,16 @@ programs.bash.initExtra = '''
 config = lib.mkMerge [
   # Always applied
   {
-    programs.bash.enable = true;
+    applications.bash.enable = true;
   }
 
   # Conditionally applied
   (lib.mkIf cfg.enableGit {
-    programs.git.enable = true;
+    applications.git.enable = true;
   })
 
   (lib.mkIf cfg.enableVim {
-    programs.vim.enable = true;
+    applications.vim.enable = true;
   })
 ];
 ```

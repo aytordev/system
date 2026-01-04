@@ -84,16 +84,16 @@
 
     **Example decomposition:**
     ```
-    File: modules/home/programs/git/default.nix
+    File: modules/home/applications/git/default.nix
 
     Hunk 1 (lines 10-15): Adds new option 'signing.enable'
-      -> Commit A: "feat(home/programs/git): add commit signing option"
+      -> Commit A: "feat(home/applications/git): add commit signing option"
 
     Hunk 2 (lines 45-50): Fixes typo in existing option description
-      -> Commit B: "fix(home/programs/git): correct option description typo"
+      -> Commit B: "fix(home/applications/git): correct option description typo"
 
     Hunk 3 (lines 80-90): Refactors conditional logic
-      -> Commit C: "refactor(home/programs/git): simplify conditional logic"
+      -> Commit C: "refactor(home/applications/git): simplify conditional logic"
 
     These are THREE commits, not one "update git module" commit!
     ```
@@ -226,17 +226,17 @@
 
     ### **Bad: One monolithic commit**
     ```
-    "feat(home/programs): add wezterm configuration"
-    - modules/home/programs/wezterm/default.nix (new module)
-    - modules/home/programs/wezterm/themes.nix (themes)
+    "feat(home/applications): add wezterm configuration"
+    - modules/home/applications/wezterm/default.nix (new module)
+    - modules/home/applications/wezterm/themes.nix (themes)
     - modules/home/suites/desktop/default.nix (enable in suite)
     - modules/common/ai-tools/agents/general/docs-writer.nix (unrelated fix)
     ```
 
     ### **Good: Multiple atomic commits**
     ```
-    Commit 1: "feat(home/programs/wezterm): add base module with enable option"
-    Commit 2: "feat(home/programs/wezterm): add theme configuration"
+    Commit 1: "feat(home/applications/wezterm): add base module with enable option"
+    Commit 2: "feat(home/applications/wezterm): add theme configuration"
     Commit 3: "feat(home/suites/desktop): enable wezterm in desktop suite"
     Commit 4: "fix(common/ai-tools): correct docs-writer agent description"
     ```

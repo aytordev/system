@@ -16,7 +16,7 @@ options.aytordev.{category}.{module}.{option} = { ... };
 ### Examples
 
 ```nix
-options.aytordev.programs.terminal.tools.git.enable = ...
+options.aytordev.applications.terminal.tools.git.enable = ...
 options.aytordev.desktop.windowManagers.hyprland.enable = ...
 options.aytordev.security.sops.enable = ...
 options.aytordev.user.name = ...
@@ -34,10 +34,10 @@ options.aytordev.user.name = ...
 let
   inherit (lib) mkIf mkEnableOption;
 
-  cfg = config.aytordev.programs.myApp;
+  cfg = config.aytordev.applications.myApp;
 in
 {
-  options.aytordev.programs.myApp = {
+  options.aytordev.applications.myApp = {
     enable = mkEnableOption "My App";
   };
 
@@ -55,7 +55,7 @@ let
 in
 {
   # Use user.name, user.email, user.fullName
-  programs.git.userName = user.fullName;
+  applications.git.userName = user.fullName;
 }
 ```
 
@@ -79,8 +79,8 @@ aytordev provides helpers in `lib.aytordev`:
 inherit (lib.aytordev) mkOpt enabled disabled;
 
 # Quick enable/disable
-programs.git = enabled;   # { enable = true; }
-programs.foo = disabled;  # { enable = false; }
+applications.git = enabled;   # { enable = true; }
+applications.foo = disabled;  # { enable = false; }
 
 # Custom option with default
 userName = mkOpt types.str "default" "User name";

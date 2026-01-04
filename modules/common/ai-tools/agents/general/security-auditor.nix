@@ -251,7 +251,7 @@
          - Audit trail completeness and integrity
          - Incident response and breach notification
          - Risk assessment and management processes
-         - Security training and awareness programs
+         - Security training and awareness applications
          - Vendor and third-party security assessments
 
       **Compliance assessment process:**

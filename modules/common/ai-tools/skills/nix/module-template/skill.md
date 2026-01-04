@@ -65,7 +65,7 @@ in
 ## Home Manager Module
 
 ```nix
-# modules/home/programs/my-app.nix
+# modules/home/applications/my-app.nix
 {
   config,
   lib,
@@ -74,10 +74,10 @@ in
 }:
 let
   inherit (lib) mkIf mkEnableOption;
-  cfg = config.programs.myApp;
+  cfg = config.applications.myApp;
 in
 {
-  options.programs.myApp = {
+  options.applications.myApp = {
     enable = mkEnableOption "My App";
   };
 

@@ -77,10 +77,10 @@
     - **System config access**: `lib.optionalString (osConfig.aytordev.security.sops.enable or false)` with `or fallback`
 
     ### **Helper Usage Patterns:**
-    - **Enable programs**: `programs.git = enabled;` (equals `{ enable = true; }`)
-    - **Disable programs**: `programs.foo = disabled;` (equals `{ enable = false; }`)
-    - **Default enables**: `programs.bar = mkDefault enabled;` (user can override)
-    - **Forced enables**: `programs.baz = mkForce enabled;` (cannot override)
+    - **Enable applications**: `applications.git = enabled;` (equals `{ enable = true; }`)
+    - **Disable applications**: `applications.foo = disabled;` (equals `{ enable = false; }`)
+    - **Default enables**: `applications.bar = mkDefault enabled;` (user can override)
+    - **Forced enables**: `applications.baz = mkForce enabled;` (cannot override)
 
     ### **Variable and Naming Conventions:**
     - **Variables**: Strict camelCase (`cfg`, `userName`, `serverHostname`)

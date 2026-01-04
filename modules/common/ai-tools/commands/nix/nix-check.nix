@@ -231,7 +231,7 @@
     /nix-check --full
 
     # Check specific module with formatting
-    /nix-check modules/home/programs/git --format
+    /nix-check modules/home/applications/git --format
 
     # Evaluation-focused testing
     /nix-check flake.nix --eval
