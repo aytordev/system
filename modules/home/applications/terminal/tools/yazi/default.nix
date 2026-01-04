@@ -7,9 +7,9 @@
 }: let
   inherit (lib) mkIf;
   inherit (inputs) yazi-flavors;
-  cfg = config.applications.terminal.tools.yazi;
+  cfg = config.aytordev.applications.terminal.tools.yazi;
 in {
-  options.applications.terminal.tools.yazi = {
+  options.aytordev.applications.terminal.tools.yazi = {
     enable = lib.mkEnableOption "yazi";
   };
   config = mkIf cfg.enable {
