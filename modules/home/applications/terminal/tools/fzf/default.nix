@@ -107,7 +107,7 @@ in {
         }
       '';
     };
-    home.file.".config/bash/conf.d/fzf.sh" = lib.mkIf config.applications.terminal.shells.bash.enable {
+    home.file.".config/bash/conf.d/fzf.sh" = lib.mkIf config.aytordev.applications.terminal.shells.bash.enable {
       text = ''
         if [[ -f "${pkgs.fzf}/share/fzf/key-bindings.bash" ]]; then
           source "${pkgs.fzf}/share/fzf/key-bindings.bash"

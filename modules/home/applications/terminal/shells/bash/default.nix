@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.shells.bash;
+  cfg = config.aytordev.applications.terminal.shells.bash;
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
   xdgCacheHome = "${config.xdg.cacheHome}";
@@ -36,7 +36,7 @@ with lib; let
     fi
   '';
 in {
-  options.applications.terminal.shells.bash = {
+  options.aytordev.applications.terminal.shells.bash = {
     enable = mkEnableOption "Bash shell with useful defaults";
   };
   config = mkIf cfg.enable (mkMerge [
