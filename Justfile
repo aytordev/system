@@ -12,13 +12,13 @@ default:
 # Update all flake inputs
 [group('nix')]
 up:
-    nix flake update
+    nix flake update --extra-experimental-features "nix-command flakes"
 
 # Update specific input
 # Usage: just upp nixpkgs
 [group('nix')]
 upp input:
-    nix flake update {{input}}
+    nix flake update {{input}} --extra-experimental-features "nix-command flakes"
 
 # Format Nix files using the flake's formatter
 # Usage: just fmt [path]  # Format files or directories (default: .)

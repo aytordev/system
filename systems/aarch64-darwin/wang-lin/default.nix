@@ -1,11 +1,13 @@
 {
   lib,
+  inputs,
   config,
   ...
 }:
 let
   inherit (lib.aytordev) enabled;
   cfg = config.aytordev.user;
+  sopsFolder = builtins.toString inputs.secrets + "/hard-secrets";
 in
 {
   # Host-specific settings only
@@ -14,6 +16,36 @@ in
 
   aytordev = {
     # User configuration is handled by modules/darwin/user
+
+    security = {
+      sops = {
+        enable = true;
+        defaultSopsFile = "${sopsFolder}/${inputs.secrets.username}.yaml";
+        age.keyFile = "/Users/${inputs.secrets.username}/.config/sops/age/keys.txt";
+        secrets = {
+          github_ssh_private_key = {
+            key = "github_ssh_private_key";
+            path = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
+            mode = "0600";
+            owner = inputs.secrets.username;
+          };
+          bitwarden_api_client_id = {
+            sopsFile = "${sopsFolder}/shared.yaml";
+            key = "bitwarden_api_client_id";
+            path = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_id";
+            mode = "0600";
+            owner = inputs.secrets.username;
+          };
+          bitwarden_api_client_secret = {
+            sopsFile = "${sopsFolder}/shared.yaml";
+            key = "bitwarden_api_client_secret";
+            path = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_secret";
+            mode = "0600";
+            owner = inputs.secrets.username;
+          };
+        };
+      };
+    };
   };
 
   networking = {
@@ -31,3 +63,4 @@ in
 
   system.stateVersion = 6;
 }
+
