@@ -6,10 +6,10 @@
 let
   inherit (lib.aytordev) mkOpt;
 
-  cfg = config.aytordev.darwin.security.sops;
+  cfg = config.aytordev.security.sops;
 in
 {
-  options.aytordev.darwin.security.sops = {
+  options.aytordev.security.sops = {
     enable = lib.mkEnableOption "sops";
     defaultSopsFile = mkOpt lib.types.path null "Default sops file.";
     sshKeyPaths = mkOpt (with lib.types; listOf path) [

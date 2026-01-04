@@ -4,9 +4,9 @@
   ...
 }:
 with lib; let
-  cfg = config.darwin.security.sudo;
+  cfg = config.aytordev.security.sudo;
 in {
-  options.darwin.security.sudo = {
+  options.aytordev.security.sudo = {
     enable = mkEnableOption "sudo configuration with Touch ID support";
   };
   config = mkIf cfg.enable {
