@@ -28,11 +28,11 @@
   applications.terminal.shells.bash.enable = true;
   applications.terminal.shells.fish.enable = true;
   applications.terminal.shells.nu.enable = true;
-  applications.terminal.tools.starship.enable = true;
-  applications.terminal.tools.starship.enableZshIntegration = true;
-  applications.terminal.tools.starship.enableFishIntegration = true;
-  applications.terminal.tools.starship.enableBashIntegration = true;
-  applications.terminal.tools.starship.enableNushellIntegration = true;
+  aytordev.applications.terminal.tools.starship.enable = true;
+  aytordev.applications.terminal.tools.starship.enableZshIntegration = true;
+  aytordev.applications.terminal.tools.starship.enableFishIntegration = true;
+  aytordev.applications.terminal.tools.starship.enableBashIntegration = true;
+  aytordev.applications.terminal.tools.starship.enableNushellIntegration = true;
   applications.terminal.tools.fzf.enable = true;
   applications.terminal.tools.zoxide.enable = true;
   applications.terminal.tools.bat.enable = true;

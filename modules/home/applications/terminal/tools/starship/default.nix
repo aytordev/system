@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.starship;
+  cfg = config.aytordev.applications.terminal.tools.starship;
   themes = {
     catppuccin-frappe = import ./themes/catppuccin-frappe.nix {inherit lib;};
     catppuccin-latte = import ./themes/catppuccin-latte.nix {inherit lib;};
@@ -89,7 +89,7 @@ with lib; let
     shellModule
   ];
 in {
-  options.applications.terminal.tools.starship = {
+  options.aytordev.applications.terminal.tools.starship = {
     enable = mkEnableOption "Starship prompt";
     theme = mkOption {
       type = types.enum ["catppuccin-frappe" "catppuccin-latte" "catppuccin-macchiato" "catppuccin-mocha"];
