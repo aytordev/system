@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.eza;
+  cfg = config.aytordev.applications.terminal.tools.eza;
 in {
-  options.applications.terminal.tools.eza = {
+  options.aytordev.applications.terminal.tools.eza = {
     enable = mkEnableOption "eza";
   };
   config = mkIf cfg.enable {
