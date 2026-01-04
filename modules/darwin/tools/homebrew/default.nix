@@ -4,9 +4,9 @@
   ...
 }: let
   inherit (lib) mkEnableOption mkIf;
-  cfg = config.darwin.tools.homebrew;
+  cfg = config.aytordev.tools.homebrew;
 in {
-  options.darwin.tools.homebrew = {
+  options.aytordev.tools.homebrew = {
     enable = mkEnableOption "Homebrew package manager";
   };
   config = mkIf cfg.enable {
@@ -21,6 +21,7 @@ in {
         brewfile = true;
         autoUpdate = true;
       };
+      greedyCasks = true;
       onActivation = {
         autoUpdate = true;
         cleanup = "uninstall";
