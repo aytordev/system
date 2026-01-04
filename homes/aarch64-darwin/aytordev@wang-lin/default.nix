@@ -68,7 +68,7 @@
   aytordev.applications.terminal.tools.jujutsu.enable = true;
   aytordev.applications.terminal.tools.jujutsu.signByDefault = true;
   applications.terminal.tools.lazygit.enable = true;
-  applications.terminal.tools.lazydocker.enable = true;
+  aytordev.applications.terminal.tools.lazydocker.enable = true;
   applications.terminal.tools.navi.enable = true;
   applications.terminal.tools.navi.settings.style.tag.color = "green";
   applications.terminal.tools.navi.settings.style.tag.width_percentage = 26;
