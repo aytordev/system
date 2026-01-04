@@ -46,9 +46,9 @@
   aytordev.applications.terminal.tools.btop.enable = true;
   aytordev.applications.terminal.tools.carapace.enable = true;
   aytordev.applications.terminal.tools.comma.enable = true;
-  applications.terminal.emulators.ghostty.enable = true;
-  applications.terminal.emulators.ghostty.theme = "catppuccin-mocha";
-  applications.terminal.emulators.ghostty.enableThemes = true;
+  aytordev.applications.terminal.emulators.ghostty.enable = true;
+  aytordev.applications.terminal.emulators.ghostty.theme = "catppuccin-mocha";
+  aytordev.applications.terminal.emulators.ghostty.enableThemes = true;
   aytordev.applications.terminal.tools.ssh.enable = true;
   aytordev.applications.terminal.tools.ssh.knownHosts.github.hostNames = ["github.com"];
   aytordev.applications.terminal.tools.ssh.knownHosts.github.user = "git";
