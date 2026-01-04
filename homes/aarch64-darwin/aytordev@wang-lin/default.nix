@@ -42,7 +42,7 @@
   aytordev.applications.terminal.tools.fastfetch.enable = true;
   aytordev.applications.terminal.tools.atuin.enableZshIntegration = true;
   aytordev.applications.terminal.tools.atuin.enableNushellIntegration = true;
-  applications.terminal.tools.bottom.enable = true;
+  aytordev.applications.terminal.tools.bottom.enable = true;
   applications.terminal.tools.btop.enable = true;
   applications.terminal.tools.carapace.enable = true;
   applications.terminal.tools.comma.enable = true;
