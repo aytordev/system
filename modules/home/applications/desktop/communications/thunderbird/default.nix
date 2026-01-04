@@ -6,9 +6,9 @@
 }: let
   inherit (lib) mkEnableOption mkOption mkIf;
 
-  cfg = config.applications.desktop.communications.thunderbird;
+  cfg = config.aytordev.applications.desktop.communications.thunderbird;
 in {
-  options.applications.desktop.communications.thunderbird = {
+  options.aytordev.applications.desktop.communications.thunderbird = {
     enable = mkEnableOption "Thunderbird email client";
   };
 
