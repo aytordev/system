@@ -4,11 +4,11 @@
   pkgs,
   ...
 }: let
-  cfg = config.applications.desktop.window-manager-system.aerospace;
+  cfg = config.aytordev.applications.desktop.window-manager-system.aerospace;
   sketchybar = "${config.programs.sketchybar.package}/bin/sketchybar";
 in {
   options = {
-    applications.desktop.window-manager-system.aerospace = {
+    aytordev.applications.desktop.window-manager-system.aerospace = {
       enable = lib.mkEnableOption "Aerospace window manager";
     };
   };
