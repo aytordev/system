@@ -27,7 +27,7 @@
   applications.terminal.shells.zsh.enable = true;
   aytordev.applications.terminal.shells.bash.enable = true;
   aytordev.applications.terminal.shells.fish.enable = true;
-  applications.terminal.shells.nu.enable = true;
+  aytordev.applications.terminal.shells.nu.enable = true;
   aytordev.applications.terminal.tools.starship.enable = true;
   aytordev.applications.terminal.tools.starship.enableZshIntegration = true;
   aytordev.applications.terminal.tools.starship.enableFishIntegration = true;
