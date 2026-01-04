@@ -6,10 +6,10 @@
 }: let
   inherit (lib) mkEnableOption mkIf;
 in {
-  options.applications.terminal.tools.fastfetch = {
+  options.aytordev.applications.terminal.tools.fastfetch = {
     enable = mkEnableOption "fastfetch";
   };
-  config = mkIf config.applications.terminal.tools.fastfetch.enable {
+  config = mkIf config.aytordev.applications.terminal.tools.fastfetch.enable {
     home.packages = with pkgs; [fastfetchMinimal];
     programs.fastfetch = {
       enable = true;

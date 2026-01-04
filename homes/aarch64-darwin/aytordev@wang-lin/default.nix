@@ -39,7 +39,7 @@
   aytordev.applications.terminal.tools.atuin.enable = true;
   aytordev.applications.terminal.tools.atuin.enableBashIntegration = true;
   aytordev.applications.terminal.tools.atuin.enableFishIntegration = true;
-  applications.terminal.tools.fastfetch.enable = true;
+  aytordev.applications.terminal.tools.fastfetch.enable = true;
   aytordev.applications.terminal.tools.atuin.enableZshIntegration = true;
   aytordev.applications.terminal.tools.atuin.enableNushellIntegration = true;
   applications.terminal.tools.bottom.enable = true;
