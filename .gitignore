@@ -71,7 +71,6 @@ wheels/
 .env
 .venv
 venv/
-ENV/
 
 # OS files
 .DS_Store
