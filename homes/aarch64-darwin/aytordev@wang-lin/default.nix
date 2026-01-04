@@ -82,7 +82,7 @@
   aytordev.applications.terminal.tools.ripgrep.enable = true;
   aytordev.applications.terminal.tools.yazi.enable = true;
   # applications.terminal.emulators.warp.enable = true;
-  applications.terminal.tools.zellij.enable = true;
+  aytordev.applications.terminal.tools.zellij.enable = true;
   # Bitwarden password manager
   applications.desktop.security.bitwarden.enable = true;
   applications.desktop.security.bitwarden.enableBrowserIntegration = true;
