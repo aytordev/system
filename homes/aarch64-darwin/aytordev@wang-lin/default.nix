@@ -105,23 +105,23 @@
 
   # Ollama - Local LLM Runner
   # Disabled: Using Homebrew cask version instead for better macOS integration
-  applications.terminal.tools.ollama.enable = false;
-  applications.terminal.tools.ollama.acceleration = "metal"; # Use Metal for GPU acceleration on macOS
-  applications.terminal.tools.ollama.models = [
+  aytordev.applications.terminal.tools.ollama.enable = false;
+  aytordev.applications.terminal.tools.ollama.acceleration = "metal"; # Use Metal for GPU acceleration on macOS
+  aytordev.applications.terminal.tools.ollama.models = [
     "llama3.2"      # General purpose 3B model
     "codellama"     # Code generation
     "mistral"       # 7B general model
   ];
-  applications.terminal.tools.ollama.service.enable = true;
-  applications.terminal.tools.ollama.service.autoStart = true;
-  applications.terminal.tools.ollama.shellAliases = true;
+  aytordev.applications.terminal.tools.ollama.service.enable = true;
+  aytordev.applications.terminal.tools.ollama.service.autoStart = true;
+  aytordev.applications.terminal.tools.ollama.shellAliases = true;
   # Shell aliases are now handled automatically by the module
-  applications.terminal.tools.ollama.environmentVariables = {
+  aytordev.applications.terminal.tools.ollama.environmentVariables = {
      OLLAMA_NUM_PARALLEL = "2";
      OLLAMA_MAX_LOADED_MODELS = "2";
      OLLAMA_KEEP_ALIVE = "5m";
   };
   # Enable Zed integration through new module structure
-  applications.terminal.tools.ollama.integrations.zed = true;
-  applications.terminal.tools.ollama.modelPresets = [ "general" "coding" ];
+  aytordev.applications.terminal.tools.ollama.integrations.zed = true;
+  aytordev.applications.terminal.tools.ollama.modelPresets = [ "general" "coding" ];
 }

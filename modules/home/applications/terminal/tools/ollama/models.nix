@@ -6,7 +6,7 @@
 }:
 with lib;
 let
-  cfg = config.applications.terminal.tools.ollama;
+  cfg = config.aytordev.applications.terminal.tools.ollama;
 
   # Simplified model presets
   modelPresets = {
@@ -25,7 +25,7 @@ let
   };
 in
 {
-  options.applications.terminal.tools.ollama.modelPresets = mkOption {
+  options.aytordev.applications.terminal.tools.ollama.modelPresets = mkOption {
     type = types.listOf (types.enum (attrNames modelPresets));
     default = [ ];
     example = [
@@ -34,10 +34,10 @@ in
     ];
     description = "Model presets to automatically install";
   };
-  
+
   config = mkIf cfg.enable {
     # Add preset models to the main model list
-    applications.terminal.tools.ollama.models = mkDefault (
+    aytordev.applications.terminal.tools.ollama.models = mkDefault (
       flatten (map (preset: modelPresets.${preset}) cfg.modelPresets)
     );
 

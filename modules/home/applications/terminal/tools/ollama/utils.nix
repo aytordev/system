@@ -5,15 +5,15 @@
   ...
 }:
 with lib; let
-  cfg = config.applications.terminal.tools.ollama;
-  
+  cfg = config.aytordev.applications.terminal.tools.ollama;
+
   # Common constants
   constants = {
     host = "127.0.0.1";
     port = 11434;
     baseUrl = "http://127.0.0.1:11434";
   };
-  
+
   # Common shell utilities
   shellUtils = {
     colors = ''
@@ -25,13 +25,13 @@ with lib; let
       CYAN='\033[0;36m'
       NC='\033[0m' # No Color
     '';
-    
+
     errorHandling = ''
       handle_error() {
         echo -e "''${RED}❌ Error: $1''${NC}" >&2
         exit 1
       }
-      
+
       check_service() {
         if ! systemctl --user is-active --quiet ollama.service; then
           echo -e "''${YELLOW}⚠️  Starting Ollama service...''${NC}"
@@ -39,7 +39,7 @@ with lib; let
           sleep 3
         fi
       }
-      
+
       wait_for_service() {
         local max_attempts=30
         local attempt=0
@@ -54,7 +54,7 @@ with lib; let
       }
     '';
   };
-  
+
   # Common functions for model operations
   modelOperations = {
     pullModel = model: ''
@@ -69,14 +69,14 @@ with lib; let
         echo -e "''${YELLOW}Model ${model} already exists''${NC}"
       fi
     '';
-    
+
     listModels = ''
       list_models() {
         echo -e "''${CYAN}📚 Installed Models:''${NC}"
         ${cfg.package}/bin/ollama list
       }
     '';
-    
+
     showRunning = ''
       show_running() {
         echo -e "''${GREEN}🏃 Running Models:''${NC}"
@@ -84,30 +84,30 @@ with lib; let
       }
     '';
   };
-  
+
   # Create a script that pulls all configured models
   createModelPullScript = pkgs.writeShellScriptBin "ollama-pull-models" ''
     set -e
     ${shellUtils.colors}
     ${shellUtils.errorHandling}
-    
+
     echo -e "''${CYAN}🤖 Ensuring Ollama models are available...''${NC}"
-    
+
     wait_for_service
     echo -e "''${GREEN}✅ Ollama service is ready''${NC}"
-    
+
     ${concatMapStringsSep "\n" modelOperations.pullModel cfg.models}
-    
+
     echo -e "''${GREEN}✅ All models are ready''${NC}"
   '';
-  
+
   # Basic status script
   createStatusScript = pkgs.writeShellScriptBin "ollama-status" ''
     ${shellUtils.colors}
     ${shellUtils.errorHandling}
-    
+
     echo -e "''${CYAN}🤖 Ollama Service Status:''${NC}"
-    
+
     # Check if API is responding (works on both macOS and Linux)
     if curl -s http://127.0.0.1:11434/api/tags > /dev/null 2>&1; then
       echo -e "''${GREEN}✅ Ollama is running and API is responding''${NC}"
@@ -120,23 +120,23 @@ with lib; let
       echo "Try starting it with: ollama serve"
     fi
   '';
-  
+
   # Basic restart script
   createRestartScript = pkgs.writeShellScriptBin "ollama-restart" ''
     ${shellUtils.colors}
-    
+
     echo -e "''${YELLOW}🔄 Restarting Ollama service...''${NC}"
     systemctl --user restart ollama.service
     sleep 2
     echo -e "''${GREEN}✅ Service restarted''${NC}"
     systemctl --user status ollama.service --no-pager | head -n 3
   '';
-  
+
   # Simple logs script
   createLogsScript = pkgs.writeShellScriptBin "ollama-logs" ''
     journalctl --user -u ollama.service -f
   '';
-  
+
 in {
   config = {
     # Export utilities for use in other modules
