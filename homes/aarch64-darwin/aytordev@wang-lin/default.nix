@@ -34,7 +34,7 @@
   aytordev.applications.terminal.tools.starship.enableBashIntegration = true;
   aytordev.applications.terminal.tools.starship.enableNushellIntegration = true;
   aytordev.applications.terminal.tools.fzf.enable = true;
-  applications.terminal.tools.zoxide.enable = true;
+  aytordev.applications.terminal.tools.zoxide.enable = true;
   applications.terminal.tools.bat.enable = true;
   applications.terminal.tools.atuin.enable = true;
   applications.terminal.tools.atuin.enableBashIntegration = true;
