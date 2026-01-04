@@ -7,9 +7,9 @@
   pkgs-stable = args.pkgs-stable or pkgs;
   inherit (lib) mkEnableOption mkIf;
 
-  cfg = config.applications.desktop.editors.zed;
+  cfg = config.aytordev.applications.desktop.editors.zed;
 in {
-  options.applications.desktop.editors.zed = {
+  options.aytordev.applications.desktop.editors.zed = {
     enable = mkEnableOption "Whether or not to enable zed-editor";
   };
 
