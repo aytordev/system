@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  sharedNix = import (lib.getFile "modules/shared/nix/default.nix");
+  sharedNix = import (lib.getFile "modules/common/nix/default.nix");
 in {
   imports = [sharedNix];
   config = {
