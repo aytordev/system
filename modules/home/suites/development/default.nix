@@ -75,7 +75,7 @@ in
           nixpkgs-lint-community
           nixpkgs-review
           nurl
-        ]
+        ];
 
       shellAliases = {
         # Nixpkgs
@@ -124,41 +124,38 @@ in
 
     aytordev = {
       programs = {
-        graphical = {
+        desktop = {
           editors = {
             vscode.enable = mkDefault (!isWSL);
           };
         };
 
         terminal = {
-          editors = {
-            # helix = enabled;
-            neovim = {
-              enable = mkDefault true;
-              default = mkDefault true;
-            };
-          };
+          # TODO: Add terminal.editors when neovim module exists
+          # helix = enabled;
+          # neovim = { enable = true; default = true; };
 
           tools = {
             act = mkDefault enabled;
-            azure.enable = cfg.azureEnable;
+            # azure.enable = cfg.azureEnable;  # TODO: module doesn't exist
             claude-code.enable = cfg.aiEnable;
             gemini-cli.enable = cfg.aiEnable;
             opencode.enable = cfg.aiEnable;
             git-crypt = mkDefault enabled;
-            go.enable = cfg.goEnable;
+            # go.enable = cfg.goEnable;  # TODO: module doesn't exist
             gh = mkDefault enabled;
             jujutsu = mkDefault enabled;
             jjui = mkDefault enabled;
             k9s.enable = cfg.kubernetesEnable;
             lazydocker.enable = cfg.dockerEnable;
             lazygit = mkDefault enabled;
-            oh-my-posh = mkDefault enabled;
+            # oh-my-posh = mkDefault enabled;  # TODO: module doesn't exist
           };
         };
       };
 
-      services.ollama.enable = mkDefault (cfg.aiEnable && pkgs.stdenv.hostPlatform.isDarwin);
+      # TODO: services.ollama when module exists
+      # services.ollama.enable = mkDefault (cfg.aiEnable && pkgs.stdenv.hostPlatform.isDarwin);
     };
 
     sops.secrets = lib.mkIf (osConfig.aytordev.security.sops.enable or false) {

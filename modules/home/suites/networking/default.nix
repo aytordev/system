@@ -25,6 +25,6 @@ in
         openssh
         speedtest-cli
         ssh-copy-id
-      ]
+      ];
   };
 }

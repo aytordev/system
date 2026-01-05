@@ -29,7 +29,7 @@ in
       programs = {
         desktop = {
           communications = {
-            thunderbird = lib.mkDefault (!isWSL); # No GUI email client in WSL
+            thunderbird.enable = lib.mkDefault (!isWSL); # No GUI email client in WSL
           };
         };
         terminal = {

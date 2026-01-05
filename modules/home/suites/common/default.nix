@@ -66,11 +66,11 @@ in
       programs = {
         terminal = {
           emulators = {
-            ghostty.enable = mkDefault enabled;
-            warp.enable = mkDefault disabled;
+            ghostty = mkDefault enabled;
+            warp = mkDefault disabled;
           };
 
-          shell = {
+          shells = {
             bash = mkDefault enabled;
             nushell = mkDefault enabled;
             fish = mkDefault enabled;
@@ -89,7 +89,7 @@ in
             fastfetch = mkDefault enabled;
             fzf = mkDefault enabled;
             git = mkDefault enabled;
-            infat.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
+            infat = mkDefault enabled;
             jq = mkDefault enabled;
             navi = mkDefault enabled;
             nix-search-tv = mkDefault enabled;

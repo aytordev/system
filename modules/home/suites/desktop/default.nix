@@ -19,7 +19,7 @@ in
   config = mkIf cfg.enable {
     aytordev = {
       programs = {
-        graphical = {
+        desktop = {
           bars = {
             sketchybar = disabled;
           };
@@ -38,7 +38,7 @@ in
       with pkgs;
       [
         # TODO: Add more packages
-      ]
+      ];
 
     targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       copyApps.enable = true;
