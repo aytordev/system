@@ -98,6 +98,7 @@ in
             nh = mkDefault enabled;
             ripgrep = mkDefault enabled;
             run-as-service = mkDefault (if pkgs.stdenv.hostPlatform.isLinux then enabled else disabled);
+            ssh = mkDefault enabled;
             starship = mkDefault enabled;
             yazi = mkDefault enabled;
             zellij = mkDefault enabled;
