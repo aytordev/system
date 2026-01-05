@@ -27,7 +27,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    system.newsyslog.files.sketchybar = [
+    aytordev.system.newsyslog.files.sketchybar = [
       {
         logfilename = cfg.logPaths.stdout;
         mode = "644";

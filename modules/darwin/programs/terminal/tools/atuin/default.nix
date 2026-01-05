@@ -27,7 +27,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    system.newsyslog.files.atuin-daemon = [
+    aytordev.system.newsyslog.files.atuin-daemon = [
       {
         logfilename = cfg.logPaths.stdout;
         mode = "644";

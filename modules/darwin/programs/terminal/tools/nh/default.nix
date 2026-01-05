@@ -27,7 +27,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    system.newsyslog.files.nh-clean = [
+    aytordev.system.newsyslog.files.nh-clean = [
       {
         logfilename = cfg.logPaths.stdout;
         mode = "644";
