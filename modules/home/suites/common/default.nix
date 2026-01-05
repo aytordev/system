@@ -80,6 +80,7 @@ in
           tools = {
             atuin = mkDefault enabled;
             bat = mkDefault enabled;
+            bottom = mkDefault enabled;
             btop = mkDefault enabled;
             carapace = mkDefault enabled;
             comma = mkDefault enabled;
@@ -91,10 +92,12 @@ in
             git = mkDefault enabled;
             infat = mkDefault enabled;
             jq = mkDefault enabled;
+            lsd = mkDefault disabled;
             navi = mkDefault enabled;
             nix-search-tv = mkDefault enabled;
             nh = mkDefault enabled;
             ripgrep = mkDefault enabled;
+            run-as-service = mkDefault (if pkgs.stdenv.hostPlatform.isLinux then enabled else disabled);
             starship = mkDefault enabled;
             yazi = mkDefault enabled;
             zellij = mkDefault enabled;
