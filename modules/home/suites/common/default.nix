@@ -90,7 +90,7 @@ in
             fastfetch = mkDefault enabled;
             fzf = mkDefault enabled;
             git = mkDefault enabled;
-            infat = mkDefault enabled;
+            # infat = mkDefault enabled; # TODO: Pending to fix this module.
             jq = mkDefault enabled;
             lsd = mkDefault disabled;
             navi = mkDefault enabled;
@@ -98,6 +98,7 @@ in
             nh = mkDefault enabled;
             ripgrep = mkDefault enabled;
             run-as-service = mkDefault (if pkgs.stdenv.hostPlatform.isLinux then enabled else disabled);
+            ssh = mkDefault enabled;
             starship = mkDefault enabled;
             yazi = mkDefault enabled;
             zellij = mkDefault enabled;
