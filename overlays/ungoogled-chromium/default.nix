@@ -33,12 +33,12 @@ final: prev: {
     sourceRoot = "Chromium.app";
 
     installPhase = ''
-      mkdir -p $out/programs
-      cp -r . $out/programs/Chromium.app
+      mkdir -p $out/Applications
+      cp -r . $out/Applications/Chromium.app
 
       # Create a symlink in bin for command line access
       mkdir -p $out/bin
-      ln -s $out/programs/Chromium.app/Contents/MacOS/Chromium $out/bin/chromium
+      ln -s $out/Applications/Chromium.app/Contents/MacOS/Chromium $out/bin/chromium
     '';
 
     meta = with prev.lib; {

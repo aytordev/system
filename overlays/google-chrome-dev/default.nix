@@ -25,8 +25,8 @@ final: prev: {
     sourceRoot = "Google Chrome Dev.app";
 
     installPhase = ''
-      mkdir -p $out/programs
-      cp -r . $out/programs/Google\ Chrome\ Dev.app
+      mkdir -p $out/Applications
+      cp -r . $out/Applications/Google\ Chrome\ Dev.app
     '';
 
     meta = with prev.lib; {
