@@ -17,23 +17,23 @@ modules/
 
 ## Where to Place Modules
 
-| Module Type            | Location          | Example                                 |
-| ---------------------- | ----------------- | --------------------------------------- |
-| System service (Linux) | `modules/nixos/`  | `nixos/services/docker/`                |
-| System service (macOS) | `modules/darwin/` | `darwin/services/yabai/`                |
-| User application       | `modules/home/`   | `home/applications/terminal/tools/git/` |
-| Cross-platform shared  | `modules/common/` | `common/ai-tools/`                      |
+| Module Type            | Location          | Example                             |
+| ---------------------- | ----------------- | ----------------------------------- |
+| System service (Linux) | `modules/nixos/`  | `nixos/services/docker/`            |
+| System service (macOS) | `modules/darwin/` | `darwin/services/yabai/`            |
+| User application       | `modules/home/`   | `home/programs/terminal/tools/git/` |
+| Cross-platform shared  | `modules/common/` | `common/ai-tools/`                  |
 
 ## Home Module Categories
 
 ```
 modules/home/
-├── applications/
-│   ├── graphical/        # GUI applications
+├── programs/
+│   ├── graphical/        # GUI programs
 │   │   ├── browsers/
 │   │   ├── editors/
 │   │   └── tools/
-│   └── terminal/         # CLI applications
+│   └── terminal/         # CLI programs
 │       ├── editors/
 │       ├── shells/
 │       └── tools/
@@ -48,7 +48,7 @@ Modules are automatically imported via `importModulesRecursive`:
 
 - Place module files in appropriate directories
 - No manual imports needed in most cases
-- Enable modules via options system: `aytordev.applications.*.enable = true`
+- Enable modules via options system: `aytordev.programs.*.enable = true`
 
 ## Common Module Import
 
@@ -64,7 +64,7 @@ imports = [
 ## Quick Reference
 
 - **System config?** → `nixos/` or `darwin/`
-- **User app?** → `home/applications/`
+- **User app?** → `home/programs/`
 - **Shared logic?** → `common/`
 - **Desktop stuff?** → `home/desktop/`
 - **Grouped features?** → `suites/`

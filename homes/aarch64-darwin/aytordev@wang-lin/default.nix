@@ -15,7 +15,7 @@ in
       home = "/Users/${inputs.secrets.username}";
     };
 
-    applications = {
+    programs = {
       desktop = {
         # bars.sketchybar.enable = true;
 

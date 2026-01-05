@@ -137,7 +137,7 @@ Example pagination response:
 
 - Serving multiple clients simultaneously
 - Deploying as a cloud service
-- Integration with web applications
+- Integration with web programs
 
 ### stdio
 
@@ -152,7 +152,7 @@ Example pagination response:
 **Use when**:
 
 - Building tools for local development environments
-- Integrating with desktop applications
+- Integrating with desktop programs
 - Single-user, single-session scenarios
 
 **Note**: stdio servers should NOT log to stdout (use stderr for logging)
@@ -242,11 +242,12 @@ try {
 } catch (error) {
   return {
     isError: true,
-    content: [{
-      type: "text",
-      text:
-        `Error: ${error.message}. Try using filter='active_only' to reduce results.`,
-    }],
+    content: [
+      {
+        type: "text",
+        text: `Error: ${error.message}. Try using filter='active_only' to reduce results.`,
+      },
+    ],
   };
 }
 ```

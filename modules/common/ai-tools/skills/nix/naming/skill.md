@@ -35,7 +35,7 @@ Always use this pattern:
 
 ```nix
 let
-  cfg = config.aytordev.applications.myApp;
+  cfg = config.aytordev.programs.myApp;
 in
 {
   config = lib.mkIf cfg.enable { ... };
@@ -46,11 +46,11 @@ in
 
 ```
 # Correct - kebab-case
-modules/home/applications/my-app/default.nix
+modules/home/programs/my-app/default.nix
 modules/nixos/services/my-service.nix
 
 # Wrong
-modules/home/applications/myApp/default.nix   # camelCase
+modules/home/programs/myApp/default.nix   # camelCase
 modules/nixos/services/my_service.nix    # snake_case
 ```
 
@@ -66,8 +66,8 @@ Group by function, then alphabetical:
   # Config second
   config = {
     # Group related settings
-    applications.git = { ... };
-    applications.vim = { ... };
+    programs.git = { ... };
+    programs.vim = { ... };
 
     # Then packages
     home.packages = [ ... ];

@@ -8,8 +8,8 @@ final: prev: {
   #   and replace the sha256 value below.
   # - If the hash is incorrect, Nix will show you the expected one during the build.
   #
-  # This overlay installs the app in $out/Applications.
-  # If you want it to appear in /Applications, create a symlink manually.
+  # This overlay installs the app in $out/programs.
+  # If you want it to appear in /programs, create a symlink manually.
 
   google-chrome-dev = prev.stdenv.mkDerivation rec {
     pname = "google-chrome-dev";
@@ -25,8 +25,8 @@ final: prev: {
     sourceRoot = "Google Chrome Dev.app";
 
     installPhase = ''
-      mkdir -p $out/Applications
-      cp -r . $out/Applications/Google\ Chrome\ Dev.app
+      mkdir -p $out/programs
+      cp -r . $out/programs/Google\ Chrome\ Dev.app
     '';
 
     meta = with prev.lib; {

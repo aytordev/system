@@ -19,7 +19,7 @@
     ### **Configuration Layering (7 levels):**
     1. **Common modules** - Cross-platform base functionality
     2. **Platform modules** - OS-specific configurations
-    3. **Home modules** - User-space applications
+    3. **Home modules** - User-space programs
     4. **Suite modules** - Grouped functionality with defaults
     5. **Archetype modules** - High-level use case profiles
     6. **Host configs** - Host-specific overrides
@@ -77,10 +77,10 @@
     - **System config access**: `lib.optionalString (osConfig.aytordev.security.sops.enable or false)` with `or fallback`
 
     ### **Helper Usage Patterns:**
-    - **Enable applications**: `applications.git = enabled;` (equals `{ enable = true; }`)
-    - **Disable applications**: `applications.foo = disabled;` (equals `{ enable = false; }`)
-    - **Default enables**: `applications.bar = mkDefault enabled;` (user can override)
-    - **Forced enables**: `applications.baz = mkForce enabled;` (cannot override)
+    - **Enable programs**: `programs.git = enabled;` (equals `{ enable = true; }`)
+    - **Disable programs**: `programs.foo = disabled;` (equals `{ enable = false; }`)
+    - **Default enables**: `programs.bar = mkDefault enabled;` (user can override)
+    - **Forced enables**: `programs.baz = mkForce enabled;` (cannot override)
 
     ### **Variable and Naming Conventions:**
     - **Variables**: Strict camelCase (`cfg`, `userName`, `serverHostname`)
@@ -97,7 +97,7 @@
     ## **FLAKE ARCHITECTURE PATTERNS**
 
     ### **Input Management:**
-    - **Categorized inputs**: Core, System, Applications
+    - **Categorized inputs**: Core, System, programs
     - **Consistent following**: Most inputs follow `nixpkgs` or `nixpkgs-unstable`
     - **Development isolation**: Dev dependencies in separate flake partition
     - **Version management**: Multi-channel nixpkgs strategy

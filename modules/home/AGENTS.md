@@ -1,7 +1,7 @@
 # Home Manager User Configuration
 
 User-space configuration using Home Manager. These modules configure user
-applications, dotfiles, and user services.
+programs, dotfiles, and user services.
 
 ## Core Principle: Home-First
 
@@ -18,13 +18,13 @@ configuration.
 
 ## Module Categories
 
-### Applications (`applications/`)
+### programs (`programs/`)
 
 Application configuration and dotfiles. **This is the largest category.**
 
-#### Terminal Applications (`applications/terminal/`)
+#### Terminal programs (`programs/terminal/`)
 
-CLI tools and terminal applications.
+CLI tools and terminal programs.
 
 **Key categories:**
 
@@ -39,14 +39,14 @@ CLI tools and terminal applications.
 **Pattern:**
 
 ```nix
-aytordev.applications.terminal.tools.{tool}.enable = true;
-aytordev.applications.terminal.editors.{editor}.enable = true;
-aytordev.applications.terminal.shells.{shell}.enable = true;
+aytordev.programs.terminal.tools.{tool}.enable = true;
+aytordev.programs.terminal.editors.{editor}.enable = true;
+aytordev.programs.terminal.shells.{shell}.enable = true;
 ```
 
-#### Desktop Applications (`applications/desktop/`)
+#### Desktop programs (`programs/desktop/`)
 
-GUI applications and desktop applications.
+GUI programs and desktop programs.
 
 **Key categories:**
 
@@ -70,8 +70,8 @@ GUI applications and desktop applications.
 **Pattern:**
 
 ```nix
-aytordev.applications.desktop.wms.hyprland.enable = true;
-aytordev.applications.desktop.bars.waybar.enable = true;
+aytordev.programs.desktop.wms.hyprland.enable = true;
+aytordev.programs.desktop.bars.waybar.enable = true;
 ```
 
 ### Services (`services/`)
@@ -133,7 +133,7 @@ Theming and visual customization.
 1. **Module-specific theme options** (highest priority)
 
    ```nix
-   aytordev.applications.desktop.wms.hyprland.theme = "catppuccin-mocha";
+   aytordev.programs.desktop.wms.hyprland.theme = "catppuccin-mocha";
    ```
 
 2. **Catppuccin module** (mid priority)
@@ -187,8 +187,8 @@ aytordev.{category}.{subcategory}.{program}.{option}
 **Examples:**
 
 ```nix
-aytordev.applications.terminal.shells.zsh.enable = true;
-aytordev.applications.desktop.wms.hyprland.settings = { };
+aytordev.programs.terminal.shells.zsh.enable = true;
+aytordev.programs.desktop.wms.hyprland.settings = { };
 aytordev.services.syncthing.folders = { };
 ```
 
@@ -199,10 +199,10 @@ Three common patterns for enabling features:
 **1. Simple enable:**
 
 ```nix
-aytordev.applications.terminal.tools.git.enable = true;
+aytordev.programs.terminal.tools.git.enable = true;
 ```
 
-**2. Suite enable (bundles multiple applications):**
+**2. Suite enable (bundles multiple programs):**
 
 ```nix
 aytordev.suites.development.enable = true;
@@ -212,8 +212,8 @@ aytordev.suites.development.enable = true;
 **3. Conditional enable:**
 
 ```nix
-aytordev.applications.desktop.bars.waybar.enable =
-  lib.mkIf config.aytordev.applications.desktop.wms.hyprland.enable true;
+aytordev.programs.desktop.bars.waybar.enable =
+  lib.mkIf config.aytordev.programs.desktop.wms.hyprland.enable true;
 ```
 
 ### XDG Configuration Files
@@ -234,9 +234,9 @@ xdg.configFile."app/config.json".text = builtins.toJSON {
 **Prefer built-in Home Manager modules when available:**
 
 ```nix
-# Good: Use applications.git
-applications.git.enable = true;
-applications.git.userName = "username";
+# Good: Use programs.git
+programs.git.enable = true;
+programs.git.userName = "username";
 
 # Bad: Manual dotfile copying
 home.file.".gitconfig".source = ./gitconfig;
@@ -253,9 +253,9 @@ home.file.".gitconfig".source = ./gitconfig;
 Many tools integrate with shells:
 
 ```nix
-applications.zoxide.enable = true;
-applications.zoxide.enableZshIntegration = true;
-applications.zoxide.enableBashIntegration = true;
+programs.zoxide.enable = true;
+programs.zoxide.enableZshIntegration = true;
+programs.zoxide.enableBashIntegration = true;
 ```
 
 **Pattern:** Always enable shell integrations when available.
@@ -267,7 +267,7 @@ applications.zoxide.enableBashIntegration = true;
 Hyprland config uses structured Nix:
 
 ```nix
-aytordev.applications.desktop.wms.hyprland = {
+aytordev.programs.desktop.wms.hyprland = {
   enable = true;
   settings = {
     general = {
@@ -287,7 +287,7 @@ aytordev.applications.desktop.wms.hyprland = {
 Waybar uses a module system. Each module is configured separately:
 
 ```nix
-aytordev.applications.desktop.bars.waybar = {
+aytordev.programs.desktop.bars.waybar = {
   enable = true;
   modules = {
     clock.enable = true;
@@ -350,10 +350,10 @@ Create a new module when:
 }:
 let
   inherit (lib) mkIf mkEnableOption;
-  cfg = config.aytordev.applications.category.program;
+  cfg = config.aytordev.programs.category.program;
 in
 {
-  options.aytordev.applications.category.program = {
+  options.aytordev.programs.category.program = {
     enable = mkEnableOption "program description";
   };
 

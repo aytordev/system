@@ -53,5 +53,5 @@ Packages are available as `pkgs.aytordev.{package-name}`:
 home.packages = [ pkgs.aytordev.my-tool ];
 
 # Or directly
-applications.some-program.package = pkgs.aytordev.my-tool;
+programs.some-program.package = pkgs.aytordev.my-tool;
 ```

@@ -52,11 +52,11 @@ in
               orientation = "left";
               tilesize = 43;
               persistent-apps = [
-                "/System/Applications/Apps.app"
-                "/Applications/Ghostty.app"
+                "/System/programs/Apps.app"
+                "/programs/Ghostty.app"
               ];
               persistent-others = [
-                "/System/Applications/System Settings.app"
+                "/System/programs/System Settings.app"
               ];
             }
             // mkHotCorners {

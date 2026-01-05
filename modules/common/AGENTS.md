@@ -32,7 +32,7 @@ Nix language helpers, custom lib functions, and build utilities.
 - Reusable abstractions to reduce repetition
 - Use `lib.` prefix for all lib functions
 
-### Applications (`applications/`)
+### programs (`programs/`)
 
 Application configurations shared across platforms.
 
@@ -40,8 +40,8 @@ Application configurations shared across platforms.
 
 - Generic configs that work on both NixOS and macOS
 - Terminal tools, shells, editors
-- Platform-specific overrides in `modules/nixos/applications/` or
-  `modules/darwin/applications/`
+- Platform-specific overrides in `modules/nixos/programs/` or
+  `modules/darwin/programs/`
 
 ### Suites (`suites/`)
 
@@ -67,7 +67,7 @@ System-level shared configuration (fonts, localization, etc.).
 
 **Patterns:**
 
-- Font definitions used by stylix and applications
+- Font definitions used by stylix and programs
 - Cross-platform system settings
 
 ## Theming
@@ -88,7 +88,7 @@ All options follow `aytordev.{category}.{subcategory}.{option}` structure.
 **Example:**
 
 ```nix
-aytordev.applications.terminal.tools.claude-code.enable = true;
+aytordev.programs.terminal.tools.claude-code.enable = true;
 ```
 
 **Reduce repetition:**
