@@ -20,7 +20,11 @@ in
         business = enabled;
         common = enabled;
         desktop = enabled;
-        development = enabled;
+        development = {
+          enable = true;
+          dockerEnable = true;
+          aiEnable = true;
+        };
         networking = enabled;
       };
     };
