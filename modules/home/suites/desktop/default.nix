@@ -30,6 +30,12 @@ in
             chromium = enabled;
             firefox = enabled;
           };
+          launchers = {
+            raycast.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
+          };
+          window-manager-system = {
+            aerospace.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
+          };
         };
       };
     };

@@ -32,6 +32,7 @@ in
       programs = {
         desktop = {
           communications = {
+            discord = lib.mkDefault enabled;
             vesktop = lib.mkDefault enabled;
           };
         };

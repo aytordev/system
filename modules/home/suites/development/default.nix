@@ -10,20 +10,23 @@ let
   inherit (lib) mkIf mkDefault;
   inherit (lib.aytordev) enabled;
 
-  tokenExports = lib.optionalString (osConfig.aytordev.security.sops.enable or false) /* Bash */ ''
-    if [ -f ${config.sops.secrets.ANTHROPIC_API_KEY.path} ]; then
-      ANTHROPIC_API_KEY="$(cat ${config.sops.secrets.ANTHROPIC_API_KEY.path})"
-      export ANTHROPIC_API_KEY
-    fi
-    if [ -f ${config.sops.secrets.GEMINI_API_KEY.path} ]; then
-      GEMINI_API_KEY="$(cat ${config.sops.secrets.GEMINI_API_KEY.path})"
-      export GEMINI_API_KEY
-    fi
-    if [ -f ${config.sops.secrets.OPENAI_API_KEY.path} ]; then
-      OPENAI_API_KEY="$(cat ${config.sops.secrets.OPENAI_API_KEY.path})"
-      export OPENAI_API_KEY
-    fi
-  '';
+  # TODO: Requires home-manager sops.age.keyFile configuration
+  # See NOTE below sops.secrets for details on how to enable.
+  tokenExports = "";
+  # tokenExports = lib.optionalString (osConfig.aytordev.security.sops.enable or false) /* Bash */ ''
+  #   if [ -f ${config.sops.secrets.ANTHROPIC_API_KEY.path} ]; then
+  #     ANTHROPIC_API_KEY="$(cat ${config.sops.secrets.ANTHROPIC_API_KEY.path})"
+  #     export ANTHROPIC_API_KEY
+  #   fi
+  #   if [ -f ${config.sops.secrets.GEMINI_API_KEY.path} ]; then
+  #     GEMINI_API_KEY="$(cat ${config.sops.secrets.GEMINI_API_KEY.path})"
+  #     export GEMINI_API_KEY
+  #   fi
+  #   if [ -f ${config.sops.secrets.OPENAI_API_KEY.path} ]; then
+  #     OPENAI_API_KEY="$(cat ${config.sops.secrets.OPENAI_API_KEY.path})"
+  #     export OPENAI_API_KEY
+  #   fi
+  # '';
 
   cfg = config.aytordev.suites.development;
   isWSL = osConfig.aytordev.archetypes.wsl.enable or false;
@@ -126,7 +129,9 @@ in
       programs = {
         desktop = {
           editors = {
+            antigravity = mkDefault enabled;
             vscode.enable = mkDefault (!isWSL);
+            zed = mkDefault enabled;
           };
         };
 
@@ -138,16 +143,17 @@ in
           tools = {
             act = mkDefault enabled;
             # azure.enable = cfg.azureEnable;  # TODO: module doesn't exist
-            claude-code.enable = cfg.aiEnable;
-            gemini-cli.enable = cfg.aiEnable;
-            opencode.enable = cfg.aiEnable;
+            # AI tools - use mkDefault so home config can override
+            claude-code.enable = mkDefault cfg.aiEnable;
+            gemini-cli.enable = mkDefault cfg.aiEnable;
+            opencode.enable = mkDefault cfg.aiEnable;
             git-crypt = mkDefault enabled;
             # go.enable = cfg.goEnable;  # TODO: module doesn't exist
             gh = mkDefault enabled;
             jujutsu = mkDefault enabled;
             jjui = mkDefault enabled;
-            k9s.enable = cfg.kubernetesEnable;
-            lazydocker.enable = cfg.dockerEnable;
+            k9s.enable = mkDefault cfg.kubernetesEnable;
+            lazydocker.enable = mkDefault cfg.dockerEnable;
             lazygit = mkDefault enabled;
             # oh-my-posh = mkDefault enabled;  # TODO: module doesn't exist
           };
@@ -158,27 +164,40 @@ in
       # services.ollama.enable = mkDefault (cfg.aiEnable && pkgs.stdenv.hostPlatform.isDarwin);
     };
 
-    sops.secrets = lib.mkIf (osConfig.aytordev.security.sops.enable or false) {
-      ANTHROPIC_API_KEY = {
-        sopsFile = lib.getFile "secrets/CORE/default.yaml";
-        path = "${config.home.homeDirectory}/.ANTHROPIC_API_KEY";
-      };
-      AZURE_OPENAI_API_KEY = {
-        sopsFile = lib.getFile "secrets/CORE/default.yaml";
-        path = "${config.home.homeDirectory}/.AZURE_OPENAI_API_KEY";
-      };
-      GEMINI_API_KEY = {
-        sopsFile = lib.getFile "secrets/khaneliman/default.yaml";
-        path = "${config.home.homeDirectory}/.GEMINI_API_KEY";
-      };
-      OPENAI_API_KEY = {
-        sopsFile = lib.getFile "secrets/CORE/default.yaml";
-        path = "${config.home.homeDirectory}/.OPENAI_API_KEY";
-      };
-      TAVILY_API_KEY = {
-        sopsFile = lib.getFile "secrets/khaneliman/default.yaml";
-        path = "${config.home.homeDirectory}/.TAVILY_API_KEY";
-      };
-    };
+    # NOTE: Home-Manager Sops Configuration Required
+    #
+    # This sops.secrets block uses the home-manager sops-nix module, which is
+    # SEPARATE from the darwin sops module. Even if darwin's sops.age.keyFile
+    # is configured, home-manager needs its own configuration.
+    #
+    # To enable this suite, add to your home config:
+    #
+    #   sops.age.keyFile = "/Users/${username}/.config/sops/age/keys.txt";
+    #
+    # Or alternatively, move these secrets to the darwin sops module at:
+    #   systems/<arch>/<hostname>/default.nix → aytordev.security.sops.secrets
+    #
+    # sops.secrets = lib.mkIf (osConfig.aytordev.security.sops.enable or false) {
+    #   ANTHROPIC_API_KEY = {
+    #     sopsFile = lib.getFile "secrets/CORE/default.yaml";
+    #     path = "${config.home.homeDirectory}/.ANTHROPIC_API_KEY";
+    #   };
+    #   AZURE_OPENAI_API_KEY = {
+    #     sopsFile = lib.getFile "secrets/CORE/default.yaml";
+    #     path = "${config.home.homeDirectory}/.AZURE_OPENAI_API_KEY";
+    #   };
+    #   GEMINI_API_KEY = {
+    #     sopsFile = lib.getFile "secrets/khaneliman/default.yaml";
+    #     path = "${config.home.homeDirectory}/.GEMINI_API_KEY";
+    #   };
+    #   OPENAI_API_KEY = {
+    #     sopsFile = lib.getFile "secrets/CORE/default.yaml";
+    #     path = "${config.home.homeDirectory}/.OPENAI_API_KEY";
+    #   };
+    #   TAVILY_API_KEY = {
+    #     sopsFile = lib.getFile "secrets/khaneliman/default.yaml";
+    #     path = "${config.home.homeDirectory}/.TAVILY_API_KEY";
+    #   };
+    # };
   };
 }
