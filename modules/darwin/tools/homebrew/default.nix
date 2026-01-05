@@ -8,6 +8,7 @@
 in {
   options.aytordev.tools.homebrew = {
     enable = mkEnableOption "Homebrew package manager";
+    masEnable = lib.mkEnableOption "Mac App Store downloads";
   };
   config = mkIf cfg.enable {
     environment.variables = {

@@ -8,6 +8,7 @@
   cfg = config.aytordev.services.openssh;
 in {
   options.aytordev.services.openssh = {
+    enable = mkEnableOption "OpenSSH service";
     extraConfig = mkOption {
       type = types.lines;
       default = "";
@@ -23,7 +24,8 @@ in {
       '';
     };
   };
-  config = {
+
+  config = mkIf cfg.enable {
     environment.systemPackages = [pkgs.openssh];
     services.openssh = {
       enable = true;

@@ -18,8 +18,9 @@ in
 
   aytordev = {
     # User configuration is handled by modules/darwin/user
-    suites = {
-      common = enabled;
+    archetypes = {
+      personal = enabled;
+      workstation = enabled;
     };
 
     security = {

@@ -85,8 +85,6 @@ in
           NSGlobalDomain = {
             AppleInterfaceStyle = "Dark";
             AppleShowScrollBars = "WhenScrolling";
-            InitialKeyRepeat = 25;
-            KeyRepeat = 2;
             "com.apple.trackpad.enableSecondaryClick" = true;
             "com.apple.trackpad.forceClick" = false;
             "com.apple.trackpad.scaling" = 2.0;
