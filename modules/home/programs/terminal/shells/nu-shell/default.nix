@@ -5,12 +5,12 @@
   ...
 }:
 with lib; let
-  cfg = config.aytordev.programs.terminal.shells.nu;
+  cfg = config.aytordev.programs.terminal.shells.nushell;
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
   xdgCacheHome = "${config.xdg.cacheHome}";
 in {
-  options.aytordev.programs.terminal.shells.nu = {
+  options.aytordev.programs.terminal.shells.nushell = {
     enable = mkEnableOption "Nu shell with useful defaults";
   };
   config = mkIf cfg.enable (mkMerge [

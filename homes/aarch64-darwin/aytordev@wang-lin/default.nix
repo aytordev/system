@@ -75,7 +75,7 @@ in
           zsh = enabled;
           bash = enabled;
           fish = enabled;
-          nu = enabled;
+          nushell = enabled;
         };
 
         tools = {
