@@ -66,7 +66,6 @@ in
       };
 
       system = {
-        env = mkDefault enabled;
         fonts = mkDefault enabled;
         input = mkDefault enabled;
         interface = mkDefault enabled;
