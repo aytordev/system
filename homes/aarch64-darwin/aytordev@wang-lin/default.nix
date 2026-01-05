@@ -15,6 +15,17 @@ in
       home = "/Users/${inputs.secrets.username}";
     };
 
+    # Enable suites for common functionality
+    suites = {
+      common = enabled;      # Shells, terminal emulators, common tools
+      desktop = enabled;     # Browsers
+      # development suite requires sops key configuration - enable after sops setup
+      development = disabled;
+      business = enabled;    # Thunderbird, bitwarden-cli
+      social = enabled;      # Discord/Vesktop
+      networking = enabled;  # Network tools
+    };
+
     programs = {
       desktop = {
         # bars.sketchybar.enable = true;
