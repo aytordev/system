@@ -58,7 +58,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    applications.ssh = {
+    programs.ssh = {
       extraConfig = ''
         ${other-hosts-config}${
           lib.optionalString (cfg.extraConfig != "") ''
