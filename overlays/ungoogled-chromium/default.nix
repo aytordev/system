@@ -9,7 +9,7 @@ final: prev: {
   #   replacing VERSION with the actual version number
   # - Check https://github.com/ungoogled-software/ungoogled-chromium-macos/releases for latest versions
   #
-  # This overlay installs the app in $out/Applications.
+  # This overlay installs the app in $out/programs.
   # The app will be available as ungoogled-chromium package.
 
   ungoogled-chromium-macos = prev.stdenv.mkDerivation rec {
@@ -33,12 +33,12 @@ final: prev: {
     sourceRoot = "Chromium.app";
 
     installPhase = ''
-      mkdir -p $out/Applications
-      cp -r . $out/Applications/Chromium.app
+      mkdir -p $out/programs
+      cp -r . $out/programs/Chromium.app
 
       # Create a symlink in bin for command line access
       mkdir -p $out/bin
-      ln -s $out/Applications/Chromium.app/Contents/MacOS/Chromium $out/bin/chromium
+      ln -s $out/programs/Chromium.app/Contents/MacOS/Chromium $out/bin/chromium
     '';
 
     meta = with prev.lib; {

@@ -6,7 +6,9 @@
 }:
 let
   inherit (lib.aytordev) enabled;
+
   cfg = config.aytordev.user;
+
   sopsFolder = builtins.toString inputs.secrets + "/hard-secrets";
 in
 {
@@ -16,6 +18,9 @@ in
 
   aytordev = {
     # User configuration is handled by modules/darwin/user
+    suites = {
+      common = enabled;
+    };
 
     security = {
       sops = {

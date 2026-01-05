@@ -266,7 +266,7 @@
 
     ```bash
     # Refactor specific file with comprehensive fixes
-    /nix-refactor modules/home/applications/git/default.nix
+    /nix-refactor modules/home/programs/git/default.nix
 
     # Fix only library usage in directory
     /nix-refactor modules/nixos/ --fix-lib-usage

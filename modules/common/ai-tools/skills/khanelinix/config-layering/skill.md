@@ -11,7 +11,7 @@ From lowest to highest precedence:
 
 1. **Common modules** - Cross-platform base functionality
 2. **Platform modules** - OS-specific (nixos/darwin)
-3. **Home modules** - User-space applications
+3. **Home modules** - User-space programs
 4. **Suite modules** - Grouped functionality with defaults
 5. **Archetype modules** - High-level use case profiles
 6. **Host configs** - Host-specific overrides
@@ -23,7 +23,7 @@ From lowest to highest precedence:
 | ---------------------- | ------------------------------------- |
 | Host hardware/services | `systems/{arch}/{hostname}/`          |
 | Platform behavior      | `modules/nixos/` or `modules/darwin/` |
-| User applications      | `modules/home/`                       |
+| User programs          | `modules/home/`                       |
 | Personal preferences   | `homes/{arch}/{user@host}/`           |
 
 ## Host Configuration
@@ -50,13 +50,13 @@ Example: `homes/x86_64-linux/khaneliman@khanelimain/default.nix`
 
 ```nix
 # In module (low priority - can be overridden)
-applications.git.userName = lib.mkDefault "Default Name";
+programs.git.userName = lib.mkDefault "Default Name";
 
 # In host config (overrides module default)
-applications.git.userName = "Host Specific";
+programs.git.userName = "Host Specific";
 
 # Force (highest priority - rarely needed)
-applications.git.userName = lib.mkForce "Forced Value";
+programs.git.userName = lib.mkForce "Forced Value";
 ```
 
 ## Best Practice

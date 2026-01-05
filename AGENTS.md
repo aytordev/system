@@ -40,7 +40,7 @@ Agents load AGENTS.md files recursively. Each subdirectory has focused
 context:
 
 - Working in `modules/nixos/`? Load system-level patterns
-- Working in `modules/home/applications/`? Load application configs
+- Working in `modules/home/programs/`? Load application configs
 - Working in `modules/common/`? Load shared abstractions
 
 **See subdirectory AGENTS.md files for domain-specific guidance.**

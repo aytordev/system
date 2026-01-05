@@ -128,7 +128,7 @@ Bundled configurations for common macOS workflows.
 - `desktop`: Full desktop setup
 - `development`: Dev environment
 - `art`, `music`, `photo`, `video`: Creative work suites
-- `business`: Business applications
+- `business`: Business programs
 - `social`: Communication apps
 
 ## macOS-Specific Patterns
@@ -181,9 +181,9 @@ Common configs go in `modules/common/`, platform-specific in `modules/darwin/`:
 
 **Example: Git config**
 
-- Base config: `modules/common/applications/terminal/git/`
-- macOS keychain: `modules/darwin/applications/terminal/git/`
-- Linux credential helper: `modules/nixos/applications/terminal/git/`
+- Base config: `modules/common/programs/terminal/git/`
+- macOS keychain: `modules/darwin/programs/terminal/git/`
+- Linux credential helper: `modules/nixos/programs/terminal/git/`
 
 ### Path Differences
 
@@ -191,7 +191,7 @@ macOS uses different paths:
 
 - Home: `/Users/$USER` (not `/home/$USER`)
 - Homebrew: `/opt/homebrew` (Apple Silicon) or `/usr/local` (Intel)
-- Applications: `/Applications`
+- programs: `/programs`
 
 Use `pkgs.stdenv.isDarwin` for conditional logic:
 

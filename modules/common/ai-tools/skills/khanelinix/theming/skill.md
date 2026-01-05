@@ -35,7 +35,7 @@ stylix = {
 Many apps have dedicated Catppuccin modules:
 
 ```nix
-applications.kitty = {
+programs.kitty = {
   enable = true;
   catppuccin.enable = true;  # Uses catppuccin module
 };
@@ -51,7 +51,7 @@ let
   isDark = config.stylix.polarity == "dark";
 in
 {
-  applications.bat.config.theme = lib.mkIf isDark "Catppuccin-mocha";
+  programs.bat.config.theme = lib.mkIf isDark "Catppuccin-mocha";
 }
 ```
 
