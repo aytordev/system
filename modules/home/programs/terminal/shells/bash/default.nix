@@ -45,7 +45,7 @@ in {
         bash
       ];
       programs.bash = {
-        enable = false;
+        enable = true;
       };
       home.file.".config/bash/.bashrc" = {
         text = bashrc;
