@@ -66,7 +66,6 @@ in
         ]
         ++ lib.optionals cfg.nixEnable [
           hydra-check
-          aytordev.build-by-path
           nix-bisect
           nix-diff
           nix-fast-build
