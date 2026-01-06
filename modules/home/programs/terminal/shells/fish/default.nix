@@ -17,6 +17,7 @@ in {
     {
       home.packages = with pkgs; [
         fish
+        grc # Required by fishPlugins.grc
         fishPlugins.done
         fishPlugins.forgit
         fishPlugins.grc

@@ -23,6 +23,7 @@ in
     getDirectories
     importFiles
     importDir
+    importSubdirs
     importModulesRecursive
     mergeAttrs
     parseSystemConfigurations

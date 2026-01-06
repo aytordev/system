@@ -54,6 +54,7 @@
   ];
 
   promptModules = [
+    "$env_var"
     "$sudo"
     "$jobs"
     "$character"
@@ -285,9 +286,11 @@
       symbol = "[▶](fg:blue)";
     };
 
-    "env_var.VIMSHELL" = {
-      format = "[$env_value]($style)";
-      style = "fg:green";
+    env_var = {
+      VIMSHELL = {
+        format = "[$env_value]($style)";
+        style = "fg:green";
+      };
     };
   } // languageModules;
 

@@ -12,6 +12,18 @@ let
 
   cfg = config.aytordev.suites.common;
   isWSL = osConfig.aytordev.archetypes.wsl.enable or false;
+
+  # Bash-specific aliases (uses bash syntax like $(), f(){}, $VAR)
+  bashAliases = {
+    # Closure size checking aliases
+    ncs-sys = ''f(){ nix build ".#nixosConfigurations.$1.config.system.build.toplevel" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#nixosConfigurations.$1.config.system.build.toplevel.outPath") | tail -1; }; f'';
+    ncs-darwin = ''f(){ nix build ".#darwinConfigurations.$1.config.system.build.toplevel" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#darwinConfigurations.$1.config.system.build.toplevel.outPath") | tail -1; }; f'';
+    ncs-home = ''f(){ nix build ".#homeConfigurations.$1.activationPackage" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#homeConfigurations.$1.activationPackage.outPath") | tail -1; }; f'';
+    ndu = "nix-du -s=200MB | dot -Tsvg > store.svg ${
+      lib.optionalString (!isWSL)
+        "; ${if pkgs.stdenv.hostPlatform.isDarwin then "open" else "xdg-open"} store.svg"
+    }";
+  };
 in
 {
   options.aytordev.suites.common = {
@@ -30,16 +42,9 @@ in
         WGETRC = "${config.xdg.configHome}/wgetrc";
       };
 
+      # Only shell-agnostic aliases in home.shellAliases (applies to all shells including Nushell)
       shellAliases = {
         nixcfg = "nvim ~/aytordev/flake.nix";
-        # Closure size checking aliases
-        ncs-sys = ''f(){ nix build ".#nixosConfigurations.$1.config.system.build.toplevel" --no-link && nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#nixosConfigurations.$1.config.system.build.toplevel.outPath") | tail -1; }; f'';
-        ncs-darwin = ''f(){ nix build ".#darwinConfigurations.$1.config.system.build.toplevel" --no-link && nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#darwinConfigurations.$1.config.system.build.toplevel.outPath") | tail -1; }; f'';
-        ncs-home = ''f(){ nix build ".#homeConfigurations.$1.activationPackage" --no-link && nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#homeConfigurations.$1.activationPackage.outPath") | tail -1; }; f'';
-        ndu = "nix-du -s=200MB | dot -Tsvg > store.svg ${
-          lib.optionalString (!isWSL)
-            "&& ${if pkgs.stdenv.hostPlatform.isDarwin then "open" else "xdg-open"} store.svg"
-        }";
       };
     };
 
@@ -100,6 +105,7 @@ in
             run-as-service = mkDefault (if pkgs.stdenv.hostPlatform.isLinux then enabled else disabled);
             ssh = mkDefault enabled;
             starship = mkDefault enabled;
+            tmux = mkDefault enabled;
             yazi = mkDefault enabled;
             zellij = mkDefault enabled;
             zoxide = mkDefault enabled;
@@ -113,6 +119,8 @@ in
     programs = {
       # FIXME: breaks zsh aliases
       # pay-respects = mkDefault enabled;
+      bash.shellAliases = bashAliases;
+      zsh.shellAliases = bashAliases;
       readline = {
         enable = mkDefault true;
 
