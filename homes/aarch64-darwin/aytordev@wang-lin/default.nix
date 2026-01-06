@@ -19,7 +19,16 @@ in
     suites = {
       common = enabled;      # Shells, terminal emulators, common tools
       desktop = enabled;     # Browsers, raycast, aerospace
-      development = enabled; # Editors, dev tools
+      development = {
+        enable = true;
+        dockerEnable = true;
+        gameEnable = false;
+        goEnable = false;
+        kubernetesEnable = true;
+        nixEnable = true;
+        sqlEnable = true;
+        aiEnable = true;
+      }; # Editors, dev tools
       business = enabled;    # Thunderbird, bitwarden-cli
       social = enabled;      # Discord, Vesktop
       networking = enabled;  # Network tools
