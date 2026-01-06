@@ -100,6 +100,7 @@ in
             run-as-service = mkDefault (if pkgs.stdenv.hostPlatform.isLinux then enabled else disabled);
             ssh = mkDefault enabled;
             starship = mkDefault enabled;
+            tmux = mkDefault enabled;
             yazi = mkDefault enabled;
             zellij = mkDefault enabled;
             zoxide = mkDefault enabled;
