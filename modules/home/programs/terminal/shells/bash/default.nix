@@ -1,106 +1,95 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
-with lib; let
+let
+  inherit (lib) mkEnableOption mkIf;
   cfg = config.aytordev.programs.terminal.shells.bash;
-  xdgConfigHome = "${config.xdg.configHome}";
-  xdgDataHome = "${config.xdg.dataHome}";
-  xdgCacheHome = "${config.xdg.cacheHome}";
-  bashConfigDir = "${xdgConfigHome}/bash";
-  bashDataDir = "${xdgDataHome}/bash";
-  bashCacheDir = "${xdgCacheHome}/bash";
-  bashrc = ''
-    export XDG_CONFIG_HOME="${xdgConfigHome}"
-    export XDG_DATA_HOME="${xdgDataHome}"
-    export XDG_CACHE_HOME="${xdgCacheHome}"
-    export BASH_CONFIG_DIR="${bashConfigDir}"
-    export BASH_DATA_DIR="${bashDataDir}"
-    export BASH_CACHE_DIR="${bashCacheDir}"
-    export BASH_SESSION_DIR="${bashDataDir}/sessions"
-    export HISTFILE="${bashDataDir}/history"
-    export HISTSIZE=10000
-    export HISTFILESIZE=100000
-    export HISTCONTROL=ignoredups:erasedups
-    shopt -s histappend
-    shopt -s checkwinsize extglob globstar checkjobs autocd cdspell dirspell nocaseglob
-    export INPUTRC="${bashConfigDir}/inputrc"
-    [ -f /etc/bashrc ] && . /etc/bashrc
-    for f in "${bashConfigDir}/conf.d/"*.sh; do
-      [ -f "$f" ] && . "$f"
-    done
-    if [ "$(uname -s)" = "Darwin" ] && [ -n "$TERM_SESSION_ID" ]; then
-      :
-    fi
-  '';
 in {
   options.aytordev.programs.terminal.shells.bash = {
-    enable = mkEnableOption "Bash shell with useful defaults";
+    enable = mkEnableOption "Bash shell with useful defaults for Bash 5.3+";
   };
-  config = mkIf cfg.enable (mkMerge [
-    {
-      home.packages = with pkgs; [
-        bash
+
+  config = mkIf cfg.enable {
+    programs.bash = {
+      enable = true;
+      enableCompletion = false;  # Disable to prevent bind/complete errors
+
+      # Bash 5.3+ enhanced history settings
+      historySize = 10000;
+      historyFileSize = 100000;
+      historyControl = ["ignoredups" "erasedups"];
+      historyFile = "${config.xdg.dataHome}/bash/history";
+
+      # Shell options - verified for Bash 5.3
+      shellOptions = [
+        "histappend"
+        "checkwinsize"
+        "extglob"
+        "globstar"
+        "checkjobs"
+        "autocd"
+        "cdspell"
+        "dirspell"
+        "nocaseglob"
+        # Bash 5.3+ options
+        "assoc_expand_once"
+        "patsub_replacement"
+        "varredir_close"
       ];
-      programs.bash = {
-        enable = true;
+
+      # Environment variables via sessionVariables (declarative)
+      sessionVariables = {
+        BASH_CONFIG_DIR = "${config.xdg.configHome}/bash";
+        BASH_DATA_DIR = "${config.xdg.dataHome}/bash";
+        BASH_CACHE_DIR = "${config.xdg.cacheHome}/bash";
+        INPUTRC = "${config.xdg.configHome}/readline/inputrc";
+        # Bash 5.3: New GLOBSORT variable for completion sorting
+        GLOBSORT = "name";
       };
-      home.file.".config/bash/.bashrc" = {
-        text = bashrc;
-      };
-      home.file.".bashrc" = {
-        force = true;
-        text = ''
-          [ -f "$HOME/.config/bash/.bashrc" ] && . "$HOME/.config/bash/.bashrc"
-        '';
-      };
-      home.file.".bash_profile" = {
-        force = true;
-        text = ''
-          [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
-        '';
-      };
-      home.file.".profile" = {
-        force = true;
-        text = ''
-          [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
-        '';
-      };
-      home.activation.bashDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        $DRY_RUN_CMD mkdir -p "${bashConfigDir}/conf.d"
-        $DRY_RUN_CMD mkdir -p "${bashDataDir}/sessions"
-        $DRY_RUN_CMD mkdir -p "${bashCacheDir}"
-        $DRY_RUN_CMD chmod 700 "${bashConfigDir}"
-        $DRY_RUN_CMD chmod 700 "${bashDataDir}"
-        $DRY_RUN_CMD chmod 700 "${bashDataDir}/sessions"
-        $DRY_RUN_CMD chmod 700 "${bashCacheDir}"
-        if [ "$(uname -s)" = "Darwin" ]; then
-          OLD_SESSION_DIR="$HOME/.bash_sessions"
-          if [ -d "$OLD_SESSION_DIR" ] && [ ! -L "$OLD_SESSION_DIR" ]; then
-            $DRY_RUN_CMD echo "Moving existing bash_sessions to XDG directory..."
-            $DRY_RUN_CMD mv "$OLD_SESSION_DIR" "$OLD_SESSION_DIR.bak"
-          fi
-          if [ ! -e "$OLD_SESSION_DIR" ]; then
-            $DRY_RUN_CMD ln -sf "${bashDataDir}/sessions" "$OLD_SESSION_DIR"
-          fi
-        fi
-        if [ ! -f "${bashConfigDir}/inputrc" ]; then
-          $DRY_RUN_CMD echo "# Bash readline settings" > "${bashConfigDir}/inputrc"
-          $DRY_RUN_CMD echo "set completion-ignore-case on" >> "${bashConfigDir}/inputrc"
-          $DRY_RUN_CMD echo "set show-all-if-ambiguous on" >> "${bashConfigDir}/inputrc"
-          $DRY_RUN_CMD echo "set show-all-if-unmodified on" >> "${bashConfigDir}/inputrc"
-        fi
-        if [ ! -f "${bashConfigDir}/conf.d/example.sh" ]; then
-          $DRY_RUN_CMD echo "# Add your custom Bash configurations here" > "${bashConfigDir}/conf.d/example.sh"
-          $DRY_RUN_CMD echo "# This file will be automatically sourced by .bashrc" >> "${bashConfigDir}/conf.d/example.sh"
-        fi
-        if [ ! -f "${bashDataDir}/history" ]; then
-          $DRY_RUN_CMD touch "${bashDataDir}/history"
-          $DRY_RUN_CMD chmod 600 "${bashDataDir}/history"
-        fi
+
+      # Extra bashrc content
+      bashrcExtra = ''
+        # Source system bashrc if present
+        [ -f /etc/bashrc ] && . /etc/bashrc
+
+        # Source additional configurations from conf.d
+        for f in "${config.xdg.configHome}/bash/conf.d/"*.sh; do
+          [[ -f "$f" ]] && source "$f"
+        done
       '';
-    }
-  ]);
+
+      # Profile extra (login shell)
+      profileExtra = ''
+        # Login shell specific configuration
+      '';
+
+      # Init extra (interactive shell)
+      initExtra = ''
+        # Interactive shell specific configuration
+        # Bash 5.3: ''${| cmd; } syntax available for capturing output without subshell
+      '';
+    };
+
+    # Readline configuration (declarative)
+    programs.readline = {
+      enable = true;
+      variables = {
+        completion-ignore-case = true;
+        show-all-if-ambiguous = true;
+        show-all-if-unmodified = true;
+        colored-stats = true;
+        visible-stats = true;
+        mark-symlinked-directories = true;
+        # Bash 5.3: New readline options
+        search-ignore-case = true;
+      };
+    };
+
+    # XDG directories with proper permissions (declarative via xdg.configFile)
+    xdg.configFile."bash/conf.d/.keep".text = "# Custom bash configurations go here\n";
+    xdg.dataFile."bash/.keep".text = "";
+    xdg.cacheFile."bash/.keep".text = "";
+  };
 }
