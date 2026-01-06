@@ -30,6 +30,36 @@ let
 
   cfg = config.aytordev.suites.development;
   isWSL = osConfig.aytordev.archetypes.wsl.enable or false;
+
+  # Bash-specific aliases (uses bash syntax like $(), f(){}, $VAR)
+  bashAliases = {
+    # Nixpkgs
+    prefetch-sri = "nix store prefetch-file $1";
+    nra = ''nixpkgs-review pr $1 --systems "aarch64-darwin x86_64-linux aarch64-linux"'';
+    nrap = ''nixpkgs-review pr $1 --systems "aarch64-darwin x86_64-linux aarch64-linux" --post-result --num-parallel-evals 3'';
+    nrapa = ''nixpkgs-review pr $1 --systems "aarch64-darwin x86_64-linux aarch64-linux" --post-result --num-parallel-evals 3 --approve-pr'';
+    nrd = ''nixpkgs-review pr $1 --systems "aarch64-darwin"'';
+    nrdp = ''nixpkgs-review pr $1 --systems "aarch64-darwin" --post-result'';
+    nrl = ''nixpkgs-review pr $1 --systems "x86_64-linux aarch64-linux" --num-parallel-evals 2'';
+    nrlp = ''nixpkgs-review pr $1 --systems "x86_64-linux aarch64-linux" --num-parallel-evals 2 --post-result'';
+    nup = ''nix-update --commit -u $1'';
+    num = ''nix-shell maintainers/scripts/update.nix --argstr maintainer $1'';
+    ncs = ''f(){ nix build "nixpkgs#$1" --no-link; nix path-info --recursive --closure-size --human-readable $(nix-build --no-out-link '<nixpkgs>' -A "$1"); }; f'';
+    ncsnc = ''f(){ nix build ".#nixosConfigurations.$1.config.system.build.toplevel" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#nixosConfigurations.$1.config.system.build.toplevel.outPath"); }; f'';
+    ncsdc = ''f(){ nix build ".#darwinConfigurations.$1.config.system.build.toplevel" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#darwinConfigurations.$1.config.system.build.toplevel.outPath"); }; f'';
+    vim-update-all = ''nix run nixpkgs#vimPluginsUpdater -- --github-token=$(echo $GITHUB_TOKEN)'';
+    tree-update-all = ''./pkgs/applications/editors/vim/plugins/utils/nvim-treesitter/update.py; git add ./pkgs/applications/editors/vim/plugins/nvim-treesitter/generated.nix; git commit -m "vimPlugins.nvim-treesitter: update grammars"'';
+    lua-update-all = ''nix run nixpkgs#luarocks-packages-updater -- --github-token=$(echo $GITHUB_TOKEN)'';
+    yazi-update = ''f(){ ./pkgs/by-name/ya/yazi/plugins/update.py --plugin $1 --commit }; f'';
+    yazi-update-all = ''./pkgs/by-name/ya/yazi/plugins/update.py --all --commit'';
+    # Home-Manager
+    hmd = ''nix build -L .#docs-html; ${
+      if pkgs.stdenv.hostPlatform.isDarwin then "open" else "xdg-open"
+    } result/share/doc/home-manager/index.xhtml'';
+    hmt = ''f(){ nix-build -j auto --show-trace --pure --option allow-import-from-derivation false tests -A build."$1"; }; f'';
+    hmtf = ''f(){ nix build -L --option allow-import-from-derivation false --reference-lock-file flake.lock "./tests#test-$1"; }; f'';
+    hmts = ''f(){ nix build -L --option allow-import-from-derivation false --reference-lock-file flake.lock "./tests#test-$1"; nix path-info -rSh ./result; }; f'';
+  };
 in
 {
   options.aytordev.suites.development = {
@@ -79,49 +109,28 @@ in
           nurl
         ];
 
+      # Only shell-agnostic aliases in home.shellAliases (applies to all shells including Nushell)
       shellAliases = {
-        # Nixpkgs
-        prefetch-sri = "nix store prefetch-file $1";
+        # Simple aliases that work across all shells
         nrh = ''nixpkgs-review rev HEAD'';
-        nra = ''nixpkgs-review pr $1 --systems "aarch64-darwin x86_64-linux aarch64-linux"'';
-        nrap = ''nixpkgs-review pr $1 --systems "aarch64-darwin x86_64-linux aarch64-linux" --post-result --num-parallel-evals 3'';
-        nrapa = ''nixpkgs-review pr $1 --systems "aarch64-darwin x86_64-linux aarch64-linux" --post-result --num-parallel-evals 3 --approve-pr'';
-        nrd = ''nixpkgs-review pr $1 --systems "aarch64-darwin"'';
-        nrdp = ''nixpkgs-review pr $1 --systems "aarch64-darwin" --post-result'';
-        nrl = ''nixpkgs-review pr $1 --systems "x86_64-linux aarch64-linux" --num-parallel-evals 2'';
-        nrlp = ''nixpkgs-review pr $1 --systems "x86_64-linux aarch64-linux" --num-parallel-evals 2 --post-result'';
-        nup = ''nix-update --commit -u $1'';
-        num = ''nix-shell maintainers/scripts/update.nix --argstr maintainer $1'';
-        ncs = ''f(){ nix build "nixpkgs#$1" --no-link && nix path-info --recursive --closure-size --human-readable $(nix-build --no-out-link '<nixpkgs>' -A "$1"); }; f'';
-        ncsnc = ''f(){ nix build ".#nixosConfigurations.$1.config.system.build.toplevel" --no-link && nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#nixosConfigurations.$1.config.system.build.toplevel.outPath"); }; f'';
-        ncsdc = ''f(){ nix build ".#darwinConfigurations.$1.config.system.build.toplevel" --no-link && nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#darwinConfigurations.$1.config.system.build.toplevel.outPath"); }; f'';
-        # NOTE: vim-add 'owner/repo'
         vim-add = ''nix run nixpkgs#vimPluginsUpdater add'';
-        # NOTE: vim-update 'plugin-name'
         vim-update = ''nix run nixpkgs#vimPluginsUpdater update'';
-        vim-update-all = ''nix run nixpkgs#vimPluginsUpdater -- --github-token=$(echo $GITHUB_TOKEN)'';
-        tree-update-all = ''./pkgs/applications/editors/vim/plugins/utils/nvim-treesitter/update.py && git add ./pkgs/applications/editors/vim/plugins/nvim-treesitter/generated.nix && git commit -m "vimPlugins.nvim-treesitter: update grammars"'';
         tree-check = ''nix build .#vimPlugins.nvim-treesitter.passthru.tests.check-queries'';
-        lua-update-all = ''nix run nixpkgs#luarocks-packages-updater -- --github-token=$(echo $GITHUB_TOKEN)'';
-        yazi-update = ''f(){ ./pkgs/by-name/ya/yazi/plugins/update.py --plugin $1 --commit }; f'';
-        yazi-update-all = ''./pkgs/by-name/ya/yazi/plugins/update.py --all --commit'';
-
-        # Home-Manager
-        hmd = ''nix build -L .#docs-html && ${
-          if pkgs.stdenv.hostPlatform.isDarwin then "open" else "xdg-open"
-        } result/share/doc/home-manager/index.xhtml'';
-        hmt = ''f(){ nix-build -j auto --show-trace --pure --option allow-import-from-derivation false tests -A build."$1"; }; f'';
-        hmtf = ''f(){ nix build -L --option allow-import-from-derivation false --reference-lock-file flake.lock "./tests#test-$1"; }; f'';
-        hmts = ''f(){ nix build -L --option allow-import-from-derivation false --reference-lock-file flake.lock "./tests#test-$1" && nix path-info -rSh ./result; }; f'';
         hmt-repl = ''nix repl --reference-lock-file flake.lock ./tests'';
       };
     };
 
     programs = {
-      bash.initExtra = tokenExports;
+      bash = {
+        initExtra = tokenExports;
+        shellAliases = bashAliases;
+      };
       fish.shellInit = tokenExports;
       nix-your-shell = mkDefault enabled;
-      zsh.initContent = tokenExports;
+      zsh = {
+        initContent = tokenExports;
+        shellAliases = bashAliases;
+      };
     };
 
     aytordev = {
