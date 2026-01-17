@@ -21,7 +21,7 @@ in
       programs = {
         desktop = {
           bars = {
-            sketchybar = disabled;
+            sketchybar = enabled;
           };
           browsers = {
             brave = enabled;
