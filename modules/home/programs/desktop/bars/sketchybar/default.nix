@@ -14,7 +14,6 @@
   basePackages = with pkgs; [
     blueutil
     coreutils
-    lua54Packages.dkjson
     curl
     gh
     gh-notify
@@ -51,6 +50,30 @@
       command mas "$@" && ${getExe cfg.package} --trigger brew_update
     }
   '';
+  # Custom luaposix build
+  luaposix = pkgs.lua54Packages.buildLuarocksPackage {
+    pname = "luaposix";
+    version = "36.2.1";
+    # Use git source to avoid src.rock directory structure issues
+    src = pkgs.fetchFromGitHub {
+      owner = "luaposix";
+      repo = "luaposix";
+      rev = "v36.2.1";
+      hash = "sha256-oxHH7RmaEGLU1tSlFhtf7F6CKOSRaNamq7QxtWyfwtI=";
+    };
+    knownRockspec = (pkgs.fetchurl {
+      url = "https://luarocks.org/manifests/gvvaughan/luaposix-36.2.1-1.rockspec";
+      hash = "sha256-mlv8WUAdD+pfMUXGVh3zGgknfMoKDzFcyoeOyEtJj1Y=";
+    }).outPath;
+
+    # Fix rockspec to assume we are at root
+    preBuild = ''
+      # The rockspec expects to be able to run build-aux/luke
+      # Check if we are in the right directory
+      ls -la
+    '';
+    disabled = false;
+  };
 in {
   options.aytordev.programs.desktop.bars.sketchybar = {
     enable = mkEnableOption "Sketchybar status bar";
@@ -82,8 +105,18 @@ in {
       sbarLuaPackage = pkgs.sbarlua;
       extraPackages = allPackages;
 
-      # Sbar initialization - home-manager handles LUA_PATH/LUA_CPATH via wrapper
+      extraLuaPackages = luaPkgs: [
+        luaposix
+        luaPkgs.dkjson
+        luaPkgs.lua-cjson
+      ];
+
+      # Sbar initialization - add config dir to LUA_PATH since we use config.text
       config.text = ''
+        -- Add config directory to package.path for local modules
+        local config_dir = os.getenv("HOME") .. "/.config/sketchybar"
+        package.path = package.path .. ";" .. config_dir .. "/?.lua;" .. config_dir .. "/?/init.lua"
+
         sbar = require("sketchybar")
         sbar.begin_config()
         require("bar")
@@ -103,8 +136,7 @@ in {
           filter = name: _type:
             let baseName = baseNameOf name;
             in baseName != "sketchybarrc"
-            && baseName != "install_dependencies.sh"
-            && baseName != "init.lua";
+            && baseName != "install_dependencies.sh";
         };
         recursive = true;
       };
