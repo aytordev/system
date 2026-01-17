@@ -82,20 +82,31 @@ in {
       sbarLuaPackage = pkgs.sbarlua;
       extraPackages = allPackages;
 
-      config = {
-        source = ./config;
-        recursive = true;
-      };
+      # Sbar initialization - home-manager handles LUA_PATH/LUA_CPATH via wrapper
+      config.text = ''
+        sbar = require("sketchybar")
+        sbar.begin_config()
+        require("bar")
+        require("default")
+        require("items")
+        sbar.hotload(true)
+        sbar.end_config()
+        sbar.event_loop()
+      '';
     };
 
-    # Configuration files
+    # Configuration files - copy Lua configs, exclude imperative files
     xdg.configFile = {
-      "sketchybar/sketchybarrc" = {
-        text = ''
-          #!/usr/bin/env lua
-          require("init")
-        '';
-        executable = true;
+      "sketchybar" = {
+        source = lib.cleanSourceWith {
+          src = ./config;
+          filter = name: _type:
+            let baseName = baseNameOf name;
+            in baseName != "sketchybarrc"
+            && baseName != "install_dependencies.sh"
+            && baseName != "init.lua";
+        };
+        recursive = true;
       };
 
       "sketchybar/helpers/icon_map.lua".source = "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
