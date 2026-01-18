@@ -117,6 +117,34 @@
       mantle = "#181825";
       crust = "#11111b";
     };
+
+    kanagawa_wave = {
+      text = "#dcd7ba";       # fujiWhite
+      red = "#c34043";        # autumnRed
+      green = "#76946a";      # autumnGreen
+      yellow = "#c0a36e";     # boatYellow2
+      blue = "#7e9cd8";       # crystalBlue
+      magenta = "#957fb8";    # oniViolet
+      teal = "#6a9589";       # waveAqua1
+      peach = "#ffa066";      # surimiOrange
+      mauve = "#938aa9";      # springViolet2
+      pink = "#d27e99";       # sakuraPink
+      subtext0 = "#727169";   # fujiGray
+      subtext1 = "#c8c093";   # oldWhite
+      overlay0 = "#2a2a37";   # sumiInk4
+      overlay1 = "#363646";   # sumiInk5
+      overlay2 = "#54546d";   # sumiInk6
+      surface0 = "#16161d";   # sumiInk0
+      surface1 = "#1f1f28";   # sumiInk3
+      surface2 = "#2a2a37";   # sumiInk4
+      base = "#1f1f28";       # sumiInk3
+      mantle = "#16161d";     # sumiInk0
+      crust = "#090618";      # sumiInk1
+      lavender = "#7fb4ca";   # springBlue
+      rosewater = "#e6c384";  # carpYellow
+      flamingo = "#e82424";   # samuraiRed
+      maroon = "#c4746e";     # waveRed
+    };
   };
 
   # Language module configs using mkLang helper
@@ -148,7 +176,7 @@
     add_newline = true;
     command_timeout = 10000;
     scan_timeout = 30;
-    palette = "gentleman";
+    palette = "kanagawa_wave";
 
     format = lib.concatStrings formatModules + "\n" + lib.concatStrings promptModules;
 
@@ -299,8 +327,8 @@ in {
     enable = lib.mkEnableOption "Starship prompt";
 
     palette = lib.mkOption {
-      type = lib.types.enum ["gentleman" "catppuccin_mocha"];
-      default = "gentleman";
+      type = lib.types.enum ["gentleman" "catppuccin_mocha" "kanagawa_wave"];
+      default = "kanagawa_wave";
       description = "Color palette to use for Starship prompt";
     };
 

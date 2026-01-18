@@ -19,8 +19,18 @@ in {
       package = pkgs.vscode;
 
       profiles = let
+        kanagawa-theme = pkgs.vscode-utils.buildVscodeMarketplaceExtension {
+          mktplcRef = {
+            name = "kanagawa-vscode-color-theme";
+            publisher = "metaphore";
+            version = "0.5.0";
+            sha256 = "1l2y5ch6im9qff15kqlxf4j0wxbzl354pqrbby5ybbz76pbjzkis";
+          };
+        };
+
         commonExtensions = with pkgs.vscode-extensions; [
-          catppuccin.catppuccin-vsc
+          # Kanagawa theme
+          kanagawa-theme
           catppuccin.catppuccin-vsc-icons
           github.copilot
           github.copilot-chat
@@ -30,9 +40,6 @@ in {
           # Breadcrumbs
           "breadcrumbs.filePath" = "off";
           "breadcrumbs.enabled" = true;
-
-          # Catppuccin
-          "catppuccin.accentColor" = lib.mkDefault "sapphire";
 
           # Debug
           "debug.console.fontFamily" = lib.mkForce "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
@@ -190,9 +197,9 @@ in {
           # Workbench
           "workbench.editor.enablePreviewFromQuickOpen" = true;
           "workbench.editor.tabCloseButton" = "left";
-          "workbench.colorTheme" = lib.mkDefault "Catppuccin Mocha";
-          "workbench.preferredDarkColorTheme" = lib.mkDefault "Catppuccin Mocha";
-          "workbench.preferredLightColorTheme" = lib.mkDefault "Catppuccin Latte";
+          "workbench.colorTheme" = lib.mkDefault "Kanagawa Wave";
+          "workbench.preferredDarkColorTheme" = lib.mkDefault "Kanagawa Wave";
+          "workbench.preferredLightColorTheme" = lib.mkDefault "Kanagawa Lotus";
           "workbench.list.horizontalScrolling" = true;
           "workbench.panel.defaultLocation" = "right";
           "workbench.fontAliasing" = "antialiased";

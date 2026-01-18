@@ -93,7 +93,7 @@ in {
       type = types.nullOr (types.enum availableThemes);
       default =
         if availableThemes != []
-        then "catppuccin-mocha"
+        then "kanagawa-wave"
         else null;
       description = "Theme to use for Ghostty. Available themes: ${builtins.concatStringsSep ", " availableThemes}";
     };

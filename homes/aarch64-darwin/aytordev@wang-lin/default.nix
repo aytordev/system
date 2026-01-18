@@ -56,7 +56,7 @@ in
       terminal = {
         # Custom ghostty theme
         emulators.ghostty = {
-          theme = "catppuccin-mocha";
+          theme = "kanagawa-wave";
           enableThemes = true;
         };
 

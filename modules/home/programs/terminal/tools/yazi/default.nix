@@ -39,8 +39,8 @@ in {
         (import ./keymap/tasks.nix)
       ];
       flavors = {
-        dark = "${yazi-flavors}/catppuccin-macchiato.yazi";
-        light = "${yazi-flavors}/catppuccin-frappe.yazi";
+        dark = ./flavors/kanagawa-wave.yazi;
+        light = ./flavors/kanagawa-lotus.yazi;
       };
       plugins = {
         "arrow-parent" = ./plugins/arrow-parent.yazi;
@@ -61,7 +61,6 @@ in {
           toggle-pane
           yatline
           yatline-githead
-          yatline-catppuccin
           ;
         glow = pkgs.yaziPlugins.glow.overrideAttrs {
           patches = [
