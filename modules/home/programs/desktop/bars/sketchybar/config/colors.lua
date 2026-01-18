@@ -1,38 +1,44 @@
+local constants = require("nix_constants")
+local colors = constants.colors
+
 return {
-    default = 0x80ffffff,
-    black = 0xff181819,
-    white = 0xffffffff,
-    red = 0xfffc5d7c,
-    red_bright = 0xe0f38ba8,
-    green = 0xff9ed072,
-    blue = 0xff76cce0,
-    blue_bright = 0xe089b4fa,
-    yellow = 0xffe7c664,
-    orange = 0xfff39660,
-    magenta = 0xffb39df3,
-    grey = 0xff7f8490,
-    transparent = 0x00000000,
+    default = colors.default,
+    black = colors.black,
+    white = colors.white,
+    red = colors.red,
+    red_bright = colors.red_bright,
+    green = colors.green,
+    blue = colors.blue,
+    blue_bright = colors.blue_bright,
+    yellow = colors.yellow,
+    orange = colors.orange,
+    magenta = colors.magenta,
+    grey = colors.grey,
+    transparent = colors.transparent,
 
     bar = {
-        bg = 0xf0181819,  -- Dark with slight transparency
-        border = 0xff2c2e34,
+        bg = colors.bar.bg,
+        border = colors.bar.border,
     },
 
     popup = {
-        bg = 0xFF1d1b2d,
-        border = 0xff7f8490
+        bg = colors.popup.bg,
+        border = colors.popup.border
     },
 
-    bg1 = 0xFF1d1b2d,
-    bg2 = 0xe0313436,
+    bg1 = colors.bg1,
+    bg2 = colors.bg2,
 
-    accent = 0xFFb482c2,
-    accent_bright = 0x33efc2fc,
+    accent = colors.accent,
+    accent_bright = colors.accent_bright,
 
-    spotify_green = 0xe040a02b,
+    spotify_green = colors.spotify_green,
 
     with_alpha = function(color, alpha)
         if alpha > 1.0 or alpha < 0.0 then return color end
-        return (color & 0x00ffffff) | (math.floor(alpha * 255.0) << 24)
+        -- Helper to handle string/number conversion if needed
+        local c = color
+        if type(c) == "string" then c = tonumber(c) end
+        return (c & 0x00ffffff) | (math.floor(alpha * 255.0) << 24)
     end,
 }

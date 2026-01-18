@@ -105,7 +105,15 @@ in {
     };
 
     # Configuration files - copy Lua configs, exclude imperative files
-    xdg.configFile = {
+    xdg.configFile = let
+      theme = import ./theme.nix;
+
+      # Helper to convert attributes to Lua table
+      toLuaTable = attrs: let
+        toLuaValue = v: if builtins.isString v then "\"${v}\"" else if builtins.isAttrs v then toLuaTable v else builtins.toString v;
+        fields = lib.mapAttrsToList (k: v: "${k} = ${toLuaValue v}") attrs;
+      in "{\n${builtins.concatStringsSep ",\n" fields}\n}";
+    in {
       "sketchybar" = {
         source = lib.cleanSourceWith {
           src = ./config;
@@ -116,6 +124,17 @@ in {
         };
         recursive = true;
       };
+
+      # Generated constants from Nix
+      "sketchybar/nix_constants.lua".text = ''
+        return {
+          colors = ${toLuaTable theme.schemes.wave},
+          fonts = {
+            main = "Sketchybar App Font:Regular:16.0",
+            icon = "Sketchybar App Font:Regular:16.0"
+          }
+        }
+      '';
 
       "sketchybar/helpers/icon_map.lua".source = "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
     };
