@@ -34,7 +34,6 @@ in {
     + lib.optionalString (lib.hasAttr "yatline" enabledPlugins)
     ''
       require("yatline"):setup({
-            ${lib.optionalString (lib.hasAttr "yatline-catppuccin" enabledPlugins) ''theme = require("yatline-catppuccin"):setup("macchiato"),''}
       	show_background = false,
       	header_line = {
       		left = {
