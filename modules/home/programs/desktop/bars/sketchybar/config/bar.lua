@@ -1,16 +1,16 @@
-local colors = require("colors").sections.bar
+-- Bar configuration - consumes values from nix_constants.lua
+local colors = require("colors")
+local constants = require("nix_constants")
 
-sbar.bar {
-  topmost = "window",
-  height = 41,
-  notch_display_height = 41,
-  padding_right = 12,
-  padding_left = 12,
-  margin = -1,
-  corner_radius = 0,
-  y_offset = -1,
-  blur_radius = 20,
-  border_color = colors.border,
-  border_width = 1,
-  color = colors.bg,
-}
+-- Equivalent to the --bar domain
+sbar.bar({
+    height = constants.bar.height,
+    color = colors.bar.bg,
+    border_color = colors.bar.border,
+    shadow = constants.bar.shadow,
+    sticky = constants.bar.sticky,
+    padding_right = constants.bar.padding_right,
+    padding_left = constants.bar.padding_left,
+    blur_radius = constants.bar.blur_radius,
+    topmost = constants.bar.topmost,
+})

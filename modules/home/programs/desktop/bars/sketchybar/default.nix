@@ -6,15 +6,15 @@
   ...
 }: let
   inherit (lib) mkIf mkEnableOption mkOption getExe;
-  inherit (lib.types) package listOf;
+  inherit (lib.types) package listOf str int float enum;
 
   cfg = config.aytordev.programs.desktop.bars.sketchybar;
+  theme = import ./theme.nix;
 
   # Base packages required for sketchybar functionality
   basePackages = with pkgs; [
     blueutil
     coreutils
-    lua54Packages.dkjson
     curl
     gh
     gh-notify
@@ -51,6 +51,16 @@
       command mas "$@" && ${getExe cfg.package} --trigger brew_update
     }
   '';
+
+  # Helper to convert Nix attrs to Lua table syntax
+  toLuaTable = attrs: let
+    toLuaValue = v:
+      if builtins.isString v then "\"${v}\""
+      else if builtins.isBool v then (if v then "true" else "false")
+      else if builtins.isAttrs v then toLuaTable v
+      else builtins.toString v;
+    fields = lib.mapAttrsToList (k: v: "${k} = ${toLuaValue v}") attrs;
+  in "{\n${builtins.concatStringsSep ",\n" fields}\n}";
 in {
   options.aytordev.programs.desktop.bars.sketchybar = {
     enable = mkEnableOption "Sketchybar status bar";
@@ -67,6 +77,78 @@ in {
       default = [];
       description = "Extra packages needed for Sketchybar plugins and functionality.";
     };
+
+    # Theme configuration
+    theme = mkOption {
+      type = enum ["wave" "dragon" "lotus"];
+      default = "wave";
+      description = "Kanagawa theme variant to use (wave, dragon, or lotus).";
+    };
+
+    # Font configuration
+    fonts = {
+      text = mkOption {
+        type = str;
+        default = "SF Pro";
+        description = "Main text font family.";
+      };
+      icon = mkOption {
+        type = str;
+        default = "Hack Nerd Font";
+        description = "Icon font family (should be a Nerd Font).";
+      };
+      size = mkOption {
+        type = float;
+        default = 13.0;
+        description = "Base font size.";
+      };
+    };
+
+    # Icon style
+    iconsStyle = mkOption {
+      type = enum ["sf_symbols" "nerdfont"];
+      default = "sf_symbols";
+      description = "Icon set to use (SF Symbols or Nerd Font icons).";
+    };
+
+    # Bar configuration
+    bar = {
+      height = mkOption {
+        type = int;
+        default = 30;
+        description = "Height of the bar in pixels.";
+      };
+      blurRadius = mkOption {
+        type = int;
+        default = 20;
+        description = "Blur radius for the bar background.";
+      };
+      shadow = mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Whether to show shadow under the bar.";
+      };
+      sticky = mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Whether the bar stays visible when switching spaces.";
+      };
+      topmost = mkOption {
+        type = enum ["off" "window" "layer"];
+        default = "window";
+        description = "Bar topmost mode.";
+      };
+      paddingLeft = mkOption {
+        type = int;
+        default = 10;
+        description = "Left padding of the bar.";
+      };
+      paddingRight = mkOption {
+        type = int;
+        default = 10;
+        description = "Right padding of the bar.";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -82,21 +164,68 @@ in {
       sbarLuaPackage = pkgs.sbarlua;
       extraPackages = allPackages;
 
-      config = {
-        source = ./config;
-        recursive = true;
-      };
+      extraLuaPackages = luaPkgs: [
+        pkgs.aytordev.luaposix
+        luaPkgs.dkjson
+        luaPkgs.lua-cjson
+      ];
+
+      # Sbar initialization - add config dir to LUA_PATH since we use config.text
+      config.text = ''
+        -- Add config directory to package.path for local modules
+        local config_dir = os.getenv("HOME") .. "/.config/sketchybar"
+        package.path = package.path .. ";" .. config_dir .. "/?.lua;" .. config_dir .. "/?/init.lua"
+
+        sbar = require("sketchybar")
+        sbar.begin_config()
+        require("bar")
+        require("default")
+        require("items")
+        sbar.hotload(true)
+        sbar.end_config()
+        sbar.event_loop()
+      '';
     };
 
-    # Configuration files
+    # Configuration files - copy Lua configs, exclude imperative files
     xdg.configFile = {
-      "sketchybar/sketchybarrc" = {
-        text = ''
-          #!/usr/bin/env lua
-          require("init")
-        '';
-        executable = true;
+      "sketchybar" = {
+        source = lib.cleanSourceWith {
+          src = ./config;
+          filter = name: _type:
+            let baseName = baseNameOf name;
+            in baseName != "sketchybarrc"
+            && baseName != "install_dependencies.sh"
+            # Only exclude the root init.lua (dead code), not items/init.lua
+            && !(baseName == "init.lua" && !lib.hasInfix "/items/" name);
+        };
+        recursive = true;
       };
+
+      # Generated constants from Nix - bridges all configurable values to Lua
+      "sketchybar/nix_constants.lua".text = ''
+        -- Auto-generated by Nix. Do not edit manually.
+        return {
+          colors = ${toLuaTable theme.schemes.${cfg.theme}},
+          fonts = {
+            text = "${cfg.fonts.text}",
+            icon = "${cfg.fonts.icon}",
+            size = ${toString cfg.fonts.size}
+          },
+          settings = {
+            icons_style = "${cfg.iconsStyle}"
+          },
+          bar = {
+            height = ${toString cfg.bar.height},
+            blur_radius = ${toString cfg.bar.blurRadius},
+            shadow = ${if cfg.bar.shadow then "true" else "false"},
+            sticky = ${if cfg.bar.sticky then "true" else "false"},
+            topmost = "${cfg.bar.topmost}",
+            padding_left = ${toString cfg.bar.paddingLeft},
+            padding_right = ${toString cfg.bar.paddingRight}
+          }
+        }
+      '';
 
       "sketchybar/helpers/icon_map.lua".source = "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
     };
