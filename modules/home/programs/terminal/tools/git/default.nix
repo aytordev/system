@@ -86,7 +86,11 @@ in {
         programs.delta.enable = true;
         programs.delta.enableGitIntegration = true;
         programs.delta.options.dark = true;
-        programs.delta.options.features = mkForce "decorations side-by-side navigate catppuccin-macchiato";
+        programs.delta.options.features = mkForce "decorations side-by-side navigate";
+        programs.delta.options.plus-style = "syntax #2B3328";
+        programs.delta.options.minus-style = "syntax #3C2C2E";
+        programs.delta.options.plus-emph-style = "syntax #76946a";
+        programs.delta.options.minus-emph-style = "syntax #c34043";
         programs.delta.options.line-numbers = true;
         programs.delta.options.navigate = true;
         programs.delta.options.side-by-side = true;

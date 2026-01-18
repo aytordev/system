@@ -55,7 +55,20 @@ in {
             strider.path = "strider";
             compact-bar.path = "compact-bar";
           };
-          theme = "catppuccin-macchiato";
+          theme = "kanagawa-wave";
+          themes.kanagawa-wave = {
+            bg = "#1f1f28";
+            fg = "#dcd7ba";
+            red = "#c34043";
+            green = "#76946a";
+            yellow = "#c0a36e";
+            blue = "#7e9cd8";
+            magenta = "#957fb8";
+            orange = "#ffa066";
+            cyan = "#6a9589";
+            black = "#16161d";
+            white = "#c8c093";
+          };
         };
       };
     };

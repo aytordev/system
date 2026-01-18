@@ -17,13 +17,13 @@
       settings = {
         gui = {
           authorColors = {
-            "${inputs.secrets.userfullname}" = "#c6a0f6";
-            "dependabot[bot]" = "#eed49f";
+            "${inputs.secrets.userfullname}" = "#957fb8";
+            "dependabot[bot]" = "#c0a36e";
           };
           branchColors = {
-            main = "#ed8796";
-            master = "#ed8796";
-            dev = "#8bd5ca";
+            main = "#c34043";
+            master = "#c34043";
+            dev = "#7e9cd8";
           };
           nerdFontsVersion = "3";
         };
