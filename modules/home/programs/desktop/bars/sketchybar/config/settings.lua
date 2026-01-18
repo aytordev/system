@@ -1,8 +1,11 @@
+-- Settings module - consumes values from nix_constants.lua
+local constants = require("nix_constants")
+
 return {
     font = {
-        text = "SF Pro",
-        numbers = "SF Pro",
-        size = 13.0,
+        text = constants.fonts.text,
+        numbers = constants.fonts.text,
+        size = constants.fonts.size,
         style_map = {
             ["Regular"] = "Regular",
             ["Semibold"] = "Semibold",
@@ -12,9 +15,9 @@ return {
         },
     },
     font_icon = {
-        text = "Hack Nerd Font",
-        numbers = "Hack Nerd Font",
-        size = 13.0,
+        text = constants.fonts.icon,
+        numbers = constants.fonts.icon,
+        size = constants.fonts.size,
         style_map = {
             ["Regular"] = "Regular",
             ["Semibold"] = "Semibold",
@@ -23,6 +26,10 @@ return {
             ["Black"] = "Black",
         },
     },
+
+    -- Icon style from Nix configuration
+    icons = constants.settings.icons_style,
+
     height = 24,
     paddings = 8,
     group_paddings = 5,

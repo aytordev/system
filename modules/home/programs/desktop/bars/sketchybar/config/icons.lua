@@ -1,3 +1,4 @@
+-- Icons module - provides SF Symbols or Nerd Font icons based on configuration
 local settings = require("settings")
 
 local icons = {
@@ -44,11 +45,11 @@ local icons = {
 
     -- Alternative NerdFont icons
     nerdfont = {
-        plus = "",
-        loading = "",
-        apple = "",
-        gear = "",
-        cpu = "",
+        plus = "",
+        loading = "",
+        apple = "",
+        gear = "",
+        cpu = "",
         clipboard = "Missing Icon",
 
         switch = {
@@ -56,37 +57,38 @@ local icons = {
             off = "󱨦",
         },
         volume = {
-            _100 = "",
-            _66 = "",
-            _33 = "",
-            _10 = "",
-            _0 = "",
+            _100 = "",
+            _66 = "",
+            _33 = "",
+            _10 = "",
+            _0 = "",
         },
         battery = {
-            _100 = "",
-            _75 = "",
-            _50 = "",
-            _25 = "",
-            _0 = "",
-            charging = ""
+            _100 = "",
+            _75 = "",
+            _50 = "",
+            _25 = "",
+            _0 = "",
+            charging = ""
         },
         wifi = {
-            upload = "",
-            download = "",
+            upload = "",
+            download = "",
             connected = "󰖩",
             disconnected = "󰖪",
             router = "Missing Icon"
         },
         media = {
-            back = "",
-            forward = "",
-            play_pause = "",
+            back = "",
+            forward = "",
+            play_pause = "",
         },
     },
 }
 
-if not (settings.icons == "NerdFont") then
-    return icons.sf_symbols
-else
+-- Return the appropriate icon set based on settings
+if settings.icons == "nerdfont" then
     return icons.nerdfont
+else
+    return icons.sf_symbols
 end
