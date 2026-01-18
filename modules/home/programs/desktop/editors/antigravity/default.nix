@@ -11,8 +11,17 @@
   defaultSettings = import ./settings.nix {inherit lib pkgs;};
   finalSettings = lib.recursiveUpdate defaultSettings cfg.userSettings;
 
+  kanagawa-theme = pkgs.vscode-utils.buildVscodeMarketplaceExtension {
+    mktplcRef = {
+      name = "kanagawa-vscode-color-theme";
+      publisher = "metaphore";
+      version = "0.5.0";
+      sha256 = "1l2y5ch6im9qff15kqlxf4j0wxbzl354pqrbby5ybbz76pbjzkis";
+    };
+  };
+
   commonExtensions = with pkgs.vscode-extensions; [
-    catppuccin.catppuccin-vsc
+    # Kanagawa theme - install manually via marketplace: "metaphore.kanagawa-vscode-color-theme"
     catppuccin.catppuccin-vsc-icons
     github.copilot
     github.copilot-chat

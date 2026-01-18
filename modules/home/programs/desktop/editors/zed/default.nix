@@ -20,7 +20,7 @@ in {
 
       # Extensions - https://github.com/zed-industries/extensions/tree/main/extensions
       extensions = [
-        "catppuccin"
+        "kanagawa-themes"
         "catppuccin-icons"
       ];
 
@@ -44,7 +44,7 @@ in {
           edit_prediction_provider = "zed";
         };
         base_keymap = "VSCode";
-        theme = "Catppuccin Mocha";
+        theme = "Kanagawa Wave";
         ui_font_size = 16;
         buffer_font_size = 18;
         # Finder model width

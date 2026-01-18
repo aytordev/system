@@ -7,9 +7,6 @@
   "breadcrumbs.filePath" = "off";
   "breadcrumbs.enabled" = true;
 
-  # Catppuccin
-  "catppuccin.accentColor" = "sapphire";
-
   # Debug
   "debug.console.fontFamily" = "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
   "debug.openDebug" = "neverOpen";
@@ -163,9 +160,9 @@
   # Workbench
   "workbench.editor.enablePreviewFromQuickOpen" = true;
   "workbench.editor.tabCloseButton" = "left";
-  "workbench.colorTheme" = "Catppuccin Mocha";
-  "workbench.preferredDarkColorTheme" = "Catppuccin Mocha";
-  "workbench.preferredLightColorTheme" = "Catppuccin Latte";
+  "workbench.colorTheme" = "Kanagawa Wave";
+  "workbench.preferredDarkColorTheme" = "Kanagawa Wave";
+  "workbench.preferredLightColorTheme" = "Kanagawa Lotus";
   "workbench.list.horizontalScrolling" = true;
   "workbench.panel.defaultLocation" = "right";
   "workbench.fontAliasing" = "antialiased";
