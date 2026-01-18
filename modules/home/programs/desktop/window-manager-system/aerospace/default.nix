@@ -28,41 +28,61 @@ in {
       launchd.enable = true;
 
       settings = {
+        # Config version 2 enables new features like persistent-workspaces
+        config-version = 2;
+
         accordion-padding = 30;
         after-login-command = [];
-        after-startup-command = ["exec-and-forget sketchybar"];
+        after-startup-command = ["exec-and-forget ${sketchybar}"];
         automatically-unhide-macos-hidden-apps = true;
         default-root-container-layout = "tiles";
         default-root-container-orientation = "auto";
         enable-normalization-flatten-containers = true;
         enable-normalization-opposite-orientation-for-nested-containers = true;
+
+        # Persistent workspaces - always visible in Sketchybar even when empty
+        # B = Browsers
+        # C = Coding
+        # D = Development
+        # W = Work
+        # S = Social
+        # O = Other
+
+        persistent-workspaces = ["B" "C" "D" "W" "S" "O"];
+
         exec-on-workspace-change = [
           "/bin/bash"
           "-c"
-          "sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE"
+          "${sketchybar} --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE"
         ];
-        gaps.inner.horizontal = 8;
-        gaps.inner.vertical = 8;
-        gaps.outer.left = 8;
-        gaps.outer.bottom = 8;
-        gaps.outer.top = 8;
-        gaps.outer.right = 8;
+
+        # Dynamic gaps per monitor
+        gaps.inner.horizontal = 4;
+        gaps.inner.vertical = 4;
+        gaps.outer.left = 2;
+        gaps.outer.bottom = 2;
+        gaps.outer.top = [
+          {"monitor"."built-in" = 4;}
+          {"monitor"."main" = 4;}
+          32
+        ];
+        gaps.outer.right = 2;
         key-mapping.preset = "qwerty";
 
         # Workspace Navigation - Semantic Names
-        mode.main.binding.alt-1 = "workspace social";
-        mode.main.binding.alt-2 = "workspace work";
-        mode.main.binding.alt-3 = "workspace development";
-        mode.main.binding.alt-4 = "workspace others";
-        mode.main.binding.alt-5 = "workspace stream";
-        mode.main.binding.alt-6 = "workspace 6";
-        mode.main.binding.alt-7 = "workspace 7";
+        mode.main.binding.alt-1 = "workspace B";
+        mode.main.binding.alt-2 = "workspace C";
+        mode.main.binding.alt-3 = "workspace D";
+        mode.main.binding.alt-4 = "workspace W";
+        mode.main.binding.alt-5 = "workspace S";
+        mode.main.binding.alt-6 = "workspace O";
 
         # Layout Management
         mode.main.binding.alt-comma = "layout accordion horizontal vertical";
         mode.main.binding.alt-slash = "layout tiles horizontal vertical";
+        mode.main.binding.alt-shift-f = "layout floating tiling"; # Toggle floating
 
-        # Focus Navigation (alt-ctrl for consistency with provided config)
+        # Focus Navigation
         mode.main.binding.alt-ctrl-h = "focus left";
         mode.main.binding.alt-ctrl-j = "focus down";
         mode.main.binding.alt-ctrl-k = "focus up";
@@ -75,16 +95,22 @@ in {
         mode.main.binding.alt-shift-l = "move right";
 
         # Move to Workspace
-        mode.main.binding.alt-shift-1 = "move-node-to-workspace social";
-        mode.main.binding.alt-shift-2 = "move-node-to-workspace work";
-        mode.main.binding.alt-shift-3 = "move-node-to-workspace development";
-        mode.main.binding.alt-shift-4 = "move-node-to-workspace others";
-        mode.main.binding.alt-shift-5 = "move-node-to-workspace stream";
-        mode.main.binding.alt-shift-6 = "move-node-to-workspace 6";
-        mode.main.binding.alt-shift-7 = "move-node-to-workspace 7";
+        mode.main.binding.alt-shift-1 = "move-node-to-workspace B";
+        mode.main.binding.alt-shift-2 = "move-node-to-workspace C";
+        mode.main.binding.alt-shift-3 = "move-node-to-workspace D";
+        mode.main.binding.alt-shift-4 = "move-node-to-workspace W";
+        mode.main.binding.alt-shift-5 = "move-node-to-workspace S";
+        mode.main.binding.alt-shift-6 = "move-node-to-workspace O";
 
-        # Fullscreen (user preference: alt-f)
+        # Fullscreen
         mode.main.binding.alt-f = "fullscreen";
+
+        # Resize shortcuts in main mode (no need to enter resize mode)
+        mode.main.binding.alt-minus = "resize smart -50";
+        mode.main.binding.alt-equal = "resize smart +50";
+
+        # Screenshot to clipboard
+        mode.main.binding.alt-shift-s = "exec-and-forget screencapture -i -c";
 
         # Workspace & Monitor Management
         mode.main.binding.alt-tab = "workspace-back-and-forth";
@@ -95,6 +121,10 @@ in {
         mode.main.binding.alt-shift-semicolon = "mode service";
 
         # Resize Mode
+        mode.resize.binding.h = "resize width -50";
+        mode.resize.binding.j = "resize height +50";
+        mode.resize.binding.k = "resize height -50";
+        mode.resize.binding.l = "resize width +50";
         mode.resize.binding.b = ["balance-sizes" "mode main"];
         mode.resize.binding.equal = "resize smart +50";
         mode.resize.binding.minus = "resize smart -50";
@@ -114,24 +144,108 @@ in {
         mode.service.binding.shift-down = ["volume set 0" "mode main"];
 
         # Callbacks
-        on-focus-changed = ["move-mouse window-lazy-center" "exec-and-forget sketchybar --trigger aerospace_focus_change"];
+        on-focus-changed = ["move-mouse window-lazy-center" "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"];
         on-focused-monitor-changed = ["move-mouse monitor-lazy-center"];
+        on-mode-changed = ["exec-and-forget ${sketchybar} --trigger aerospace_mode_change"];
 
         # Multi-Monitor Workspace Assignment
         workspace-to-monitor-force-assignment = {
-          social = "main";
-          work = "main";
-          development = "main";
-          others = "main";
-          stream = "main";
+          B = "main";
+          C = "main";
+          D = "main";
+          W = "main";
+          S = "main";
+          O = "main";
         };
 
-        # Application-Specific Rules
+        # Application-Specific Rules - Floating apps
         on-window-detected = [
           {
             "if".app-id = "com.apple.finder";
             run = "layout floating";
           }
+          {
+            "if".app-id = "com.apple.systempreferences";
+            run = "layout floating";
+          }
+          {
+            "if".app-id = "com.apple.calculator";
+            run = "layout floating";
+          }
+          {
+            "if".app-id = "org.videolan.vlc";
+            run = "layout floating";
+          }
+          # ══════════════════════════════════════════════════════════════════
+          # App-to-workspace assignments
+          # ══════════════════════════════════════════════════════════════════
+          # To find an app's ID, run in terminal:
+          #   aerospace list-apps
+          # Or:
+          #   mdls -name kMDItemCFBundleIdentifier -r /Applications/AppName.app
+          #
+          # Template:
+          # {
+          #   "if".app-id = "com.example.app";
+          #   run = "move-node-to-workspace B";
+          #   check-further-callbacks = false;
+          # }
+          # ══════════════════════════════════════════════════════════════════
+
+          # ─── Workspace B (Browsers) ────────────────────────────────────────
+          {
+            "if".app-id = "com.google.Chrome";
+            run = "move-node-to-workspace B";
+            check-further-callbacks = false;
+          }
+          {
+            "if".app-id = "com.google.Chrome.canary";
+            run = "move-node-to-workspace B";
+            check-further-callbacks = false;
+          }
+          {
+            "if".app-id = "org.chromium.Chromium";
+            run = "move-node-to-workspace B";
+            check-further-callbacks = false;
+          }
+          {
+            "if".app-id = "org.mozilla.firefox";
+            run = "move-node-to-workspace B";
+            check-further-callbacks = false;
+          }
+          {
+            "if".app-id = "com.brave.Browser";
+            run = "move-node-to-workspace B";
+            check-further-callbacks = false;
+          }
+          {
+            "if".app-id = "com.apple.Safari";
+            run = "move-node-to-workspace B";
+            check-further-callbacks = false;
+          }
+
+          # ─── Workspace C (Coding) ──────────────────────────────────────────
+          {
+            "if".app-id = "com.google.aspect.Antigravity";
+            run = "move-node-to-workspace C";
+            check-further-callbacks = false;
+          }
+
+          # ─── Workspace D (Development) ─────────────────────────────────────
+          {
+            "if".app-id = "com.mitchellh.ghostty";
+            run = "move-node-to-workspace D";
+            check-further-callbacks = false;
+          }
+
+          # ─── Workspace W (Work) ────────────────────────────────────────────
+          # Examples: Slack, Teams, Outlook
+
+          # ─── Workspace S (Social) ──────────────────────────────────────────
+          # Examples: Signal, Telegram, Discord, Messages
+
+          # ─── Workspace O (Other) ───────────────────────────────────────────
+          # Examples: Mail, Obsidian, Notes, Calendar, Notion
         ];
 
         start-at-login = true;
