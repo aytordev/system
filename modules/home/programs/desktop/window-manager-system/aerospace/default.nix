@@ -61,11 +61,7 @@ in {
         gaps.inner.vertical = 4;
         gaps.outer.left = 2;
         gaps.outer.bottom = 2;
-        gaps.outer.top = [
-          {"monitor"."built-in" = 4;}
-          {"monitor"."main" = 4;}
-          32
-        ];
+        gaps.outer.top = 32;
         gaps.outer.right = 2;
         key-mapping.preset = "qwerty";
 
