@@ -31,13 +31,14 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [pkgs.protonmail-bridge];
+    home.packages = [pkgs.protonmail-bridge];
 
     # Service configuration
     # IMPORTANT: ProtonMail Bridge must be configured interactively before this service will work.
     # Run `protonmail-bridge` manually first to login and set up your account.
-    launchd.user.agents.protonmail-bridge = {
-      serviceConfig = {
+    launchd.agents.protonmail-bridge = {
+      enable = true;
+      config = {
         ProgramArguments =
           [
             "${pkgs.protonmail-bridge}/bin/protonmail-bridge"
@@ -53,11 +54,11 @@ in {
         KeepAlive = true;
         RunAtLoad = true;
         ProcessType = "Background";
-        StandardOutPath = "/tmp/protonmail-bridge.log";
-        StandardErrorPath = "/tmp/protonmail-bridge-error.log";
+        StandardOutPath = "${config.xdg.cacheHome}/protonmail-bridge.log";
+        StandardErrorPath = "${config.xdg.cacheHome}/protonmail-bridge-error.log";
         EnvironmentVariables = {
           # ProtonMail Bridge stores its configuration in ~/.config/protonmail/bridge-v3
-          HOME = "/Users/${config.system.primaryUser}";
+          HOME = config.home.homeDirectory;
         };
       };
     };

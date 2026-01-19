@@ -113,6 +113,10 @@ in
         };
       };
 
+      services = {
+        protonmail-bridge = mkDefault enabled;
+      };
+
       system.input.enable = lib.mkDefault pkgs.stdenv.hostPlatform.isDarwin;
     };
 
