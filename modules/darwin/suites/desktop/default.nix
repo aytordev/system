@@ -20,8 +20,7 @@ in
     aytordev = {
       # Enable log rotation for desktop services
       services = {
-        protonmail-bridge = mkDefault enabled;
-        openssh = mkDefault enabled;
+        jankyborders = mkDefault enabled;
       };
 
       programs.desktop.bars.sketchybar = mkDefault disabled;
