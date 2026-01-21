@@ -5,36 +5,26 @@
 }:
 let
   inherit (lib) mkIf mkOption mkEnableOption;
-  inherit (lib.types) enum float;
+  inherit (lib.types) enum float nullOr;
 
   cfg = config.aytordev.services.jankyborders;
+  themeCfg = config.aytordev.theme;
 
-  # Kanagawa color schemes for borders
-  themes = {
-    wave = {
-      active = "0xff7e9cd8";   # crystalBlue
-      inactive = "0xff2a2a37"; # sumiInk4
-    };
-    dragon = {
-      active = "0xff8ba4b0";   # dragonBlue2
-      inactive = "0xff282727"; # dragonBlack4
-    };
-    lotus = {
-      active = "0xff4d699b";   # lotusBlue4
-      inactive = "0xffe7dba0"; # lotusWhite4
-    };
-  };
-
-  selectedTheme = themes.${cfg.theme};
+  # Get colors from central theme palette
+  palette = themeCfg.palette;
 in
 {
   options.aytordev.services.jankyborders = {
     enable = mkEnableOption "JankyBorders window border highlighting";
 
-    theme = mkOption {
-      type = enum ["wave" "dragon" "lotus"];
-      default = "wave";
-      description = "Kanagawa theme variant to use for border colors.";
+    # Theme override (optional - uses global theme by default)
+    themeOverride = mkOption {
+      type = nullOr (enum ["wave" "dragon" "lotus"]);
+      default = null;
+      description = ''
+        Override the global Kanagawa theme variant for JankyBorders only.
+        If null (default), uses the global theme from aytordev.theme.variant.
+      '';
     };
 
     width = mkOption {
@@ -58,8 +48,9 @@ in
         style = cfg.style;
         width = cfg.width;
         hidpi = "off";
-        active_color = selectedTheme.active;
-        inactive_color = selectedTheme.inactive;
+        # Use accent color for active, border color for inactive
+        active_color = palette.accent.sketchybar;
+        inactive_color = palette.border.sketchybar;
       };
     };
   };
