@@ -17,7 +17,7 @@ in
   config = mkIf cfg.enable {
     homebrew = {
       casks = [
-        # "spotify"
+        "spotify"
       ];
       masApps = mkIf config.aytordev.tools.homebrew.masEnable {
         # TODO: Add Mac App Store apps

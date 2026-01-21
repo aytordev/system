@@ -18,6 +18,12 @@ in
 
   config = mkIf cfg.enable {
     aytordev = {
+      theme = {
+        enable = true;
+        variant = "wave";
+        polarity = "dark";
+      };
+
       programs = {
         desktop = {
           bars = {
@@ -37,6 +43,10 @@ in
             aerospace.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
           };
         };
+      };
+
+      services = {
+        jankyborders = enabled;
       };
     };
 

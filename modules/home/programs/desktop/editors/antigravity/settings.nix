@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  config,
   ...
 }: {
   # Breadcrumbs
@@ -160,8 +161,8 @@
   # Workbench
   "workbench.editor.enablePreviewFromQuickOpen" = true;
   "workbench.editor.tabCloseButton" = "left";
-  "workbench.colorTheme" = "Kanagawa Wave";
-  "workbench.preferredDarkColorTheme" = "Kanagawa Wave";
+  "workbench.colorTheme" = config.aytordev.theme.appTheme.capitalized;
+  "workbench.preferredDarkColorTheme" = config.aytordev.theme.appTheme.capitalized;
   "workbench.preferredLightColorTheme" = "Kanagawa Lotus";
   "workbench.list.horizontalScrolling" = true;
   "workbench.panel.defaultLocation" = "right";

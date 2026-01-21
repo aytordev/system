@@ -6,6 +6,7 @@
 }:
 let
   inherit (lib) mkIf;
+  themeCfg = config.aytordev.theme;
 
   cfg = config.aytordev.programs.terminal.tools.tmux;
 
@@ -45,7 +46,7 @@ in
         {
           plugin = kanagawa;
           extraConfig = /* Bash */ ''
-            set -g @kanagawa-theme 'Kanagawa'
+            set -g @kanagawa-theme '${themeCfg.variant}'
             set -g @kanagawa-plugins "git cpu-usage ram-usage"
             set -g @kanagawa-ignore-window-colors true
           '';

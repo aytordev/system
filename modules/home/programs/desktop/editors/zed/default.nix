@@ -6,6 +6,7 @@
 } @ args: let
   pkgs-stable = args.pkgs-stable or pkgs;
   inherit (lib) mkEnableOption mkIf;
+  themeCfg = config.aytordev.theme;
 
   cfg = config.aytordev.programs.desktop.editors.zed;
 in {
@@ -44,7 +45,7 @@ in {
           edit_prediction_provider = "zed";
         };
         base_keymap = "VSCode";
-        theme = "Kanagawa Wave";
+        theme = themeCfg.appTheme.capitalized;
         ui_font_size = 16;
         buffer_font_size = 18;
         # Finder model width

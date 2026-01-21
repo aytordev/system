@@ -8,6 +8,7 @@
   inherit (lib) mkIf;
   inherit (inputs) yazi-flavors;
   cfg = config.aytordev.programs.terminal.tools.yazi;
+  themeCfg = config.aytordev.theme;
 in {
   options.aytordev.programs.terminal.tools.yazi = {
     enable = lib.mkEnableOption "yazi";
@@ -39,9 +40,11 @@ in {
         (import ./keymap/tasks.nix)
       ];
       flavors = {
-        dark = ./flavors/kanagawa-wave.yazi;
-        light = ./flavors/kanagawa-lotus.yazi;
+        kanagawa-wave = ./flavors/kanagawa-wave.yazi;
+        kanagawa-dragon = ./flavors/kanagawa-dragon.yazi;
+        kanagawa-lotus = ./flavors/kanagawa-lotus.yazi;
       };
+      theme.flavor.use = themeCfg.appTheme.kebab;
       plugins = {
         "arrow-parent" = ./plugins/arrow-parent.yazi;
         inherit

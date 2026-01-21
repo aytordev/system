@@ -6,6 +6,9 @@
 }: let
   inherit (lib) mkIf;
   cfg = config.aytordev.programs.terminal.tools.zellij;
+  themeCfg = config.aytordev.theme;
+  palette = themeCfg.palette;
+
   zns = "zellij -s $(basename $(pwd)) options --default-cwd $(pwd)";
   zas = "zellij a $(basename $(pwd))";
   zo = ''
@@ -55,19 +58,19 @@ in {
             strider.path = "strider";
             compact-bar.path = "compact-bar";
           };
-          theme = "kanagawa-wave";
-          themes.kanagawa-wave = {
-            bg = "#1f1f28";
-            fg = "#dcd7ba";
-            red = "#c34043";
-            green = "#76946a";
-            yellow = "#c0a36e";
-            blue = "#7e9cd8";
-            magenta = "#957fb8";
-            orange = "#ffa066";
-            cyan = "#6a9589";
-            black = "#16161d";
-            white = "#c8c093";
+          theme = themeCfg.appTheme.kebab;
+          themes."${themeCfg.appTheme.kebab}" = {
+            bg = palette.bg.hex;
+            fg = palette.fg.hex;
+            red = (palette.autumnRed or palette.dragonRed or palette.lotusRed).hex;
+            green = (palette.autumnGreen or palette.dragonGreen or palette.lotusGreen).hex;
+            yellow = (palette.boatYellow2 or palette.dragonYellow or palette.lotusYellow).hex;
+            blue = palette.accent.hex;
+            magenta = (palette.oniViolet or palette.dragonPink or palette.lotusViolet1).hex;
+            orange = (palette.surimiOrange or palette.dragonOrange or palette.lotusOrange).hex;
+            cyan = (palette.waveAqua1 or palette.dragonAqua or palette.lotusTeal1).hex;
+            black = palette.bg_dim.hex;
+            white = (palette.oldWhite or palette.dragonGray or palette.lotusGray2).hex;
           };
         };
       };

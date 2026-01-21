@@ -5,6 +5,8 @@
   ...
 }: let
   cfg = config.aytordev.programs.terminal.tools.starship;
+  themeCfg = config.aytordev.theme;
+  palette = themeCfg.palette;
   xdgConfigHome = "${config.xdg.configHome}";
   xdgCacheHome = "${config.xdg.cacheHome}";
   starshipConfigDir = "${xdgConfigHome}/starship";
@@ -62,88 +64,32 @@
 
   # Palettes extracted for maintainability
   palettes = {
-    gentleman = {
-      text = "#F3F6F9";
-      red = "#CB7C94";
-      green = "#B7CC85";
-      yellow = "#FFE066";
-      blue = "#7FB4CA";
-      mauve = "#A3B5D6";
-      pink = "#FF8DD7";
-      teal = "#7AA89F";
-      peach = "#DEBA87";
-      subtext0 = "#5C6170";
-      overlay0 = "#232A40";
-      rosewater = "#E0C15A";
-      flamingo = "#FF8DD7";
-      maroon = "#C4746E";
-      lavender = "#B99BF2";
-      subtext1 = "#8A8FA3";
-      overlay2 = "#313342";
-      overlay1 = "#191E28";
-      surface2 = "#27345C";
-      surface1 = "#232A40";
-      surface0 = "#191E28";
-      base = "none";
-      mantle = "#06080f";
-      crust = "#06080f";
-    };
-
-    catppuccin_mocha = {
-      rosewater = "#f5e0dc";
-      flamingo = "#f2cdcd";
-      pink = "#f5c2e7";
-      mauve = "#cba6f7";
-      red = "#f38ba8";
-      maroon = "#eba0ac";
-      peach = "#fab387";
-      yellow = "#f9e2af";
-      green = "#a6e3a1";
-      teal = "#94e2d5";
-      sky = "#89dceb";
-      sapphire = "#74c7ec";
-      blue = "#89b4fa";
-      lavender = "#b4befe";
-      text = "#cdd6f4";
-      subtext1 = "#bac2de";
-      subtext0 = "#a6adc8";
-      overlay2 = "#9399b2";
-      overlay1 = "#7f849c";
-      overlay0 = "#6c7086";
-      surface2 = "#585b70";
-      surface1 = "#45475a";
-      surface0 = "#313244";
-      base = "#1e1e2e";
-      mantle = "#181825";
-      crust = "#11111b";
-    };
-
-    kanagawa_wave = {
-      text = "#dcd7ba";       # fujiWhite
-      red = "#c34043";        # autumnRed
-      green = "#76946a";      # autumnGreen
-      yellow = "#c0a36e";     # boatYellow2
-      blue = "#7e9cd8";       # crystalBlue
-      magenta = "#957fb8";    # oniViolet
-      teal = "#6a9589";       # waveAqua1
-      peach = "#ffa066";      # surimiOrange
-      mauve = "#938aa9";      # springViolet2
-      pink = "#d27e99";       # sakuraPink
-      subtext0 = "#727169";   # fujiGray
-      subtext1 = "#c8c093";   # oldWhite
-      overlay0 = "#2a2a37";   # sumiInk4
-      overlay1 = "#363646";   # sumiInk5
-      overlay2 = "#54546d";   # sumiInk6
-      surface0 = "#16161d";   # sumiInk0
-      surface1 = "#1f1f28";   # sumiInk3
-      surface2 = "#2a2a37";   # sumiInk4
-      base = "#1f1f28";       # sumiInk3
-      mantle = "#16161d";     # sumiInk0
-      crust = "#090618";      # sumiInk1
-      lavender = "#7fb4ca";   # springBlue
-      rosewater = "#e6c384";  # carpYellow
-      flamingo = "#e82424";   # samuraiRed
-      maroon = "#c4746e";     # waveRed
+    kanagawa = {
+      text = palette.fg.hex;
+      red = (palette.autumnRed or palette.dragonRed or palette.lotusRed).hex;
+      green = (palette.autumnGreen or palette.dragonGreen or palette.lotusGreen).hex;
+      yellow = (palette.boatYellow2 or palette.dragonYellow or palette.lotusYellow).hex;
+      blue = palette.accent.hex;
+      magenta = (palette.oniViolet or palette.dragonPink or palette.lotusViolet1).hex;
+      teal = (palette.waveAqua1 or palette.dragonAqua or palette.lotusTeal1).hex;
+      peach = (palette.surimiOrange or palette.dragonOrange or palette.lotusOrange).hex;
+      mauve = (palette.springViolet2 or palette.dragonViolet or palette.lotusBlue5).hex;
+      pink = (palette.sakuraPink or palette.dragonPink or palette.lotusPink).hex;
+      subtext0 = palette.fg_dim.hex;
+      subtext1 = (palette.oldWhite or palette.dragonGray or palette.lotusGray2).hex;
+      overlay0 = palette.bg_gutter.hex;
+      overlay1 = (palette.sumiInk5 or palette.dragonBlack5 or palette.lotusWhite5).hex;
+      overlay2 = (palette.sumiInk6 or palette.dragonBlack6 or palette.lotusBlue3).hex;
+      surface0 = palette.bg_dim.hex;
+      surface1 = palette.bg.hex;
+      surface2 = palette.bg_gutter.hex;
+      base = palette.bg.hex;
+      mantle = palette.bg_dim.hex;
+      crust = (palette.sumiInk1 or palette.dragonBlack1 or palette.lotusWhite1).hex;
+      lavender = (palette.springBlue or palette.dragonBlue or palette.lotusBlue2).hex;
+      rosewater = (palette.carpYellow or palette.dragonYellow or palette.lotusYellow4).hex;
+      flamingo = (palette.samuraiRed or palette.dragonRed or palette.lotusRed3).hex;
+      maroon = (palette.waveRed or palette.dragonRed or palette.lotusRed2).hex;
     };
   };
 
@@ -327,9 +273,9 @@ in {
     enable = lib.mkEnableOption "Starship prompt";
 
     palette = lib.mkOption {
-      type = lib.types.enum ["gentleman" "catppuccin_mocha" "kanagawa_wave"];
-      default = "kanagawa_wave";
-      description = "Color palette to use for Starship prompt";
+      type = lib.types.str;
+      default = "kanagawa";
+      description = "Color palette to use for Starship prompt. Defaults to 'kanagawa' which adapts to the global theme variant.";
     };
 
     enableZshIntegration = lib.mkOption {
