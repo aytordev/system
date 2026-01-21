@@ -38,6 +38,10 @@ in
           };
         };
       };
+
+      services = {
+        jankyborders = enabled;
+      };
     };
 
     home.packages =
