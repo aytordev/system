@@ -7,6 +7,7 @@
 }: let
   inherit (lib) mkEnableOption mkIf;
 
+  themeCfg = config.aytordev.theme;
   cfg = config.aytordev.programs.desktop.editors.vscode;
 in {
   options.aytordev.programs.desktop.editors.vscode = {
@@ -197,8 +198,8 @@ in {
           # Workbench
           "workbench.editor.enablePreviewFromQuickOpen" = true;
           "workbench.editor.tabCloseButton" = "left";
-          "workbench.colorTheme" = lib.mkDefault "Kanagawa Wave";
-          "workbench.preferredDarkColorTheme" = lib.mkDefault "Kanagawa Wave";
+          "workbench.colorTheme" = lib.mkDefault themeCfg.appTheme.capitalized;
+          "workbench.preferredDarkColorTheme" = lib.mkDefault themeCfg.appTheme.capitalized;
           "workbench.preferredLightColorTheme" = lib.mkDefault "Kanagawa Lotus";
           "workbench.list.horizontalScrolling" = true;
           "workbench.panel.defaultLocation" = "right";
