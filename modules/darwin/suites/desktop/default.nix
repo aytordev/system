@@ -23,7 +23,7 @@ in
         jankyborders = mkDefault enabled;
       };
 
-      programs.desktop.bars.sketchybar = mkDefault disabled;
+      programs.desktop.bars.sketchybar = mkDefault enabled;
     };
 
     homebrew = {
