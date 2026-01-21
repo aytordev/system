@@ -57,12 +57,12 @@ in {
         ];
 
         # Dynamic gaps per monitor
-        gaps.inner.horizontal = 4;
-        gaps.inner.vertical = 4;
-        gaps.outer.left = 2;
-        gaps.outer.bottom = 2;
+        gaps.inner.horizontal = 10;
+        gaps.inner.vertical = 10;
+        gaps.outer.left = 7;
+        gaps.outer.bottom = 7;
         gaps.outer.top = 32;
-        gaps.outer.right = 2;
+        gaps.outer.right = 7;
         key-mapping.preset = "qwerty";
 
         # Workspace Navigation - Semantic Names
@@ -222,10 +222,20 @@ in {
 
           # ─── Workspace C (Coding) ──────────────────────────────────────────
           {
-            "if".app-id = "com.google.aspect.Antigravity";
+            "if".app-id = "com.google.antigravity";
             run = "move-node-to-workspace C";
             check-further-callbacks = false;
           }
+          {
+            "if".app-id = "dev.zed.Zed";
+            run = "move-node-to-workspace C";
+            check-further-callbacks = false;
+          }
+          # {
+          #   "if".app-id = "com.microsoft.VSCode";
+          #   run = "move-node-to-workspace C";
+          #   check-further-callbacks = false;
+          # }
 
           # ─── Workspace D (Development) ─────────────────────────────────────
           {
