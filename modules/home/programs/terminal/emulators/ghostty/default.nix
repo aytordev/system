@@ -140,7 +140,7 @@ in {
       type = types.nullOr (types.enum availableThemes);
       default =
         if availableThemes != []
-        then "kanagawa-wave"
+        then config.aytordev.theme.appTheme.kebab
         else null;
       description = "Theme to use for Ghostty. Available themes: ${builtins.concatStringsSep ", " availableThemes}";
     };
