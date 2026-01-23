@@ -1,74 +1,40 @@
 ---
 name: aytordev-theming
-description: "aytordev theme system patterns. Use when configuring themes, working with Stylix or Catppuccin, or implementing theme-aware module configuration."
+description: "aytordev centralized theme system. Use when configuring modules to consume the central Kanagawa theme provider."
+license: Complete terms in LICENSE.txt
+metadata:
+  author: aytordev
+  version: "1.1.0"
 ---
 
 # Theme System
 
-## Theme Hierarchy
+aytordev centralized theme system. Use when configuring modules to consume the central Kanagawa theme provider.
 
-Priority (highest to lowest):
+## Rule Categories by Priority
 
-1. **Manual theme config** - Explicit per-module settings
-2. **Catppuccin modules** - Catppuccin-specific integration
-3. **Stylix** - Base16 theming system
+| Priority | Category        | Impact   | Prefix       |
+| -------- | --------------- | -------- | ------------ |
+| 1        | Core Principles | CRITICAL | `principles` |
+| 2        | Consumption     | HIGH     | `usage`      |
+| 3        | Implementation  | MEDIUM   | `impl`       |
 
-## Key Principle
+## Quick Reference
 
-> Prefer specific theme module customizations over Stylix defaults
+### 1. Core Principles (CRITICAL)
 
-## Stylix Base
+- `principles-centralized` - Centralized Source of Truth
 
-Stylix provides base theming:
+### 2. Consumption (HIGH)
 
-```nix
-stylix = {
-  enable = true;
-  image = ./wallpaper.png;
-  base16Scheme = "catppuccin-mocha";
-  polarity = "dark";
-};
-```
+- `usage-palette` - Using the Palette
+- `usage-variants` - App Themes & Variants
 
-## Catppuccin Overrides
+### 3. Implementation (MEDIUM)
 
-Many apps have dedicated Catppuccin modules:
+- `impl-helpers` - Library Helpers
+- `impl-polarity` - Polarity Logic
 
-```nix
-programs.kitty = {
-  enable = true;
-  catppuccin.enable = true;  # Uses catppuccin module
-};
+## Full Compiled Document
 
-# Disable stylix for this app
-stylix.targets.kitty.enable = false;
-```
-
-## Theme-Aware Conditionals
-
-```nix
-let
-  isDark = config.stylix.polarity == "dark";
-in
-{
-  programs.bat.config.theme = lib.mkIf isDark "Catppuccin-mocha";
-}
-```
-
-## Manual Theme Paths
-
-For apps without theme modules:
-
-```nix
-xdg.configFile."app/theme.conf".source =
-  if config.stylix.polarity == "dark"
-  then ./themes/dark.conf
-  else ./themes/light.conf;
-```
-
-## Best Practices
-
-1. **Check for Catppuccin module first** - Many apps have dedicated support
-2. **Disable conflicting Stylix targets** when using specific theme modules
-3. **Use mkIf for theme conditionals** - Clean and readable
-4. **Test both polarities** when implementing theme-aware config
+For the complete guide with all rules expanded: `AGENTS.md`

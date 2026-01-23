@@ -1,82 +1,38 @@
 ---
 name: nix-naming
-description: "Nix naming conventions and code style. Use when naming variables, files, or organizing attributes in Nix code."
+description: "Nix naming conventions and code style. Guide for consistent naming conventions in Nix (camelCase variables, kebab-case files)."
+license: Complete terms in LICENSE.txt
+metadata:
+  author: nix
+  version: "1.0.0"
 ---
 
 # Naming Conventions
 
+Nix naming conventions and code style. Use when naming variables, files, or organizing attributes in Nix code.
+
+## Rule Categories by Priority
+
+| Priority | Category     | Impact   | Prefix  |
+| -------- | ------------ | -------- | ------- |
+| 1        | Variables    | CRITICAL | `vars`  |
+| 2        | Files        | HIGH     | `files` |
+| 3        | Organization | MEDIUM   | `code`  |
+
 ## Quick Reference
 
-| Element     | Style      | Examples                            |
-| ----------- | ---------- | ----------------------------------- |
-| Variables   | camelCase  | `cfg`, `userName`, `enableFeature`  |
-| Files/dirs  | kebab-case | `my-module.nix`, `window-managers/` |
-| Constants   | UPPER_CASE | `MAX_RETRIES`, `DEFAULT_PORT`       |
-| Cfg pattern | Always use | `cfg = config.namespace.module;`    |
+### 1. Variables (CRITICAL)
 
-## Variables
+- `vars-casing` - Variable Naming
 
-```nix
-let
-  # Correct - camelCase
-  userName = "khaneliman";
-  serverHostname = "myserver";
-  enableAutoStart = true;
+### 2. Files (HIGH)
 
-  # Wrong
-  user_name = "...";      # snake_case
-  UserName = "...";       # PascalCase
-in
-```
+- `files-casing` - File Naming
 
-## The cfg Pattern
+### 3. Organization (MEDIUM)
 
-Always use this pattern:
+- `code-organization` - Attribute Organization
 
-```nix
-let
-  cfg = config.aytordev.programs.myApp;
-in
-{
-  config = lib.mkIf cfg.enable { ... };
-}
-```
+## Full Compiled Document
 
-## File Naming
-
-```
-# Correct - kebab-case
-modules/home/programs/my-app/default.nix
-modules/nixos/services/my-service.nix
-
-# Wrong
-modules/home/programs/myApp/default.nix   # camelCase
-modules/nixos/services/my_service.nix    # snake_case
-```
-
-## Attribute Organization
-
-Group by function, then alphabetical:
-
-```nix
-{
-  # Options first
-  options.namespace.module = { ... };
-
-  # Config second
-  config = {
-    # Group related settings
-    programs.git = { ... };
-    programs.vim = { ... };
-
-    # Then packages
-    home.packages = [ ... ];
-  };
-}
-```
-
-## Formatting
-
-- Use `nixfmt` for consistent formatting
-- Prefer flat dot-notation: `services.nginx.enable = true`
-- Avoid deep nesting when flat works
+For the complete guide with all rules expanded: `AGENTS.md`
