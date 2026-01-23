@@ -1,105 +1,40 @@
 ---
 name: aytordev-options-design
-description: "aytordev option namespacing and design patterns. Use when defining module options, accessing configuration values, or understanding the aytordev.* namespace convention."
+description: "aytordev option namespacing and design patterns. Guide for defining and using options in aytordev's system, enforcing the aytordev.* namespace."
+license: Complete terms in LICENSE.txt
+metadata:
+  author: aytordev
+  version: "1.0.0"
 ---
 
 # Options Design
 
-## Namespace Convention
+aytordev option namespacing and design patterns. Use when defining module options, accessing configuration values, or understanding the aytordev.\* namespace convention.
 
-ALL options must be under `aytordev.*`:
+## Rule Categories by Priority
 
-```nix
-options.aytordev.{category}.{module}.{option} = { ... };
-```
+| Priority | Category       | Impact   | Prefix      |
+| -------- | -------------- | -------- | ----------- |
+| 1        | Namespace      | CRITICAL | `namespace` |
+| 2        | Implementation | HIGH     | `impl`      |
+| 3        | Context        | MEDIUM   | `context`   |
 
-### Examples
+## Quick Reference
 
-```nix
-options.aytordev.programs.terminal.tools.git.enable = ...
-options.aytordev.desktop.windowManagers.hyprland.enable = ...
-options.aytordev.security.sops.enable = ...
-options.aytordev.user.name = ...
-```
+### 1. Namespace (CRITICAL)
 
-## Standard Option Pattern
+- `namespace-convention` - Namespace Convention
 
-```nix
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-let
-  inherit (lib) mkIf mkEnableOption;
+### 2. Implementation (HIGH)
 
-  cfg = config.aytordev.programs.myApp;
-in
-{
-  options.aytordev.programs.myApp = {
-    enable = mkEnableOption "My App";
-  };
+- `impl-helpers` - Option Helpers
+- `impl-pattern` - Standard Option Pattern
 
-  config = mkIf cfg.enable {
-    # configuration here
-  };
-}
-```
+### 3. Context (MEDIUM)
 
-## Accessing User Context
+- `context-os` - osConfig Access
+- `context-user` - Accessing User Context
 
-```nix
-let
-  inherit (config.aytordev) user;
-in
-{
-  # Use user.name, user.email, user.fullName
-  programs.git.userName = user.fullName;
-}
-```
+## Full Compiled Document
 
-## Reduce Repetition
-
-Use shared top-level options:
-
-```nix
-# Define once at top level
-options.aytordev.theme.name = mkOption { ... };
-
-# Reference throughout
-config = mkIf (cfg.theme.name == "catppuccin") { ... };
-```
-
-## Option Helpers
-
-aytordev provides helpers in `lib.aytordev`:
-
-```nix
-inherit (lib.aytordev) mkOpt enabled disabled;
-
-# Quick enable/disable
-programs.git = enabled;   # { enable = true; }
-programs.foo = disabled;  # { enable = false; }
-
-# Custom option with default
-userName = mkOpt types.str "default" "User name";
-```
-
-## osConfig Access
-
-When home modules need system config:
-
-```nix
-{
-  config,
-  lib,
-  osConfig ? { },  # With fallback
-  ...
-}:
-
-# Always guard with fallback
-config = lib.mkIf (osConfig.aytordev.security.sops.enable or false) {
-  # ...
-};
-```
+For the complete guide with all rules expanded: `AGENTS.md`
