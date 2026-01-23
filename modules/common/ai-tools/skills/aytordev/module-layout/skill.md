@@ -1,70 +1,39 @@
 ---
 name: aytordev-module-layout
-description: "aytordev directory structure and module placement. Use when creating new modules, deciding where files belong, or understanding the modules/ organization. Covers platform separation (nixos/darwin/home/common) and auto-discovery."
+description: "aytordev directory structure and module placement. Guide for understanding the modules directory structure and placement in aytordev's system."
+license: Complete terms in LICENSE.txt
+metadata:
+  author: aytordev
+  version: "1.0.0"
 ---
 
 # Module Layout
 
-## Directory Structure
+aytordev directory structure and module placement. Use when creating new modules, deciding where files belong, or understanding the modules/ organization. Covers platform separation (nixos/darwin/home/common) and auto-discovery.
 
-```
-modules/
-├── nixos/      # NixOS system-level (Linux only)
-├── darwin/     # macOS system-level (nix-darwin)
-├── home/       # Home Manager user-space (cross-platform)
-└── common/     # Shared functionality (imported by others)
-```
+## Rule Categories by Priority
 
-## Where to Place Modules
-
-| Module Type            | Location          | Example                             |
-| ---------------------- | ----------------- | ----------------------------------- |
-| System service (Linux) | `modules/nixos/`  | `nixos/services/docker/`            |
-| System service (macOS) | `modules/darwin/` | `darwin/services/yabai/`            |
-| User application       | `modules/home/`   | `home/programs/terminal/tools/git/` |
-| Cross-platform shared  | `modules/common/` | `common/ai-tools/`                  |
-
-## Home Module Categories
-
-```
-modules/home/
-├── programs/
-│   ├── graphical/        # GUI programs
-│   │   ├── browsers/
-│   │   ├── editors/
-│   │   └── tools/
-│   └── terminal/         # CLI programs
-│       ├── editors/
-│       ├── shells/
-│       └── tools/
-├── services/             # User services
-├── desktop/              # Desktop environment config
-└── suites/               # Grouped functionality
-```
-
-## Auto-Discovery
-
-Modules are automatically imported via `importModulesRecursive`:
-
-- Place module files in appropriate directories
-- No manual imports needed in most cases
-- Enable modules via options system: `aytordev.programs.*.enable = true`
-
-## Common Module Import
-
-Access common modules from platform-specific ones:
-
-```nix
-# In a home or nixos module
-imports = [
-  (lib.getFile "modules/common/shared-config")
-];
-```
+| Priority | Category  | Impact   | Prefix      |
+| -------- | --------- | -------- | ----------- |
+| 1        | Structure | CRITICAL | `structure` |
+| 2        | Placement | HIGH     | `placement` |
+| 3        | Discovery | MEDIUM   | `discovery` |
 
 ## Quick Reference
 
-- **System config?** → `nixos/` or `darwin/`
-- **User app?** → `home/programs/`
-- **Shared logic?** → `common/`
-- **Desktop stuff?** → `home/desktop/`
-- **Grouped features?** → `suites/`
+### 1. Structure (CRITICAL)
+
+- `structure-directories` - Directory Structure
+
+### 2. Placement (HIGH)
+
+- `placement-home` - Home Module Categories
+- `placement-types` - Module Placement
+
+### 3. Discovery (MEDIUM)
+
+- `discovery-auto` - Auto-Discovery
+
+## Full Compiled Document
+
+For the complete guide with all rules expanded: `AGENTS.md`
