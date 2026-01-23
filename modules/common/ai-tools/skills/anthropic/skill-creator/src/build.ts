@@ -36,15 +36,15 @@ function generateMarkdown(
     references?: string[];
   },
 ): string {
-  let md = `# React Best Practices\n\n`;
+  let md = `# Skill Creator Guidelines\n\n`;
   md += `**Version ${metadata.version}**  \n`;
   md += `${metadata.organization}  \n`;
   md += `${metadata.date}\n\n`;
   md += `> **Note:**  \n`;
-  md += `> This document is mainly for agents and LLMs to follow when maintaining,  \n`;
-  md += `> generating, or refactoring React and Next.js codebases at Vercel. Humans  \n`;
-  md += `> may also find it useful, but guidance here is optimized for automation  \n`;
-  md += `> and consistency by AI-assisted workflows.\n\n`;
+  md += `> This document is mainly for agents and LLMs to follow when creating,  \n`;
+  md += `> maintaining, or refactoring AI agent skills. Humans may also find  \n`;
+  md += `> it useful, but guidance here is optimized for automation and  \n`;
+  md += `> consistency by AI-assisted workflows.\n\n`;
   md += `---\n\n`;
   md += `## Abstract\n\n`;
   md += `${metadata.abstract}\n\n`;
@@ -241,13 +241,12 @@ async function build() {
     } catch {
       metadata = {
         version: "1.0",
-        organization: "Vercel Engineering",
+        organization: "aytordev's",
         date: new Date().toLocaleDateString("en-US", {
           month: "long",
           year: "numeric",
         }),
-        abstract:
-          "Performance optimization guide for React and Next.js applications, ordered by impact.",
+        abstract: "Guide for creating effective AI agent skills.",
       };
     }
 
