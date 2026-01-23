@@ -1,0 +1,82 @@
+[
+  {
+    "ruleId": "",
+    "ruleTitle": "Theme-Aware Conditionals",
+    "type": "bad",
+    "code": "",
+    "language": "typescript",
+    "description": "Incorrect example for Theme-Aware Conditionals"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Theme-Aware Conditionals",
+    "type": "good",
+    "code": "let\n  isDark = config.stylix.polarity == \"dark\";\nin\n{\n  # Dynamically switch theme string\n  programs.bat.config.theme = lib.mkIf isDark \"Catppuccin-mocha\";\n}",
+    "language": "nix",
+    "description": "Correct example for Theme-Aware Conditionals"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Manual Theme Paths",
+    "type": "bad",
+    "code": "",
+    "language": "typescript",
+    "description": "Incorrect example for Manual Theme Paths"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Manual Theme Paths",
+    "type": "good",
+    "code": "xdg.configFile.\"app/theme.conf\".source =\n  if config.stylix.polarity == \"dark\"\n  then ./themes/dark.conf\n  else ./themes/light.conf;",
+    "language": "nix",
+    "description": "Correct example for Manual Theme Paths"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Catppuccin Module Overrides",
+    "type": "bad",
+    "code": "",
+    "language": "typescript",
+    "description": "Incorrect example for Catppuccin Module Overrides"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Catppuccin Module Overrides",
+    "type": "good",
+    "code": "programs.kitty = {\n  enable = true;\n  catppuccin.enable = true;  # Use dedicated module\n};\n\n# Explicitly disable stylix for this target\nstylix.targets.kitty.enable = false;",
+    "language": "nix",
+    "description": "Correct example for Catppuccin Module Overrides"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Stylix Base Configuration",
+    "type": "bad",
+    "code": "",
+    "language": "typescript",
+    "description": "Incorrect example for Stylix Base Configuration"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Stylix Base Configuration",
+    "type": "good",
+    "code": "stylix = {\n  enable = true;\n  image = ./wallpaper.png;\n  base16Scheme = \"catppuccin-mocha\";\n  polarity = \"dark\";\n};",
+    "language": "nix",
+    "description": "Correct example for Stylix Base Configuration"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Theme Hierarchy",
+    "type": "bad",
+    "code": "",
+    "language": "typescript",
+    "description": "Incorrect example for Theme Hierarchy"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Theme Hierarchy",
+    "type": "good",
+    "code": "",
+    "language": "typescript",
+    "description": "Correct example for Theme Hierarchy"
+  }
+]
