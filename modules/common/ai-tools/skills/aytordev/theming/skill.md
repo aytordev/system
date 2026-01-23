@@ -1,39 +1,39 @@
 ---
 name: aytordev-theming
-description: "aytordev theme system patterns. Use when configuring themes, working with Stylix or Catppuccin, or implementing theme-aware module configuration."
+description: "aytordev centralized theme system. Use when configuring modules to consume the central Kanagawa theme provider."
 license: Complete terms in LICENSE.txt
 metadata:
   author: aytordev
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Theme System
 
-aytordev theme system patterns. Use when configuring themes, working with Stylix or Catppuccin, or implementing theme-aware module configuration.
+aytordev centralized theme system. Use when configuring modules to consume the central Kanagawa theme provider.
 
 ## Rule Categories by Priority
 
-| Priority | Category        | Impact   | Prefix        |
-| -------- | --------------- | -------- | ------------- |
-| 1        | Core Principles | CRITICAL | `principles`  |
-| 2        | Integration     | HIGH     | `integration` |
-| 3        | Implementation  | MEDIUM   | `impl`        |
+| Priority | Category        | Impact   | Prefix       |
+| -------- | --------------- | -------- | ------------ |
+| 1        | Core Principles | CRITICAL | `principles` |
+| 2        | Consumption     | HIGH     | `usage`      |
+| 3        | Implementation  | MEDIUM   | `impl`       |
 
 ## Quick Reference
 
 ### 1. Core Principles (CRITICAL)
 
-- `principles-hierarchy` - Theme Hierarchy
+- `principles-centralized` - Centralized Source of Truth
 
-### 2. Integration (HIGH)
+### 2. Consumption (HIGH)
 
-- `integration-catppuccin` - Catppuccin Module Overrides
-- `integration-stylix` - Stylix Base Configuration
+- `usage-palette` - Using the Palette
+- `usage-variants` - App Themes & Variants
 
 ### 3. Implementation (MEDIUM)
 
-- `impl-conditionals` - Theme-Aware Conditionals
-- `impl-manual` - Manual Theme Paths
+- `impl-helpers` - Library Helpers
+- `impl-polarity` - Polarity Logic
 
 ## Full Compiled Document
 

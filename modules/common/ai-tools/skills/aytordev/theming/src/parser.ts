@@ -204,7 +204,7 @@ export async function parseRuleFile(filePath: string): Promise<RuleFile> {
   const filename = basename(filePath);
   const sectionMap: Record<string, number> = {
     principles: 1,
-    integration: 2,
+    usage: 2,
     impl: 3,
   };
 

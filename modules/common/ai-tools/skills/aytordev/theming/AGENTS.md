@@ -21,13 +21,13 @@ Guide for configuring theming in aytordev's system using Stylix and Catppuccin.
 ## Table of Contents
 
 1. [Core Principles](#1-core-principles) — **CRITICAL**
-   - 1.1 [Theme Hierarchy](#11-theme-hierarchy)
-2. [Integration](#2-integration) — **HIGH**
-   - 2.1 [Catppuccin Module Overrides](#21-catppuccin-module-overrides)
-   - 2.2 [Stylix Base Configuration](#22-stylix-base-configuration)
+   - 1.1 [Centralized SOT (Source Of Truth)](#11-centralized-sot-source-of-truth)
+2. [Consumption](#2-consumption) — **HIGH**
+   - 2.1 [App Themes & Variants](#21-app-themes--variants)
+   - 2.2 [Using the Palette](#22-using-the-palette)
 3. [Implementation](#3-implementation) — **MEDIUM**
-   - 3.1 [Manual Theme Paths](#31-manual-theme-paths)
-   - 3.2 [Theme-Aware Conditionals](#32-theme-aware-conditionals)
+   - 3.1 [Library Helpers](#31-library-helpers)
+   - 3.2 [Polarity Logic](#32-polarity-logic)
 
 ---
 
@@ -35,94 +35,96 @@ Guide for configuring theming in aytordev's system using Stylix and Catppuccin.
 
 **Impact: CRITICAL**
 
-Hierarchy and key principles for theming.
+Centralized source of truth and provider/consumer pattern.
 
-### 1.1 Theme Hierarchy
+### 1.1 Centralized SOT (Source Of Truth)
 
 **Impact: MEDIUM**
 
-Understand the priority of theme configurations. Manual configuration always wins, followed by Catppuccin modules (if enabled), and finally Stylix defaults as the base.
+The `aytordev.theme` module is the single source of truth for all theming data. It abstracts the underlying colors (Kanagawa) and provides a unified API for all other modules to consume. Never hardcode colors or imports in individual modules.
 
 **Incorrect:**
 
-**Mixing Priorities without Intent**
+**Fragmented definitions**
 
-Relying on Stylix for everything while manually hacking specific colors in random places, leading to inconsistent states.
+Importing `colors.nix` directly in module files or defining local color variables like `blue = "#..."`.
 
 **Correct:**
 
-**Strict Hierarchy**
+```nix
+{ config, lib, ... }:
+let
+  cfg = config.aytordev.theme;
+in
+{
+  # Access palette through the central config
+  programs.foo.color = cfg.palette.accent.hex;
+}
+```
 
-1.  **Manual theme config**: Explicit per-module settings (Highest Priority).
+**Provider Consumption**
 
-2.  **Catppuccin modules**: Catppuccin-specific integration (Medium Priority).
-
-3.  **Stylix**: Base16 theming system (Lowest Priority / Default).
-
-_Principle_: Prefer specific theme module customizations over Stylix defaults. Only drop to Stylix when no specific integration exists.
+Consume `config.aytordev.theme` to access all theme data. This ensures consistent polarity and variant switching across the entire system.
 
 ---
 
-## 2. Integration
+## 2. Consumption
 
 **Impact: HIGH**
 
-Integrating Stylix and Catppuccin modules.
+Consuming the palette, variants, and application-specific theme names.
 
-### 2.1 Catppuccin Module Overrides
+### 2.1 App Themes & Variants
 
 **Impact: MEDIUM**
 
-Many apps have dedicated Catppuccin modules that offer better fidelity than Stylix's generic Base16 generation. When available, prefer the native Catppuccin module and disable Stylix for that specific target.
+For applications that need a named theme (e.g., "Kanagawa Wave" vs "kanagawa-wave"), use the convenience accessors in `config.aytordev.theme.appTheme`. This avoids string formatting errors.
 
 **Incorrect:**
 
-**Double Theming**
+**String Interpolation**
 
-Enabling both Stylix and the Catppuccin module for the same app, causing conflicts or unpredictable behavior.
+Manually constructing theme names like `"Kanagawa ${config.aytordev.theme.variant}"`.
 
 **Correct:**
 
 ```nix
-programs.kitty = {
-  enable = true;
-  catppuccin.enable = true;  # Use dedicated module
-};
+# Returns "Kanagawa Wave" or "Kanagawa Lotus"
+theme = config.aytordev.theme.appTheme.capitalized;
 
-# Explicitly disable stylix for this target
-stylix.targets.kitty.enable = false;
+# Returns "kanagawa-wave" or "kanagawa-lotus"
+theme = config.aytordev.theme.appTheme.kebab;
 ```
 
-**Exclusive Override**
+**Standardized Names**
 
-Enable the specific module, disable the generic one.
+Use the pre-calculated formats provided by the module.
 
-### 2.2 Stylix Base Configuration
+### 2.2 Using the Palette
 
 **Impact: MEDIUM**
 
-Stylix provides the base theming substrate (Base16). Use it to set the global "mood" (polarity, wallpaper, base scheme).
+The palette is exposed at `config.aytordev.theme.palette`. It provides semantic colors relative to the active variant (Wave/Dragon/Lotus) and polarity (Dark/Light). Do not switch on variants inside modules; rely on the palette to provide the correct color for the current state.
 
 **Incorrect:**
 
-**Redundant Definitions**
+**Manual Variant Switching**
 
-Defining fonts and colors manually in every single module, ignoring the centralized Stylix configuration.
+Using `if variant == "lotus"` inside a module configuration to select colors.
 
 **Correct:**
 
 ```nix
-stylix = {
-  enable = true;
-  image = ./wallpaper.png;
-  base16Scheme = "catppuccin-mocha";
-  polarity = "dark";
-};
+# BAD
+color = if config.aytordev.theme.variant == "lotus" then "#..." else "#...";
+
+# GOOD
+color = config.aytordev.theme.palette.bg.main.hex;
 ```
 
-**Centralized Base**
+**Semantic Access**
 
-Configure Stylix once to propagate defaults everywhere.
+Trust `theme.palette` to provide the correct color.
 
 ---
 
@@ -130,60 +132,61 @@ Configure Stylix once to propagate defaults everywhere.
 
 **Impact: MEDIUM**
 
-Practical implementation patterns and best practices.
+Using library helpers and handling polarity logic.
 
-### 3.1 Manual Theme Paths
-
-**Impact: MEDIUM**
-
-For applications without module support, rely on standard XDG paths and conditional sourcing.
-
-**Incorrect:**
-
-**Absolute Paths**
-
-Linking to files outside the nix store or using non-reproducible paths.
-
-**Correct:**
-
-```nix
-xdg.configFile."app/theme.conf".source =
-  if config.stylix.polarity == "dark"
-  then ./themes/dark.conf
-  else ./themes/light.conf;
-```
-
-**Conditional Source**
-
-Select the correct source file based on the system polarity.
-
-### 3.2 Theme-Aware Conditionals
+### 3.1 Library Helpers
 
 **Impact: MEDIUM**
 
-Use `config.stylix.polarity` to drive logic for apps that need manual handling (e.g., loading different config files or setting flags based on "dark" vs "light").
+Use `config.aytordev.theme.lib` for common transformations, such as converting hex colors to Sketchybar format (`0xff...`) or extracting subsets of the palette.
 
 **Incorrect:**
 
-**Hardcoded Themes**
+**Regex Magic**
 
-Hardcoding "dark" values in logic, requiring a code rewrite to switch to light mode.
+Manually replacing `#` with `0xff` using string manipulation functions in every module.
 
 **Correct:**
 
 ```nix
 let
-  isDark = config.stylix.polarity == "dark";
+  themeLib = config.aytordev.theme.lib;
+  accent = config.aytordev.theme.palette.accent.hex;
 in
 {
-  # Dynamically switch theme string
-  programs.bat.config.theme = lib.mkIf isDark "Catppuccin-mocha";
+  # Correctly formats as 0xffRRGGBB
+  color = themeLib.hexToSketchybar accent;
 }
 ```
 
-**Dynamic Logic**
+**Standard Functions**
 
-Derive state from `config.stylix.polarity` using standard lib functions.
+Use the provided helpers for consistency.
+
+### 3.2 Polarity Logic
+
+**Impact: MEDIUM**
+
+When you explicitly need to know if the theme is light or dark (e.g. for boolean flags), use `config.aytordev.theme.isLight`. This handles edge cases (like "lotus" variant implying light mode even if polarity wasn't explicitly set).
+
+**Incorrect:**
+
+**Fragile Checks**
+
+Checking `config.aytordev.theme.polarity == "light"` directly, which misses the case where variant="lotus" forces light mode.
+
+**Correct:**
+
+```nix
+programs.bat.config = {
+  # Some apps need a boolean flag for light mode
+  "--light" = lib.mkIf config.aytordev.theme.isLight;
+};
+```
+
+**Computed Boolean**
+
+Use the robust computed value.
 
 ---
 
