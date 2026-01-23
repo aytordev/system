@@ -1,69 +1,39 @@
 ---
 name: aytordev-config-layering
-description: "aytordev 7-level configuration hierarchy and customization strategy. Use when deciding where to put customizations, understanding override precedence, or working with host/user specific configs."
+description: "aytordev 7-level configuration hierarchy and customization strategy. Guide for understanding hierarchy and file structure in aytordev's system."
+license: Complete terms in LICENSE.txt
+metadata:
+  author: aytordev
+  version: "1.0.0"
 ---
 
 # Configuration Layering
 
-## 7-Level Hierarchy
+aytordev 7-level configuration hierarchy and customization strategy. Use when deciding where to put customizations, understanding override precedence, or working with host/user specific configs.
 
-From lowest to highest precedence:
+## Rule Categories by Priority
 
-1. **Common modules** - Cross-platform base functionality
-2. **Platform modules** - OS-specific (nixos/darwin)
-3. **Home modules** - User-space programs
-4. **Suite modules** - Grouped functionality with defaults
-5. **Archetype modules** - High-level use case profiles
-6. **Host configs** - Host-specific overrides
-7. **User configs** - User-specific customizations (highest priority)
+| Priority | Category       | Impact   | Prefix      |
+| -------- | -------------- | -------- | ----------- |
+| 1        | Hierarchy      | CRITICAL | `hierarchy` |
+| 2        | Structure      | HIGH     | `structure` |
+| 3        | Implementation | MEDIUM   | `impl`      |
 
-## Customization Strategy
+## Quick Reference
 
-| What to customize      | Where                                 |
-| ---------------------- | ------------------------------------- |
-| Host hardware/services | `systems/{arch}/{hostname}/`          |
-| Platform behavior      | `modules/nixos/` or `modules/darwin/` |
-| User programs          | `modules/home/`                       |
-| Personal preferences   | `homes/{arch}/{user@host}/`           |
+### 1. Hierarchy (CRITICAL)
 
-## Host Configuration
+- `hierarchy-levels` - 7-Level Hierarchy
 
-```
-systems/{arch}/{hostname}/
-├── default.nix       # Host-specific system config
-└── hardware.nix      # Hardware-specific settings
-```
+### 2. Structure (HIGH)
 
-Example: `systems/x86_64-linux/khanelimain/default.nix`
+- `structure-host` - Host Configuration Structure
+- `structure-user` - User Configuration Structure
 
-## User Configuration
+### 3. Implementation (MEDIUM)
 
-```
-homes/{arch}/{username@hostname}/
-├── default.nix       # User-specific home config
-└── packages.nix      # User-specific packages
-```
+- `impl-precedence` - Override Precedence
 
-Example: `homes/x86_64-linux/khaneliman@khanelimain/default.nix`
+## Full Compiled Document
 
-## Override Precedence
-
-```nix
-# In module (low priority - can be overridden)
-programs.git.userName = lib.mkDefault "Default Name";
-
-# In host config (overrides module default)
-programs.git.userName = "Host Specific";
-
-# Force (highest priority - rarely needed)
-programs.git.userName = lib.mkForce "Forced Value";
-```
-
-## Best Practice
-
-Prefer customization in this order:
-
-1. **Home configuration** wherever possible
-2. **Host config** for hardware/host-specific
-3. **Platform modules** for OS-specific behavior
-4. **Common modules** for shared base functionality
+For the complete guide with all rules expanded: `AGENTS.md`
