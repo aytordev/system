@@ -12,6 +12,7 @@ in
     ./devshells
     ./checks
     ./formatter
+    ./templates
   ];
 
   perSystem =
