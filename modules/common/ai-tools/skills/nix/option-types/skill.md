@@ -1,121 +1,43 @@
 ---
 name: nix-option-types
-description: "Nix module option types and definition patterns. Use when defining options with mkOption, choosing types, or creating submodules."
+description: "Nix module option types and definition patterns. Guide for selecting and defining Nix option types properly."
+license: Complete terms in LICENSE.txt
+metadata:
+  author: nix
+  version: "1.0.0"
 ---
 
 # Option Types
 
-## Prefer Helpers When Available
+Nix module option types and definition patterns. Use when defining options with mkOption, choosing types, or creating submodules.
 
-| Helper            | Use For              |
-| ----------------- | -------------------- |
-| `mkEnableOption`  | Boolean enable flags |
-| `mkPackageOption` | Package options      |
-| `mkOption`        | Everything else      |
+## Rule Categories by Priority
 
-## Basic Types
+| Priority | Category         | Impact   | Prefix       |
+| -------- | ---------------- | -------- | ------------ |
+| 1        | Basic Types      | CRITICAL | `basic`      |
+| 2        | Collection Types | HIGH     | `collection` |
+| 3        | Submodules       | HIGH     | `submodule`  |
+| 4        | Package Options  | MEDIUM   | `package`    |
 
-```nix
-options = {
-  # Boolean (use mkEnableOption for enable flags)
-  enable = mkEnableOption "feature";
+## Quick Reference
 
-  # String
-  name = mkOption {
-    type = types.str;
-    default = "default";
-    description = "The name";
-  };
+### 1. Basic Types (CRITICAL)
 
-  # Integer
-  count = mkOption {
-    type = types.int;
-    default = 1;
-  };
+- `basic-types` - Basic Types
 
-  # Port (validated 1-65535)
-  port = mkOption {
-    type = types.port;
-    default = 8080;
-  };
+### 2. Collection Types (HIGH)
 
-  # Path
-  configPath = mkOption {
-    type = types.path;
-    default = ./config.yaml;
-  };
+- `collection-types` - Collection Types
 
-  # Package
-  package = lib.mkPackageOption pkgs "myPackage" { };
-};
-```
+### 3. Submodules (HIGH)
 
-## Collection Types
+- `submodule-pattern` - Submodule Pattern
 
-```nix
-options = {
-  # List of strings
-  args = mkOption {
-    type = types.listOf types.str;
-    default = [ ];
-  };
+### 4. Package Options (MEDIUM)
 
-  # Attribute set of strings
-  env = mkOption {
-    type = types.attrsOf types.str;
-    default = { };
-  };
+- `package-options` - Package Options
 
-  # Enum (one of values)
-  level = mkOption {
-    type = types.enum [ "debug" "info" "error" ];
-    default = "info";
-  };
+## Full Compiled Document
 
-  # Nullable
-  optional = mkOption {
-    type = types.nullOr types.str;
-    default = null;
-  };
-
-  # Either type
-  portOrSocket = mkOption {
-    type = types.either types.port types.path;
-  };
-};
-```
-
-## Submodule Pattern
-
-```nix
-options.services = mkOption {
-  type = types.attrsOf (types.submodule {
-    options = {
-      enable = mkEnableOption "service";
-      port = mkOption {
-        type = types.port;
-        default = 8080;
-      };
-    };
-  });
-  default = { };
-};
-
-# Usage:
-config.namespace.services.myService = {
-  enable = true;
-  port = 9000;
-};
-```
-
-## mkPackageOption
-
-```nix
-# Simple
-package = lib.mkPackageOption pkgs "git" { };
-
-# Nested package path
-package = lib.mkPackageOption pkgs "nodePackages" {
-  default = [ "typescript" ];
-};
-```
+For the complete guide with all rules expanded: `AGENTS.md`
