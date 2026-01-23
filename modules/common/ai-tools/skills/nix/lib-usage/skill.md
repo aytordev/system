@@ -1,67 +1,38 @@
 ---
 name: nix-lib-usage
-description: "Nix library usage patterns: with, inherit, and inline lib. prefixes. Use when deciding how to access lib functions, avoiding the with lib anti-pattern, or writing analysis-friendly Nix code."
+description: "Nix library usage patterns: with, inherit, and inline lib prefixes. Guide for avoiding high-scope 'with' and using 'inherit' or inline prefixes for cleaner code."
+license: Complete terms in LICENSE.txt
+metadata:
+  author: nix
+  version: "1.0.0"
 ---
 
 # Library Usage Patterns
 
-## The Rule
+Nix library usage patterns: with, inherit, and inline lib. prefixes. Use when deciding how to access lib functions, avoiding the with lib anti-pattern, or writing analysis-friendly Nix code.
 
-> Avoid high-scope `with lib;` - it breaks static analysis for all nested code
+## Rule Categories by Priority
 
-## Decision Guide
+| Priority | Category        | Impact   | Prefix    |
+| -------- | --------------- | -------- | --------- |
+| 1        | High-Scope With | CRITICAL | `with`    |
+| 2        | Inherit Pattern | HIGH     | `inherit` |
+| 3        | Inline Prefix   | MEDIUM   | `inline`  |
 
-| Situation          | Pattern                    |
-| ------------------ | -------------------------- |
-| 1-2 lib functions  | Inline `lib.` prefix       |
-| 3+ lib functions   | `inherit (lib) ...` in let |
-| Single-line list   | `with pkgs; [...]` is OK   |
-| Module-level scope | NEVER use `with lib;`      |
+## Quick Reference
 
-## Inline Prefix (1-2 uses)
+### 1. High-Scope With (CRITICAL)
 
-```nix
-config = lib.mkIf cfg.enable {
-  setting = lib.mkDefault "value";
-};
-```
+- `with-usage` - High-Scope With
 
-## Inherit Pattern (3+ uses)
+### 2. Inherit Pattern (HIGH)
 
-```nix
-let
-  inherit (lib) mkIf mkEnableOption mkOption types;
-  cfg = config.namespace.module;
-in
-{
-  # Now use directly: mkIf, types.str, etc.
-}
-```
+- `inherit-usage` - Inherit Pattern
 
-## Acceptable Single-Line With
+### 3. Inline Prefix (MEDIUM)
 
-```nix
-# OK - tightly scoped to single expression
-environment.systemPackages = with pkgs; [ git vim curl ];
+- `inline-usage` - Inline Prefix
 
-# OK - limited scope
-meta = with lib; { license = licenses.mit; };
-```
+## Full Compiled Document
 
-## Anti-Pattern: High-Scope With
-
-```nix
-# WRONG - breaks analysis for everything inside
-{ config, lib, pkgs, ... }:
-with lib;
-{
-  # IDE can't help, shadowing bugs, unclear origins
-}
-```
-
-## Why This Matters
-
-- Static analyzers (nixd, nil) lose visibility
-- IDE auto-completion breaks
-- Shadowing bugs become possible
-- Code origins unclear in nested expressions
+For the complete guide with all rules expanded: `AGENTS.md`
