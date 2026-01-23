@@ -1,84 +1,39 @@
 ---
 name: nix-conditionals
-description: "Nix conditional patterns: mkIf, optionals, optionalString, mkMerge. Use when writing conditional configuration, avoiding if-then-else, or combining multiple conditional blocks."
+description: "Nix conditional patterns: mkIf, optionals, optionalString, mkMerge. Guide for writing idiomatic conditional configuration in Nix using lib functions."
+license: Complete terms in LICENSE.txt
+metadata:
+  author: nix
+  version: "1.0.0"
 ---
 
 # Conditional Patterns
 
-## Prefer lib Functions Over if-then-else
+Nix conditional patterns: mkIf, optionals, optionalString, mkMerge. Use when writing conditional configuration, avoiding if-then-else, or combining multiple conditional blocks.
 
-| Need                     | Use                  |
-| ------------------------ | -------------------- |
-| Conditional config block | `lib.mkIf`           |
-| Conditional list items   | `lib.optionals`      |
-| Conditional string       | `lib.optionalString` |
-| Combine conditionals     | `lib.mkMerge`        |
+## Rule Categories by Priority
 
-## mkIf - Conditional Config Blocks
+| Priority | Category      | Impact   | Prefix           |
+| -------- | ------------- | -------- | ---------------- |
+| 1        | Config Blocks | CRITICAL | `mkif`           |
+| 2        | Lists         | HIGH     | `optionals`      |
+| 3        | Strings       | MEDIUM   | `optionalstring` |
 
-```nix
-config = lib.mkIf cfg.enable {
-  programs.git.enable = true;
-  home.packages = [ pkgs.git ];
-};
+## Quick Reference
 
-# Nested conditional
-programs.vim = lib.mkIf cfg.enableVim {
-  enable = true;
-};
-```
+### 1. Config Blocks (CRITICAL)
 
-## optionals - Conditional List Items
+- `mkif-usage` - mkIf - Conditional Config Blocks
+- `mkmerge-usage` - mkMerge - Combine Conditionals
 
-```nix
-home.packages = [
-  pkgs.coreutils
-] ++ lib.optionals cfg.enableTools [
-  pkgs.ripgrep
-  pkgs.fd
-] ++ lib.optionals pkgs.stdenv.isLinux [
-  pkgs.linuxTool
-];
-```
+### 2. Lists (HIGH)
 
-## optionalString - Conditional Strings
+- `optionals-usage` - optionals - Conditional List Items
 
-```nix
-programs.bash.initExtra = '''
-  # Always included
-  export EDITOR=vim
-''' + lib.optionalString cfg.enableAliases '''
-  alias ll='ls -la'
-''';
-```
+### 3. Strings (MEDIUM)
 
-## mkMerge - Combine Conditional Blocks
+- `optionalstring-usage` - optionalString - Conditional Strings
 
-```nix
-config = lib.mkMerge [
-  # Always applied
-  {
-    programs.bash.enable = true;
-  }
+## Full Compiled Document
 
-  # Conditionally applied
-  (lib.mkIf cfg.enableGit {
-    programs.git.enable = true;
-  })
-
-  (lib.mkIf cfg.enableVim {
-    programs.vim.enable = true;
-  })
-];
-```
-
-## When if-then-else is OK
-
-Only use when lib functions make it too complicated:
-
-```nix
-# OK - simple value selection
-theme = if isDark then "dark" else "light";
-
-# Prefer mkIf for config blocks
-```
+For the complete guide with all rules expanded: `AGENTS.md`
