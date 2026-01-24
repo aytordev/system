@@ -1,7 +1,7 @@
 # Kanagawa Theme Library Functions
 # Helper utilities for theme variant selection and naming
 
-{ lib }:
+_:
 
 {
   # ─── Semantic Helpers ─────────────────────────────────────────────────────
