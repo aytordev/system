@@ -1,4 +1,4 @@
-final: prev: {
+_final: prev: {
   # Overlay for Google Chrome Dev, always using the "latest" version.
   #
   # IMPORTANT:

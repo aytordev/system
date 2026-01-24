@@ -1,6 +1,5 @@
 {lib}:
 with lib; let
-  bashFunction = cmd: ''!f() { ${cmd}; }; f'';
   coreAliases = {
     a = "add";
     ap = "add -p";

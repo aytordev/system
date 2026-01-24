@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkOption mkIf;
+  inherit (lib) mkEnableOption mkIf;
 
   cfg = config.aytordev.programs.desktop.communications.thunderbird;
 in {

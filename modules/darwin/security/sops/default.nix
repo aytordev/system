@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  inputs,
   ...
 }:
 let
@@ -50,7 +49,7 @@ let
     group = "wheel";
   };
 
-  mkAttrsSecret = name: secret: {
+  mkAttrsSecret = _name: secret: {
     inherit (secret) path key mode owner group;
     sopsFile =
       if secret ? sopsFile && secret.sopsFile != null

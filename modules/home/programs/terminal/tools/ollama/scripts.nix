@@ -6,7 +6,7 @@
 }:
 with lib; let
   cfg = config.aytordev.programs.terminal.tools.ollama;
-  inherit (config._module.args.ollamaUtils) constants shellUtils;
+  inherit (config._module.args.ollamaUtils) shellUtils;
 
   # Simple chat script
   chatScript = pkgs.writeShellScriptBin "ollama-chat" ''

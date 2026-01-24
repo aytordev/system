@@ -3,7 +3,7 @@
   lib,
   pkgs,
   ...
-} @ args: let
+}: let
   inherit (lib) mkIf mkEnableOption mkOption types;
 
   # Get the path to the themes directory relative to this file
@@ -24,23 +24,6 @@
   availableThemes = map (file: builtins.replaceStrings [".conf"] [""] file) themeFiles;
 
   cfg = config.aytordev.programs.terminal.emulators.ghostty;
-
-  monaspaceKrypton =
-    if pkgs.stdenv.hostPlatform.isDarwin
-    then "Monaspace Krypton Var"
-    else "MonaspaceKrypton";
-  monaspaceNeon =
-    if pkgs.stdenv.hostPlatform.isDarwin
-    then "Monaspace Neon Var"
-    else "MonaspaceNeon";
-  monaspaceRadon =
-    if pkgs.stdenv.hostPlatform.isDarwin
-    then "Monaspace Radon Var"
-    else "MonaspaceRadon";
-  monaspaceXenon =
-    if pkgs.stdenv.hostPlatform.isDarwin
-    then "Monaspace Xenon Var"
-    else "MonaspaceXenon";
   mapleMono =
     if pkgs.stdenv.hostPlatform.isDarwin
     then "Maple Mono"
@@ -126,12 +109,8 @@
   };
 
   # Add theme settings if enabled
-  themeSettings = lib.optionalAttrs (cfg.enableThemes && cfg.theme != null) {
-    "theme" = "${config.xdg.configHome}/ghostty/themes/${cfg.theme}.conf";
-  };
 
   # Combine all settings
-  ghosttySettings = baseSettings // themeSettings;
 in {
   options.aytordev.programs.terminal.emulators.ghostty = {
     enable = mkEnableOption "ghostty terminal emulator";

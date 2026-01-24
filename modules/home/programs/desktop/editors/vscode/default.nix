@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  osConfig ? {},
   ...
 }: let
   inherit (lib) mkEnableOption mkIf;
@@ -23,7 +22,7 @@ in {
         kanagawa-theme = pkgs.vscode-utils.buildVscodeMarketplaceExtension {
           mktplcRef = {
             name = "kanagawa-vscode-color-theme";
-            publisher = "metaphore";
+            publisher = "metaphor";
             version = "0.5.0";
             sha256 = "1l2y5ch6im9qff15kqlxf4j0wxbzl354pqrbby5ybbz76pbjzkis";
           };

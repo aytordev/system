@@ -5,7 +5,7 @@
   osConfig ? {},
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkOption getExe mkDefault;
+  inherit (lib) mkIf mkEnableOption mkOption getExe;
   inherit (lib.types) package listOf str int float enum nullOr;
 
   cfg = config.aytordev.programs.desktop.bars.sketchybar;
