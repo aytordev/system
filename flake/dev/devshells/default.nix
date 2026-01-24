@@ -5,7 +5,7 @@
 }:
 {
   perSystem =
-    { pkgs, system, ... }:
+    { pkgs, system, config, ... }:
     let
       shellDefs = import ../../../dev-shells {
         inherit pkgs system;
@@ -13,11 +13,12 @@
       };
       mkShell = shell:
         pkgs.mkShell (shell // {
-          buildInputs = shell.packages or [];
+          buildInputs = (shell.packages or []) ++ [ pkgs.pre-commit ];
+          shellHook = (shell.shellHook or "") + "\n" + config.pre-commit.installationScript;
         });
       allShells = shellDefs.shells or {};
     in
     {
-      devShells = builtins.mapAttrs (_name: shell: mkShell shell) allShells;
+      devShells = builtins.mapAttrs (_name: mkShell) allShells;
     };
 }
