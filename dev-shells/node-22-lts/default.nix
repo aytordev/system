@@ -1,6 +1,6 @@
-{pkgs, ...}: {
-  name = "node-22-lts";
-  description = "Node.js 22 LTS shell";
+{ pkgs, mkShell, ... }:
+
+mkShell {
   packages = with pkgs; [
     nodejs_22
     yarn

@@ -1,6 +1,6 @@
-{pkgs, ...}: {
-  name = "node-24";
-  description = "Node.js 24 shell";
+{ pkgs, mkShell, ... }:
+
+mkShell {
   packages = with pkgs; [
     nodejs_24
     yarn
