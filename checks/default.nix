@@ -1,34 +1,20 @@
 {
-  pkgs,
-  self,
+  lib,
   ...
-} @ args: let
-  currentDir = builtins.readDir ./.;
-  isCheckDir = name: let
-    entryType = currentDir.${name} or "";
-    isDir = entryType == "directory";
-    checkPath = ./. + "/${name}";
-    hasDefaultNix = isDir && builtins.pathExists (checkPath + "/default.nix");
-  in
-    isDir && hasDefaultNix;
-  checkDirs = builtins.filter isCheckDir (builtins.attrNames currentDir);
-  importCheck = name: let
-    checkPath = ./. + "/${name}";
-    imported = import (checkPath + "/default.nix") args;
-    isValidDerivation =
-      builtins.isAttrs imported
-      && (imported.type or "") == "derivation";
-    errorMsg =
-      "Check '${name}' in ${toString checkPath} "
-      + "must evaluate to a derivation";
-  in
-    if !isValidDerivation
-    then throw errorMsg
-    else {
-      inherit name;
-      value = imported;
-    };
-  importedChecks = map importCheck checkDirs;
-  result = builtins.listToAttrs importedChecks;
+} @ args:
+let
+  checksDir = ./.;
+  # Get all entries in the directory
+  entries = builtins.readDir checksDir;
+
+  # Filter for directories that contain a default.nix
+  checkDirs = lib.filterAttrs (name: type:
+    type == "directory" && builtins.pathExists (checksDir + "/${name}/default.nix")
+  ) entries;
+
+  # Import each check
+  checks = lib.mapAttrs (name: _:
+    import (checksDir + "/${name}") args
+  ) checkDirs;
 in
-  result
+  checks
