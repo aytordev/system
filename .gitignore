@@ -1,42 +1,29 @@
-# Nix specific
+# ░█▀█░▀█▀░█░█░█▀█░█▀▀
+# ░█░█░░█░░▄▀▄░█░█░▀▀█
+# ░▀░▀░▀▀▀░▀░▀░▀▀▀░▀▀▀
+
 /result
 /result-*
-*.o
-*.so
-*.dylib
-*.a
-*.d
-*.o
-*.so
-*.dylib
-*.a
-*.d
-
-# Nix shell
-.shell.direnv/
-.direnv/
-
-# Nix store paths
 /nix/
 !/nix/
-
-# Nix garbage collection roots
-/gc-*
-
-# Nix profile generations
 /nix/var/nix/profiles/*
 !/nix/var/nix/profiles/per-user
-
-# Nix temporary files
 /nix/var/nix/temproots/*
+/gc-*
+.direnv/
+.shell.direnv/
 
-# System files and directories
-.DS_Store
-Thumbs.db
+# ░█▀▀░█░░░█▀█░█▀▄░█▀█░█░░
+# ░█░█░█░░░█░█░█▀▄░█▀█░█░░
+# ░▀▀▀░▀▀▀░▀▀▀░▀▀░░▀░▀░▀▀▀
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
+*.pyc
+*.pyo
+*.pyd
 .Python
 build/
 develop-eggs/
@@ -53,26 +40,33 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.venv
+venv/
 
-# IDE files
+# Node / Frontend
+node_modules
+.sass-cache
+!/assets/
+!/public/
+
+# C / C++
+*.o
+*.so
+*.dylib
+*.a
+*.d
+*.out
+.ccls-cache
+
+# Editors / IDEs
 .idea/
 .vscode/
 *.swp
 *.swo
-*.log
-*.pyc
-*.pyo
-*.pyd
-*.pyc
-*.pyo
-*.pyd
+**/.claude/settings.local.json
+.pre-commit-config.yaml
 
-# Environment files
-.env
-.venv
-venv/
-
-# OS files
+# System / OS
 .DS_Store
 .DS_Store?
 ._*
@@ -80,3 +74,11 @@ venv/
 .Trashes
 ehthumbs.db
 Thumbs.db
+Desktop.ini
+
+# Logs / Temporary Files / Misc
+*.log
+**/*.tmp*
+setup.conf
+install.log
+mnemonics.txt
