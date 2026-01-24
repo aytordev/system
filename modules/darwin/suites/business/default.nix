@@ -6,7 +6,6 @@
 }:
 let
   inherit (lib) mkIf;
-  inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.suites.business;
 in

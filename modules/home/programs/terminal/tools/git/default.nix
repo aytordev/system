@@ -5,7 +5,7 @@
   inputs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf mkForce mkOption;
+  inherit (lib) mkEnableOption mkForce mkOption;
   cfg = config.aytordev.programs.terminal.tools.git;
   aliases = import ./aliases.nix {inherit lib;};
   ignores = import ./git-ignore.nix;
@@ -22,30 +22,38 @@
   gitConfig = {
     enable = true;
     package = pkgs.git;
-    settings.alias = aliases;
     ignores = ignores;
-    settings.user.name = inputs.secrets.username;
-    settings.user.email = inputs.secrets.useremail;
     maintenance.enable = true;
-    settings.branch.sort = "-committerdate";
-    settings.core.editor = "nano";
-    settings.useHttpPath.enable = true;
-    settings.fetch.prune = true;
-    settings.init.defaultBranch = "main";
-    settings.lfs.enable = true;
-    settings.pull.rebase = true;
-    settings.push.autoSetupRemote = true;
-    settings.push.default = "current";
-    settings.rerere.enabled = true;
-    settings.rebase.autostash = true;
-    settings.safe.directory = [
-      "/Users/${inputs.secrets.username}/"
-      "/etc/nixos"
-      "/etc/nix-darwin"
-    ];
-    signing.key = cfg.signingKey;
-    signing.format = "ssh";
-    signing.signByDefault = cfg.signByDefault;
+    settings = {
+      alias = aliases;
+      user = {
+        name = inputs.secrets.username;
+        email = inputs.secrets.useremail;
+      };
+      branch.sort = "-committerdate";
+      core.editor = "nano";
+      useHttpPath.enable = true;
+      fetch.prune = true;
+      init.defaultBranch = "main";
+      lfs.enable = true;
+      pull.rebase = true;
+      push = {
+        autoSetupRemote = true;
+        default = "current";
+      };
+      rerere.enabled = true;
+      rebase.autostash = true;
+      safe.directory = [
+        "/Users/${inputs.secrets.username}/"
+        "/etc/nixos"
+        "/etc/nix-darwin"
+      ];
+    };
+    signing = {
+      key = cfg.signingKey;
+      format = "ssh";
+      inherit (cfg) signByDefault;
+    };
   };
 in {
   options.aytordev.programs.terminal.tools.git = {
@@ -82,22 +90,32 @@ in {
     lib.mkIf cfg.enable (lib.mkMerge [
       {
         home.packages = gitPackages;
-        programs.git = gitConfig;
-        programs.delta.enable = true;
-        programs.delta.enableGitIntegration = true;
-        programs.delta.options.dark = true;
-        programs.delta.options.features = mkForce "decorations side-by-side navigate";
-        programs.delta.options.plus-style = "syntax #2B3328";
-        programs.delta.options.minus-style = "syntax #3C2C2E";
-        programs.delta.options.plus-emph-style = "syntax #76946a";
-        programs.delta.options.minus-emph-style = "syntax #c34043";
-        programs.delta.options.line-numbers = true;
-        programs.delta.options.navigate = true;
-        programs.delta.options.side-by-side = true;
-        programs.difftastic.git.diffToolMode = true;
-        programs.difftastic.options.background = "dark";
-        programs.difftastic.options.display = "inline";
-        programs.mergiraf.enable = true;
+        programs = {
+          git = gitConfig;
+          delta = {
+            enable = true;
+            enableGitIntegration = true;
+            options = {
+              dark = true;
+              features = mkForce "decorations side-by-side navigate";
+              plus-style = "syntax #2B3328";
+              minus-style = "syntax #3C2C2E";
+              plus-emph-style = "syntax #76946a";
+              minus-emph-style = "syntax #c34043";
+              line-numbers = true;
+              navigate = true;
+              side-by-side = true;
+            };
+          };
+          difftastic = {
+            git.diffToolMode = true;
+            options = {
+              background = "dark";
+              display = "inline";
+            };
+          };
+          mergiraf.enable = true;
+        };
       }
       (lib.mkIf (shell-aliases.allAliases != {}) {
         home.file."${bashConfigDir}/git-aliases.sh" = {

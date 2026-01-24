@@ -101,7 +101,7 @@ in {
             };
           };
         }
-        (lib.mapAttrs' (name: host: {
+        (lib.mapAttrs' (_name: host: {
             name = lib.concatStringsSep " " host.hostNames;
             value = {
               user = host.user or null;

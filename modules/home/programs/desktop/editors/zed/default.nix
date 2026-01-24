@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-} @ args: let
-  pkgs-stable = args.pkgs-stable or pkgs;
+}: let
   inherit (lib) mkEnableOption mkIf;
   themeCfg = config.aytordev.theme;
 
@@ -376,7 +375,7 @@ in {
             "ctrl-j" = "workspace::ActivatePaneDown";
           };
         }
-        # Panel nagivation
+        # Panel navigation
         {
           "context" = "Dock";
           "bindings" = {

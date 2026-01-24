@@ -7,7 +7,7 @@
 }:
 let
   inherit (lib) mkDefault mkIf;
-  inherit (lib.aytordev) enabled disabled;
+  inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.suites.desktop;
 in

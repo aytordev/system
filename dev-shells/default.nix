@@ -3,7 +3,7 @@
   system,
   inputs,
   ...
-} @ args: let
+}: let
   currentDir = builtins.readDir ./.;
   isShellDir = name:
     currentDir.${name}
@@ -42,7 +42,7 @@
   ];
   shellsWithCommonPkgs =
     builtins.mapAttrs (
-      name: shell:
+      _name: shell:
         shell
         // {
           packages = (shell.packages or []) ++ commonPackages;
@@ -55,7 +55,7 @@
     shellHook = ''
       echo -e "\n\033[1;32m🚀 Default Development Shell\033[0m"
       echo "Available shells: ${toString (builtins.attrNames importedShells)}"
-      echo "Enter a specific shell with: nix develop .
+      echo "Enter a specific shell with: nix develop ."
       echo ""
     '';
   };

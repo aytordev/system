@@ -2,11 +2,9 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   inherit (lib) mkIf;
-  inherit (inputs) yazi-flavors;
   cfg = config.aytordev.programs.terminal.tools.yazi;
   themeCfg = config.aytordev.theme;
 in {
