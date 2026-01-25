@@ -1,6 +1,4 @@
-{
-  ...
-}: let
+_: let
   mkGotoKeymap = {
     key,
     path,

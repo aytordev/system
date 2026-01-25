@@ -4,11 +4,9 @@
   pkgs,
   ...
 }:
-with lib;
-let
+with lib; let
   cfg = config.aytordev.programs.terminal.tools.ollama;
-in
-{
+in {
   imports = [
     ./utils.nix
     ./models.nix
@@ -35,13 +33,16 @@ in
         "cuda"
         "rocm"
       ];
-      default = if pkgs.stdenv.isDarwin then "metal" else "none";
+      default =
+        if pkgs.stdenv.isDarwin
+        then "metal"
+        else "none";
       description = "Hardware acceleration backend to use";
     };
 
     models = mkOption {
       type = types.listOf types.str;
-      default = [ ];
+      default = [];
       example = [
         "llama3.2"
         "codellama"
@@ -56,7 +57,7 @@ in
 
     environmentVariables = mkOption {
       type = types.attrsOf types.str;
-      default = { };
+      default = {};
       description = "Environment variables to set for the Ollama service";
     };
 
@@ -69,16 +70,15 @@ in
 
   config = mkIf cfg.enable (
     let
-      inherit (config._module.args.ollamaUtils)
+      inherit
+        (config._module.args.ollamaUtils)
         createStatusScript
         createRestartScript
         createLogsScript
         ;
-    in
-    {
-      home.packages =
-        with pkgs;
-        [ cfg.package ]
+    in {
+      home.packages = with pkgs;
+        [cfg.package]
         ++ optionals cfg.shellAliases [
           createStatusScript
           createLogsScript

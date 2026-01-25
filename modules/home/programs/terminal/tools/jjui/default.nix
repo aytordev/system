@@ -1,15 +1,12 @@
 {
   config,
   lib,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
 
   cfg = config.aytordev.programs.terminal.tools.jjui;
-in
-{
+in {
   options.aytordev.programs.terminal.tools.jjui = {
     enable = lib.mkEnableOption "jjui";
   };
@@ -23,15 +20,15 @@ in
 
         custom_commands = {
           "show all commits" = {
-            key = [ "a" ];
+            key = ["a"];
             revset = "all()";
           };
           "show default view" = {
-            key = [ "d" ];
+            key = ["d"];
             revset = "";
           };
           "edit immutable" = {
-            key = [ "e" ];
+            key = ["e"];
             args = [
               "edit"
               "--ignore-immutable"
@@ -40,7 +37,7 @@ in
             ];
           };
           "squash immutable" = {
-            key = [ "S" ];
+            key = ["S"];
             args = [
               "squash"
               "--ignore-immutable"
@@ -49,7 +46,7 @@ in
             ];
           };
           "split immutable" = {
-            key = [ "s" ];
+            key = ["s"];
             args = [
               "split"
               "--ignore-immutable"

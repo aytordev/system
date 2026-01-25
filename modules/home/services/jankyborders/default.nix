@@ -2,8 +2,7 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkOption mkEnableOption;
   inherit (lib.types) enum float nullOr;
 
@@ -11,9 +10,8 @@ let
   themeCfg = config.aytordev.theme;
 
   # Get colors from central theme palette
-  palette = themeCfg.palette;
-in
-{
+  inherit (themeCfg) palette;
+in {
   options.aytordev.services.jankyborders = {
     enable = mkEnableOption "JankyBorders window border highlighting";
 
@@ -45,8 +43,8 @@ in
       enable = true;
 
       settings = {
-        style = cfg.style;
-        width = cfg.width;
+        inherit (cfg) style;
+        inherit (cfg) width;
         hidpi = "off";
         # Use accent color for active, border color for inactive
         active_color = palette.accent.sketchybar;

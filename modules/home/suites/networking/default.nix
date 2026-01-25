@@ -3,26 +3,21 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
 
   cfg = config.aytordev.suites.networking;
-in
-{
+in {
   options.aytordev.suites.networking = {
     enable = lib.mkEnableOption "networking configuration";
   };
 
   config = mkIf cfg.enable {
-
-    home.packages =
-      with pkgs;
-      [
-        nmap
-        openssh
-        speedtest-cli
-        ssh-copy-id
-      ];
+    home.packages = with pkgs; [
+      nmap
+      openssh
+      speedtest-cli
+      ssh-copy-id
+    ];
   };
 }

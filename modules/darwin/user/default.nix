@@ -4,14 +4,12 @@
   pkgs,
   inputs,
   ...
-}:
-let
+}: let
   inherit (lib) types mkIf;
   inherit (lib.aytordev) mkOpt;
 
   cfg = config.aytordev.user;
-in
-{
+in {
   options.aytordev.user = {
     name = mkOpt types.str inputs.secrets.username "The user account.";
     email = mkOpt types.str inputs.secrets.useremail "The email of the user.";

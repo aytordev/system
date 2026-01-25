@@ -3,15 +3,13 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkEnableOption;
 
   cfg = config.aytordev.programs.terminal.tools.claude-code;
 
   claudeIcon = ./assets/claude.ico;
-in
-{
+in {
   imports = [
     ./mcp-servers.nix
     ./permissions.nix
@@ -31,7 +29,7 @@ in
       settings = {
         theme = "dark";
 
-        hooks = lib.importDir ./hooks { inherit pkgs; };
+        hooks = lib.importDir ./hooks {inherit pkgs;};
 
         # Let default do its job
         # model = "claude-sonnet-4-5";
@@ -49,9 +47,9 @@ in
         };
       };
 
-      inherit ((import (lib.getFile "modules/common/ai-tools") { inherit lib; }).claudeCode) agents;
+      inherit ((import (lib.getFile "modules/common/ai-tools") {inherit lib;}).claudeCode) agents;
 
-      inherit ((import (lib.getFile "modules/common/ai-tools") { inherit lib; }).claudeCode) commands;
+      inherit ((import (lib.getFile "modules/common/ai-tools") {inherit lib;}).claudeCode) commands;
 
       skillsDir = lib.getFile "modules/common/ai-tools/skills";
 

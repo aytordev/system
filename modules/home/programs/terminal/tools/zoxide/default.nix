@@ -26,7 +26,7 @@ in {
     '';
     programs.zoxide = {
       enable = true;
-      package = cfg.package;
+      inherit (cfg) package;
       enableBashIntegration = true;
       enableZshIntegration = true;
       enableFishIntegration = true;

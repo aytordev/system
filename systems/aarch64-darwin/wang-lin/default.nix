@@ -3,15 +3,13 @@
   inputs,
   config,
   ...
-}:
-let
+}: let
   inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.user;
 
   sopsFolder = builtins.toString inputs.secrets + "/hard-secrets";
-in
-{
+in {
   # Host-specific settings only
   # All modules auto-discovered from modules/darwin/
   # All homes auto-injected from homes/aarch64-darwin/aytordev@wang-lin/
@@ -69,4 +67,3 @@ in
 
   system.stateVersion = 6;
 }
-

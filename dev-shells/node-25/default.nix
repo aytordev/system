@@ -1,5 +1,8 @@
-{ pkgs, mkShell, ... }:
-
+{
+  pkgs,
+  mkShell,
+  ...
+}:
 mkShell {
   packages = with pkgs; [
     nodejs_25

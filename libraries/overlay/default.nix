@@ -1,23 +1,22 @@
-{ inputs }:
-_final: _prev:
-let
+{inputs}: _final: _prev: let
   aytordevLib = import ../default.nix {
     inherit inputs;
-    lib = inputs.nixpkgs.lib;
-    self = inputs.self;
+    inherit (inputs.nixpkgs) lib;
+    inherit (inputs) self;
   };
-in
-{
+in {
   # Expose aytordev module functions directly (like aytordev.mkOpt)
   aytordev = aytordevLib.flake.lib.module;
 
   # Expose all aytordev lib namespaces
-  inherit (aytordevLib.flake.lib)
+  inherit
+    (aytordevLib.flake.lib)
     file
     system
     ;
 
-  inherit (aytordevLib.flake.lib.file)
+  inherit
+    (aytordevLib.flake.lib.file)
     getFile
     getNixFiles
     getDirectories
@@ -30,7 +29,8 @@ in
     parseHomeConfigurations
     ;
 
-  inherit (aytordevLib.flake.lib.module)
+  inherit
+    (aytordevLib.flake.lib.module)
     mkOpt
     mkOpt'
     mkBoolOpt
@@ -46,7 +46,8 @@ in
     ;
 
   # Path utilities
-  inherit (aytordevLib.flake.lib)
+  inherit
+    (aytordevLib.flake.lib)
     relativeToRoot
     ;
 

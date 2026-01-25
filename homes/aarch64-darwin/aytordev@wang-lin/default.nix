@@ -2,11 +2,9 @@
   lib,
   inputs,
   ...
-}:
-let
+}: let
   inherit (lib.aytordev) enabled disabled;
-in
-{
+in {
   aytordev = {
     user = {
       enable = true;
@@ -16,8 +14,8 @@ in
 
     # Enable suites for common functionality
     suites = {
-      common = enabled;      # Shells, terminal emulators, common tools
-      desktop = enabled;     # Browsers, raycast, aerospace
+      common = enabled; # Shells, terminal emulators, common tools
+      desktop = enabled; # Browsers, raycast, aerospace
       development = {
         enable = true;
         dockerEnable = true;
@@ -28,9 +26,9 @@ in
         sqlEnable = true;
         aiEnable = true;
       }; # Editors, dev tools
-      business = enabled;    # Thunderbird, bitwarden-cli
-      social = enabled;      # Discord, Vesktop
-      networking = enabled;  # Network tools
+      business = enabled; # Thunderbird, bitwarden-cli
+      social = enabled; # Discord, Vesktop
+      networking = enabled; # Network tools
     };
 
     # Host-specific overrides and custom configurations only
@@ -117,26 +115,28 @@ in
           };
 
           # Ollama - Disabled: Using Homebrew cask version for better macOS integration
-          ollama = disabled // {
-            acceleration = "metal";
-            models = [
-              "llama3.2"
-              "codellama"
-              "mistral"
-            ];
-            service = {
-              enable = true;
-              autoStart = true;
+          ollama =
+            disabled
+            // {
+              acceleration = "metal";
+              models = [
+                "llama3.2"
+                "codellama"
+                "mistral"
+              ];
+              service = {
+                enable = true;
+                autoStart = true;
+              };
+              shellAliases = true;
+              environmentVariables = {
+                OLLAMA_NUM_PARALLEL = "2";
+                OLLAMA_MAX_LOADED_MODELS = "2";
+                OLLAMA_KEEP_ALIVE = "5m";
+              };
+              integrations.zed = true;
+              modelPresets = ["general" "coding"];
             };
-            shellAliases = true;
-            environmentVariables = {
-               OLLAMA_NUM_PARALLEL = "2";
-               OLLAMA_MAX_LOADED_MODELS = "2";
-               OLLAMA_KEEP_ALIVE = "5m";
-            };
-            integrations.zed = true;
-            modelPresets = [ "general" "coding" ];
-          };
 
           # Host-specific SSH configuration
           ssh.knownHosts.github = {

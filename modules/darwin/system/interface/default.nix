@@ -2,15 +2,13 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkMerge mkEnableOption mapAttrs' nameValuePair;
 
   cfg = config.aytordev.system.interface;
 
   mkHotCorners = corners: mapAttrs' (pos: action: nameValuePair "wvous-${pos}-corner" action) corners;
-in
-{
+in {
   options.aytordev.system.interface = {
     enable = mkEnableOption "macOS interface";
   };

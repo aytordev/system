@@ -39,7 +39,7 @@ in {
       programs.direnv = {
         enable = true;
         nix-direnv.enable = cfg.nix-direnv;
-        silent = cfg.silent;
+        inherit (cfg) silent;
         config = mkIf cfg.nix-direnv {
           whitelist = {
             prefix = [

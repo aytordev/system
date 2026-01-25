@@ -89,7 +89,7 @@
     "window-width" = 100;
     "window-height" = 100;
     "custom-shader" = "shaders/cursor_smear.glsl";
-      "keybind" = [
+    "keybind" = [
       "alt+left=unbind"
       "alt+right=unbind"
       "alt+v=new_split:right"
@@ -107,9 +107,7 @@
       "alt+s=write_screen_file:paste"
     ];
   };
-
   # Add theme settings if enabled
-
   # Combine all settings
 in {
   options.aytordev.programs.terminal.emulators.ghostty = {

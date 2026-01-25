@@ -1,5 +1,8 @@
-{ mkShell, shellNames, ... }:
-
+{
+  mkShell,
+  shellNames,
+  ...
+}:
 mkShell {
   name = "default";
 

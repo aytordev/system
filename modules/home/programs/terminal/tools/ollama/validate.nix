@@ -4,11 +4,9 @@
   pkgs,
   ...
 }:
-with lib;
-let
+with lib; let
   cfg = config.aytordev.programs.terminal.tools.ollama;
-in
-{
+in {
   config = mkIf cfg.enable {
     # Validation script to check module configuration
     home.packages = with pkgs; [
@@ -111,8 +109,16 @@ in
         echo -e "''${BLUE}📋 Configuration Summary:''${NC}"
         echo "Models: ${toString cfg.models}"
         echo "Model Presets: ${toString cfg.modelPresets}"
-        echo "Shell Aliases: ${if cfg.shellAliases then "enabled" else "disabled"}"
-        echo "Service Auto-start: ${if cfg.service.autoStart then "enabled" else "disabled"}"
+        echo "Shell Aliases: ${
+          if cfg.shellAliases
+          then "enabled"
+          else "disabled"
+        }"
+        echo "Service Auto-start: ${
+          if cfg.service.autoStart
+          then "enabled"
+          else "disabled"
+        }"
         echo "Acceleration: ${cfg.acceleration}"
 
         echo ""

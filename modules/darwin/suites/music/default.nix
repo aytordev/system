@@ -1,15 +1,12 @@
 {
   config,
   lib,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
 
   cfg = config.aytordev.suites.music;
-in
-{
+in {
   options.aytordev.suites.music = {
     enable = lib.mkEnableOption "music configuration";
   };

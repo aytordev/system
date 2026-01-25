@@ -2,8 +2,7 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   inherit (lib) mkEnableOption mkOption types mkIf mkMerge;
   inherit (builtins) isString;
 
@@ -43,7 +42,7 @@ let
   mkStringSecret = name: path: {
     sopsFile = cfg.defaultSopsFile;
     key = name;
-    path = path;
+    inherit path;
     mode = "0400";
     owner = "root";
     group = "wheel";
@@ -66,15 +65,14 @@ let
     sops = {
       inherit (cfg) defaultSopsFile;
       age.keyFile = cfg.age.keyFile;
-      gnupg.sshKeyPaths = [ ];
+      gnupg.sshKeyPaths = [];
     };
   };
 
   secretsConfig = {
     sops.secrets = lib.mapAttrs mapSecret cfg.secrets;
   };
-in
-{
+in {
   options.aytordev.security.sops = {
     enable = mkEnableOption "SOPS secrets management";
 
@@ -93,8 +91,8 @@ in
     };
 
     secrets = mkOption {
-      type = types.attrsOf (types.either types.str (types.submodule { options = secretOptions; }));
-      default = { };
+      type = types.attrsOf (types.either types.str (types.submodule {options = secretOptions;}));
+      default = {};
       description = "Attribute set of secrets to manage";
       example = ''
         {

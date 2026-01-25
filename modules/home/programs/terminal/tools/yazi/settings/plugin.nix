@@ -25,8 +25,7 @@ in {
         prio = "high";
       };
     prepend_preloaders =
-      []
-      ++ lib.optionals (lib.hasAttr "duckdb" enabledPlugins) (
+      lib.optionals (lib.hasAttr "duckdb" enabledPlugins) (
         let
           multiFileTypes = [
             "csv"

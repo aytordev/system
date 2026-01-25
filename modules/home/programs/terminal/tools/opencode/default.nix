@@ -2,33 +2,33 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkEnableOption;
 
   cfg = config.aytordev.programs.terminal.tools.opencode;
 
-  aiTools = import (lib.getFile "modules/common/ai-tools") { inherit lib; };
-  agentConfigLib = import ./agent-config.nix { inherit lib; };
+  aiTools = import (lib.getFile "modules/common/ai-tools") {inherit lib;};
+  agentConfigLib = import ./agent-config.nix {inherit lib;};
 
   # Build OpenCode agent configurations from raw agent data
-  buildAgentConfigs =
-    agents:
+  buildAgentConfigs = agents:
     lib.mapAttrs (
-      name: agentText:
-      let
+      name: agentText: let
         description = aiTools.opencode.extractDescription agentText;
         prompt = aiTools.opencode.extractPrompt agentText;
         config = agentConfigLib.generateAgentConfig name;
       in
-      config
-      // {
-        inherit prompt;
-        description = if description != null then description else "AI agent: ${name}";
-      }
-    ) agents;
-in
-{
+        config
+        // {
+          inherit prompt;
+          description =
+            if description != null
+            then description
+            else "AI agent: ${name}";
+        }
+    )
+    agents;
+in {
   imports = [
     ./formatters.nix
     ./lsp.nix

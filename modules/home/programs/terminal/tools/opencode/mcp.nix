@@ -1,7 +1,10 @@
 # OpenCode MCP (Model Context Protocol) servers configuration module
 # Defines MCP servers for extending OpenCode capabilities
-{ lib, pkgs, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   config = {
     # FIXME: seems to cause opencode to just hang
     programs.opencode.settings.mcp = {

@@ -1,13 +1,13 @@
-{ config, lib, ... }:
-
-let
+{
+  config,
+  lib,
+  ...
+}: let
   inherit (lib) mkIf mkOption types;
 
   cfg = config.aytordev.programs.desktop.bars.sketchybar;
   userHome = config.users.users.${config.aytordev.user.name}.home;
-in
-
-{
+in {
   options.aytordev.programs.desktop.bars.sketchybar = {
     enable = lib.mkEnableOption "sketchybar log rotation";
 

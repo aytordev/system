@@ -209,7 +209,10 @@ in {
 
       pinentry = lib.mkOption {
         type = lib.types.package;
-        default = if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3;
+        default =
+          if pkgs.stdenv.isDarwin
+          then pkgs.pinentry_mac
+          else pkgs.pinentry-gnome3;
         example = lib.literalExpression "pkgs.pinentry-curses";
         description = ''
           Pinentry program to use for password prompts.
@@ -221,11 +224,12 @@ in {
   config = lib.mkIf cfg.enable {
     # Only install bitwarden-cli package if rbw is not enabled (to avoid broken package)
     # rbw can be used as a standalone alternative
-    home.packages = lib.optionals (!cfg.rbw.enable) [cfg.package]
-                    ++ lib.optionals cfg.rbw.enable [
-                      cfg.rbw.package
-                      cfg.rbw.pinentry
-                    ];
+    home.packages =
+      lib.optionals (!cfg.rbw.enable) [cfg.package]
+      ++ lib.optionals cfg.rbw.enable [
+        cfg.rbw.package
+        cfg.rbw.pinentry
+      ];
 
     # Configure Bitwarden CLI settings
     home.sessionVariables = lib.mkMerge [
@@ -264,14 +268,14 @@ in {
             export BW_CLIENTID=$(cat "${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}")
             export BW_CLIENTSECRET=$(cat "${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}")
             rbw login
-          ''}
+        ''}
           ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
           if [[ -f "$HOME/.config/rbw/apikey" ]]; then
             source "$HOME/.config/rbw/apikey"
             export BW_CLIENTID
             export BW_CLIENTSECRET
             rbw login
-          ''}
+        ''}
           else
             echo "API key not configured. Use 'rbw login' for password login."
             echo "To configure: Add bitwarden_api_client_id and bitwarden_api_client_secret to your sops secrets"
@@ -376,14 +380,14 @@ in {
             set -gx BW_CLIENTID (cat "${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}")
             set -gx BW_CLIENTSECRET (cat "${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}")
             rbw login
-          ''}
+        ''}
           ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
           if test -f "$HOME/.config/rbw/apikey"
             source "$HOME/.config/rbw/apikey"
             set -gx BW_CLIENTID $BW_CLIENTID
             set -gx BW_CLIENTSECRET $BW_CLIENTSECRET
             rbw login
-          ''}
+        ''}
           else
             echo "API key not configured. Use 'rbw login' for password login."
             echo "To configure: Add bitwarden_api_client_id and bitwarden_api_client_secret to your sops secrets"
@@ -444,11 +448,11 @@ in {
     # Configure rbw if enabled
     programs.rbw = lib.mkIf cfg.rbw.enable {
       enable = true;
-      package = cfg.rbw.package;
+      inherit (cfg.rbw) package;
       settings = {
         email = inputs.secrets.useremail or "";
         base_url = cfg.settings.server;
-        pinentry = cfg.rbw.pinentry;
+        inherit (cfg.rbw) pinentry;
         sync_interval = 3600;
       };
     };

@@ -5,9 +5,9 @@
   inputs,
   username ? null,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     types
     mkIf
     mkDefault
@@ -20,12 +20,11 @@ let
   cfg = config.aytordev.user;
 
   home-directory =
-    if cfg.name == null then
-      null
-    else if pkgs.stdenv.hostPlatform.isDarwin then
-      "/Users/${cfg.name}"
-    else
-      "/home/${cfg.name}";
+    if cfg.name == null
+    then null
+    else if pkgs.stdenv.hostPlatform.isDarwin
+    then "/Users/${cfg.name}"
+    else "/home/${cfg.name}";
 
   # Bash-specific aliases (use bash syntax like $(), for, if, source, etc.)
   bashSpecificAliases = {
@@ -51,8 +50,7 @@ let
     usage = "${getExe' pkgs.coreutils "du"} -ah -d1 | sort -rn 2>/dev/null";
     psg = "${getExe pkgs.ps} aux | grep";
   };
-in
-{
+in {
   options.aytordev.user = {
     enable = mkOpt types.bool false "Whether to configure the user account.";
     email = mkOpt types.str inputs.secrets.useremail "The email of the user.";
@@ -60,7 +58,7 @@ in
     home = mkOpt (types.nullOr types.str) home-directory "The user's home directory.";
     icon =
       mkOpt (types.nullOr types.package) null
-        "The profile picture to use for the user.";
+      "The profile picture to use for the user.";
     name = mkOpt (types.nullOr types.str) username "The user account.";
   };
 
@@ -78,19 +76,20 @@ in
       ];
 
       home = {
-        file = {
-          "Desktop/.keep".text = "";
-          "Documents/.keep".text = "";
-          "Downloads/.keep".text = "";
-          "Music/.keep".text = "";
-          "Pictures/.keep".text = "";
-          "Videos/.keep".text = "";
-        }
-        // lib.optionalAttrs (cfg.icon != null) {
-          ".face".source = cfg.icon;
-          ".face.icon".source = cfg.icon;
-          "Pictures/${cfg.icon.fileName or (baseNameOf cfg.icon)}".source = cfg.icon;
-        };
+        file =
+          {
+            "Desktop/.keep".text = "";
+            "Documents/.keep".text = "";
+            "Downloads/.keep".text = "";
+            "Music/.keep".text = "";
+            "Pictures/.keep".text = "";
+            "Videos/.keep".text = "";
+          }
+          // lib.optionalAttrs (cfg.icon != null) {
+            ".face".source = cfg.icon;
+            ".face.icon".source = cfg.icon;
+            "Pictures/${cfg.icon.fileName or (baseNameOf cfg.icon)}".source = cfg.icon;
+          };
 
         # Only set homeDirectory if cfg.home is not null
         homeDirectory = mkIf (cfg.home != null) (mkDefault cfg.home);
@@ -144,14 +143,18 @@ in
 
       programs = {
         home-manager = enabled;
-        bash.shellAliases = bashSpecificAliases // {
-          hmvar-reload = ''__HM_ZSH_SESS_VARS_SOURCED=0 source "/etc/profiles/per-user/${config.aytordev.user.name}/etc/profile.d/hm-session-vars.sh"'';
-          clear = "clear; ${getExe config.programs.fastfetch.package}";
-        };
-        zsh.shellAliases = bashSpecificAliases // {
-          hmvar-reload = ''__HM_ZSH_SESS_VARS_SOURCED=0 source "/etc/profiles/per-user/${config.aytordev.user.name}/etc/profile.d/hm-session-vars.sh"'';
-          clear = "clear; ${getExe config.programs.fastfetch.package}";
-        };
+        bash.shellAliases =
+          bashSpecificAliases
+          // {
+            hmvar-reload = ''__HM_ZSH_SESS_VARS_SOURCED=0 source "/etc/profiles/per-user/${config.aytordev.user.name}/etc/profile.d/hm-session-vars.sh"'';
+            clear = "clear; ${getExe config.programs.fastfetch.package}";
+          };
+        zsh.shellAliases =
+          bashSpecificAliases
+          // {
+            hmvar-reload = ''__HM_ZSH_SESS_VARS_SOURCED=0 source "/etc/profiles/per-user/${config.aytordev.user.name}/etc/profile.d/hm-session-vars.sh"'';
+            clear = "clear; ${getExe config.programs.fastfetch.package}";
+          };
       };
     }
   ]);

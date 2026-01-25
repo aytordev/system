@@ -103,17 +103,18 @@ in {
     # Create Bitwarden config directory and settings file if settings are provided
     xdg.configFile = lib.mkIf (cfg.settings != {}) {
       "Bitwarden/data.json" = {
-        text = builtins.toJSON (cfg.settings // {
-          # Merge user settings with our module options
-          enableBrowserIntegration = cfg.enableBrowserIntegration;
-          enableTray = cfg.enableTrayIcon;
-          enableMinimizeToTray = cfg.enableTrayIcon;
-          openAtLogin = cfg.enableSystemStartup;
-          biometricUnlock = cfg.biometricUnlock.enable;
-          biometricRequirePasswordOnStart = cfg.biometricUnlock.requirePasswordOnStart;
-          vaultTimeout = cfg.vault.timeout;
-          vaultTimeoutAction = cfg.vault.timeoutAction;
-        });
+        text = builtins.toJSON (cfg.settings
+          // {
+            # Merge user settings with our module options
+            inherit (cfg) enableBrowserIntegration;
+            enableTray = cfg.enableTrayIcon;
+            enableMinimizeToTray = cfg.enableTrayIcon;
+            openAtLogin = cfg.enableSystemStartup;
+            biometricUnlock = cfg.biometricUnlock.enable;
+            biometricRequirePasswordOnStart = cfg.biometricUnlock.requirePasswordOnStart;
+            vaultTimeout = cfg.vault.timeout;
+            vaultTimeoutAction = cfg.vault.timeoutAction;
+          });
       };
     };
 

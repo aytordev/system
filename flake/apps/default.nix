@@ -1,69 +1,69 @@
-{ lib, ... }:
-{
-  perSystem =
-    { pkgs, ... }:
-    let
-      inputGroups = {
-        core = {
-          description = "Core Nix ecosystem";
-          inputs = [
-            "nixpkgs"
-            "nixpkgs-unstable"
-            "nixpkgs-stable"
-            "nixpkgs-darwin"
-            "flake-parts"
-          ];
-        };
-
-        system = {
-          description = "System management";
-          inputs = [
-            "home-manager"
-            "nix-darwin"
-            "nix-rosetta-builder"
-            "sops-nix"
-          ];
-        };
-
-        apps = {
-          description = "Applications & packages";
-          inputs = [
-            "yazi-flavors"
-          ];
-        };
+{lib, ...}: {
+  perSystem = {pkgs, ...}: let
+    inputGroups = {
+      core = {
+        description = "Core Nix ecosystem";
+        inputs = [
+          "nixpkgs"
+          "nixpkgs-unstable"
+          "nixpkgs-stable"
+          "nixpkgs-darwin"
+          "flake-parts"
+        ];
       };
 
-      mkUpdateApp =
-        name:
-        { description, inputs }:
-        {
-          type = "app";
-          meta.description = "Update ${description} inputs";
-          program = lib.getExe (
-            pkgs.writeShellApplication {
-              name = "update-${name}";
-              meta = {
-                mainProgram = "update-${name}";
-                description = "Update ${description} inputs";
-              };
-              text = ''
-                set -euo pipefail
+      system = {
+        description = "System management";
+        inputs = [
+          "home-manager"
+          "nix-darwin"
+          "nix-rosetta-builder"
+          "sops-nix"
+        ];
+      };
 
-                echo "🔄 Updating ${description} inputs..."
-                nix flake update ${lib.concatStringsSep " " inputs}
+      apps = {
+        description = "Applications & packages";
+        inputs = [
+          "yazi-flavors"
+        ];
+      };
+    };
 
-                echo "✅ ${description} inputs updated successfully!"
-              '';
-            }
-          );
-        };
+    mkUpdateApp = name: {
+      description,
+      inputs,
+    }: {
+      type = "app";
+      meta.description = "Update ${description} inputs";
+      program = lib.getExe (
+        pkgs.writeShellApplication {
+          name = "update-${name}";
+          meta = {
+            mainProgram = "update-${name}";
+            description = "Update ${description} inputs";
+          };
+          text = ''
+            set -euo pipefail
 
-      groupApps = lib.mapAttrs' (
+            echo "🔄 Updating ${description} inputs..."
+            nix flake update ${lib.concatStringsSep " " inputs}
+
+            echo "✅ ${description} inputs updated successfully!"
+          '';
+        }
+      );
+    };
+
+    groupApps =
+      lib.mapAttrs' (
         name: value: lib.nameValuePair "update-${name}" (mkUpdateApp name value)
-      ) inputGroups;
-    in
-    {
-      apps = groupApps // {
+      )
+      inputGroups;
+  in {
+    apps =
+      groupApps
+      // {
         update-all = {
           type = "app";
           meta.description = "Update all flake inputs";
@@ -89,5 +89,5 @@
           );
         };
       };
-    };
+  };
 }

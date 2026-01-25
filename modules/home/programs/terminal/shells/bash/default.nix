@@ -2,8 +2,7 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   inherit (lib) mkEnableOption mkIf;
   cfg = config.aytordev.programs.terminal.shells.bash;
 in {
@@ -14,7 +13,7 @@ in {
   config = mkIf cfg.enable {
     programs.bash = {
       enable = true;
-      enableCompletion = false;  # Disable to prevent bind/complete errors
+      enableCompletion = false; # Disable to prevent bind/complete errors
 
       # Bash 5.3+ enhanced history settings
       historySize = 10000;

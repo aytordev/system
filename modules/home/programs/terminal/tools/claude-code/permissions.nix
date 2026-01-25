@@ -2,8 +2,7 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   inherit (lib) mkOption types mkIf;
 
   cfg = config.aytordev.programs.terminal.tools.claude-code;
@@ -66,67 +65,71 @@ let
   ];
 
   # Standard profile additions - balanced permissions
-  standardAllow = baseAllow ++ [
-    # Git staging
-    "Bash(git add:*)"
+  standardAllow =
+    baseAllow
+    ++ [
+      # Git staging
+      "Bash(git add:*)"
 
-    # All nix commands
-    "Bash(nix:*)"
+      # All nix commands
+      "Bash(nix:*)"
 
-    # Directory creation
-    "Bash(mkdir:*)"
-    "Bash(chmod:*)"
+      # Directory creation
+      "Bash(mkdir:*)"
+      "Bash(chmod:*)"
 
-    # Search tools
-    "Bash(rg:*)"
-    "Bash(grep:*)"
+      # Search tools
+      "Bash(rg:*)"
+      "Bash(grep:*)"
 
-    # System info
-    "Bash(systemctl list-units:*)"
-    "Bash(systemctl list-timers:*)"
-    "Bash(systemctl status:*)"
-    "Bash(journalctl:*)"
-    "Bash(dmesg:*)"
-    "Bash(env)"
-    "Bash(claude --version)"
-    "Bash(nh search:*)"
+      # System info
+      "Bash(systemctl list-units:*)"
+      "Bash(systemctl list-timers:*)"
+      "Bash(systemctl status:*)"
+      "Bash(journalctl:*)"
+      "Bash(dmesg:*)"
+      "Bash(env)"
+      "Bash(claude --version)"
+      "Bash(nh search:*)"
 
-    # Audio system (read-only)
-    "Bash(pactl list:*)"
-    "Bash(pw-top)"
+      # Audio system (read-only)
+      "Bash(pactl list:*)"
+      "Bash(pw-top)"
 
-    # Hyprland
-    "Bash(hyprctl dispatch:*)"
+      # Hyprland
+      "Bash(hyprctl dispatch:*)"
 
-    # Sway
-    "Bash(swaymsg:*)"
-    "Bash(swaync-client:*)"
-    "Bash(uwsm check:*)"
+      # Sway
+      "Bash(swaymsg:*)"
+      "Bash(swaync-client:*)"
+      "Bash(uwsm check:*)"
 
-    # Debugging
-    "Bash(coredumpctl list:*)"
+      # Debugging
+      "Bash(coredumpctl list:*)"
 
-    # Work MCP
-    "mcp__mulesoft-analyzer"
+      # Work MCP
+      "mcp__mulesoft-analyzer"
 
-    # Additional home directory reads
-    "Read(/home/khaneliman/Documents/github/home-manager/**)"
-    "Read(/home/khaneliman/.config/sway/**)"
-  ];
+      # Additional home directory reads
+      "Read(/home/khaneliman/Documents/github/home-manager/**)"
+      "Read(/home/khaneliman/.config/sway/**)"
+    ];
 
   # Autonomous profile additions - full autonomy for trusted workflows
-  autonomousAllow = standardAllow ++ [
-    # Git write operations
-    "Bash(git commit:*)"
-    "Bash(git checkout:*)"
-    "Bash(git switch:*)"
-    "Bash(git stash:*)"
-    "Bash(git restore:*)"
-    "Bash(git reset:*)"
+  autonomousAllow =
+    standardAllow
+    ++ [
+      # Git write operations
+      "Bash(git commit:*)"
+      "Bash(git checkout:*)"
+      "Bash(git switch:*)"
+      "Bash(git stash:*)"
+      "Bash(git restore:*)"
+      "Bash(git reset:*)"
 
-    # File operations
-    "Bash(rm:*)"
-  ];
+      # File operations
+      "Bash(rm:*)"
+    ];
 
   # Operations requiring confirmation in non-autonomous mode
   standardAsk = [
@@ -207,8 +210,7 @@ let
     "Bash(dd:*)"
     "Bash(mkfs:*)"
   ];
-in
-{
+in {
   options.aytordev.programs.terminal.tools.claude-code.permissionProfile = mkOption {
     type = types.enum [
       "conservative"
@@ -227,24 +229,25 @@ in
   config = mkIf cfg.enable {
     programs.claude-code.settings.permissions = {
       allow =
-        if cfg.permissionProfile == "autonomous" then
-          autonomousAllow
-        else if cfg.permissionProfile == "standard" then
-          standardAllow
-        else
-          baseAllow;
+        if cfg.permissionProfile == "autonomous"
+        then autonomousAllow
+        else if cfg.permissionProfile == "standard"
+        then standardAllow
+        else baseAllow;
 
       ask =
-        if cfg.permissionProfile == "autonomous" then
-          autonomousAsk
-        else if cfg.permissionProfile == "standard" then
-          standardAsk
-        else
-          standardAsk ++ standardAllow; # Conservative: ask for everything standard allows
+        if cfg.permissionProfile == "autonomous"
+        then autonomousAsk
+        else if cfg.permissionProfile == "standard"
+        then standardAsk
+        else standardAsk ++ standardAllow; # Conservative: ask for everything standard allows
 
       deny = denyList;
 
-      defaultMode = if cfg.permissionProfile == "autonomous" then "acceptEdits" else "default";
+      defaultMode =
+        if cfg.permissionProfile == "autonomous"
+        then "acceptEdits"
+        else "default";
     };
   };
 }

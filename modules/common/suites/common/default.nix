@@ -2,15 +2,12 @@
   config,
   lib,
   pkgs,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
 
   cfg = config.aytordev.suites.common;
-in
-{
+in {
   options.aytordev.suites.common = {
     enable = lib.mkEnableOption "common configuration";
   };

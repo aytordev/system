@@ -3,20 +3,18 @@
   lib,
   options,
   ...
-}:
-let
+}: let
   inherit (lib.aytordev) mkOpt;
-in
-{
+in {
   options.aytordev.home = {
     file =
-      mkOpt lib.types.attrs { }
-        "A set of files to be managed by home-manager's <option>home.file</option>.";
+      mkOpt lib.types.attrs {}
+      "A set of files to be managed by home-manager's <option>home.file</option>.";
     configFile =
-      mkOpt lib.types.attrs { }
-        "A set of files to be managed by home-manager's <option>xdg.configFile</option>.";
-    extraOptions = mkOpt lib.types.attrs { } "Options to pass directly to home-manager.";
-    homeConfig = mkOpt lib.types.attrs { } "Final config for home-manager.";
+      mkOpt lib.types.attrs {}
+      "A set of files to be managed by home-manager's <option>xdg.configFile</option>.";
+    extraOptions = mkOpt lib.types.attrs {} "Options to pass directly to home-manager.";
+    homeConfig = mkOpt lib.types.attrs {} "Final config for home-manager.";
   };
 
   config = {

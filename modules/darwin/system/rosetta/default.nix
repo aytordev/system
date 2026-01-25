@@ -2,13 +2,11 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkEnableOption;
 
   cfg = config.aytordev.system.rosetta;
-in
-{
+in {
   options.aytordev.system.rosetta = {
     enable = mkEnableOption "Rosetta 2";
   };

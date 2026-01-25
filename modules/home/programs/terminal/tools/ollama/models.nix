@@ -3,8 +3,7 @@
   lib,
   ...
 }:
-with lib;
-let
+with lib; let
   cfg = config.aytordev.programs.terminal.tools.ollama;
 
   # Simplified model presets
@@ -22,11 +21,10 @@ let
       "tinyllama"
     ];
   };
-in
-{
+in {
   options.aytordev.programs.terminal.tools.ollama.modelPresets = mkOption {
     type = types.listOf (types.enum (attrNames modelPresets));
-    default = [ ];
+    default = [];
     example = [
       "general"
       "coding"

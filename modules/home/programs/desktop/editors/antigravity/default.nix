@@ -67,23 +67,24 @@ in {
       mkdir -p "${config.home.homeDirectory}/.antigravity/extensions"
 
       ${lib.concatMapStringsSep "\n" (ext: ''
-        # We use the extension publisher.name as ID.
-        # Note: This assumes the package name matches the extension ID or we can derive it.
-        # Since we are using nixpkgs extensions, they usually have 'vscode-extension-publisher-name' format or similar.
-        # A more robust way for imperative install is just passing the extension VSIX if available or name.
-        # However, 'code --install-extension' expects an ID or path.
-        # For simplicity in this decoupled mode, we try to install by ID if we can guess it,
-        # OR we just rely on the user to install them manually if this is too brittle.
-        # BUT the user asked for this.
-        # Let's try to find the vsix in the store path.
+          # We use the extension publisher.name as ID.
+          # Note: This assumes the package name matches the extension ID or we can derive it.
+          # Since we are using nixpkgs extensions, they usually have 'vscode-extension-publisher-name' format or similar.
+          # A more robust way for imperative install is just passing the extension VSIX if available or name.
+          # However, 'code --install-extension' expects an ID or path.
+          # For simplicity in this decoupled mode, we try to install by ID if we can guess it,
+          # OR we just rely on the user to install them manually if this is too brittle.
+          # BUT the user asked for this.
+          # Let's try to find the vsix in the store path.
 
-        for vsix in "${ext}/share/vscode/extensions/"*.vsix; do
-          if [ -f "$vsix" ]; then
-            echo "Installing extension from $vsix..."
-            ${cfg.package}/bin/antigravity --install-extension "$vsix" || true
-          fi
-        done
-      '') cfg.extensions}
+          for vsix in "${ext}/share/vscode/extensions/"*.vsix; do
+            if [ -f "$vsix" ]; then
+              echo "Installing extension from $vsix..."
+              ${cfg.package}/bin/antigravity --install-extension "$vsix" || true
+            fi
+          done
+        '')
+        cfg.extensions}
     '';
 
     home.file = mkIf pkgs.stdenv.isDarwin {

@@ -8,32 +8,36 @@ _: {
         {
           type = "command";
           timeout = 5;
-          command = /* Bash */ ''
-            input=$(cat)
-            cmd=$(echo "$input" | jq -r '.tool_input.command // ""')
+          command =
+            /*
+            Bash
+            */
+            ''
+              input=$(cat)
+              cmd=$(echo "$input" | jq -r '.tool_input.command // ""')
 
-            # Dangerous patterns that require regex detection
-            dangerous_patterns=(
-              # Arbitrary code execution from network (pipe to shell)
-              'curl.*\|.*sh'
-              'curl.*\|.*bash'
-              'wget.*\|.*sh'
-              'wget.*\|.*bash'
-              'eval.*\$\(curl'
-              'eval.*\$\(wget'
-              # Fork bomb
-              ':\(\)\{.*:\|:.*\};:'
-            )
+              # Dangerous patterns that require regex detection
+              dangerous_patterns=(
+                # Arbitrary code execution from network (pipe to shell)
+                'curl.*\|.*sh'
+                'curl.*\|.*bash'
+                'wget.*\|.*sh'
+                'wget.*\|.*bash'
+                'eval.*\$\(curl'
+                'eval.*\$\(wget'
+                # Fork bomb
+                ':\(\)\{.*:\|:.*\};:'
+              )
 
-            for pattern in "''${dangerous_patterns[@]}"; do
-              if echo "$cmd" | grep -qE "$pattern"; then
-                echo '{"hookSpecificOutput":{"permissionDecision":"deny","permissionDecisionReason":"Dangerous command pattern detected"}}'
-                exit 2
-              fi
-            done
+              for pattern in "''${dangerous_patterns[@]}"; do
+                if echo "$cmd" | grep -qE "$pattern"; then
+                  echo '{"hookSpecificOutput":{"permissionDecision":"deny","permissionDecisionReason":"Dangerous command pattern detected"}}'
+                  exit 2
+                fi
+              done
 
-            exit 0
-          '';
+              exit 0
+            '';
         }
       ];
     }

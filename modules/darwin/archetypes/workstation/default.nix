@@ -1,15 +1,12 @@
 {
   config,
   lib,
-
   ...
-}:
-let
+}: let
   inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.archetypes.workstation;
-in
-{
+in {
   options.aytordev.archetypes.workstation = {
     enable = lib.mkEnableOption "the workstation archetype";
   };

@@ -1,14 +1,11 @@
 {
   lib,
   host ? null,
-
   ...
-}:
-let
+}: let
   inherit (lib) types;
   inherit (lib.aytordev) mkOpt;
-in
-{
+in {
   options.aytordev.host = {
     name = mkOpt (types.nullOr types.str) host "The host name.";
   };

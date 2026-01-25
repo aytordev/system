@@ -1,8 +1,6 @@
-{ inputs, ... }:
-let
+{inputs, ...}: let
   inherit (inputs.nixpkgs) lib;
-in
-{
+in {
   imports = [
     ../libraries
     ./overlays

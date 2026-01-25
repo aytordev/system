@@ -1,12 +1,12 @@
-{ config, lib, ... }:
-
-let
+{
+  config,
+  lib,
+  ...
+}: let
   inherit (lib) mkIf mkEnableOption;
 
   cfg = config.aytordev.system.logging;
-in
-
-{
+in {
   imports = [
     ./new-sys-log
   ];

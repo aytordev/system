@@ -78,7 +78,7 @@ in {
   config = mkIf cfg.enable {
     programs.navi = {
       enable = true;
-      settings = cfg.settings;
+      inherit (cfg) settings;
     };
   };
 }

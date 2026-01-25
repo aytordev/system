@@ -3,15 +3,13 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkEnableOption;
 
   cfg = config.aytordev.programs.terminal.tools.gemini-cli;
 
-  sharedAiTools = import (lib.getFile "modules/common/ai-tools") { inherit lib; };
-in
-{
+  sharedAiTools = import (lib.getFile "modules/common/ai-tools") {inherit lib;};
+in {
   options.aytordev.programs.terminal.tools.gemini-cli = {
     enable = mkEnableOption "Gemini CLI configuration";
   };

@@ -2,28 +2,23 @@
   config,
   lib,
   pkgs,
-
-  osConfig ? { },
+  osConfig ? {},
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
   inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.suites.business;
   isWSL = osConfig.aytordev.archetypes.wsl.enable or false;
-in
-{
+in {
   options.aytordev.suites.business = {
     enable = lib.mkEnableOption "business configuration";
   };
 
   config = mkIf cfg.enable {
-    home.packages =
-      with pkgs;
-      [
-        # TODO: add packages
-      ];
+    home.packages = with pkgs; [
+      # TODO: add packages
+    ];
 
     aytordev = {
       programs = {

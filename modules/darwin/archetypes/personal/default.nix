@@ -1,15 +1,12 @@
 {
   config,
   lib,
-
   ...
-}:
-let
+}: let
   inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.archetypes.personal;
-in
-{
+in {
   options.aytordev.archetypes.personal = {
     enable = lib.mkEnableOption "the personal archetype";
   };

@@ -25,7 +25,7 @@ in {
     # For backward compatibility with existing configurations
     programs.vesktop = {
       enable = true;
-      package = cfg.package;
+      inherit (cfg) package;
 
       vencord = {
         settings = {

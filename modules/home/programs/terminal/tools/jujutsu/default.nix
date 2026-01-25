@@ -41,7 +41,7 @@ in {
     home.packages = [cfg.package];
     programs.jujutsu = {
       enable = true;
-      package = cfg.package;
+      inherit (cfg) package;
       settings =
         {
           user = {

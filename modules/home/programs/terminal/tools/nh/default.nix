@@ -38,7 +38,7 @@ in {
       enable = true;
       package = nhPackage;
       clean.enable = cfg.clean.enable;
-      flake = cfg.flake;
+      inherit (cfg) flake;
     };
     home = {
       sessionVariables = {

@@ -56,7 +56,6 @@ with lib; let
 
     echo "$PROMPT" | ${cfg.package}/bin/ollama run "$MODEL"
   '';
-
 in {
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
