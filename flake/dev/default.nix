@@ -9,7 +9,7 @@ let
 in
 {
   imports = [
-    ./devshells
+    ./dev-shells
     ./checks
     ./formatter
     ./templates
