@@ -1,6 +1,7 @@
 {
   inputs,
   lib,
+  self,
   ...
 }:
 let
@@ -23,29 +24,19 @@ let
       )
     else
       { };
-
-  # Create aytordev packages overlay
-  aytordevPackagesOverlay =
-    final: prev:
-    let
-      directory = ../../packages;
-      packageFunctions = prev.lib.filesystem.packagesFromDirectoryRecursive {
-        inherit directory;
-        callPackage = file: _args: import file;
-      };
-    in
-    {
-      aytordev = prev.lib.fix (
-        self:
-        prev.lib.mapAttrs (
-          _name: func: final.callPackage func (self // { inherit inputs; })
-        ) packageFunctions
-      );
-    };
 in
 {
-  flake.overlays = dynamicOverlaysSet // {
-    default = aytordevPackagesOverlay;
-    aytordev = aytordevPackagesOverlay;
-  };
+  flake.overlays = dynamicOverlaysSet;
+
+  perSystem =
+    { system, ... }:
+    {
+      _module.args.pkgs = import inputs.nixpkgs {
+        inherit system;
+        # Apply ALL overlays defined in the flake (including the ones from packages module)
+        overlays = lib.attrValues self.overlays;
+        config.allowUnfree = true;
+      };
+    };
 }
+
