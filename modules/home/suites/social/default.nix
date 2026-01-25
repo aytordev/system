@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib) mkIf;
-  inherit (lib.aytordev) enabled;
+  inherit (lib.aytordev) enabled disabled;
 
   cfg = config.aytordev.suites.social;
 in {
@@ -29,7 +29,7 @@ in {
         desktop = {
           communications = {
             discord = lib.mkDefault enabled;
-            vesktop = lib.mkDefault enabled;
+            vesktop = lib.mkDefault disabled;
           };
         };
       };

@@ -113,14 +113,15 @@
         extensions = [".rs"];
       };
 
-      csharp = {
-        command = [(lib.getExe pkgs.roslyn-ls)];
-        extensions = [
-          ".cs"
-          ".csx"
-          ".cake"
-        ];
-      };
+      # FIXME: roslyn-ls broken due to Swift build failure in nixpkgs-unstable
+      # csharp = {
+      #   command = [(lib.getExe pkgs.roslyn-ls)];
+      #   extensions = [
+      #     ".cs"
+      #     ".csx"
+      #     ".cake"
+      #   ];
+      # };
 
       yamlls = {
         command = [

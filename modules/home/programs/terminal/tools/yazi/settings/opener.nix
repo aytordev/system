@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   ...
@@ -64,11 +63,12 @@
         desc = "Show media info";
         for = "unix";
       }
-      {
-        run = "${lib.getExe config.programs.mpv.package} \"$@\"";
-        orphan = true;
-        for = "unix";
-      }
+      # FIXME: mpv broken due to Swift build failure in nixpkgs-unstable
+      # {
+      #   run = "${lib.getExe config.programs.mpv.package} \"$@\"";
+      #   orphan = true;
+      #   for = "unix";
+      # }
     ];
   };
 }
