@@ -7,7 +7,7 @@ mkShell {
     pnpm
   ];
   shellHook = ''
-    echo -e "\n\033[1;32m🎯 Node.js 24 Shell\033[0m"
+    echo -e "\n\033[1;32m🎯 Node.js 24 LTS Shell\033[0m"
     echo "Run 'node --version' to see the version"
     echo "Run 'yarn --version' to see the version"
     echo "Run 'pnpm --version' to see the version"
