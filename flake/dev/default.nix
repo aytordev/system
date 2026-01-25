@@ -11,7 +11,7 @@ in
   imports = [
     ./dev-shells
     ./checks
-    ./formatter
+    ./treefmt
     ./templates
   ];
 

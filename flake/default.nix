@@ -9,6 +9,7 @@ in
     ./packages
     ./configs
     ./home
+    ./apps
     inputs.flake-parts.flakeModules.partitions
   ];
 
