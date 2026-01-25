@@ -1,7 +1,7 @@
 {
   config,
-  lib,
-  pkgs,
+
+  inputs,
   ...
 }: let
   inherit (lib) mkEnableOption mkIf;
@@ -10,19 +10,12 @@ in {
   options.aytordev.programs.terminal.tools.comma = {
     enable = mkEnableOption "comma";
   };
+  imports = [
+    inputs.nix-index-database.homeModules.nix-index
+  ];
+
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      comma
-      nix-index
-    ];
-    programs = {
-      nix-index = {
-        enable = true;
-        package = pkgs.nix-index;
-        enableBashIntegration = true;
-        enableFishIntegration = true;
-        enableZshIntegration = true;
-      };
-    };
+    programs.nix-index-database.comma.enable = true;
+    programs.nix-index.enable = true;
   };
 }

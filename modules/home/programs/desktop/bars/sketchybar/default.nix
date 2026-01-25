@@ -288,7 +288,7 @@ in {
         }
       '';
 
-      "sketchybar/helpers/icon_map.lua".source = "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
+      "sketchybar/helpers/icon_map.lua".source = "${pkgs.aytordev.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
     };
   };
 }
