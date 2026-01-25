@@ -1,6 +1,6 @@
-{pkgs, ...}: {
-  name = "nix";
-  description = "Task runner shell with just";
+{ pkgs, mkShell, ... }:
+
+mkShell {
   packages = with pkgs; [
     just
   ];

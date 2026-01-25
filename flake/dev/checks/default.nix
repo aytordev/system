@@ -14,19 +14,29 @@
       ...
     }:
     let
-      customChecks = import ../../../checks {
-        inherit (self) inputs;
-        inherit pkgs system lib;
-      };
+      # Path to the checks directory
+      checksPath = ../../../checks;
+
+      # Filter for directories that contain a default.nix
+      isCheckDir = name: type:
+        type == "directory" && builtins.pathExists (checksPath + "/${name}/default.nix");
+
+      # Get list of valid check directories
+      checkDirs = lib.filterAttrs isCheckDir (builtins.readDir checksPath);
+
+      # Import each check
+      customChecks = lib.mapAttrs (name: _:
+        import (checksPath + "/${name}") { inherit pkgs system lib; inherit (self) inputs; }
+      ) checkDirs;
     in
     {
       pre-commit = lib.mkIf (inputs ? git-hooks-nix) {
         check.enable = false;
 
         settings.hooks = {
-          # FIXME: broken dependency on darwin
+          # FIXME: broken dependency on darwin (swift build failure)
           actionlint.enable = pkgs.stdenv.hostPlatform.isLinux;
-          clang-tidy.enable = true;
+          clang-tidy.enable = pkgs.stdenv.hostPlatform.isLinux;
           deadnix = {
             enable = true;
             settings.edit = true;
