@@ -24,9 +24,9 @@
         check.enable = false;
 
         settings.hooks = {
-          # FIXME: broken dependency on darwin
+          # FIXME: broken dependency on darwin (swift build failure)
           actionlint.enable = pkgs.stdenv.hostPlatform.isLinux;
-          clang-tidy.enable = true;
+          clang-tidy.enable = pkgs.stdenv.hostPlatform.isLinux;
           deadnix = {
             enable = true;
             settings.edit = true;
