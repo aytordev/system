@@ -1,0 +1,33 @@
+name: Check
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  checks:
+    name: Check expressions on ${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        arch: [x86_64-linux, aarch64-darwin]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check Nix flake inputs
+        uses: DeterminateSystems/flake-checker-action@v12
+      - uses: cachix/install-nix-action@v31
+        with:
+          install_url: https://nixos.org/nix/install
+          extra_nix_config: |
+            system = ${{ matrix.arch }}
+            extra-platforms = ${{ matrix.arch }}
+      - uses: cachix/cachix-action@v16
+        with:
+          name: anyrun
+          extra_pull_names: nix-community
+          # authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      # - name: clear hostedtoolcache
+      #   run: rm -rf /opt/hostedtoolcache
+      - name: run flake check
+        env:
+          ARCH: ${{ matrix.arch }}
+        run: nix flake check
