@@ -10,7 +10,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/kvndrsslr/sketchybar-app-font/archive/master.tar.gz";
-    hash = "sha256-000jpg808mp3q23wnbk9qlv75r694agcv19ladayi54ib9ikpsqx";
+    sha256 = "000jpg808mp3q23wnbk9qlv75r694agcv19ladayi54ib9ikpsqx";
   };
 
   installPhase = ''
