@@ -24,32 +24,31 @@ in {
         run = "mime-ext";
         prio = "high";
       };
-    prepend_preloaders =
-      lib.optionals (lib.hasAttr "duckdb" enabledPlugins) (
-        let
-          multiFileTypes = [
-            "csv"
-            "tsv"
-            "json"
-            "parquet"
-          ];
-          regularFileTypes = [
-            "db"
-            "duckdb"
-          ];
-        in
-          (map (ext: {
-              name = "*.${ext}";
-              run = "duckdb";
-              multi = false;
-            })
-            multiFileTypes)
-          ++ (map (ext: {
-              name = "*.${ext}";
-              run = "duckdb";
-            })
-            regularFileTypes)
-      );
+    prepend_preloaders = lib.optionals (lib.hasAttr "duckdb" enabledPlugins) (
+      let
+        multiFileTypes = [
+          "csv"
+          "tsv"
+          "json"
+          "parquet"
+        ];
+        regularFileTypes = [
+          "db"
+          "duckdb"
+        ];
+      in
+        (map (ext: {
+            name = "*.${ext}";
+            run = "duckdb";
+            multi = false;
+          })
+          multiFileTypes)
+        ++ (map (ext: {
+            name = "*.${ext}";
+            run = "duckdb";
+          })
+          regularFileTypes)
+    );
     preloaders = [
       {
         mime = "image/vnd.djvu";
