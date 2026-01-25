@@ -2,10 +2,8 @@
   config,
   lib,
   pkgs,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
 
   cfg = config.aytordev.programs.terminal.tools.infat;
@@ -32,9 +30,10 @@ let
 
   # Use IINA if installed, otherwise fall back to QuickTime Player
   videoPlayer =
-    if lib.elem pkgs.iina config.home.packages then bundleIds.iina else "QuickTime Player";
-in
-{
+    if lib.elem pkgs.iina config.home.packages
+    then bundleIds.iina
+    else "QuickTime Player";
+in {
   options.aytordev.programs.terminal.tools.infat = {
     enable = lib.mkEnableOption "infat";
   };

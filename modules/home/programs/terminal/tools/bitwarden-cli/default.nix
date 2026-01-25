@@ -209,7 +209,10 @@ in {
 
       pinentry = lib.mkOption {
         type = lib.types.package;
-        default = if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3;
+        default =
+          if pkgs.stdenv.isDarwin
+          then pkgs.pinentry_mac
+          else pkgs.pinentry-gnome3;
         example = lib.literalExpression "pkgs.pinentry-curses";
         description = ''
           Pinentry program to use for password prompts.
@@ -221,11 +224,12 @@ in {
   config = lib.mkIf cfg.enable {
     # Only install bitwarden-cli package if rbw is not enabled (to avoid broken package)
     # rbw can be used as a standalone alternative
-    home.packages = lib.optionals (!cfg.rbw.enable) [cfg.package]
-                    ++ lib.optionals cfg.rbw.enable [
-                      cfg.rbw.package
-                      cfg.rbw.pinentry
-                    ];
+    home.packages =
+      lib.optionals (!cfg.rbw.enable) [cfg.package]
+      ++ lib.optionals cfg.rbw.enable [
+        cfg.rbw.package
+        cfg.rbw.pinentry
+      ];
 
     # Configure Bitwarden CLI settings
     home.sessionVariables = lib.mkMerge [
@@ -238,7 +242,7 @@ in {
     ];
 
     # Shell integration scripts
-    home.file.".config/bitwarden-cli/zsh-integration.sh" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
+    xdg.configFile."bitwarden-cli/zsh-integration.sh" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
       text = ''
         # Bitwarden CLI session management
         export BW_SESSION=""
@@ -264,14 +268,14 @@ in {
             export BW_CLIENTID=$(cat "${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}")
             export BW_CLIENTSECRET=$(cat "${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}")
             rbw login
-          ''}
+        ''}
           ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
-          if [[ -f "$HOME/.config/rbw/apikey" ]]; then
-            source "$HOME/.config/rbw/apikey"
+          if [[ -f "$XDG_CONFIG_HOME/rbw/apikey" ]]; then
+            source "$XDG_CONFIG_HOME/rbw/apikey"
             export BW_CLIENTID
             export BW_CLIENTSECRET
             rbw login
-          ''}
+        ''}
           else
             echo "API key not configured. Use 'rbw login' for password login."
             echo "To configure: Add bitwarden_api_client_id and bitwarden_api_client_secret to your sops secrets"
@@ -305,7 +309,7 @@ in {
       '';
     };
 
-    home.file.".config/bitwarden-cli/bash-integration.sh" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
+    xdg.configFile."bitwarden-cli/bash-integration.sh" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
       text = ''
         # Bitwarden CLI session management
         export BW_SESSION=""
@@ -350,7 +354,7 @@ in {
       '';
     };
 
-    home.file.".config/bitwarden-cli/fish-integration.fish" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
+    xdg.configFile."bitwarden-cli/fish-integration.fish" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
       text = ''
         # Bitwarden CLI session management
         set -gx BW_SESSION ""
@@ -376,14 +380,14 @@ in {
             set -gx BW_CLIENTID (cat "${cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"}")
             set -gx BW_CLIENTSECRET (cat "${cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"}")
             rbw login
-          ''}
+        ''}
           ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
-          if test -f "$HOME/.config/rbw/apikey"
-            source "$HOME/.config/rbw/apikey"
+          if test -f "$XDG_CONFIG_HOME/rbw/apikey"
+            source "$XDG_CONFIG_HOME/rbw/apikey"
             set -gx BW_CLIENTID $BW_CLIENTID
             set -gx BW_CLIENTSECRET $BW_CLIENTSECRET
             rbw login
-          ''}
+        ''}
           else
             echo "API key not configured. Use 'rbw login' for password login."
             echo "To configure: Add bitwarden_api_client_id and bitwarden_api_client_secret to your sops secrets"
@@ -421,22 +425,22 @@ in {
     programs.zsh = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
       initContent = ''
         # Source Bitwarden CLI integration
-        [[ -f "$HOME/.config/bitwarden-cli/zsh-integration.sh" ]] && source "$HOME/.config/bitwarden-cli/zsh-integration.sh"
+        [[ -f "$XDG_CONFIG_HOME/bitwarden-cli/zsh-integration.sh" ]] && source "$XDG_CONFIG_HOME/bitwarden-cli/zsh-integration.sh"
       '';
     };
 
     programs.bash = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
       initExtra = ''
         # Source Bitwarden CLI integration
-        [[ -f "$HOME/.config/bitwarden-cli/bash-integration.sh" ]] && source "$HOME/.config/bitwarden-cli/bash-integration.sh"
+        [[ -f "$XDG_CONFIG_HOME/bitwarden-cli/bash-integration.sh" ]] && source "$XDG_CONFIG_HOME/bitwarden-cli/bash-integration.sh"
       '';
     };
 
     programs.fish = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
       interactiveShellInit = ''
         # Source Bitwarden CLI integration
-        if test -f "$HOME/.config/bitwarden-cli/fish-integration.fish"
-          source "$HOME/.config/bitwarden-cli/fish-integration.fish"
+        if test -f "$XDG_CONFIG_HOME/bitwarden-cli/fish-integration.fish"
+          source "$XDG_CONFIG_HOME/bitwarden-cli/fish-integration.fish"
         end
       '';
     };
@@ -444,17 +448,17 @@ in {
     # Configure rbw if enabled
     programs.rbw = lib.mkIf cfg.rbw.enable {
       enable = true;
-      package = cfg.rbw.package;
+      inherit (cfg.rbw) package;
       settings = {
         email = inputs.secrets.useremail or "";
         base_url = cfg.settings.server;
-        pinentry = cfg.rbw.pinentry;
+        inherit (cfg.rbw) pinentry;
         sync_interval = 3600;
       };
     };
 
     # Create API key file if credentials are provided (non-sops mode)
-    home.file.".config/rbw/apikey" = lib.mkIf (!cfg.settings.apiKey.useSops && cfg.settings.apiKey.clientId != null && cfg.settings.apiKey.clientSecret != null) {
+    xdg.configFile."rbw/apikey" = lib.mkIf (!cfg.settings.apiKey.useSops && cfg.settings.apiKey.clientId != null && cfg.settings.apiKey.clientSecret != null) {
       text = ''
         BW_CLIENTID="${cfg.settings.apiKey.clientId}"
         BW_CLIENTSECRET="${cfg.settings.apiKey.clientSecret}"

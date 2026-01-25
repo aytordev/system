@@ -7,7 +7,7 @@
   inherit (lib) mkIf;
   cfg = config.aytordev.programs.terminal.tools.zellij;
   themeCfg = config.aytordev.theme;
-  palette = themeCfg.palette;
+  inherit (themeCfg) palette;
 
   zns = "zellij -s $(basename $(pwd)) options --default-cwd $(pwd)";
   zas = "zellij a $(basename $(pwd))";

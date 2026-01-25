@@ -1,24 +1,20 @@
 {
   config,
   lib,
-
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
   inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.suites.social;
-in
-{
+in {
   options.aytordev.suites.social = {
     enable = lib.mkEnableOption "social configuration";
   };
 
   config = mkIf cfg.enable {
-    home.packages =
-      with pkgs;
+    home.packages = with pkgs;
       [
         element-desktop
       ]

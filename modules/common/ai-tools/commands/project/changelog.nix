@@ -57,16 +57,16 @@
 
     IF version specified:
         Generate entry for that specific version
-        
+
     IF --since flag provided:
         Include changes since specified tag/date
-        
+
     IF --auto flag:
         Automatically determine scope:
           - Since last tagged version
           - Since last changelog entry
           - All unreleased changes
-          
+
     ELSE:
         Include all changes since last changelog update
     ```
@@ -79,7 +79,7 @@
 
     1. Get relevant commit range:
        git log --oneline --reverse <since>..<until>
-       
+
     2. For each commit, extract:
        - Commit hash and date
        - Commit message and body
@@ -95,27 +95,27 @@
     ADDED (Features and enhancements):
       - feat: new features
       - enhancement: improvements to existing features
-      
+
     CHANGED (Modifications to existing functionality):
       - refactor: code restructuring
       - perf: performance improvements
       - update: dependency updates, non-breaking changes
-      
+
     FIXED (Bug fixes and corrections):
       - fix: bug fixes
       - security: security patches
       - hotfix: critical fixes
-      
+
     DEPRECATED (Features marked for removal):
       - deprecate: deprecated functionality
-      
+
     REMOVED (Deleted features):
       - remove: removed features
       - breaking: breaking changes
-      
+
     SECURITY (Security-related changes):
       - security: security improvements
-      
+
     INTERNAL (Development changes):
       - docs: documentation changes
       - test: test additions/changes
@@ -128,7 +128,7 @@
     ```
     For each change, assess:
       - Breaking changes (MAJOR version impact)
-      - New features (MINOR version impact)  
+      - New features (MINOR version impact)
       - Bug fixes (PATCH version impact)
       - User-facing vs internal changes
       - Migration requirements or notes
@@ -142,13 +142,13 @@
 
     IF version provided as argument:
         Use specified version
-        
+
     IF --auto flag:
         Determine next version based on changes:
           - Breaking changes → increment MAJOR
-          - New features → increment MINOR  
+          - New features → increment MINOR
           - Only fixes → increment PATCH
-          
+
     ELSE:
         Use "Unreleased" as version placeholder
 
@@ -165,7 +165,7 @@
     ## [Version] - YYYY-MM-DD
     ### Added
     - New feature descriptions
-    ### Changed  
+    ### Changed
     - Changed functionality descriptions
     ### Fixed
     - Bug fix descriptions
@@ -176,7 +176,7 @@
     # Version (YYYY-MM-DD)
     ## Features
     - feat: new feature descriptions
-    ## Bug Fixes  
+    ## Bug Fixes
     - fix: bug fix descriptions
     ## Performance
     - perf: performance improvements
@@ -202,7 +202,7 @@
     IF CHANGELOG.md exists:
         Insert new entry at top (after title/intro)
         Preserve existing formatting and structure
-        
+
     ELSE:
         Create new CHANGELOG.md with:
           - Appropriate title and introduction
@@ -265,7 +265,7 @@
     ## Features
     - **auth:** add OAuth2 integration for external providers
     - **ui:** implement dark mode toggle with user preferences
-    ## Performance Improvements  
+    ## Performance Improvements
     - **data:** optimize query performance reducing load time by 40%
     ## Bug Fixes
     - **memory:** fix background process memory leak (#123)
@@ -278,7 +278,7 @@
     # Generate unreleased changes entry
     /changelog
 
-    # Create entry for specific version  
+    # Create entry for specific version
     /changelog 1.2.0
 
     # Auto-generate next version based on changes

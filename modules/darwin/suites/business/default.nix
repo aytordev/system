@@ -1,15 +1,12 @@
 {
   config,
   lib,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
 
   cfg = config.aytordev.suites.business;
-in
-{
+in {
   options.aytordev.suites.business = {
     enable = lib.mkEnableOption "business configuration";
   };

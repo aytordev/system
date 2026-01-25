@@ -1,13 +1,13 @@
-{ config, lib, ... }:
-
-let
+{
+  config,
+  lib,
+  ...
+}: let
   inherit (lib) mkIf mkOption types;
 
   cfg = config.aytordev.programs.terminal.tools.atuin;
   userHome = config.users.users.${config.aytordev.user.name}.home;
-in
-
-{
+in {
   options.aytordev.programs.terminal.tools.atuin = {
     enable = lib.mkEnableOption "atuin log rotation";
 

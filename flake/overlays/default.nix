@@ -1,51 +1,35 @@
 {
   inputs,
   lib,
+  self,
   ...
-}:
-let
+}: let
   overlaysPath = ../../overlays;
 
   # Read overlay directories (skip default.nix)
   dynamicOverlaysSet =
-    if builtins.pathExists overlaysPath then
-      let
-        entries = builtins.readDir overlaysPath;
-        overlayDirs = lib.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
-      in
+    if builtins.pathExists overlaysPath
+    then let
+      entries = builtins.readDir overlaysPath;
+      overlayDirs = lib.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
+    in
       lib.genAttrs overlayDirs (
-        name:
-        let
+        name: let
           overlayPath = overlaysPath + "/${name}";
         in
-        # Existing overlays are already final: prev: functions
-        import overlayPath
+          # Existing overlays are already final: prev: functions
+          import overlayPath
       )
-    else
-      { };
+    else {};
+in {
+  flake.overlays = dynamicOverlaysSet;
 
-  # Create aytordev packages overlay
-  aytordevPackagesOverlay =
-    final: prev:
-    let
-      directory = ../../packages;
-      packageFunctions = prev.lib.filesystem.packagesFromDirectoryRecursive {
-        inherit directory;
-        callPackage = file: _args: import file;
-      };
-    in
-    {
-      aytordev = prev.lib.fix (
-        self:
-        prev.lib.mapAttrs (
-          _name: func: final.callPackage func (self // { inherit inputs; })
-        ) packageFunctions
-      );
+  perSystem = {system, ...}: {
+    _module.args.pkgs = import inputs.nixpkgs {
+      inherit system;
+      # Apply ALL overlays defined in the flake (including the ones from packages module)
+      overlays = lib.attrValues self.overlays;
+      config.allowUnfree = true;
     };
-in
-{
-  flake.overlays = dynamicOverlaysSet // {
-    default = aytordevPackagesOverlay;
-    aytordev = aytordevPackagesOverlay;
   };
 }

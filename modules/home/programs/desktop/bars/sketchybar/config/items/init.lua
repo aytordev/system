@@ -6,8 +6,8 @@
 -- require("items.menus")  -- App menu bar items (requires Accessibility permissions)
 
 -- Active modules
-require("items.workspaces")  -- AeroSpace workspace indicators
-require("items.calendar")    -- Date/time display
-require("items.vpn")         -- VPN status indicator
-require("items.widgets")     -- System widgets (battery, volume, etc.)
-require("items.media")       -- Media playback controls
+require("items.workspaces") -- AeroSpace workspace indicators
+require("items.calendar") -- Date/time display
+require("items.vpn") -- VPN status indicator
+require("items.widgets") -- System widgets (battery, volume, etc.)
+require("items.media") -- Media playback controls

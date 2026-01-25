@@ -2,11 +2,9 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   cfg = config.aytordev.nix.nix-rosetta-builder;
-in
-{
+in {
   options.aytordev.nix.nix-rosetta-builder = {
     enable = lib.mkEnableOption "nix-rosetta-builder";
     cores = lib.mkOption {
@@ -23,7 +21,8 @@ in
 
   config = {
     nix-rosetta-builder = {
-      inherit (cfg)
+      inherit
+        (cfg)
         enable
         cores
         memory

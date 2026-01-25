@@ -3,13 +3,11 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
 
   cfg = config.aytordev.programs.terminal.tools.nix-search-tv;
-in
-{
+in {
   options.aytordev.programs.terminal.tools.nix-search-tv = {
     enable = lib.mkEnableOption "nix-search-tv";
   };
@@ -19,16 +17,17 @@ in
       enable = true;
 
       settings = {
-        indexes = [
-          "nixpkgs"
-          "home-manager"
-        ]
-        ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-          "nixos"
-        ]
-        ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-          "darwin"
-        ];
+        indexes =
+          [
+            "nixpkgs"
+            "home-manager"
+          ]
+          ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+            "nixos"
+          ]
+          ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+            "darwin"
+          ];
       };
     };
   };

@@ -4,24 +4,28 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkIf;
+
   cfg = config.aytordev.programs.terminal.tools.comma;
 in {
   options.aytordev.programs.terminal.tools.comma = {
-    enable = mkEnableOption "comma";
+    enable = lib.mkEnableOption "comma";
   };
+
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      comma
-      nix-index
-    ];
     programs = {
+      nix-index-database.comma.enable = true;
+
       nix-index = {
         enable = true;
         package = pkgs.nix-index;
+
         enableBashIntegration = true;
         enableFishIntegration = true;
         enableZshIntegration = true;
+
+        # link nix-index database to ~/.cache/nix-index
+        symlinkToCacheHome = true;
       };
     };
   };

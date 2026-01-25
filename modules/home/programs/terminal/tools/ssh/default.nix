@@ -79,7 +79,7 @@ in {
         AddressFamily = "inet";
         TCPKeepAlive = "yes";
       };
-      extraConfig = cfg.extraConfig;
+      inherit (cfg) extraConfig;
       matchBlocks = lib.mkMerge [
         {
           "*" = {
@@ -94,7 +94,7 @@ in {
           };
           "*.local" = {
             user = config.home.username;
-            port = cfg.port;
+            inherit (cfg) port;
             extraOptions = {
               StrictHostKeyChecking = "no";
               UserKnownHostsFile = "/dev/null";

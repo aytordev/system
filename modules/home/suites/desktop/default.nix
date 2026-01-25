@@ -2,16 +2,13 @@
   config,
   lib,
   pkgs,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkDefault mkIf;
   inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.suites.desktop;
-in
-{
+in {
   options.aytordev.suites.desktop = {
     enable = lib.mkEnableOption "common desktop applications";
   };
@@ -50,11 +47,9 @@ in
       };
     };
 
-    home.packages =
-      with pkgs;
-      [
-        # TODO: Add more packages
-      ];
+    home.packages = with pkgs; [
+      # TODO: Add more packages
+    ];
 
     targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       copyApps.enable = true;

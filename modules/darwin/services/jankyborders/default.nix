@@ -1,13 +1,13 @@
-{ config, lib, ... }:
-
-let
+{
+  config,
+  lib,
+  ...
+}: let
   inherit (lib) mkIf mkOption types;
 
   cfg = config.aytordev.services.jankyborders;
   userHome = config.users.users.${config.aytordev.user.name}.home;
-in
-
-{
+in {
   options.aytordev.services.jankyborders = {
     enable = lib.mkEnableOption "jankyborders log rotation";
 

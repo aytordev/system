@@ -1,14 +1,13 @@
-{ inputs, ... }:
-let
+{inputs, ...}: let
   inherit (inputs.nixpkgs) lib;
-in
-{
+in {
   imports = [
     ../libraries
     ./overlays
     ./packages
     ./configs
     ./home
+    ./apps
     inputs.flake-parts.flakeModules.partitions
   ];
 

@@ -1,12 +1,10 @@
 {
   config,
   lib,
-  osConfig ? { },
+  osConfig ? {},
   pkgs,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkDefault;
   inherit (lib.aytordev) enabled;
 
@@ -54,14 +52,15 @@ let
     yazi-update-all = ''./pkgs/by-name/ya/yazi/plugins/update.py --all --commit'';
     # Home-Manager
     hmd = ''nix build -L .#docs-html; ${
-      if pkgs.stdenv.hostPlatform.isDarwin then "open" else "xdg-open"
-    } result/share/doc/home-manager/index.xhtml'';
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then "open"
+        else "xdg-open"
+      } result/share/doc/home-manager/index.xhtml'';
     hmt = ''f(){ nix-build -j auto --show-trace --pure --option allow-import-from-derivation false tests -A build."$1"; }; f'';
     hmtf = ''f(){ nix build -L --option allow-import-from-derivation false --reference-lock-file flake.lock "./tests#test-$1"; }; f'';
     hmts = ''f(){ nix build -L --option allow-import-from-derivation false --reference-lock-file flake.lock "./tests#test-$1"; nix path-info -rSh ./result; }; f'';
   };
-in
-{
+in {
   options.aytordev.suites.development = {
     enable = lib.mkEnableOption "common development configuration";
     azureEnable = lib.mkEnableOption "azure development configuration";
@@ -76,8 +75,7 @@ in
 
   config = mkIf cfg.enable {
     home = {
-      packages =
-        with pkgs;
+      packages = with pkgs;
         [
           jqp
           onefetch

@@ -10,14 +10,13 @@
 # Access colors in other modules:
 #   config.aytordev.theme.palette.accent.hex
 #   config.aytordev.theme.palette.bg.sketchybar
-
 {
   config,
   lib,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkEnableOption
     mkOption
     mkIf
@@ -25,16 +24,15 @@ let
     ;
 
   colors = import ./colors.nix;
-  themeLib = import ./lib.nix { inherit lib; };
+  themeLib = import ./lib.nix {inherit lib;};
 
   cfg = config.aytordev.theme;
-in
-{
+in {
   options.aytordev.theme = {
     enable = mkEnableOption "centralized Kanagawa theming";
 
     variant = mkOption {
-      type = types.enum [ "wave" "dragon" "lotus" ];
+      type = types.enum ["wave" "dragon" "lotus"];
       default = "wave";
       description = ''
         Kanagawa theme variant to use globally.
@@ -47,7 +45,7 @@ in
     };
 
     polarity = mkOption {
-      type = types.enum [ "dark" "light" ];
+      type = types.enum ["dark" "light"];
       default = "dark";
       description = ''
         Theme polarity. When set to "light", lotus variant is used regardless

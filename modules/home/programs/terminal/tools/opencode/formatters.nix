@@ -1,7 +1,10 @@
 # OpenCode formatters configuration module
 # Defines code formatters for different programming languages
-{ lib, pkgs, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   config = {
     programs.opencode.settings.formatter = {
       nixfmt = {
@@ -9,7 +12,7 @@
           (lib.getExe pkgs.nixfmt)
           "$FILE"
         ];
-        extensions = [ ".nix" ];
+        extensions = [".nix"];
       };
 
       csharpier = {
@@ -27,7 +30,7 @@
           (lib.getExe pkgs.rustfmt)
           "$FILE"
         ];
-        extensions = [ ".rs" ];
+        extensions = [".rs"];
       };
     };
   };

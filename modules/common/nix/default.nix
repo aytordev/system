@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  primaryUser = config.system.primaryUser;
+  inherit (config.system) primaryUser;
   allowedUsers = [
     "root"
     "@wheel"

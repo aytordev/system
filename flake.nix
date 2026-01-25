@@ -2,7 +2,7 @@
   description = "aytordev's nix configuration for both NixOS & macOS";
 
   outputs = inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
       systems = [
         "x86_64-linux"
         "aarch64-darwin"
@@ -54,6 +54,10 @@
     yazi-flavors = {
       url = "github:yazi-rs/flavors";
       flake = false;
+    };
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-rosetta-builder = {
       url = "github:cpick/nix-rosetta-builder";

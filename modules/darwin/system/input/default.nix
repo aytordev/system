@@ -2,13 +2,11 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkMerge mkEnableOption;
 
   cfg = config.aytordev.system.input;
-in
-{
+in {
   options.aytordev.system.input = {
     enable = mkEnableOption "macOS input";
   };

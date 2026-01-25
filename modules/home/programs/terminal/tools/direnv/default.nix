@@ -30,7 +30,7 @@ in {
       home.packages = with pkgs; [
         nix-direnv
       ];
-      home.file.".config/nix-direnv/nix-direnv.toml".text = ''
+      xdg.configFile."nix-direnv/nix-direnv.toml".text = ''
         [nix]
         enable = true
       '';
@@ -39,7 +39,7 @@ in {
       programs.direnv = {
         enable = true;
         nix-direnv.enable = cfg.nix-direnv;
-        silent = cfg.silent;
+        inherit (cfg) silent;
         config = mkIf cfg.nix-direnv {
           whitelist = {
             prefix = [

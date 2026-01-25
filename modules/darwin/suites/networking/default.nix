@@ -1,16 +1,13 @@
 {
   config,
   lib,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
   inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.suites.networking;
-in
-{
+in {
   options.aytordev.suites.networking = {
     enable = lib.mkEnableOption "networking configuration";
   };

@@ -1,15 +1,18 @@
 # OpenCode LSP (Language Server Protocol) configuration module
 # Defines language servers for different programming languages
-{ lib, pkgs, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   config = {
     programs.opencode.settings.lsp = {
       nixd = {
-        command = [ (lib.getExe pkgs.nixd) ];
-        extensions = [ ".nix" ];
+        command = [(lib.getExe pkgs.nixd)];
+        extensions = [".nix"];
         initialization = {
           formatting = {
-            command = [ (lib.getExe pkgs.nixfmt) ];
+            command = [(lib.getExe pkgs.nixfmt)];
           };
           options = {
             nixos = {
@@ -23,8 +26,8 @@
       };
 
       emmylua-ls = {
-        command = [ (lib.getExe pkgs.emmylua-ls) ];
-        extensions = [ ".lua" ];
+        command = [(lib.getExe pkgs.emmylua-ls)];
+        extensions = [".lua"];
         initialization = {
           Lua = {
             diagnostics = {
@@ -45,7 +48,7 @@
       };
 
       pyright = {
-        command = [ (lib.getExe pkgs.pyright) ];
+        command = [(lib.getExe pkgs.pyright)];
         extensions = [
           ".py"
           ".pyi"
@@ -64,7 +67,7 @@
       };
 
       clangd = {
-        command = [ (lib.getExe' pkgs.clang-tools "clangd") ];
+        command = [(lib.getExe' pkgs.clang-tools "clangd")];
         extensions = [
           ".c"
           ".cpp"
@@ -97,7 +100,7 @@
       };
 
       gopls = {
-        command = [ (lib.getExe pkgs.gopls) ];
+        command = [(lib.getExe pkgs.gopls)];
         extensions = [
           ".go"
           ".mod"
@@ -106,12 +109,12 @@
       };
 
       rust-analyzer = {
-        command = [ (lib.getExe pkgs.rust-analyzer) ];
-        extensions = [ ".rs" ];
+        command = [(lib.getExe pkgs.rust-analyzer)];
+        extensions = [".rs"];
       };
 
       csharp = {
-        command = [ (lib.getExe pkgs.roslyn-ls) ];
+        command = [(lib.getExe pkgs.roslyn-ls)];
         extensions = [
           ".cs"
           ".csx"
@@ -147,7 +150,7 @@
           "lsp"
           "stdio"
         ];
-        extensions = [ ".toml" ];
+        extensions = [".toml"];
       };
     };
   };

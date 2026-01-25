@@ -2,13 +2,11 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkEnableOption;
 
   cfg = config.aytordev.system.networking;
-in
-{
+in {
   options.aytordev.system.networking = {
     enable = mkEnableOption "macOS networking";
   };

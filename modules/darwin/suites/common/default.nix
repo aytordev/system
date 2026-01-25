@@ -2,17 +2,14 @@
   config,
   lib,
   pkgs,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkDefault;
   inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.suites.common;
-in
-{
-  imports = [ (lib.getFile "modules/common/suites/common/default.nix") ];
+in {
+  imports = [(lib.getFile "modules/common/suites/common/default.nix")];
 
   config = mkIf cfg.enable {
     programs.zsh.enable = mkDefault true;
@@ -24,8 +21,7 @@ in
     };
 
     environment = {
-      systemPackages =
-        with pkgs;
+      systemPackages = with pkgs;
         [
           duti
           gawk

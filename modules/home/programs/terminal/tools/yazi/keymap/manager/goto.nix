@@ -1,6 +1,4 @@
-{
-  ...
-}: let
+_: let
   mkGotoKeymap = {
     key,
     path,
@@ -48,7 +46,7 @@
     }
     {
       key = "w";
-      path = "~/.local/share/wallpapers";
+      path = "$XDG_DATA_HOME/wallpapers";
     }
   ];
 in {

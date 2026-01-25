@@ -1,14 +1,11 @@
 {
   config,
   lib,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
   cfg = config.aytordev.suites.development;
-in
-{
+in {
   options.aytordev.suites.development = {
     enable = lib.mkEnableOption "common development configuration";
     dockerEnable = lib.mkEnableOption "docker development configuration";
@@ -20,14 +17,15 @@ in
     # aytordev.nix.nix-rosetta-builder.enable = true;
 
     homebrew = {
-      casks = [
-        "ghostty"
-      ]
-      ++ lib.optionals cfg.dockerEnable [
-        "docker-desktop"
-        "podman-desktop"
-      ]
-      ++ lib.optionals cfg.aiEnable [ "ollamac" ];
+      casks =
+        [
+          "ghostty"
+        ]
+        ++ lib.optionals cfg.dockerEnable [
+          "docker-desktop"
+          "podman-desktop"
+        ]
+        ++ lib.optionals cfg.aiEnable ["ollamac"];
 
       masApps = mkIf config.aytordev.tools.homebrew.masEnable {
         # TODO: Add Mac App Store apps

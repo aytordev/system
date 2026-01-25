@@ -3,12 +3,10 @@
   lib,
   ...
 }:
-with lib;
-let
+with lib; let
   cfg = config.aytordev.programs.terminal.tools.ollama;
   integrationsCfg = cfg.integrations;
-in
-{
+in {
   options.aytordev.programs.terminal.tools.ollama.integrations = {
     zed = mkOption {
       type = types.bool;
@@ -24,14 +22,13 @@ in
         default_model = mkDefault {
           provider = "ollama";
           model =
-            if (elem "llama3.2" cfg.models) then
-              "llama3.2:latest"
-            else if (elem "llama3.1" cfg.models) then
-              "llama3.1:latest"
-            else if (cfg.models != [ ]) then
-              "${head cfg.models}:latest"
-            else
-              "llama3.2:latest";
+            if (elem "llama3.2" cfg.models)
+            then "llama3.2:latest"
+            else if (elem "llama3.1" cfg.models)
+            then "llama3.1:latest"
+            else if (cfg.models != [])
+            then "${head cfg.models}:latest"
+            else "llama3.2:latest";
         };
         version = mkDefault "2";
       };

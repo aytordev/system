@@ -2,14 +2,12 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkDefault;
   inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.suites.desktop;
-in
-{
+in {
   options.aytordev.suites.desktop = {
     enable = lib.mkEnableOption "common desktop configuration";
   };

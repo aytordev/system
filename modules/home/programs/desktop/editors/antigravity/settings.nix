@@ -1,7 +1,4 @@
-{
-  config,
-  ...
-}: {
+{config, ...}: {
   # Breadcrumbs
   "breadcrumbs.filePath" = "off";
   "breadcrumbs.enabled" = true;

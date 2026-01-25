@@ -4,13 +4,11 @@
   pkgs,
   ...
 }:
-with lib;
-let
+with lib; let
   cfg = config.aytordev.programs.terminal.tools.ollama;
   serviceCfg = cfg.service;
   inherit (config._module.args.ollamaUtils) createModelPullScript;
-in
-{
+in {
   options.aytordev.programs.terminal.tools.ollama.service = {
     enable = mkOption {
       type = types.bool;
@@ -31,14 +29,14 @@ in
       Unit = {
         Description = "Ollama - Local Large Language Model Runner";
         Documentation = "https://github.com/ollama/ollama";
-        After = [ "network-online.target" ];
-        Wants = [ "network-online.target" ];
+        After = ["network-online.target"];
+        Wants = ["network-online.target"];
       };
 
       Service = {
         Type = "notify";
         ExecStart = "${cfg.package}/bin/ollama serve";
-        ExecStartPost = mkIf (cfg.models != [ ]) "${createModelPullScript}/bin/ollama-pull-models";
+        ExecStartPost = mkIf (cfg.models != []) "${createModelPullScript}/bin/ollama-pull-models";
         Environment =
           [
             "HOME=%h"
@@ -61,16 +59,16 @@ in
 
         # Basic security
         PrivateTmp = true;
-        ReadWritePaths = [ "%h/.ollama" ];
+        ReadWritePaths = ["%h/.ollama"];
       };
 
       Install = {
-        WantedBy = mkIf serviceCfg.autoStart [ "default.target" ];
+        WantedBy = mkIf serviceCfg.autoStart ["default.target"];
       };
     };
 
     # Create ollama directory
-    home.activation.createOllamaDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    home.activation.createOllamaDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
       mkdir -p $HOME/.ollama/models
     '';
   };

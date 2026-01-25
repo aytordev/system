@@ -1,17 +1,16 @@
-{ inputs }:
+{inputs}:
 /**
-  Create a NixOS system configuration.
+Create a NixOS system configuration.
 */
 {
   system,
   hostname,
   username ? inputs.secrets.username,
-  modules ? [ ],
+  modules ? [],
   ...
-}:
-let
+}: let
   flake = inputs.self or (throw "mkSystem requires 'inputs.self' to be passed");
-  common = import ../common { inherit inputs; };
+  common = import ../common {inherit inputs;};
 
   extendedLib = common.mkExtendedLib flake inputs.nixpkgs;
   matchingHomes = common.mkHomeConfigs {
@@ -31,40 +30,42 @@ let
     isNixOS = true;
   };
 in
-inputs.nixpkgs.lib.nixosSystem {
-  inherit system;
+  inputs.nixpkgs.lib.nixosSystem {
+    inherit system;
 
-  specialArgs = common.mkSpecialArgs {
-    inherit
-      inputs
-      hostname
-      username
-      extendedLib
-      ;
-  };
+    specialArgs = common.mkSpecialArgs {
+      inherit
+        inputs
+        hostname
+        username
+        extendedLib
+        ;
+    };
 
-  modules = [
-    { _module.args.lib = extendedLib; }
+    modules =
+      [
+        {_module.args.lib = extendedLib;}
 
-    # Configure nixpkgs with overlays
-    {
-      nixpkgs = {
-        inherit system;
-      }
-      // common.mkNixpkgsConfig flake;
-    }
+        # Configure nixpkgs with overlays
+        {
+          nixpkgs =
+            {
+              inherit system;
+            }
+            // common.mkNixpkgsConfig flake;
+        }
 
-    inputs.home-manager.nixosModules.home-manager
-    inputs.sops-nix.nixosModules.sops
+        inputs.home-manager.nixosModules.home-manager
+        inputs.sops-nix.nixosModules.sops
 
-    # Auto-inject home configurations for this system+hostname
-    homeManagerConfig
+        # Auto-inject home configurations for this system+hostname
+        homeManagerConfig
 
-    # Import all nixos modules recursively
-  ]
-  ++ (extendedLib.importModulesRecursive ../../../modules/nixos)
-  ++ [
-    ../../../systems/${system}/${hostname}
-  ]
-  ++ modules;
-}
+        # Import all nixos modules recursively
+      ]
+      ++ (extendedLib.importModulesRecursive ../../../modules/nixos)
+      ++ [
+        ../../../systems/${system}/${hostname}
+      ]
+      ++ modules;
+  }

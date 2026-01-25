@@ -17,10 +17,10 @@ in {
   config = mkIf cfg.enable {
     programs.atuin = {
       enable = true;
-      enableBashIntegration = cfg.enableBashIntegration;
-      enableFishIntegration = cfg.enableFishIntegration;
-      enableZshIntegration = cfg.enableZshIntegration;
-      enableNushellIntegration = cfg.enableNushellIntegration;
+      inherit (cfg) enableBashIntegration;
+      inherit (cfg) enableFishIntegration;
+      inherit (cfg) enableZshIntegration;
+      inherit (cfg) enableNushellIntegration;
       daemon =
         {
           enable = true;
@@ -42,7 +42,7 @@ in {
         ];
       };
     };
-    home.file.".config/bash/conf.d/atuin.sh" = lib.mkIf cfg.enableBashIntegration {
+    xdg.configFile."bash/conf.d/atuin.sh" = lib.mkIf cfg.enableBashIntegration {
       text = ''
         eval "$(atuin init bash)"
       '';

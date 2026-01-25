@@ -2,10 +2,8 @@
   config,
   lib,
   pkgs,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
 
   cfg = config.aytordev.programs.terminal.tools.lsd;
@@ -15,8 +13,7 @@ let
     lt = "${lib.getExe pkgs.lsd} --tree";
     llt = "${lib.getExe pkgs.lsd} -l --tree";
   };
-in
-{
+in {
   options.aytordev.programs.terminal.tools.lsd = {
     enable = lib.mkEnableOption "lsd";
   };
@@ -50,7 +47,7 @@ in
           theme = "fancy";
           separator = " ";
         };
-        ignore-globs = [ ".git" ];
+        ignore-globs = [".git"];
         indicators = true;
         layout = "grid";
         # permission = "octal";

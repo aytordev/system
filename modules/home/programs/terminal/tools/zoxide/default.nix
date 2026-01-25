@@ -26,7 +26,7 @@ in {
     '';
     programs.zoxide = {
       enable = true;
-      package = cfg.package;
+      inherit (cfg) package;
       enableBashIntegration = true;
       enableZshIntegration = true;
       enableFishIntegration = true;
@@ -36,7 +36,7 @@ in {
         "--no-aliases"
       ];
     };
-    home.file.".config/bash/conf.d/tools/zoxide.sh" = lib.mkIf config.aytordev.programs.terminal.shells.bash.enable {
+    xdg.configFile."bash/conf.d/tools/zoxide.sh" = lib.mkIf config.aytordev.programs.terminal.shells.bash.enable {
       text = ''
         eval "$(${cfg.package}/bin/zoxide init --cmd cd bash)"
       '';

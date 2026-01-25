@@ -136,16 +136,15 @@ with lib; let
   createLogsScript = pkgs.writeShellScriptBin "ollama-logs" ''
     journalctl --user -u ollama.service -f
   '';
-
 in {
   config = {
     # Export utilities for use in other modules
     _module.args.ollamaUtils = {
       inherit constants shellUtils modelOperations;
-      createModelPullScript = createModelPullScript;
-      createStatusScript = createStatusScript;
-      createRestartScript = createRestartScript;
-      createLogsScript = createLogsScript;
+      inherit createModelPullScript;
+      inherit createStatusScript;
+      inherit createRestartScript;
+      inherit createLogsScript;
     };
   };
 }

@@ -2,15 +2,12 @@
   config,
   lib,
   pkgs,
-
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
 
   cfg = config.aytordev.programs.terminal.tools.k9s;
-in
-{
+in {
   options.aytordev.programs.terminal.tools.k9s = {
     enable = lib.mkEnableOption "k9s";
   };

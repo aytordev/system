@@ -22,7 +22,7 @@
   gitConfig = {
     enable = true;
     package = pkgs.git;
-    ignores = ignores;
+    inherit ignores;
     maintenance.enable = true;
     settings = {
       alias = aliases;

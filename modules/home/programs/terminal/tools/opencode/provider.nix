@@ -1,5 +1,8 @@
-{ config, lib, ... }:
 {
+  config,
+  lib,
+  ...
+}: {
   config = {
     programs.opencode.settings.provider = {
       ollama = lib.mkIf config.services.ollama.enable {

@@ -2,9 +2,9 @@
   config,
   lib,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkIf
     mkMerge
     mkOption
@@ -14,13 +14,12 @@ let
   cfg = config.aytordev.programs.terminal.tools.claude-code;
   mcpCfg = cfg.mcpServers;
   # mcpPkgs = inputs.mcp-servers-nix.packages.${system};
-in
-{
+in {
   options.aytordev.programs.terminal.tools.claude-code.mcpServers = {
     filesystem = {
       directories = mkOption {
         type = types.listOf types.str;
-        default = [ ];
+        default = [];
         description = "Directories the filesystem MCP server can access";
       };
     };
@@ -33,7 +32,7 @@ in
           type = "stdio";
           # FIXME: mcp servers fail to build
           # command = getExe mcpPkgs.mcp-server-filesystem;
-          args = [ config.home.homeDirectory ] ++ mcpCfg.filesystem.directories;
+          args = [config.home.homeDirectory] ++ mcpCfg.filesystem.directories;
         };
 
         # GitHub MCP - read-only for safety

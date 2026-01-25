@@ -31,7 +31,7 @@ in {
       la = "${getExe pkgs.eza} -lah --tree";
       tree = "${getExe pkgs.eza} --tree --icons=always";
     };
-    home.file.".config/bash/conf.d/eza.sh" = {
+    xdg.configFile."bash/conf.d/eza.sh" = {
       text = ''
         if command -v eza &> /dev/null; then
           alias ls='eza --group-directories-first --icons=auto --color=auto'

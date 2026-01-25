@@ -2,11 +2,9 @@
   config,
   lib,
   pkgs,
-
-  osConfig ? { },
+  osConfig ? {},
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkDefault;
   inherit (lib.aytordev) enabled disabled;
 
@@ -21,11 +19,14 @@ let
     ncs-home = ''f(){ nix build ".#homeConfigurations.$1.activationPackage" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#homeConfigurations.$1.activationPackage.outPath") | tail -1; }; f'';
     ndu = "nix-du -s=200MB | dot -Tsvg > store.svg ${
       lib.optionalString (!isWSL)
-        "; ${if pkgs.stdenv.hostPlatform.isDarwin then "open" else "xdg-open"} store.svg"
+      "; ${
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then "open"
+        else "xdg-open"
+      } store.svg"
     }";
   };
-in
-{
+in {
   options.aytordev.suites.common = {
     enable = lib.mkEnableOption "common configuration";
   };
@@ -48,8 +49,7 @@ in
       };
     };
 
-    home.packages =
-      with pkgs;
+    home.packages = with pkgs;
       [
         # colorscript outputs
         dwt1-shell-color-scripts
@@ -102,7 +102,11 @@ in
             nix-search-tv = mkDefault enabled;
             nh = mkDefault enabled;
             ripgrep = mkDefault enabled;
-            run-as-service = mkDefault (if pkgs.stdenv.hostPlatform.isLinux then enabled else disabled);
+            run-as-service = mkDefault (
+              if pkgs.stdenv.hostPlatform.isLinux
+              then enabled
+              else disabled
+            );
             ssh = mkDefault enabled;
             starship = mkDefault enabled;
             tmux = mkDefault enabled;

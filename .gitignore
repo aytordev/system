@@ -65,6 +65,7 @@ node_modules
 *.swo
 **/.claude/settings.local.json
 .pre-commit-config.yaml
+_typos.toml
 
 # System / OS
 .DS_Store

@@ -29,7 +29,7 @@ in {
     environment.systemPackages = [pkgs.openssh];
     services.openssh = {
       enable = true;
-      extraConfig = cfg.extraConfig;
+      inherit (cfg) extraConfig;
     };
   };
 }

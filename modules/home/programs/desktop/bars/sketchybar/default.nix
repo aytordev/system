@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  osConfig ? {},
   ...
 }: let
   inherit (lib) mkIf mkEnableOption mkOption getExe;
@@ -12,7 +11,7 @@
   themeCfg = config.aytordev.theme;
 
   # Get the active palette from central theme module
-  palette = themeCfg.palette;
+  inherit (themeCfg) palette;
 
   # Convert central palette to sketchybar Lua format
   # Maps semantic colors to the flat structure expected by Lua config
@@ -65,13 +64,7 @@
   ];
 
   # Conditionally included packages based on system configuration
-  conditionalPackages =
-    lib.optionals (osConfig.services ? yabai && osConfig.services.yabai.enable) [
-      osConfig.services.yabai.package
-    ]
-    ++ lib.optionals (config.programs ? aerospace && config.programs.aerospace.enable) [
-      config.programs.aerospace.package
-    ];
+  conditionalPackages = [];
 
   # All packages needed for sketchybar
   allPackages = basePackages ++ conditionalPackages ++ cfg.extraPackages;
@@ -95,9 +88,17 @@
   # Helper to convert Nix attrs to Lua table syntax
   toLuaTable = attrs: let
     toLuaValue = v:
-      if builtins.isString v then "\"${v}\""
-      else if builtins.isBool v then (if v then "true" else "false")
-      else if builtins.isAttrs v then toLuaTable v
+      if builtins.isString v
+      then "\"${v}\""
+      else if builtins.isBool v
+      then
+        (
+          if v
+          then "true"
+          else "false"
+        )
+      else if builtins.isAttrs v
+      then toLuaTable v
       else builtins.toString v;
     fields = lib.mapAttrsToList (k: v: "${k} = ${toLuaValue v}") attrs;
   in "{\n${builtins.concatStringsSep ",\n" fields}\n}";
@@ -203,7 +204,7 @@ in {
     programs.sketchybar = {
       enable = true;
       configType = "lua";
-      package = cfg.package;
+      inherit (cfg) package;
       sbarLuaPackage = pkgs.sbarlua;
       extraPackages = allPackages;
 
@@ -235,9 +236,11 @@ in {
       "sketchybar" = {
         source = lib.cleanSourceWith {
           src = ./config;
-          filter = name: _type:
-            let baseName = baseNameOf name;
-            in baseName != "sketchybarrc"
+          filter = name: _type: let
+            baseName = baseNameOf name;
+          in
+            baseName
+            != "sketchybarrc"
             && baseName != "install_dependencies.sh"
             # Only exclude the root init.lua (dead code), not items/init.lua
             && !(baseName == "init.lua" && !lib.hasInfix "/items/" name);
@@ -261,8 +264,16 @@ in {
           bar = {
             height = ${toString cfg.bar.height},
             blur_radius = ${toString cfg.bar.blurRadius},
-            shadow = ${if cfg.bar.shadow then "true" else "false"},
-            sticky = ${if cfg.bar.sticky then "true" else "false"},
+            shadow = ${
+          if cfg.bar.shadow
+          then "true"
+          else "false"
+        },
+            sticky = ${
+          if cfg.bar.sticky
+          then "true"
+          else "false"
+        },
             topmost = "${cfg.bar.topmost}",
             padding_left = ${toString cfg.bar.paddingLeft},
             padding_right = ${toString cfg.bar.paddingRight}
@@ -270,7 +281,7 @@ in {
         }
       '';
 
-      "sketchybar/helpers/icon_map.lua".source = "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
+      "sketchybar/helpers/icon_map.lua".source = "${pkgs.aytordev.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
     };
   };
 }

@@ -33,7 +33,7 @@ in {
       zstyle ':completion:*' format '%F{8}%d%f'
       zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
     '';
-    home.file.".config/bash/conf.d/carapace.sh".text = ''
+    xdg.configFile."bash/conf.d/carapace.sh".text = ''
       export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
       source <(carapace _carapace)
     '';
