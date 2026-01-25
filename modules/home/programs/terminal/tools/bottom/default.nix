@@ -39,7 +39,7 @@ in {
         ];
       };
     };
-    home.file.".config/bash/conf.d/bottom.sh".text = ''
+    xdg.configFile."bash/conf.d/bottom.sh".text = ''
       alias htop="${pkgs.bottom}/bin/btm"
     '';
   };

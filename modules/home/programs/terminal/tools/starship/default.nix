@@ -425,7 +425,7 @@ in {
     })
 
     (lib.mkIf cfg.enableBashIntegration {
-      home.file.".config/bash/conf.d/99-starship.sh".text = ''
+      xdg.configFile."bash/conf.d/99-starship.sh".text = ''
         eval "$(starship init bash)"
       '';
     })

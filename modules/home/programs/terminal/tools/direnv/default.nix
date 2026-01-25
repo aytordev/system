@@ -30,7 +30,7 @@ in {
       home.packages = with pkgs; [
         nix-direnv
       ];
-      home.file.".config/nix-direnv/nix-direnv.toml".text = ''
+      xdg.configFile."nix-direnv/nix-direnv.toml".text = ''
         [nix]
         enable = true
       '';

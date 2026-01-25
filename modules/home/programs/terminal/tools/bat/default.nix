@@ -28,7 +28,7 @@ in {
     home.shellAliases = {
       cat = "${getExe pkgs.bat} --style=auto";
     };
-    home.file.".config/bash/conf.d/bat.sh".text = ''
+    xdg.configFile."bash/conf.d/bat.sh".text = ''
       alias cat="${pkgs.bat}/bin/bat --style=auto"
     '';
   };

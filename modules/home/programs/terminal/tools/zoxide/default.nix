@@ -36,7 +36,7 @@ in {
         "--no-aliases"
       ];
     };
-    home.file.".config/bash/conf.d/tools/zoxide.sh" = lib.mkIf config.aytordev.programs.terminal.shells.bash.enable {
+    xdg.configFile."bash/conf.d/tools/zoxide.sh" = lib.mkIf config.aytordev.programs.terminal.shells.bash.enable {
       text = ''
         eval "$(${cfg.package}/bin/zoxide init --cmd cd bash)"
       '';

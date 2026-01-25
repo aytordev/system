@@ -242,7 +242,7 @@ in {
     ];
 
     # Shell integration scripts
-    home.file.".config/bitwarden-cli/zsh-integration.sh" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
+    xdg.configFile."bitwarden-cli/zsh-integration.sh" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
       text = ''
         # Bitwarden CLI session management
         export BW_SESSION=""
@@ -270,8 +270,8 @@ in {
             rbw login
         ''}
           ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
-          if [[ -f "$HOME/.config/rbw/apikey" ]]; then
-            source "$HOME/.config/rbw/apikey"
+          if [[ -f "$XDG_CONFIG_HOME/rbw/apikey" ]]; then
+            source "$XDG_CONFIG_HOME/rbw/apikey"
             export BW_CLIENTID
             export BW_CLIENTSECRET
             rbw login
@@ -309,7 +309,7 @@ in {
       '';
     };
 
-    home.file.".config/bitwarden-cli/bash-integration.sh" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
+    xdg.configFile."bitwarden-cli/bash-integration.sh" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
       text = ''
         # Bitwarden CLI session management
         export BW_SESSION=""
@@ -354,7 +354,7 @@ in {
       '';
     };
 
-    home.file.".config/bitwarden-cli/fish-integration.fish" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
+    xdg.configFile."bitwarden-cli/fish-integration.fish" = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
       text = ''
         # Bitwarden CLI session management
         set -gx BW_SESSION ""
@@ -382,8 +382,8 @@ in {
             rbw login
         ''}
           ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
-          if test -f "$HOME/.config/rbw/apikey"
-            source "$HOME/.config/rbw/apikey"
+          if test -f "$XDG_CONFIG_HOME/rbw/apikey"
+            source "$XDG_CONFIG_HOME/rbw/apikey"
             set -gx BW_CLIENTID $BW_CLIENTID
             set -gx BW_CLIENTSECRET $BW_CLIENTSECRET
             rbw login
@@ -425,22 +425,22 @@ in {
     programs.zsh = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
       initContent = ''
         # Source Bitwarden CLI integration
-        [[ -f "$HOME/.config/bitwarden-cli/zsh-integration.sh" ]] && source "$HOME/.config/bitwarden-cli/zsh-integration.sh"
+        [[ -f "$XDG_CONFIG_HOME/bitwarden-cli/zsh-integration.sh" ]] && source "$XDG_CONFIG_HOME/bitwarden-cli/zsh-integration.sh"
       '';
     };
 
     programs.bash = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
       initExtra = ''
         # Source Bitwarden CLI integration
-        [[ -f "$HOME/.config/bitwarden-cli/bash-integration.sh" ]] && source "$HOME/.config/bitwarden-cli/bash-integration.sh"
+        [[ -f "$XDG_CONFIG_HOME/bitwarden-cli/bash-integration.sh" ]] && source "$XDG_CONFIG_HOME/bitwarden-cli/bash-integration.sh"
       '';
     };
 
     programs.fish = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
       interactiveShellInit = ''
         # Source Bitwarden CLI integration
-        if test -f "$HOME/.config/bitwarden-cli/fish-integration.fish"
-          source "$HOME/.config/bitwarden-cli/fish-integration.fish"
+        if test -f "$XDG_CONFIG_HOME/bitwarden-cli/fish-integration.fish"
+          source "$XDG_CONFIG_HOME/bitwarden-cli/fish-integration.fish"
         end
       '';
     };
@@ -458,7 +458,7 @@ in {
     };
 
     # Create API key file if credentials are provided (non-sops mode)
-    home.file.".config/rbw/apikey" = lib.mkIf (!cfg.settings.apiKey.useSops && cfg.settings.apiKey.clientId != null && cfg.settings.apiKey.clientSecret != null) {
+    xdg.configFile."rbw/apikey" = lib.mkIf (!cfg.settings.apiKey.useSops && cfg.settings.apiKey.clientId != null && cfg.settings.apiKey.clientSecret != null) {
       text = ''
         BW_CLIENTID="${cfg.settings.apiKey.clientId}"
         BW_CLIENTSECRET="${cfg.settings.apiKey.clientSecret}"

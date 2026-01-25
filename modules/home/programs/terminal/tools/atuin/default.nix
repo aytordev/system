@@ -42,7 +42,7 @@ in {
         ];
       };
     };
-    home.file.".config/bash/conf.d/atuin.sh" = lib.mkIf cfg.enableBashIntegration {
+    xdg.configFile."bash/conf.d/atuin.sh" = lib.mkIf cfg.enableBashIntegration {
       text = ''
         eval "$(atuin init bash)"
       '';

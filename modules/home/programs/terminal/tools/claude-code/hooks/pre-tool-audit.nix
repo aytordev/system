@@ -11,7 +11,7 @@ _: {
             Bash
             */
             ''
-              mkdir -p ~/.local/share/claude-code/audit
+              mkdir -p "$XDG_DATA_HOME/claude-code/audit"
               input=$(cat)
 
               # Extract fields for logging
@@ -24,7 +24,7 @@ _: {
               echo "$input" | jq -c \
                 --arg ts "$timestamp" \
                 '{timestamp: $ts, session: .session_id, tool: .tool_name, cwd: .cwd, input: .tool_input}' \
-                >> ~/.local/share/claude-code/audit/pre-tool.jsonl
+                >> "$XDG_DATA_HOME/claude-code/audit/pre-tool.jsonl"
 
               exit 0
             '';

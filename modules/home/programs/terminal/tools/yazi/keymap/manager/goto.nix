@@ -46,7 +46,7 @@ _: let
     }
     {
       key = "w";
-      path = "~/.local/share/wallpapers";
+      path = "$XDG_DATA_HOME/wallpapers";
     }
   ];
 in {

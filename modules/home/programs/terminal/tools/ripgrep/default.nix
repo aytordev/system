@@ -21,7 +21,7 @@
     home.shellAliases = {
       grep = "${pkgs.ripgrep}/bin/rg";
     };
-    home.file.".config/bash/conf.d/ripgrep.sh".text = ''
+    xdg.configFile."bash/conf.d/ripgrep.sh".text = ''
       export RIPGREP_CONFIG_PATH="${pkgs.ripgrep}/share/ripgreprc"
       alias grep="rg"
     '';

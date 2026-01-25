@@ -35,7 +35,7 @@
     home.shellAliases = {
       lg = "lazygit";
     };
-    home.file.".config/bash/conf.d/lazygit.sh" = {
+    xdg.configFile."bash/conf.d/lazygit.sh" = {
       text = ''
         if command -v lazygit &> /dev/null; then
           alias lg='lazygit'
