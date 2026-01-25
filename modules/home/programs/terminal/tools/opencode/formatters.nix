@@ -15,15 +15,16 @@
         extensions = [".nix"];
       };
 
-      csharpier = {
-        command = [
-          (lib.getExe pkgs.csharpier)
-          "$FILE"
-        ];
-        extensions = [
-          ".cs"
-        ];
-      };
+      # FIXME: csharpier broken due to Swift build failure in nixpkgs-unstable
+      # csharpier = {
+      #   command = [
+      #     (lib.getExe pkgs.csharpier)
+      #     "$FILE"
+      #   ];
+      #   extensions = [
+      #     ".cs"
+      #   ];
+      # };
 
       rustfmt = {
         command = [
