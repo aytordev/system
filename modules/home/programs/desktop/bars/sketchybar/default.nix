@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  osConfig ? {},
   ...
 }: let
   inherit (lib) mkIf mkEnableOption mkOption getExe;
@@ -65,13 +64,7 @@
   ];
 
   # Conditionally included packages based on system configuration
-  conditionalPackages =
-    lib.optionals (osConfig.services ? yabai && osConfig.services.yabai.enable) [
-      osConfig.services.yabai.package
-    ]
-    ++ lib.optionals (config.programs ? aerospace && config.programs.aerospace.enable) [
-      config.programs.aerospace.package
-    ];
+  conditionalPackages = [];
 
   # All packages needed for sketchybar
   allPackages = basePackages ++ conditionalPackages ++ cfg.extraPackages;
