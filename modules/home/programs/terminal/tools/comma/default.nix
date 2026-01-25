@@ -1,21 +1,32 @@
 {
   config,
-
-  inputs,
+  lib,
+  pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkIf;
+
   cfg = config.aytordev.programs.terminal.tools.comma;
 in {
   options.aytordev.programs.terminal.tools.comma = {
-    enable = mkEnableOption "comma";
+    enable = lib.mkEnableOption "comma";
   };
-  imports = [
-    inputs.nix-index-database.homeModules.nix-index
-  ];
 
   config = mkIf cfg.enable {
-    programs.nix-index-database.comma.enable = true;
-    programs.nix-index.enable = true;
+    programs = {
+      nix-index-database.comma.enable = true;
+
+      nix-index = {
+        enable = true;
+        package = pkgs.nix-index;
+
+        enableBashIntegration = true;
+        enableFishIntegration = true;
+        enableZshIntegration = true;
+
+        # link nix-index database to ~/.cache/nix-index
+        symlinkToCacheHome = true;
+      };
+    };
   };
 }

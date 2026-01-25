@@ -67,6 +67,7 @@ in {
             else []
           )
           ++ [
+            inputs.nix-index-database.homeModules.nix-index
             inputs.sops-nix.homeManagerModules.sops
           ]
           ++ (extendedLib.importModulesRecursive ../../../modules/home);

@@ -36,6 +36,7 @@ in
       [
         {_module.args.lib = extendedLib;}
 
+        inputs.nix-index-database.homeModules.nix-index
         inputs.sops-nix.homeManagerModules.sops
 
         # Import all home modules recursively
