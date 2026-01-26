@@ -53,8 +53,5 @@ in {
         eval "$(${cfg.package}/bin/zoxide init --cmd cd bash)"
       '';
     };
-    programs.fish.shellInit = mkBefore ''
-      ${cfg.package}/bin/zoxide init --cmd cd fish | source
-    '';
   };
 }

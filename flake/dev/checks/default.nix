@@ -57,20 +57,7 @@
           language = "system";
         };
         treefmt.enable = true;
-        typos = {
-          enable = true;
-          settings = {
-            extend-words = {
-              ags = "ags";
-              ba = "ba";
-              Folx = "Folx";
-              folx = "folx";
-              iterm = "iterm";
-              metaphore = "metaphore";
-            };
-          };
-          excludes = ["^flake/dev/checks/default\\.nix$"]; # Exclude self to avoid flagging the ignored words list
-        };
+        typos.enable = true;
       };
     };
 

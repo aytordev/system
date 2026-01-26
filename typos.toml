@@ -1,0 +1,10 @@
+[default]
+extend-ignore-re = ["^flake/dev/checks/default\\.nix$"]
+
+[default.extend-words]
+ags = "ags"
+ba = "ba"
+Folx = "Folx"
+folx = "folx"
+iterm = "iterm"
+metaphore = "metaphore"
