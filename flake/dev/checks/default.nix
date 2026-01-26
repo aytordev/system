@@ -60,15 +60,13 @@
         typos = {
           enable = true;
           settings = {
-            default = {
-              extend-words = {
-                ags = "ags";
-                ba = "ba";
-                Folx = "Folx";
-                folx = "folx";
-                iterm = "iterm";
-                metaphore = "metaphore";
-              };
+            extend-words = {
+              ags = "ags";
+              ba = "ba";
+              Folx = "Folx";
+              folx = "folx";
+              iterm = "iterm";
+              metaphore = "metaphore";
             };
           };
           excludes = ["^flake/dev/checks/default\\.nix$"]; # Exclude self to avoid flagging the ignored words list
