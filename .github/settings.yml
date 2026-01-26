@@ -39,18 +39,13 @@ repository:
   # Either `true` to enable vulnerability alerts, or `false` to disable
   # vulnerability alerts.
   enable_vulnerability_alerts: true
-
 labels:
-
 # Milestones: define milestones for Issues and Pull Requests
 milestones:
-
 # See https://docs.github.com/en/rest/reference/repos#add-a-repository-collaborator for available options
 collaborators:
-
 # See https://docs.github.com/en/rest/reference/teams#add-or-update-team-repository-permissions for available options
 teams:
-
 # permission: maintain
 branches:
   - name: main

@@ -65,7 +65,7 @@ jobs:
             echo "Building dev shell: $shell"
             nix develop ".#$shell" --command echo "Dev shell $shell built successfully"
           done
-      # - name: Build default dev shell
-      #   run: |-
-      #     echo "Building default dev shell"
-      #     nix develop --command echo "Default dev shell built successfully"
+    # - name: Build default dev shell
+    #   run: |-
+    #     echo "Building default dev shell"
+    #     nix develop --command echo "Default dev shell built successfully"
