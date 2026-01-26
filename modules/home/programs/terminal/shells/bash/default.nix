@@ -87,8 +87,11 @@ in {
     };
 
     # XDG directories with proper permissions (declarative via xdg.configFile)
-    xdg.configFile."bash/conf.d/.keep".text = "# Custom bash configurations go here\n";
-    xdg.dataFile."bash/.keep".text = "";
-    xdg.cacheFile."bash/.keep".text = "";
+    # XDG directories with proper permissions (declarative via xdg.configFile)
+    xdg = {
+      configFile."bash/conf.d/.keep".text = "# Custom bash configurations go here\n";
+      dataFile."bash/.keep".text = "";
+      cacheFile."bash/.keep".text = "";
+    };
   };
 }

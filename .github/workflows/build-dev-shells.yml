@@ -1,0 +1,71 @@
+name: Build and Cache Dev Shells
+permissions:
+  contents: read
+on:
+  push:
+    branches: [main]
+    paths:
+      - "shells/**"
+      - "flake.nix"
+      - "flake.lock"
+  pull_request:
+    paths:
+      - "shells/**"
+      - "flake.nix"
+      - "flake.lock"
+  workflow_dispatch:
+  schedule:
+    # Run weekly to keep cache fresh
+    - cron: "0 2 * * 0"
+jobs:
+  build-dev-shells:
+    name: Build dev shells on ${{ matrix.system }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - system: x86_64-linux
+            os: ubuntu-latest
+          - system: aarch64-darwin
+            os: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            system = ${{ matrix.system }}
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v16
+        with:
+          name: anyrun
+          extra_pull_names: nix-community
+          # authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      - name: Get dev shell list
+        id: shells
+        env:
+          SYSTEM: ${{ matrix.system }}
+        run: |
+          shells=$(nix flake show --json | jq -r '.devShells."'"$SYSTEM"'" | keys[]' | tr '\n' ' ')
+          # Handle case where devShells might be empty or malformed
+          if [ -z "$shells" ]; then
+             echo "No shells found"
+             echo "shells=" >> "$GITHUB_OUTPUT"
+          else
+             echo "shells=$shells" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Build and cache dev shells
+        if: steps.shells.outputs.shells != ''
+        env:
+          SHELLS: ${{ steps.shells.outputs.shells }}
+        run: |
+          for shell in $SHELLS; do
+            echo "Building dev shell: $shell"
+            nix develop ".#$shell" --command echo "Dev shell $shell built successfully"
+          done
+    # - name: Build default dev shell
+    #   run: |-
+    #     echo "Building default dev shell"
+    #     nix develop --command echo "Default dev shell built successfully"

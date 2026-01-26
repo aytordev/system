@@ -1,0 +1,39 @@
+Modules:
+  - changed-files:
+      - any-glob-to-any-file: modules/**/*
+Library:
+  - changed-files:
+      - any-glob-to-any-file: libraries/**/*
+      - any-glob-to-any-file: lib/**/*
+Homes:
+  - changed-files:
+      - any-glob-to-any-file: homes/**/*
+Overlays:
+  - changed-files:
+      - any-glob-to-any-file: overlays/**/*
+Packages:
+  - changed-files:
+      - any-glob-to-any-file: packages/**/*
+Systems:
+  - changed-files:
+      - any-glob-to-any-file: systems/**/*
+Flake:
+  - changed-files:
+      - any-glob-to-any-file: flake/**/*
+      - any-glob-to-any-file: flake.nix
+      - any-glob-to-any-file: flake.lock
+Templates:
+  - changed-files:
+      - any-glob-to-any-file: templates/**/*
+DevShells:
+  - changed-files:
+      - any-glob-to-any-file: dev-shells/**/*
+Checks:
+  - changed-files:
+      - any-glob-to-any-file: checks/**/*
+repo:
+  - changed-files:
+      - any-glob-to-any-file: "*"
+CI:
+  - changed-files:
+      - any-glob-to-any-file: .github/**/*

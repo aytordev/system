@@ -3,8 +3,7 @@
   stdenvNoCC,
   fetchurl,
   ...
-}:
-let
+}: let
   version = "2.0.51";
   baseUrl = "https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v${version}";
 
@@ -18,28 +17,28 @@ let
     sha256 = "sha256-xIfmDBqN8cCA2pkMgdPJdrFO1IAcEZ0TmBQVIIAdji4=";
   };
 in
-stdenvNoCC.mkDerivation {
-  pname = "sketchybar-app-font";
-  inherit version;
+  stdenvNoCC.mkDerivation {
+    pname = "sketchybar-app-font";
+    inherit version;
 
-  dontUnpack = true;
-  dontBuild = true;
+    dontUnpack = true;
+    dontBuild = true;
 
-  installPhase = ''
-    runHook preInstall
-    mkdir -p $out/share/fonts/truetype
-    mkdir -p $out/lib/sketchybar-app-font
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/share/fonts/truetype
+      mkdir -p $out/lib/sketchybar-app-font
 
-    cp ${font} $out/share/fonts/truetype/sketchybar-app-font.ttf
-    cp ${iconMap} $out/lib/sketchybar-app-font/icon_map.lua
-    runHook postInstall
-  '';
+      cp ${font} $out/share/fonts/truetype/sketchybar-app-font.ttf
+      cp ${iconMap} $out/lib/sketchybar-app-font/icon_map.lua
+      runHook postInstall
+    '';
 
-  meta = with lib; {
-    description = "A ligature-based icon font with mappings for common applications (Sketchybar)";
-    homepage = "https://github.com/kvndrsslr/sketchybar-app-font";
-    license = licenses.cc0;
-    platforms = platforms.all;
-    maintainers = [ ];
-  };
-}
+    meta = with lib; {
+      description = "A ligature-based icon font with mappings for common applications (Sketchybar)";
+      homepage = "https://github.com/kvndrsslr/sketchybar-app-font";
+      license = licenses.cc0;
+      platforms = platforms.all;
+      maintainers = [];
+    };
+  }
