@@ -1,5 +1,5 @@
 [default]
-extend-ignore-re = [ "^flake/dev/checks/default\\.nix$" ]
+extend-ignore-re = ["^flake/dev/checks/default\\.nix$"]
 
 [default.extend-words]
 ags = "ags"
