@@ -1,93 +1,159 @@
-# ❄️ aytordev/system
+<h3 align="center">
+Nix Config for <a href="https://github.com/aytordev">aytordev</a>
+</h3>
 
-> aytordev's nix configuration for both NixOS & macOS.
+<p align="center">
+ <a href="https://github.com/aytordev/system/stargazers"><img src="https://img.shields.io/github/stars/aytordev/system?colorA=363a4f&colorB=b7bdf8&style=for-the-badge"></a>
+ <a href="https://github.com/aytordev/system/commits"><img src="https://img.shields.io/github/last-commit/aytordev/system?colorA=363a4f&colorB=f5a97f&style=for-the-badge"></a>
+  <a href="https://wiki.nixos.org/wiki/Flakes" target="_blank">
+ <img alt="Nix Flakes Ready" src="https://img.shields.io/static/v1?logo=nixos&logoColor=d8dee9&label=Nix%20Flakes&labelColor=5e81ac&message=Ready&color=d8dee9&style=for-the-badge">
+</a>
+</p>
 
-![NixOS](https://img.shields.io/badge/NixOS-Unstable-5277C3?style=for-the-badge&logo=nixos&logoColor=white)
-![macOS](https://img.shields.io/badge/macOS-Sequoia-000000?style=for-the-badge&logo=apple&logoColor=white)
-![Nix](https://img.shields.io/badge/Nix-Flakes-5277C3?style=for-the-badge&logo=nix&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+Welcome to my personal Nix configuration repository. This repository contains my NixOS and Nixpkgs configurations, along with various tools and customizations to enhance the Nix experience.
 
-## 📖 About
+## Table of Contents
 
-This repository contains my personal declarative system configurations managed by **Nix**. It serves as a monorepo for my infrastructure, supporting both **NixOS** (x86_64-linux) and **macOS** (aarch64-darwin).
+1. [Getting Started](#getting-started)
+2. [Features](#features)
+3. [Customization](#customization)
+4. [Exported Packages](#exported-packages)
+5. [Resources](#resources)
 
-## 🗂️ Structure
+## Getting Started
 
-The project follows a modular structure empowered by `flake-parts`:
+Before diving in, ensure that you have Nix installed on your system. If not, you
+can download and install it from the official
+[Nix website](https://nixos.org/download.html) or from the
+[Determinate Systems installer](https://github.com/DeterminateSystems/nix-installer).
+If running on macOS, you need to have Nix-Darwin installed, as well. You can
+follow the installation instruction on
+[GitHub](https://github.com/LnL7/nix-darwin?tab=readme-ov-file#flakes).
 
-```
-.
-├── flake/          # Core flake configuration & partitions
-├── modules/        # Reusable Nix modules
-│   ├── home/       # Home Manager modules (terminal, editors, desktop)
-│   ├── darwin/     # macOS-specific modules
-│   └── nixos/      # NixOS-specific modules
-├── systems/        # Host configurations
-├── packages/       # Custom packages
-├── overlays/       # Nixpkgs overlays
-├── scripts/        # Automation scripts
-└── Justfile        # Task runner configuration
-```
-
-## 🚀 Usage
-
-This project uses [`just`](https://github.com/casey/just) to simplify common management tasks.
-
-### Prerequisites
-
-- [Nix](https://nixos.org/download.html) (Flakes enabled)
-- [Just](https://github.com/casey/just) (recommended)
-
-### Quick Start
+### Clone this repository to your local machine
 
 ```bash
-# List all available commands
-just
+# New machine without git
+nix-shell -p git
 
-# Update dependencies
-just up
+# Clone
+git clone https://github.com/aytordev/system.git
+cd system
+
+# Linux
+sudo nixos-rebuild switch --flake .
+
+# MacOS
+# First run without nix-darwin:
+nix run github:lnl7/nix-darwin#darwin-rebuild -- switch --flake github:aytordev/system
+
+darwin-rebuild switch --flake .
+
+ # With nh (Nix Helper)
+nh os switch .
+
+# With direnv
+flake switch
 ```
 
-### 🍎 macOS (Darwin)
+## Features
 
-```bash
-# Build the system configuration
-just darwin-build <hostname>
+Here's an overview of what my Nix configuration offers:
 
-# Apply the configuration
-just darwin-switch <hostname>
+- **External Dependency Integrations**:
+  - Access NUR expressions for Firefox addons and other enhancements.
+  - Integration with Hyprland and other Wayland compositors (Linux).
 
-# Apply with debug logs
-just darwin-switch <hostname> debug
+- **macOS Support**: Seamlessly configure and manage Nix on macOS using the
+  power of [Nix-darwin](https://github.com/LnL7/nix-darwin), also leveraging
+  homebrew for GUI applications.
+
+- **Home Manager**: Manage your dotfiles, home environment, and user-specific
+  configurations with
+  [Home Manager](https://github.com/nix-community/home-manager).
+
+- **DevShell Support**: The flake provides a development shell (`devShell`) to
+  support maintaining this flake. You can use the devShell for convenient
+  development and maintenance of your Nix environment.
+
+- **Utilize sops-nix**: Secret management with
+  [sops-nix](https://github.com/Mic92/sops-nix) for secure and encrypted
+  handling of sensitive information.
+
+## Customization
+
+My Nix configuration is built using
+[flake-parts](https://github.com/hercules-ci/flake-parts), providing a flexible
+and modular approach to managing your Nix environment. Here's how it works:
+
+- **Flake Parts Structure**: The configuration uses flake-parts to organize
+  outputs into modular parts, with the main flake definition importing from the
+  `flake/` directory for better organization.
+
+- **Custom Library**: The `libraries/` directory contains custom library functions and
+  utilities that extend the standard nixpkgs lib, providing additional helpers
+  for system configuration.
+
+- **Package Management**: The `packages/` directory contains custom packages
+  exported by the flake. Each package is built using `callPackage` and can be
+  used across different system configurations.
+
+- **Modular Configurations**: The `modules/` directory defines reusable NixOS,
+  Darwin, and Home Manager modules. This modular approach allows for consistent
+  configuration across different platforms and systems.
+
+- **Overlay System**: Custom overlays in the `overlays/` directory modify and
+  extend the nixpkgs package set, allowing for package customizations and
+  additions.
+
+- **System Configurations**: Host-specific configurations are organized in
+  `systems/` with separate directories for different architectures
+  (`x86_64-linux`, `aarch64-darwin`).
+
+- **Home Configurations**: User-specific Home Manager configurations in the
+  `homes/` directory, organized by user and system architecture.
+
+- **Development Environment**: A partitioned development environment in
+  `flake/dev/` provides development shells, formatting tools, and checks
+  separate from the main flake outputs.
+
+This flake-parts based approach provides excellent modularity and makes it easy
+to maintain and extend the configuration while keeping related functionality
+organized.
+
+# Exported packages
+
+Run packages directly with:
+
+```console
+nix run --extra-experimental-features 'nix-command flakes' github:aytordev/system#packageName
 ```
 
-### 🐧 NixOS
+Or install from the `packages` output. For example:
 
-```bash
-# Apply configuration
-just switch <hostname>
+```nix
+# flake.nix
+{
+  inputs.system = {
+    url = "github:aytordev/system";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+}
+
+# configuration.nix
+{pkgs, inputs, system, ...}: {
+  environment.systemPackages = [
+    inputs.system.packages."${system}".packageName
+  ];
+}
 ```
 
-### 🛠️ Development & QA
+# Resources
 
-```bash
-# Format nix files
-just fmt
+Other configurations from where I learned and copied:
 
-# Install pre-commit hooks (Statix linter)
-just install-hooks
-```
-
-## 🧩 Features
-
-- **Multi-Platform**: Unified config for Linux and macOS.
-- **Terminal**: Zsh/Bash/Fish integration with modern tools (`zoxide`, `eza`, `starship`).
-- **Desktop**:
-  - **macOS**: Aerospace window manager, Sketchybar.
-  - **Editors**: Antigravity (VSCode), Neovim.
-- **Security**: Secret management via `sops-nix`.
-- **Development**: Atomic commits, automated formatting (`treefmt`), and linting (`statix`).
-
-## Acknowledgements
-
-Inspired by [Khanelinix](https://github.com/khaneliman/khanelinix) and the Nix community.
+- [Khaneliman/khanelinix](https://github.com/khaneliman/khanelinix) \*Base configuration
+- [JakeHamilton/config](https://github.com/jakehamilton/config)
+- [FelixKrats/dotfiles](https://github.com/FelixKratz/dotfiles)
+- [Fufexan/dotfiles](https://github.com/fufexan/dotfiles)
+- [NotAShelf/nyx](https://github.com/NotAShelf/nyx)
