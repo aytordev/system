@@ -57,87 +57,99 @@ in {
         ];
 
         # Dynamic gaps per monitor
-        gaps.inner.horizontal = 10;
-        gaps.inner.vertical = 10;
-        gaps.outer.left = 7;
-        gaps.outer.bottom = 7;
-        gaps.outer.top = 32;
-        gaps.outer.right = 7;
+        gaps = {
+          inner = {
+            horizontal = 10;
+            vertical = 10;
+          };
+          outer = {
+            left = 7;
+            bottom = 7;
+            top = 32;
+            right = 7;
+          };
+        };
         key-mapping.preset = "qwerty";
 
-        # Workspace Navigation - Semantic Names
-        mode.main.binding.alt-1 = "workspace B";
-        mode.main.binding.alt-2 = "workspace C";
-        mode.main.binding.alt-3 = "workspace D";
-        mode.main.binding.alt-4 = "workspace W";
-        mode.main.binding.alt-5 = "workspace S";
-        mode.main.binding.alt-6 = "workspace O";
+        mode = {
+          main.binding = {
+            # Workspace Navigation - Semantic Names
+            alt-1 = "workspace B";
+            alt-2 = "workspace C";
+            alt-3 = "workspace D";
+            alt-4 = "workspace W";
+            alt-5 = "workspace S";
+            alt-6 = "workspace O";
 
-        # Layout Management
-        mode.main.binding.alt-comma = "layout accordion horizontal vertical";
-        mode.main.binding.alt-slash = "layout tiles horizontal vertical";
-        mode.main.binding.alt-shift-f = "layout floating tiling"; # Toggle floating
+            # Layout Management
+            alt-comma = "layout accordion horizontal vertical";
+            alt-slash = "layout tiles horizontal vertical";
+            alt-shift-f = "layout floating tiling"; # Toggle floating
 
-        # Focus Navigation
-        mode.main.binding.alt-ctrl-h = "focus left";
-        mode.main.binding.alt-ctrl-j = "focus down";
-        mode.main.binding.alt-ctrl-k = "focus up";
-        mode.main.binding.alt-ctrl-l = "focus right";
+            # Focus Navigation
+            alt-ctrl-h = "focus left";
+            alt-ctrl-j = "focus down";
+            alt-ctrl-k = "focus up";
+            alt-ctrl-l = "focus right";
 
-        # Window Movement
-        mode.main.binding.alt-shift-h = "move left";
-        mode.main.binding.alt-shift-j = "move down";
-        mode.main.binding.alt-shift-k = "move up";
-        mode.main.binding.alt-shift-l = "move right";
+            # Window Movement
+            alt-shift-h = "move left";
+            alt-shift-j = "move down";
+            alt-shift-k = "move up";
+            alt-shift-l = "move right";
 
-        # Move to Workspace
-        mode.main.binding.alt-shift-1 = "move-node-to-workspace B";
-        mode.main.binding.alt-shift-2 = "move-node-to-workspace C";
-        mode.main.binding.alt-shift-3 = "move-node-to-workspace D";
-        mode.main.binding.alt-shift-4 = "move-node-to-workspace W";
-        mode.main.binding.alt-shift-5 = "move-node-to-workspace S";
-        mode.main.binding.alt-shift-6 = "move-node-to-workspace O";
+            # Move to Workspace
+            alt-shift-1 = "move-node-to-workspace B";
+            alt-shift-2 = "move-node-to-workspace C";
+            alt-shift-3 = "move-node-to-workspace D";
+            alt-shift-4 = "move-node-to-workspace W";
+            alt-shift-5 = "move-node-to-workspace S";
+            alt-shift-6 = "move-node-to-workspace O";
 
-        # Fullscreen
-        mode.main.binding.alt-f = "fullscreen";
+            # Fullscreen
+            alt-f = "fullscreen";
 
-        # Resize shortcuts in main mode (no need to enter resize mode)
-        mode.main.binding.alt-minus = "resize smart -50";
-        mode.main.binding.alt-equal = "resize smart +50";
+            # Resize shortcuts in main mode (no need to enter resize mode)
+            alt-minus = "resize smart -50";
+            alt-equal = "resize smart +50";
 
-        # Screenshot to clipboard
-        mode.main.binding.alt-shift-s = "exec-and-forget screencapture -i -c";
+            # Screenshot to clipboard
+            alt-shift-s = "exec-and-forget screencapture -i -c";
 
-        # Workspace & Monitor Management
-        mode.main.binding.alt-tab = "workspace-back-and-forth";
-        mode.main.binding.alt-shift-tab = "move-workspace-to-monitor --wrap-around next";
+            # Workspace & Monitor Management
+            alt-tab = "workspace-back-and-forth";
+            alt-shift-tab = "move-workspace-to-monitor --wrap-around next";
 
-        # Mode Switching
-        mode.main.binding.alt-r = "mode resize";
-        mode.main.binding.alt-shift-semicolon = "mode service";
+            # Mode Switching
+            alt-r = "mode resize";
+            alt-shift-semicolon = "mode service";
+          };
 
-        # Resize Mode
-        mode.resize.binding.h = "resize width -50";
-        mode.resize.binding.j = "resize height +50";
-        mode.resize.binding.k = "resize height -50";
-        mode.resize.binding.l = "resize width +50";
-        mode.resize.binding.b = ["balance-sizes" "mode main"];
-        mode.resize.binding.equal = "resize smart +50";
-        mode.resize.binding.minus = "resize smart -50";
-        mode.resize.binding.esc = "mode main";
+          resize.binding = {
+            h = "resize width -50";
+            j = "resize height +50";
+            k = "resize height -50";
+            l = "resize width +50";
+            b = ["balance-sizes" "mode main"];
+            equal = "resize smart +50";
+            minus = "resize smart -50";
+            esc = "mode main";
+          };
 
-        # Service Mode
-        mode.service.binding.alt-shift-h = ["join-with left" "mode main"];
-        mode.service.binding.alt-shift-j = ["join-with down" "mode main"];
-        mode.service.binding.alt-shift-k = ["join-with up" "mode main"];
-        mode.service.binding.alt-shift-l = ["join-with right" "mode main"];
-        mode.service.binding.backspace = ["close-all-windows-but-current" "mode main"];
-        mode.service.binding.esc = ["reload-config" "mode main"];
-        mode.service.binding.f = ["layout floating tiling" "mode main"];
-        mode.service.binding.r = ["flatten-workspace-tree" "mode main"];
-        mode.service.binding.up = "volume up";
-        mode.service.binding.down = "volume down";
-        mode.service.binding.shift-down = ["volume set 0" "mode main"];
+          service.binding = {
+            alt-shift-h = ["join-with left" "mode main"];
+            alt-shift-j = ["join-with down" "mode main"];
+            alt-shift-k = ["join-with up" "mode main"];
+            alt-shift-l = ["join-with right" "mode main"];
+            backspace = ["close-all-windows-but-current" "mode main"];
+            esc = ["reload-config" "mode main"];
+            f = ["layout floating tiling" "mode main"];
+            r = ["flatten-workspace-tree" "mode main"];
+            up = "volume up";
+            down = "volume down";
+            shift-down = ["volume set 0" "mode main"];
+          };
+        };
 
         # Callbacks
         on-focus-changed = ["move-mouse window-lazy-center" "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"];
