@@ -123,6 +123,16 @@ upload-vm name mode="":
 shell:
     nix shell nixpkgs#git nixpkgs#neovim nixpkgs#colmena
 
+# Install pre-commit hooks
+# Usage: just install-hooks
+[group('dev')]
+install-hooks:
+    mkdir -p .git/hooks
+    ln -sf ../../scripts/pre-commit.sh .git/hooks/pre-commit
+    chmod +x .git/hooks/pre-commit
+    chmod +x scripts/pre-commit.sh
+    echo "✅ Pre-commit hook installed manually!"
+
 ############################################################################
 # Git Helpers
 ############################################################################
