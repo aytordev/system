@@ -56,10 +56,22 @@
           entry = "${lib.getExe pkgs.bash} -c 'for file in \"$@\"; do ${lib.getExe pkgs.statix} check \"$file\"; done' --";
           language = "system";
         };
-        treefmt.enable = false; # Disabled until treefmt is configured
+        treefmt.enable = true;
         typos = {
           enable = true;
-          # excludes = [ "generated/*" ]; # FIXME: Regex compliance
+          settings = {
+            default = {
+              extend-words = {
+                ags = "ags";
+                ba = "ba";
+                Folx = "Folx";
+                folx = "folx";
+                iterm = "iterm";
+                metaphore = "metaphore";
+              };
+            };
+          };
+          excludes = ["^flake/dev/checks/default\\.nix$"]; # Exclude self to avoid flagging the ignored words list
         };
       };
     };
