@@ -15,13 +15,38 @@ in {
   };
   config = mkIf cfg.enable (mkMerge [
     {
-      home.packages = with pkgs; [
-        zsh
-        zsh-completions
-        nix-zsh-completions
-        zsh-autosuggestions
-        zsh-syntax-highlighting
-      ];
+      home = {
+        packages = with pkgs; [
+          zsh
+          zsh-completions
+          nix-zsh-completions
+          zsh-autosuggestions
+          zsh-syntax-highlighting
+        ];
+        activation = {
+          zshDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+            $DRY_RUN_CMD mkdir -p "${config.xdg.configHome}/zsh"
+            $DRY_RUN_CMD chmod 700 "${config.xdg.configHome}/zsh"
+          '';
+          zshSessionDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+            export ZSH_SESSION_DIR="${config.xdg.dataHome}/zsh/sessions"
+            $DRY_RUN_CMD mkdir -p "$ZSH_SESSION_DIR"
+            $DRY_RUN_CMD chmod 700 "$ZSH_SESSION_DIR"
+            if [ "$(uname -s)" = "Darwin" ]; then
+              OLD_SESSION_DIR="$HOME/.zsh_sessions"
+              if [ -d "$OLD_SESSION_DIR" ] && [ ! -L "$OLD_SESSION_DIR" ]; then
+                $DRY_RUN_CMD echo "Migrando sesiones Zsh antiguas a directorio XDG..."
+                $DRY_RUN_CMD mv "$OLD_SESSION_DIR" "$OLD_SESSION_DIR.bak"
+              fi
+              if [ ! -e "$OLD_SESSION_DIR" ]; then
+                $DRY_RUN_CMD ln -sf "$ZSH_SESSION_DIR" "$OLD_SESSION_DIR"
+              fi
+              unset OLD_SESSION_DIR
+            fi
+          '';
+        };
+      };
+
       programs.zsh = {
         enable = true;
         dotDir = "${config.xdg.configHome}/zsh";
@@ -83,26 +108,6 @@ in {
           zstyle ":completion:*" cache-path "$ZSH_CACHE_DIR/zcompcache"
         '';
       };
-      home.activation.zshDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        $DRY_RUN_CMD mkdir -p "${config.xdg.configHome}/zsh"
-        $DRY_RUN_CMD chmod 700 "${config.xdg.configHome}/zsh"
-      '';
-      home.activation.zshSessionDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        export ZSH_SESSION_DIR="${config.xdg.dataHome}/zsh/sessions"
-        $DRY_RUN_CMD mkdir -p "$ZSH_SESSION_DIR"
-        $DRY_RUN_CMD chmod 700 "$ZSH_SESSION_DIR"
-        if [ "$(uname -s)" = "Darwin" ]; then
-          OLD_SESSION_DIR="$HOME/.zsh_sessions"
-          if [ -d "$OLD_SESSION_DIR" ] && [ ! -L "$OLD_SESSION_DIR" ]; then
-            $DRY_RUN_CMD echo "Migrando sesiones Zsh antiguas a directorio XDG..."
-            $DRY_RUN_CMD mv "$OLD_SESSION_DIR" "$OLD_SESSION_DIR.bak"
-          fi
-          if [ ! -e "$OLD_SESSION_DIR" ]; then
-            $DRY_RUN_CMD ln -sf "$ZSH_SESSION_DIR" "$OLD_SESSION_DIR"
-          fi
-          unset OLD_SESSION_DIR
-        fi
-      '';
     }
   ]);
 }

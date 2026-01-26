@@ -77,24 +77,26 @@ in {
         createLogsScript
         ;
     in {
-      home.packages = with pkgs;
-        [cfg.package]
-        ++ optionals cfg.shellAliases [
-          createStatusScript
-          createLogsScript
-          createRestartScript
-        ];
+      home = {
+        packages = with pkgs;
+          [cfg.package]
+          ++ optionals cfg.shellAliases [
+            createStatusScript
+            createLogsScript
+            createRestartScript
+          ];
 
-      # Shell aliases
-      home.shellAliases = mkIf cfg.shellAliases {
-        ollama-models = "ollama list";
-        ollama-ps = "ollama ps";
-        ai = "ollama run llama3.2";
-      };
+        # Shell aliases
+        shellAliases = mkIf cfg.shellAliases {
+          ollama-models = "ollama list";
+          ollama-ps = "ollama ps";
+          ai = "ollama run llama3.2";
+        };
 
-      # Environment variables
-      home.sessionVariables = {
-        OLLAMA_HOST = "127.0.0.1:11434";
+        # Environment variables
+        sessionVariables = {
+          OLLAMA_HOST = "127.0.0.1:11434";
+        };
       };
     }
   );
