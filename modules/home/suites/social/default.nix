@@ -15,10 +15,8 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs;
-      [
+      lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         element-desktop
-      ]
-      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         # TODO: migrate to darwin after version bump
         slack
         telegram-desktop

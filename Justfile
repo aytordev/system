@@ -13,6 +13,7 @@ default:
 [group('nix')]
 up:
     nix flake update --extra-experimental-features "nix-command flakes"
+    nix flake update --flake ./flake/dev --extra-experimental-features "nix-command flakes"
 
 # Update specific input
 # Usage: just upp nixpkgs
