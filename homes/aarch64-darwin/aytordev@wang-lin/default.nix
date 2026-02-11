@@ -89,6 +89,9 @@ in {
             silent = true;
           };
 
+          # Host-specific gh authentication via sops
+          gh.auth.tokenPath = "/Users/${inputs.secrets.username}/.config/sops/github_cli_personal_access_token";
+
           # Host-specific git signing key
           git.signingKey = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
 
