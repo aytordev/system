@@ -15,7 +15,7 @@ Use `camelCase` for standard variables and `UPPER_CASE` for constants.
 
 ```nix
 let
-  userName = "khaneliman";
+  userName = "aytordev";
   enableAutoStart = true;
   MAX_RETRIES = 5;
 in

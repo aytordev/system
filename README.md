@@ -152,7 +152,7 @@ Or install from the `packages` output. For example:
 
 Other configurations from where I learned and copied:
 
-- [Khaneliman/khanelinix](https://github.com/khaneliman/khanelinix) _Inspiration for the flake structure and architecture_
+- [aytordev/khanelinix](https://github.com/aytordev/khanelinix) _Inspiration for the flake structure and architecture_
 - [JakeHamilton/config](https://github.com/jakehamilton/config)
 - [FelixKrats/dotfiles](https://github.com/FelixKratz/dotfiles)
 - [Fufexan/dotfiles](https://github.com/fufexan/dotfiles)

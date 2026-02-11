@@ -1,13 +1,13 @@
 # Skill Creator Guidelines
 
-**Version 1.0.0**  
-nix  
+**Version 1.0.0**
+nix
 January 2026
 
-> **Note:**  
-> This document is mainly for agents and LLMs to follow when creating,  
-> maintaining, or refactoring AI agent skills. Humans may also find  
-> it useful, but guidance here is optimized for automation and  
+> **Note:**
+> This document is mainly for agents and LLMs to follow when creating,
+> maintaining, or refactoring AI agent skills. Humans may also find
+> it useful, but guidance here is optimized for automation and
 > consistency by AI-assisted workflows.
 
 ---
@@ -51,7 +51,7 @@ Use `camelCase` for standard variables and `UPPER_CASE` for constants.
 
 ```nix
 let
-  userName = "khaneliman";
+  userName = "aytordev";
   enableAutoStart = true;
   MAX_RETRIES = 5;
 in
@@ -127,4 +127,3 @@ Interleaving options and config, or scattering `home.packages` throughout the fi
 **Structured**
 
 ---
-

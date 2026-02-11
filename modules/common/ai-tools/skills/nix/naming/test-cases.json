@@ -43,7 +43,7 @@
     "ruleId": "",
     "ruleTitle": "Variable Naming",
     "type": "good",
-    "code": "let\n  userName = \"khaneliman\";\n  enableAutoStart = true;\n  MAX_RETRIES = 5;\nin\n# ...",
+    "code": "let\n  userName = \"aytordev\";\n  enableAutoStart = true;\n  MAX_RETRIES = 5;\nin\n# ...",
     "language": "nix",
     "description": "Correct example for Variable Naming"
   }

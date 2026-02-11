@@ -1,11 +1,9 @@
-{
-  review = ''
-    ---
-    allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git log:*), Read, Grep
-    argument-hint: "[--security] [--performance] [--style]"
-    description: Analyze staged git changes and provide thorough code review
-    ---
-
+let
+  commandName = "review";
+  description = "Analyze staged git changes and provide thorough code review";
+  allowedTools = "Bash(git status:*), Bash(git diff:*), Bash(git log:*), Read, Grep";
+  argumentHint = "[--security] [--performance] [--style]";
+  prompt = ''
     Review the staged changes for quality, security, and maintainability issues.
 
     **Workflow:**
@@ -51,7 +49,7 @@
        |-------|------------------|
        | N+1 queries | Loops with database calls |
        | Memory leaks | Unclosed resources, growing collections |
-       | Inefficient algorithms | O(n²) when O(n) possible |
+       | Inefficient algorithms | O(n^2) when O(n) possible |
        | Unnecessary work | Redundant calculations, over-fetching |
        | Missing caching | Repeated expensive operations |
 
@@ -76,7 +74,7 @@
     Brief overview of what the changes do and overall assessment.
 
     ## Security Issues
-    🔴 Critical / 🟡 Warning / ✅ None found
+    Critical / Warning / None found
 
     ## Code Quality
     - **Issue**: [description]
@@ -98,10 +96,10 @@
 
     | Level | Meaning | Action |
     |-------|---------|--------|
-    | 🔴 Critical | Security flaw, data loss risk | Must fix before merge |
-    | 🟠 Major | Significant bug, poor design | Should fix |
-    | 🟡 Minor | Style, minor improvement | Consider fixing |
-    | 💡 Suggestion | Enhancement opportunity | Optional |
+    | Critical | Security flaw, data loss risk | Must fix before merge |
+    | Major | Significant bug, poor design | Should fix |
+    | Minor | Style, minor improvement | Consider fixing |
+    | Suggestion | Enhancement opportunity | Optional |
 
     **Review Checklist:**
 
@@ -116,4 +114,14 @@
 
     Be constructive and specific. Explain WHY something is an issue, not just WHAT.
   '';
+in {
+  ${commandName} = {
+    inherit
+      commandName
+      description
+      allowedTools
+      argumentHint
+      prompt
+      ;
+  };
 }

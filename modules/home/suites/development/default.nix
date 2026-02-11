@@ -194,7 +194,7 @@ in {
     #     path = "${config.home.homeDirectory}/.AZURE_OPENAI_API_KEY";
     #   };
     #   GEMINI_API_KEY = {
-    #     sopsFile = lib.getFile "secrets/khaneliman/default.yaml";
+    #     sopsFile = lib.getFile "secrets/aytordev/default.yaml";
     #     path = "${config.home.homeDirectory}/.GEMINI_API_KEY";
     #   };
     #   OPENAI_API_KEY = {
@@ -202,7 +202,7 @@ in {
     #     path = "${config.home.homeDirectory}/.OPENAI_API_KEY";
     #   };
     #   TAVILY_API_KEY = {
-    #     sopsFile = lib.getFile "secrets/khaneliman/default.yaml";
+    #     sopsFile = lib.getFile "secrets/aytordev/default.yaml";
     #     path = "${config.home.homeDirectory}/.TAVILY_API_KEY";
     #   };
     # };

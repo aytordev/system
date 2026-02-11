@@ -16,10 +16,10 @@
           };
           options = {
             nixos = {
-              expr = "(builtins.getFlake \"/home/khaneliman/aytordev\").nixosConfigurations.aytordev.options";
+              expr = "(builtins.getFlake \"/home/aytordev/aytordev\").nixosConfigurations.aytordev.options";
             };
             home-manager = {
-              expr = "(builtins.getFlake \"/home/khaneliman/aytordev\").homeConfigurations.\"khaneliman@aytordev\".options";
+              expr = "(builtins.getFlake \"/home/aytordev/aytordev\").homeConfigurations.\"aytordev@aytordev\".options";
             };
           };
         };
@@ -40,7 +40,7 @@
             workspace = {
               library = [
                 "/nix/store/*/share/lua/5.1"
-                "/etc/profiles/per-user/khaneliman/share/lua/5.1"
+                "/etc/profiles/per-user/aytordev/share/lua/5.1"
               ];
             };
           };
