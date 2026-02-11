@@ -47,39 +47,41 @@ in {
       gh-notify
       gh-dash
     ];
-    programs.gh = {
-      enable = true;
-      gitCredentialHelper = {
+    programs = {
+      gh = {
         enable = true;
-        inherit (cfg.gitCredentialHelper) hosts;
+        gitCredentialHelper = {
+          enable = true;
+          inherit (cfg.gitCredentialHelper) hosts;
+        };
+        settings = {
+          version = "1";
+        };
       };
-      settings = {
-        version = "1";
-      };
+
+      zsh.initContent = mkIf hasToken ''
+        if [[ -f "${cfg.auth.tokenPath}" ]]; then
+          export GH_TOKEN="$(command cat "${cfg.auth.tokenPath}")"
+        fi
+      '';
+
+      bash.initExtra = mkIf hasToken ''
+        if [[ -f "${cfg.auth.tokenPath}" ]]; then
+          export GH_TOKEN="$(command cat "${cfg.auth.tokenPath}")"
+        fi
+      '';
+
+      fish.interactiveShellInit = mkIf hasToken ''
+        if test -f "${cfg.auth.tokenPath}"
+          set -gx GH_TOKEN (command cat "${cfg.auth.tokenPath}")
+        end
+      '';
+
+      nushell.extraEnv = mkIf hasToken ''
+        if ("${cfg.auth.tokenPath}" | path exists) {
+          $env.GH_TOKEN = (open "${cfg.auth.tokenPath}" | str trim)
+        }
+      '';
     };
-
-    programs.zsh.initContent = mkIf hasToken ''
-      if [[ -f "${cfg.auth.tokenPath}" ]]; then
-        export GH_TOKEN="$(command cat "${cfg.auth.tokenPath}")"
-      fi
-    '';
-
-    programs.bash.initExtra = mkIf hasToken ''
-      if [[ -f "${cfg.auth.tokenPath}" ]]; then
-        export GH_TOKEN="$(command cat "${cfg.auth.tokenPath}")"
-      fi
-    '';
-
-    programs.fish.interactiveShellInit = mkIf hasToken ''
-      if test -f "${cfg.auth.tokenPath}"
-        set -gx GH_TOKEN (command cat "${cfg.auth.tokenPath}")
-      end
-    '';
-
-    programs.nushell.extraEnv = mkIf hasToken ''
-      if ("${cfg.auth.tokenPath}" | path exists) {
-        $env.GH_TOKEN = (open "${cfg.auth.tokenPath}" | str trim)
-      }
-    '';
   };
 }
