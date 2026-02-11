@@ -1,11 +1,9 @@
-{
-  add-and-format = ''
-    ---
-    allowed-tools: Bash(git*), Bash(prettier*), Bash(black*), Bash(rustfmt*), Bash(gofmt*), Bash(eslint*), Bash(pylint*), Bash(nix fmt*), Bash(nixfmt*), Bash(treefmt*), Read, Grep
-    argument-hint: "[files...] [--all] [--check]"
-    description: Smart git add with automatic formatting and style checking for files
-    ---
-
+let
+  commandName = "add-and-format";
+  description = "Smart git add with automatic formatting and style checking for files";
+  allowedTools = "Bash(git*), Bash(prettier*), Bash(black*), Bash(rustfmt*), Bash(gofmt*), Bash(eslint*), Bash(pylint*), Bash(nix fmt*), Bash(nixfmt*), Bash(treefmt*), Read, Grep";
+  argumentHint = "[files...] [--all] [--check]";
+  prompt = ''
     Intelligently add files to git staging with formatting and validation.
 
     **Workflow:**
@@ -41,4 +39,15 @@
 
     Follow project conventions and ensure all staged files are properly formatted.
   '';
+in
+{
+  ${commandName} = {
+    inherit
+      commandName
+      description
+      allowedTools
+      argumentHint
+      prompt
+      ;
+  };
 }
