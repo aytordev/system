@@ -5,14 +5,12 @@
   inputs,
   system,
   ...
-}:
-let
+}: let
   inherit (lib) getExe mkIf;
 
   cfg = config.aytordev.programs.terminal.tools.mcp;
   mcpPkgs = inputs.mcp-servers-nix.packages.${system};
-in
-{
+in {
   options.aytordev.programs.terminal.tools.mcp = {
     enable = lib.mkEnableOption "MCP (Model Context Protocol) servers";
   };
