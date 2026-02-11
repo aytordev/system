@@ -39,17 +39,17 @@ in {
         # Which Key
         {plugin = tmux-which-key;}
 
-        # Tema Kanagawa (load last for theme to take effect)
+        # Kanagawa theme (load last for theme to take effect)
         {
-          plugin = kanagawa;
+          plugin = ukiyo;
           extraConfig =
             /*
             Bash
             */
             ''
-              set -g @kanagawa-theme '${themeCfg.variant}'
-              set -g @kanagawa-plugins "git cpu-usage ram-usage"
-              set -g @kanagawa-ignore-window-colors true
+              set -g @ukiyo-theme 'kanagawa/${themeCfg.variant}'
+              set -g @ukiyo-plugins "git cpu-usage ram-usage"
+              set -g @ukiyo-ignore-window-colors true
             '';
         }
       ];
