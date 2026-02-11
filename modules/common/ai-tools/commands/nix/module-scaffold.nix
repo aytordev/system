@@ -31,7 +31,7 @@ let
     IF path contains "modules/home/" OR "home-manager/":
         Default type = "home"
     ELSE IF path contains "modules/nixos/" OR "nixos/":
-        Default type = "nixos"  
+        Default type = "nixos"
     ELSE IF path contains "modules/darwin/" OR "darwin/":
         Default type = "darwin"
     ELSE:
@@ -84,9 +84,7 @@ let
 
     Follow project conventions and keep modules minimal.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

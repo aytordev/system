@@ -59,9 +59,7 @@ let
 
     Tailor the explanation to the audience - assume competent developers but don't assume domain knowledge.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

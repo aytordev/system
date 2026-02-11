@@ -67,9 +67,7 @@ let
 
     Keep changelog entries concise, user-facing, and consistent.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

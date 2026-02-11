@@ -75,9 +75,7 @@ let
 
     Focus on what developers need to USE the module, not how it's implemented internally.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

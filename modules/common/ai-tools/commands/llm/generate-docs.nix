@@ -97,9 +97,7 @@ let
 
     Document what the code does and how to use it, not how it is implemented.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

@@ -81,9 +81,7 @@ let
 
     Suggest improvements that are practical and provide real value, not just stylistic preferences.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

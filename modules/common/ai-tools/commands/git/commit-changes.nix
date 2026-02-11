@@ -140,9 +140,7 @@ let
 
     Provide a clear, minimal commit plan and ask for confirmation before committing.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

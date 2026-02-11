@@ -50,9 +50,7 @@ let
 
     Focus on actionable insights and cite relevant commits with hashes.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

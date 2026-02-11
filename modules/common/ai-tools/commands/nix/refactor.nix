@@ -62,9 +62,7 @@ let
 
     Prefer minimal, safe changes and verify each refactor.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

@@ -45,9 +45,7 @@ let
 
     Prioritize consistency with existing style over personal preferences.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

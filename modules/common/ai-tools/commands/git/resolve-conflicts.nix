@@ -39,9 +39,7 @@ let
 
     Resolve conflicts carefully and ensure resulting code is correct and consistent.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

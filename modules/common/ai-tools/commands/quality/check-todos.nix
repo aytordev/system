@@ -94,9 +94,7 @@ let
 
     Focus on production code and ensure all placeholders are eliminated.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

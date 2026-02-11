@@ -112,9 +112,7 @@ let
 
     Focus on practical splitting and actionable summaries.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

@@ -114,8 +114,7 @@ let
 
     Be constructive and specific. Explain WHY something is an issue, not just WHAT.
   '';
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

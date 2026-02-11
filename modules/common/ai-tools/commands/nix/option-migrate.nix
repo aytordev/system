@@ -54,9 +54,7 @@ let
 
     Ensure a safe migration path and avoid breaking changes.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

@@ -66,9 +66,7 @@ let
 
     Ensure templates follow repository conventions and integrate with Nix tooling.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

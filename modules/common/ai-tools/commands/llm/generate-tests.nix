@@ -77,9 +77,7 @@ let
 
     Generate tests that are realistic, maintainable, and aligned with project style.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

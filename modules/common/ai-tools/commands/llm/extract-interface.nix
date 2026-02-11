@@ -103,9 +103,7 @@ let
 
     Extract interfaces that are stable, minimal, and represent the essential contract.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

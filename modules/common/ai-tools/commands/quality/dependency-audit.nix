@@ -56,9 +56,7 @@ let
 
     Prioritize security fixes and remove unused dependencies where possible.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

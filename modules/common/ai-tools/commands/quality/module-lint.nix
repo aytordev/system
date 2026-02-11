@@ -49,9 +49,7 @@ let
 
     Focus on actionable fixes and align with existing project conventions.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

@@ -100,9 +100,7 @@ let
       - Line range format is L[start]-L[end]
       - Provide at least 1 line of context before and after, centered on the line you are commenting about (eg. if you are commenting about lines 5-6, you should link to `L4-7`)
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

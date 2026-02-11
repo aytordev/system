@@ -63,9 +63,7 @@ let
 
     Be practical and prioritize issues by impact.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

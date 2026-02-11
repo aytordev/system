@@ -68,9 +68,7 @@ let
 
     Include file paths with line numbers. Group results by category.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

@@ -40,9 +40,7 @@ let
 
     Always summarize changes clearly and avoid updating inputs unnecessarily.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

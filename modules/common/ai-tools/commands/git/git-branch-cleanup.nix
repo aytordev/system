@@ -38,9 +38,7 @@ let
 
     Always confirm before deleting any branches. Use dry-run by default.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

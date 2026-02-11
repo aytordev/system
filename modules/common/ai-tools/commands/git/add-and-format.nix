@@ -39,8 +39,7 @@ let
 
     Follow project conventions and ensure all staged files are properly formatted.
   '';
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName

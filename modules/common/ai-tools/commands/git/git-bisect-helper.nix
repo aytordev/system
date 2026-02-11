@@ -39,9 +39,7 @@ let
 
     Provide clear guidance on each step and confirm before marking commits.
   '';
-
-in
-{
+in {
   ${commandName} = {
     inherit
       commandName
