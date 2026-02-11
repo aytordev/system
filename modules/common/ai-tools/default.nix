@@ -31,19 +31,6 @@
   in
     lib.trim mainContent;
 
-  convertCommandsToGemini = commands:
-    lib.mapAttrs (name: prompt: {
-      inherit prompt;
-      description = let
-        lines = lib.splitString "\n" prompt;
-        descLine = lib.findFirst (line: lib.hasPrefix "description:" line) "" lines;
-      in
-        if descLine != ""
-        then lib.removePrefix "description: " (lib.trim descLine)
-        else "AI command: ${name}";
-    })
-    commands;
-
   convertAgentsToGemini = agents:
     lib.mapAttrs (
       name: agentText: let
@@ -60,19 +47,18 @@
     agents;
 in {
   claudeCode = {
-    commands = aiCommands;
+    commands = aiCommands.toClaudeMarkdown;
     agents = aiAgents;
   };
 
   geminiCli = {
-    commands = convertCommandsToGemini aiCommands;
+    commands = aiCommands.toGeminiCommands;
     agents = convertAgentsToGemini aiAgents;
   };
 
   opencode = {
-    commands = aiCommands;
+    commands = aiCommands.toOpenCodeMarkdown;
     agents = aiAgents;
-    # Export helper functions for OpenCode module to use
     inherit extractDescription extractPrompt;
   };
 
