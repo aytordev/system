@@ -152,6 +152,7 @@ in {
             # AI tools - use mkDefault so home config can override
             claude-code.enable = mkDefault cfg.aiEnable;
             gemini-cli.enable = mkDefault cfg.aiEnable;
+            mcp.enable = mkDefault cfg.aiEnable;
             opencode.enable = mkDefault cfg.aiEnable;
             git-crypt = mkDefault enabled;
             # go.enable = cfg.goEnable;  # TODO: module doesn't exist
