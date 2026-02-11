@@ -47,6 +47,12 @@ in {
             mode = "0600";
             owner = inputs.secrets.username;
           };
+          github_cli_personal_access_token = {
+            key = "github_cli_personal_access_token";
+            path = "/Users/${inputs.secrets.username}/.config/sops/github_cli_personal_access_token";
+            mode = "0600";
+            owner = inputs.secrets.username;
+          };
         };
       };
     };
