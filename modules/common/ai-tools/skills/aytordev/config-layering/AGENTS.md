@@ -1,13 +1,13 @@
 # Skill Creator Guidelines
 
-**Version 1.0.0**  
-aytordev  
+**Version 1.0.0**
+aytordev
 January 2026
 
-> **Note:**  
-> This document is mainly for agents and LLMs to follow when creating,  
-> maintaining, or refactoring AI agent skills. Humans may also find  
-> it useful, but guidance here is optimized for automation and  
+> **Note:**
+> This document is mainly for agents and LLMs to follow when creating,
+> maintaining, or refactoring AI agent skills. Humans may also find
+> it useful, but guidance here is optimized for automation and
 > consistency by AI-assisted workflows.
 
 ---
@@ -92,13 +92,13 @@ Checking `networking.hostName == "foo"` inside a generic module. Use the host co
 { pkgs, ... }:
 {
   imports = [ ./hardware.nix ];
-  networking.hostName = "khanelimain";
+  networking.hostName = "wang-lin";
 }
 ```
 
 **Standard Path**
 
-`systems/x86_64-linux/khanelimain/default.nix` imports specific modules and sets host-specific values.
+`systems/x86_64-linux/wang-lin/default.nix` imports specific modules and sets host-specific values.
 
 ### 2.2 User Configuration Structure
 
@@ -124,7 +124,7 @@ Using a single `home.nix` for all users on all machines.
 
 **Per-User-Per-Host**
 
-`homes/x86_64-linux/khanelimain@khanelimain/default.nix` allows granular control.
+`homes/x86_64-linux/wang-lin@wang-lin/default.nix` allows granular control.
 
 ---
 
@@ -161,4 +161,3 @@ programs.git.userName = "Real Name";
 Define defaults in modules, specific values in configs.
 
 ---
-

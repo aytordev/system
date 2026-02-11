@@ -12,12 +12,12 @@ Checking `networking.hostName == "foo"` inside a generic module. Use the host co
 **Correct:**
 
 **Standard Path**
-`systems/x86_64-linux/khanelimain/default.nix` imports specific modules and sets host-specific values.
+`systems/x86_64-linux/wang-lin/default.nix` imports specific modules and sets host-specific values.
 
 ```nix
 { pkgs, ... }:
 {
   imports = [ ./hardware.nix ];
-  networking.hostName = "khanelimain";
+  networking.hostName = "wang-lin";
 }
 ```

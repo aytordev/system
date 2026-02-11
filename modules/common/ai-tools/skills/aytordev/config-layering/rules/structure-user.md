@@ -12,7 +12,7 @@ Using a single `home.nix` for all users on all machines.
 **Correct:**
 
 **Per-User-Per-Host**
-`homes/x86_64-linux/khanelimain@khanelimain/default.nix` allows granular control.
+`homes/x86_64-linux/wang-lin@wang-lin/default.nix` allows granular control.
 
 ```nix
 { pkgs, ... }:
