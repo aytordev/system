@@ -40,6 +40,26 @@
         "type": "github"
       }
     },
+    "mcp-servers-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1770836257,
+        "narHash": "sha256-Fe7nqt5VIYAnmy2sYgERaSBnd8nYibV2g6vDeHnQ3RI=",
+        "owner": "natsukium",
+        "repo": "mcp-servers-nix",
+        "rev": "870d6d164eea78b4b6a2067b23ea15b292a03bcd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "natsukium",
+        "repo": "mcp-servers-nix",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -184,6 +204,7 @@
       "inputs": {
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
+        "mcp-servers-nix": "mcp-servers-nix",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nix-rosetta-builder": "nix-rosetta-builder",
