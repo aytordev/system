@@ -2,7 +2,7 @@
 
 **Impact:** HIGH
 
-For applications that need a named theme (e.g., "Kanagawa Wave" vs "kanagawa-wave"), use the convenience accessors in `config.aytordev.theme.appTheme`. This avoids string formatting errors.
+For applications that need a named theme (e.g., "Kanagawa Wave" vs "kanagawa-wave"), use the convenience accessors in `config.aytordev.theme.appTheme`. For apps that need both dark and light theme names, use `appThemeLight`.
 
 **Incorrect:**
 
@@ -15,9 +15,12 @@ Manually constructing theme names like `"Kanagawa ${config.aytordev.theme.varian
 Use the pre-calculated formats provided by the module.
 
 ```nix
-# Returns "Kanagawa Wave" or "Kanagawa Lotus"
-theme = config.aytordev.theme.appTheme.capitalized;
+# Active theme name in various formats
+theme = config.aytordev.theme.appTheme.capitalized;  # "Kanagawa Wave"
+theme = config.aytordev.theme.appTheme.kebab;         # "kanagawa-wave"
+theme = config.aytordev.theme.appTheme.underscore;     # "kanagawa_wave"
+theme = config.aytordev.theme.appTheme.raw;            # "kanagawa/wave" (for plugin paths)
 
-# Returns "kanagawa-wave" or "kanagawa-lotus"
-theme = config.aytordev.theme.appTheme.kebab;
+# Light variant name (for apps needing both dark and light)
+lightTheme = config.aytordev.theme.appThemeLight.capitalized;  # "Kanagawa Lotus"
 ```

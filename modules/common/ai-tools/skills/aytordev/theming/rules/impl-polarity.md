@@ -2,12 +2,12 @@
 
 **Impact:** MEDIUM
 
-When you explicitly need to know if the theme is light or dark (e.g. for boolean flags), use `config.aytordev.theme.isLight`. This handles edge cases (like "lotus" variant implying light mode even if polarity wasn't explicitly set).
+When you explicitly need to know if the theme is light or dark (e.g. for boolean flags), use `config.aytordev.theme.isLight`. This is derived from the active variant's metadata — each variant declares whether it's light or dark.
 
 **Incorrect:**
 
 **Fragile Checks**
-Checking `config.aytordev.theme.polarity == "light"` directly, which misses the case where variant="lotus" forces light mode.
+Checking variant names directly to determine polarity (e.g., `variant == "lotus"`).
 
 **Correct:**
 
