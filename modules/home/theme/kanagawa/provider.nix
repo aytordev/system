@@ -7,9 +7,9 @@
   capitalize,
 }: let
   colors = import ./colors.nix {inherit mkColor;};
-  wave = colors.wave;
-  dragon = colors.dragon;
-  lotus = colors.lotus;
+  inherit (colors) wave;
+  inherit (colors) dragon;
+  inherit (colors) lotus;
 in {
   name = "kanagawa";
   displayName = "Kanagawa";
