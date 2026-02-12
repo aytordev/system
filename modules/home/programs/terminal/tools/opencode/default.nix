@@ -8,26 +8,27 @@
   cfg = config.aytordev.programs.terminal.tools.opencode;
 
   aiTools = import (lib.getFile "modules/common/ai-tools") {inherit lib;};
-  agentConfigLib = import ./agent-config.nix {inherit lib;};
 
-  # Build OpenCode agent configurations from raw agent data
-  buildAgentConfigs = agents:
+  # Primary agents: most commonly used, Tab-switchable in OpenCode
+  primaryAgents = [
+    "nix-coder"
+    "code-reviewer"
+    "system-planner"
+  ];
+
+  # Add mode (primary vs subagent) to each agent config
+  buildAgentConfigs = agentConfigs:
     lib.mapAttrs (
-      name: agentText: let
-        description = aiTools.opencode.extractDescription agentText;
-        prompt = aiTools.opencode.extractPrompt agentText;
-        config = agentConfigLib.generateAgentConfig name;
-      in
-        config
+      name: agentConfig:
+        agentConfig
         // {
-          inherit prompt;
-          description =
-            if description != null
-            then description
-            else "AI agent: ${name}";
+          mode =
+            if builtins.elem name primaryAgents
+            then "primary"
+            else "subagent";
         }
     )
-    agents;
+    agentConfigs;
 in {
   imports = [
     ./formatters.nix
@@ -52,7 +53,7 @@ in {
         autoupdate = false;
 
         # Agent configurations with model, tools, and permissions
-        agent = buildAgentConfigs aiTools.opencode.agents;
+        agent = buildAgentConfigs aiTools.opencode.agentConfigs;
       };
 
       inherit (aiTools.opencode) agents commands;
