@@ -62,15 +62,15 @@ in {
           themes."${themeCfg.appTheme.kebab}" = {
             bg = palette.bg.hex;
             fg = palette.fg.hex;
-            red = (palette.autumnRed or palette.dragonRed or palette.lotusRed).hex;
-            green = (palette.autumnGreen or palette.dragonGreen or palette.lotusGreen).hex;
-            yellow = (palette.boatYellow2 or palette.dragonYellow or palette.lotusYellow).hex;
+            red = palette.red.hex;
+            green = palette.green.hex;
+            yellow = palette.yellow.hex;
             blue = palette.accent.hex;
-            magenta = (palette.oniViolet or palette.dragonPink or palette.lotusViolet1).hex;
-            orange = (palette.surimiOrange or palette.dragonOrange or palette.lotusOrange).hex;
-            cyan = (palette.waveAqua1 or palette.dragonAqua or palette.lotusTeal1).hex;
+            magenta = palette.violet.hex;
+            orange = palette.orange.hex;
+            cyan = palette.cyan.hex;
             black = palette.bg_dim.hex;
-            white = (palette.oldWhite or palette.dragonGray or palette.lotusGray2).hex;
+            white = palette.fg_reverse.hex;
           };
         };
       };

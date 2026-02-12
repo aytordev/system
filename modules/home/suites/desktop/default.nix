@@ -18,7 +18,6 @@ in {
       theme = {
         enable = true;
         variant = "wave";
-        polarity = "dark";
       };
 
       programs = {

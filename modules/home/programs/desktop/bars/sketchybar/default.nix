@@ -19,14 +19,14 @@
     default = palette.fg.sketchybar;
     black = palette.bg_dim.sketchybar;
     white = palette.fg.sketchybar;
-    red = (palette.autumnRed or palette.dragonRed or palette.lotusRed).sketchybar;
-    red_bright = (palette.samuraiRed or palette.waveRed or palette.lotusRed3).sketchybar;
-    green = (palette.autumnGreen or palette.dragonGreen or palette.lotusGreen).sketchybar;
+    red = palette.red.sketchybar;
+    red_bright = palette.red_bright.sketchybar;
+    green = palette.green.sketchybar;
     blue = palette.accent.sketchybar;
-    blue_bright = (palette.springBlue or palette.lotusBlue5).sketchybar;
-    yellow = (palette.boatYellow2 or palette.dragonYellow or palette.lotusYellow).sketchybar;
-    orange = (palette.roninYellow or palette.dragonOrange or palette.lotusOrange).sketchybar;
-    magenta = (palette.oniViolet or palette.dragonPink or palette.lotusViolet1).sketchybar;
+    blue_bright = palette.blue_bright.sketchybar;
+    yellow = palette.yellow.sketchybar;
+    orange = palette.orange.sketchybar;
+    magenta = palette.violet.sketchybar;
     grey = palette.fg_dim.sketchybar;
     transparent = palette.transparent.sketchybar;
 
@@ -45,9 +45,9 @@
     bg2 = palette.border.sketchybar;
 
     accent = palette.accent.sketchybar;
-    accent_bright = (palette.springViolet1 or palette.dragonViolet or palette.lotusBlue5).sketchybar;
+    accent_bright = palette.accent_dim.sketchybar;
 
-    spotify_green = (palette.autumnGreen or palette.dragonGreen or palette.lotusGreen).sketchybar;
+    spotify_green = palette.green.sketchybar;
   };
 
   # Base packages required for sketchybar functionality

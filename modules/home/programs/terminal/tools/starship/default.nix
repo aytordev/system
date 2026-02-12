@@ -68,30 +68,30 @@
   palettes = {
     kanagawa = {
       text = palette.fg.hex;
-      red = (palette.autumnRed or palette.dragonRed or palette.lotusRed).hex;
-      green = (palette.autumnGreen or palette.dragonGreen or palette.lotusGreen).hex;
-      yellow = (palette.boatYellow2 or palette.dragonYellow or palette.lotusYellow).hex;
+      red = palette.red.hex;
+      green = palette.green.hex;
+      yellow = palette.yellow.hex;
       blue = palette.accent.hex;
-      magenta = (palette.oniViolet or palette.dragonPink or palette.lotusViolet1).hex;
-      teal = (palette.waveAqua1 or palette.dragonAqua or palette.lotusTeal1).hex;
-      peach = (palette.surimiOrange or palette.dragonOrange or palette.lotusOrange).hex;
-      mauve = (palette.springViolet2 or palette.dragonViolet or palette.lotusBlue5).hex;
-      pink = (palette.sakuraPink or palette.dragonPink or palette.lotusPink).hex;
+      magenta = palette.violet.hex;
+      teal = palette.cyan.hex;
+      peach = palette.orange.hex;
+      mauve = palette.accent_dim.hex;
+      pink = palette.pink.hex;
       subtext0 = palette.fg_dim.hex;
-      subtext1 = (palette.oldWhite or palette.dragonGray or palette.lotusGray2).hex;
+      subtext1 = palette.fg_reverse.hex;
       overlay0 = palette.bg_gutter.hex;
-      overlay1 = (palette.sumiInk5 or palette.dragonBlack5 or palette.lotusWhite5).hex;
-      overlay2 = (palette.sumiInk6 or palette.dragonBlack6 or palette.lotusBlue3).hex;
+      overlay1 = palette.bg_visual.hex;
+      overlay2 = palette.overlay.hex;
       surface0 = palette.bg_dim.hex;
       surface1 = palette.bg.hex;
       surface2 = palette.bg_gutter.hex;
       base = palette.bg.hex;
       mantle = palette.bg_dim.hex;
-      crust = (palette.sumiInk1 or palette.dragonBlack1 or palette.lotusWhite1).hex;
-      lavender = (palette.springBlue or palette.dragonBlue or palette.lotusBlue2).hex;
-      rosewater = (palette.carpYellow or palette.dragonYellow or palette.lotusYellow4).hex;
-      flamingo = (palette.samuraiRed or palette.dragonRed or palette.lotusRed3).hex;
-      maroon = (palette.waveRed or palette.dragonRed or palette.lotusRed2).hex;
+      crust = palette.bg_float.hex;
+      lavender = palette.blue_bright.hex;
+      rosewater = palette.yellow_bright.hex;
+      flamingo = palette.red_bright.hex;
+      maroon = palette.red_dim.hex;
     };
   };
 
