@@ -52,6 +52,7 @@
 
   # Base packages required for sketchybar functionality
   basePackages = with pkgs; [
+    aerospace
     blueutil
     coreutils
     curl
