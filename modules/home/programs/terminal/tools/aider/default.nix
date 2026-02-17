@@ -20,12 +20,14 @@
     lint-cmd = cfg.lintCommands;
   };
 
-  modelSettings = map (m: {
-    inherit (m) name;
-    edit_format = m.editFormat;
-    use_repo_map = m.useRepoMap;
-    extra_params = m.extraParams;
-  }) cfg.modelSettings;
+  modelSettings =
+    map (m: {
+      inherit (m) name;
+      edit_format = m.editFormat;
+      use_repo_map = m.useRepoMap;
+      extra_params = m.extraParams;
+    })
+    cfg.modelSettings;
 in {
   options.aytordev.programs.terminal.tools.aider = {
     enable = mkEnableOption "Aider AI pair programming assistant";
