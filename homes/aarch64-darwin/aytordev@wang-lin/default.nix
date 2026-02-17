@@ -117,29 +117,12 @@ in {
             };
           };
 
-          # Ollama - Disabled: Using Homebrew cask version for better macOS integration
-          ollama =
-            disabled
-            // {
-              acceleration = "metal";
-              models = [
-                "llama3.2"
-                "codellama"
-                "mistral"
-              ];
-              service = {
-                enable = true;
-                autoStart = true;
-              };
-              shellAliases = true;
-              environmentVariables = {
-                OLLAMA_NUM_PARALLEL = "2";
-                OLLAMA_MAX_LOADED_MODELS = "2";
-                OLLAMA_KEEP_ALIVE = "5m";
-              };
-              integrations.zed = true;
-              modelPresets = ["general" "coding"];
-            };
+          # Ollama — M3 Ultra optimized (service managed by darwin launchd module)
+          ollama = {
+            acceleration = "metal";
+            modelPresets = ["m3-ultra"];
+            integrations.zed = true;
+          };
 
           # Host-specific SSH configuration
           ssh.knownHosts.github = {

@@ -3,8 +3,8 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf;
   cfg = config.aytordev.programs.terminal.tools.ollama;
 in {
   config = mkIf cfg.enable {
@@ -57,14 +57,15 @@ in {
         fi
 
         # Check API connectivity
-        if curl -s http://127.0.0.1:11434/api/tags > /dev/null 2>&1; then
+        if curl -s http://${cfg.host}:${toString cfg.port}/api/tags > /dev/null 2>&1; then
           echo -e "''${GREEN}✅ API is responding''${NC}"
         else
           echo -e "''${YELLOW}⚠️  API is not responding (service may not be running)''${NC}"
         fi
 
-        # Check models directory
-        if [ -d "$HOME/.ollama/models" ]; then
+        # Check models directory (XDG-compliant path)
+        MODELS_DIR="''${XDG_DATA_HOME:-$HOME/.local/share}/ollama/models"
+        if [ -d "$MODELS_DIR" ]; then
           echo -e "''${GREEN}✅ Models directory exists''${NC}"
 
           # Count models

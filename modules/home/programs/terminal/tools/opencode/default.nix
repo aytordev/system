@@ -30,14 +30,6 @@
     )
     agentConfigs;
 in {
-  imports = [
-    ./formatters.nix
-    ./lsp.nix
-    ./mcp.nix
-    ./permission.nix
-    ./provider.nix
-  ];
-
   options.aytordev.programs.terminal.tools.opencode = {
     enable = mkEnableOption "OpenCode configuration";
   };

@@ -2,8 +2,8 @@
   config,
   lib,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkOption types mkDefault elem head;
   cfg = config.aytordev.programs.terminal.tools.ollama;
   integrationsCfg = cfg.integrations;
 in {

@@ -3,20 +3,11 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkOption mkEnableOption types optionals;
+
   cfg = config.aytordev.programs.terminal.tools.ollama;
 in {
-  imports = [
-    ./utils.nix
-    ./models.nix
-    ./scripts.nix
-    ./integrations.nix
-    ./service.nix
-    ./advanced-scripts.nix
-    ./validate.nix
-  ];
-
   options.aytordev.programs.terminal.tools.ollama = {
     enable = mkEnableOption "Ollama - Run large language models locally";
 
@@ -40,17 +31,28 @@ in {
       description = "Hardware acceleration backend to use";
     };
 
+    host = mkOption {
+      type = types.str;
+      default = "127.0.0.1";
+      description = "Ollama server bind address";
+    };
+
+    port = mkOption {
+      type = types.port;
+      default = 11434;
+      description = "Ollama server port";
+    };
+
     models = mkOption {
       type = types.listOf types.str;
       default = [];
       example = [
-        "llama3.2"
-        "codellama"
-        "mistral"
-        "phi3"
+        "qwen2.5-coder:32b"
+        "qwen3:30b-a3b"
+        "nomic-embed-text"
       ];
       description = ''
-        List of models to pull automatically when the service starts.
+        List of models to pull automatically.
         Models will be downloaded on first run if not already present.
       '';
     };
@@ -58,7 +60,7 @@ in {
     environmentVariables = mkOption {
       type = types.attrsOf types.str;
       default = {};
-      description = "Environment variables to set for the Ollama service";
+      description = "Additional environment variables for the Ollama service";
     };
 
     shellAliases = mkOption {
@@ -70,32 +72,26 @@ in {
 
   config = mkIf cfg.enable (
     let
-      inherit
-        (config._module.args.ollamaUtils)
-        createStatusScript
-        createRestartScript
-        createLogsScript
-        ;
+      inherit (config._module.args.ollamaUtils) createStatusScript createRestartScript createLogsScript;
     in {
       home = {
-        packages = with pkgs;
+        packages =
           [cfg.package]
           ++ optionals cfg.shellAliases [
             createStatusScript
-            createLogsScript
             createRestartScript
+            createLogsScript
           ];
 
-        # Shell aliases
         shellAliases = mkIf cfg.shellAliases {
           ollama-models = "ollama list";
           ollama-ps = "ollama ps";
-          ai = "ollama run llama3.2";
         };
 
-        # Environment variables
         sessionVariables = {
-          OLLAMA_HOST = "127.0.0.1:11434";
+          OLLAMA_HOST = "${cfg.host}:${toString cfg.port}";
+          OLLAMA_API_BASE = "http://${cfg.host}:${toString cfg.port}";
+          OLLAMA_MODELS = "${config.xdg.dataHome}/ollama/models";
         };
       };
     }
