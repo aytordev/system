@@ -3,54 +3,37 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkDefault;
+
   cfg = config.aytordev.programs.terminal.tools.ollama;
   inherit (config._module.args.ollamaUtils) shellUtils;
 
-  # Simple chat script
   chatScript = pkgs.writeShellScriptBin "ollama-chat" ''
-    #!/usr/bin/env bash
     set -e
 
     ${shellUtils.colors}
     ${shellUtils.errorHandling}
 
-    MODEL=''${1:-llama3.2}
+    MODEL=''${1:-qwen3:30b-a3b}
 
-    echo -e "''${CYAN}🤖 Starting chat with $MODEL''${NC}"
+    echo -e "''${CYAN}Starting chat with $MODEL''${NC}"
     echo -e "''${YELLOW}Type 'exit' to quit''${NC}"
     echo ""
 
-    while true; do
-      echo -ne "''${GREEN}You:''${NC} "
-      read -r input
-
-      case "$input" in
-        exit|quit)
-          echo "Goodbye!"
-          exit 0
-          ;;
-        *)
-          echo -ne "''${CYAN}$MODEL:''${NC} "
-          echo "$input" | ${cfg.package}/bin/ollama run "$MODEL"
-          ;;
-      esac
-    done
+    ${cfg.package}/bin/ollama run "$MODEL"
   '';
 
-  # Simple code assistant
   codeScript = pkgs.writeShellScriptBin "ollama-code" ''
-    #!/usr/bin/env bash
     set -e
 
-    MODEL=''${1:-codellama}
-    shift
+    MODEL=''${1:-qwen2.5-coder:32b}
+    shift 2>/dev/null || true
     PROMPT="$*"
 
     if [ -z "$PROMPT" ]; then
       echo "Usage: ollama-code [model] <prompt>"
-      echo "Example: ollama-code 'Write a Python function to sort a list'"
+      echo "Default model: qwen2.5-coder:32b"
       exit 1
     fi
 
@@ -58,15 +41,15 @@ with lib; let
   '';
 in {
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
+    home.packages = [
       chatScript
       codeScript
     ];
 
-    # Simple aliases
     home.shellAliases = mkIf cfg.shellAliases {
       ai-chat = mkDefault "ollama-chat";
       ai-code = mkDefault "ollama-code";
+      ai-fast = mkDefault "ollama run qwen3:30b-a3b";
     };
   };
 }

@@ -8,6 +8,7 @@
 
   cfg = config.aytordev.services.ollama;
   userHome = config.users.users.${config.aytordev.user.name}.home;
+  logDir = "${userHome}/.local/state/ollama";
 in {
   options.aytordev.services.ollama = {
     enable = mkEnableOption "Ollama inference server as launchd agent";
@@ -51,12 +52,14 @@ in {
       serviceConfig = {
         KeepAlive = true;
         RunAtLoad = true;
-        StandardOutPath = "${userHome}/Library/Logs/ollama.out.log";
-        StandardErrorPath = "${userHome}/Library/Logs/ollama.err.log";
+        StandardOutPath = "${logDir}/ollama.out.log";
+        StandardErrorPath = "${logDir}/ollama.err.log";
         EnvironmentVariables =
           {
             OLLAMA_HOST = "${cfg.host}:${toString cfg.port}";
             OLLAMA_ORIGINS = "*";
+            # XDG-compliant model storage
+            OLLAMA_MODELS = "${userHome}/.local/share/ollama/models";
 
             # Flash Attention: reduces KV cache memory, improves throughput
             OLLAMA_FLASH_ATTENTION = "1";
@@ -66,14 +69,22 @@ in {
             OLLAMA_NUM_PARALLEL = "2";
             # Keep multiple models loaded simultaneously
             OLLAMA_MAX_LOADED_MODELS = "3";
+            # Don't auto-unload models (managed via warmup/unload scripts)
+            OLLAMA_KEEP_ALIVE = "-1";
           }
           // cfg.environmentVariables;
       };
     };
 
+    # Ensure XDG state directory exists for logs
+    system.activationScripts.postActivation.text = lib.mkAfter ''
+      mkdir -p "${logDir}"
+      chown ${config.aytordev.user.name}:staff "${logDir}"
+    '';
+
     aytordev.system.newsyslog.files.ollama-out = [
       {
-        logfilename = "${userHome}/Library/Logs/ollama.out.log";
+        logfilename = "${logDir}/ollama.out.log";
         mode = "644";
         owner = config.aytordev.user.name;
         group = "staff";
@@ -85,7 +96,7 @@ in {
 
     aytordev.system.newsyslog.files.ollama-err = [
       {
-        logfilename = "${userHome}/Library/Logs/ollama.err.log";
+        logfilename = "${logDir}/ollama.err.log";
         mode = "644";
         owner = config.aytordev.user.name;
         group = "staff";
