@@ -39,11 +39,51 @@
 
     echo "$PROMPT" | ${cfg.package}/bin/ollama run "$MODEL"
   '';
+
+  warmupScript = pkgs.writeShellScriptBin "ai-warmup" ''
+    set -e
+    ${shellUtils.colors}
+    ${shellUtils.errorHandling}
+
+    echo -e "''${CYAN}Warming up AI models...''${NC}"
+
+    wait_for_service
+
+    for model in ${lib.concatStringsSep " " cfg.models}; do
+      echo -e "''${BLUE}Loading: $model''${NC}"
+      echo "" | ${cfg.package}/bin/ollama run "$model" >/dev/null 2>&1 &
+    done
+    wait
+
+    echo -e "''${GREEN}All models loaded into VRAM''${NC}"
+    ${cfg.package}/bin/ollama ps
+  '';
+
+  unloadScript = pkgs.writeShellScriptBin "ai-unload" ''
+    ${shellUtils.colors}
+
+    echo -e "''${YELLOW}Unloading all models from VRAM...''${NC}"
+
+    running=$(${cfg.package}/bin/ollama ps 2>/dev/null | tail -n +2 | awk '{print $1}')
+    if [ -z "$running" ]; then
+      echo -e "''${YELLOW}No models currently loaded''${NC}"
+      exit 0
+    fi
+
+    for model in $running; do
+      echo -e "''${BLUE}Unloading: $model''${NC}"
+      ${cfg.package}/bin/ollama stop "$model" 2>/dev/null || true
+    done
+
+    echo -e "''${GREEN}All models unloaded''${NC}"
+  '';
 in {
   config = mkIf cfg.enable {
     home.packages = [
       chatScript
       codeScript
+      warmupScript
+      unloadScript
     ];
 
     home.shellAliases = mkIf cfg.shellAliases {
