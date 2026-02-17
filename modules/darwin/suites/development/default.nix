@@ -32,7 +32,10 @@ in {
       };
     };
 
-    aytordev.services.ollama.enable = lib.mkDefault cfg.aiEnable;
+    aytordev.services = {
+      ollama.enable = lib.mkDefault cfg.aiEnable;
+      litellm.enable = lib.mkDefault cfg.aiEnable;
+    };
 
     nix.settings = {
       keep-derivations = true;
