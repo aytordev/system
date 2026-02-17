@@ -25,12 +25,14 @@ in {
           "docker-desktop"
           "podman-desktop"
         ]
-        ++ lib.optionals cfg.aiEnable ["ollamac"];
+        ;
 
       masApps = mkIf config.aytordev.tools.homebrew.masEnable {
         # TODO: Add Mac App Store apps
       };
     };
+
+    aytordev.services.ollama.enable = lib.mkDefault cfg.aiEnable;
 
     nix.settings = {
       keep-derivations = true;
