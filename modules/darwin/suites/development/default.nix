@@ -24,8 +24,7 @@ in {
         ++ lib.optionals cfg.dockerEnable [
           "docker-desktop"
           "podman-desktop"
-        ]
-        ;
+        ];
 
       masApps = mkIf config.aytordev.tools.homebrew.masEnable {
         # TODO: Add Mac App Store apps
