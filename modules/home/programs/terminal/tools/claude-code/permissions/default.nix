@@ -107,6 +107,15 @@
       # Debugging
       "Bash(coredumpctl list:*)"
 
+      # AI tools (read-only / status)
+      "Bash(ollama list:*)"
+      "Bash(ollama ps:*)"
+      "Bash(ollama show:*)"
+      "Bash(ollama-status:*)"
+      "Bash(ollama-logs:*)"
+      "Bash(litellm-health:*)"
+      "Bash(litellm-models:*)"
+
       # Work MCP
       "mcp__mulesoft-analyzer"
 
@@ -176,6 +185,13 @@
     "Bash(kill:*)"
     "Bash(killall:*)"
     "Bash(pkill:*)"
+
+    # AI tools (write operations)
+    "Bash(aider:*)"
+    "Bash(ollama pull:*)"
+    "Bash(ollama run:*)"
+    "Bash(ollama-restart:*)"
+    "Bash(litellm:*)"
   ];
 
   # Autonomous mode still requires confirmation for these
