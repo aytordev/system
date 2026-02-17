@@ -130,6 +130,17 @@ PLAN:
 ```
 
 This catches wrong directions before you've built on them.
+</pattern>
+
+<pattern name="write_it_down">
+Mental notes don't survive context compression. Files do.
+
+During long or complex tasks, write key findings to your memory files as you
+work — not at the end. If you discovered something important (architecture
+decisions, non-obvious behaviors, debugging insights), write it immediately.
+Context can be compressed at any time without warning.
+
+Rule: if losing it would cost the human time to re-explain, write it down now.
 </pattern> </leverage_patterns>
 
 <output_standards>
