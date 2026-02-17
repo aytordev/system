@@ -14,17 +14,21 @@
     model_list =
       map (m: {
         model_name = m.modelName;
-        litellm_params = {
-          inherit (m) model;
-          api_base = m.apiBase;
-        } // m.extraParams;
+        litellm_params =
+          {
+            inherit (m) model;
+            api_base = m.apiBase;
+          }
+          // m.extraParams;
       })
       cfg.models;
 
-    litellm_settings = {
-      drop_params = true;
-      telemetry = false;
-    } // cfg.settings;
+    litellm_settings =
+      {
+        drop_params = true;
+        telemetry = false;
+      }
+      // cfg.settings;
   };
 in {
   options.aytordev.programs.terminal.tools.litellm = {
