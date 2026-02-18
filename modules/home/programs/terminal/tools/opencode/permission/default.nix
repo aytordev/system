@@ -96,6 +96,17 @@ _: {
         "kill*" = "ask";
         "killall*" = "ask";
         "pkill*" = "ask";
+
+        # AI tools (read-only / status)
+        "ollama list*" = "allow";
+        "ollama ps*" = "allow";
+        "ollama show*" = "allow";
+        "ollama-status*" = "allow";
+        "ollama-logs*" = "allow";
+        "aider*" = "ask";
+        "litellm-health*" = "allow";
+        "litellm-models*" = "allow";
+        "litellm*" = "ask";
       };
       read = "allow";
       list = "allow";

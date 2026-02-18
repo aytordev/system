@@ -151,9 +151,12 @@ in {
             # azure.enable = cfg.azureEnable;  # TODO: module doesn't exist
             # AI tools - use mkDefault so home config can override
             agentapi.enable = mkDefault cfg.aiEnable;
+            aider.enable = mkDefault cfg.aiEnable;
             claude-code.enable = mkDefault cfg.aiEnable;
             gemini-cli.enable = mkDefault cfg.aiEnable;
+            litellm.enable = mkDefault cfg.aiEnable;
             mcp.enable = mkDefault cfg.aiEnable;
+            ollama.enable = mkDefault cfg.aiEnable;
             opencode.enable = mkDefault cfg.aiEnable;
             git-crypt = mkDefault enabled;
             # go.enable = cfg.goEnable;  # TODO: module doesn't exist
@@ -168,8 +171,9 @@ in {
         };
       };
 
-      # TODO: services.ollama when module exists
-      # services.ollama.enable = mkDefault (cfg.aiEnable && pkgs.stdenv.hostPlatform.isDarwin);
+      # Ollama service managed separately:
+      # - macOS: darwin module (aytordev.services.ollama) via darwin dev suite
+      # - Linux: home-manager systemd service (ollama.service.enable)
     };
 
     # NOTE: Home-Manager Sops Configuration Required

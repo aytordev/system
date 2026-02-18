@@ -11,10 +11,6 @@
 
   claudeIcon = ./assets/claude.ico;
 in {
-  imports = [
-    ./permissions.nix
-  ];
-
   options.aytordev.programs.terminal.tools.claude-code = {
     enable = mkEnableOption "Claude Code configuration";
   };

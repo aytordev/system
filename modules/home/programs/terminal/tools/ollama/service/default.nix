@@ -3,8 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkOption types optionals mapAttrsToList;
+
   cfg = config.aytordev.programs.terminal.tools.ollama;
   serviceCfg = cfg.service;
   inherit (config._module.args.ollamaUtils) createModelPullScript;
@@ -12,8 +13,11 @@ in {
   options.aytordev.programs.terminal.tools.ollama.service = {
     enable = mkOption {
       type = types.bool;
-      default = true;
-      description = "Enable the Ollama systemd user service";
+      default = !pkgs.stdenv.isDarwin;
+      description = ''
+        Enable the Ollama systemd user service (Linux only).
+        On macOS, the service is managed by the darwin module via launchd.
+      '';
     };
 
     autoStart = mkOption {
@@ -23,8 +27,8 @@ in {
     };
   };
 
-  config = mkIf (cfg.enable && serviceCfg.enable) {
-    # Systemd user service
+  # systemd service only on Linux — macOS uses launchd via darwin module
+  config = mkIf (cfg.enable && serviceCfg.enable && !pkgs.stdenv.isDarwin) {
     systemd.user.services.ollama = {
       Unit = {
         Description = "Ollama - Local Large Language Model Runner";
@@ -40,26 +44,17 @@ in {
         Environment =
           [
             "HOME=%h"
-            "OLLAMA_HOST=127.0.0.1:11434"
-            "OLLAMA_MODELS=%h/.ollama/models"
+            "OLLAMA_HOST=${cfg.host}:${toString cfg.port}"
+            "OLLAMA_MODELS=%h/.local/share/ollama/models"
           ]
-          ++ optionals (cfg.acceleration == "metal" && pkgs.stdenv.isDarwin) [
-            "OLLAMA_METAL=1"
-          ]
-          ++ optionals (cfg.acceleration == "cuda") [
-            "OLLAMA_CUDA=1"
-          ]
-          ++ optionals (cfg.acceleration == "rocm") [
-            "OLLAMA_ROCM=1"
-          ]
+          ++ optionals (cfg.acceleration == "cuda") ["OLLAMA_CUDA=1"]
+          ++ optionals (cfg.acceleration == "rocm") ["OLLAMA_ROCM=1"]
           ++ mapAttrsToList (name: value: "${name}=${value}") cfg.environmentVariables;
 
         Restart = "on-failure";
         RestartSec = 5;
-
-        # Basic security
         PrivateTmp = true;
-        ReadWritePaths = ["%h/.ollama"];
+        ReadWritePaths = ["%h/.local/share/ollama"];
       };
 
       Install = {
@@ -67,9 +62,8 @@ in {
       };
     };
 
-    # Create ollama directory
     home.activation.createOllamaDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      mkdir -p $HOME/.ollama/models
+      mkdir -p $HOME/.local/share/ollama/models
     '';
   };
 }

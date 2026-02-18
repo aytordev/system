@@ -3,8 +3,8 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkOption types mkDefault;
   cfg = config.aytordev.programs.terminal.tools.ollama;
   advancedCfg = cfg.advancedScripts;
   inherit (config._module.args.ollamaUtils) constants shellUtils;
@@ -28,7 +28,7 @@ in {
         ${shellUtils.errorHandling}
 
         MODEL=''${OLLAMA_RAG_MODEL:-llama3.2}
-        EMBEDDINGS_DIR="$HOME/.ollama/embeddings"
+        EMBEDDINGS_DIR="''${XDG_DATA_HOME:-$HOME/.local/share}/ollama/embeddings"
 
         case "$1" in
           index)
