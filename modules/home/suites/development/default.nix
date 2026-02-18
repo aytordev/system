@@ -150,6 +150,7 @@ in {
             act = mkDefault enabled;
             # azure.enable = cfg.azureEnable;  # TODO: module doesn't exist
             # AI tools - use mkDefault so home config can override
+            agentapi.enable = mkDefault cfg.aiEnable;
             aider.enable = mkDefault cfg.aiEnable;
             claude-code.enable = mkDefault cfg.aiEnable;
             gemini-cli.enable = mkDefault cfg.aiEnable;
