@@ -39,6 +39,13 @@
 
     # Project commands
     "changelog" = "docs-writer";
+
+    # Design commands
+    "interface-design-init" = "dotfiles-coder";
+    "interface-design-audit" = "code-reviewer";
+    "interface-design-status" = "code-reviewer";
+    "interface-design-critique" = "dotfiles-coder";
+    "interface-design-extract" = "code-reviewer";
   };
 
   # Parse YAML frontmatter from old-format string commands
