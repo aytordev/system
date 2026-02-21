@@ -31,7 +31,7 @@ Probe: We'll build a landing page and run Google Ads.
 a landing page tests acquisition intent, not feature demand from current users.]
 ```
 
-**Correct (advisor applied: hypothesis type → risk → resources → probe type):**
+**Correct (advisor applied — hypothesis type → risk → resources → probe type):**
 
 ```markdown
 ## Probe Type Advisor: Audit Log Feature

@@ -1167,6 +1167,16 @@ The PoL Probe Type Advisor is an interactive decision protocol that recommends o
 **Incorrect: probe type chosen by familiarity, not fit**
 
 ```markdown
+Hypothesis: Enterprise users want an audit log feature.
+Probe: We'll build a landing page and run Google Ads.
+
+[Problem: existing users are already in-product;
+a landing page tests acquisition intent, not feature demand from current users.]
+```
+
+**Correct: advisor applied — hypothesis type → risk → resources → probe type**
+
+```markdown
 ## Probe Type Advisor: Audit Log Feature
 
 **Step 1 — Hypothesis type:** Solution hypothesis (we know the problem; testing whether
@@ -1188,8 +1198,6 @@ over 2 weeks. Success bar: ≥ 15% of admin users engage.
 - Concierge: PM can't manually produce audit logs at enterprise data volumes.
 - Wizard of Oz: requires engineering to fake the log output — not available.
 ```
-
-**Correct (advisor applied: hypothesis type → risk → resources → probe type):**
 
 Reference: [../references/pol-probe-full.md](../references/pol-probe-full.md)
 

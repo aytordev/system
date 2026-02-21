@@ -611,9 +611,17 @@
     "ruleId": "",
     "ruleTitle": "PoL Probe Type Advisor",
     "type": "bad",
-    "code": "## Probe Type Advisor: Audit Log Feature\n\n**Step 1 — Hypothesis type:** Solution hypothesis (we know the problem; testing whether\nthis specific solution is wanted).\n\n**Step 2 — Risk level:** High. Engineering cost is 3 sprints; no comparable data exists.\n\n**Step 3 — Available resources:** Existing product surface with enterprise users; no\nengineering capacity for a prototype; PM can send targeted in-app messages.\n\n**Advisor output: Fake Door**\nRationale: Solution hypothesis + high risk + existing product surface = fake door.\nPlace an \"Audit Log\" menu item in the admin panel. Clicking shows: \"Audit log is\nin development — notify me when it's ready.\" Measure click rate among admin users\nover 2 weeks. Success bar: ≥ 15% of admin users engage.\n\n**Ruled out:**\n- Landing page: audience is existing users, not acquisition prospects.\n- Concierge: PM can't manually produce audit logs at enterprise data volumes.\n- Wizard of Oz: requires engineering to fake the log output — not available.",
+    "code": "Hypothesis: Enterprise users want an audit log feature.\nProbe: We'll build a landing page and run Google Ads.\n\n[Problem: existing users are already in-product;\na landing page tests acquisition intent, not feature demand from current users.]",
     "language": "markdown",
     "description": "probe type chosen by familiarity, not fit"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "PoL Probe Type Advisor",
+    "type": "good",
+    "code": "## Probe Type Advisor: Audit Log Feature\n\n**Step 1 — Hypothesis type:** Solution hypothesis (we know the problem; testing whether\nthis specific solution is wanted).\n\n**Step 2 — Risk level:** High. Engineering cost is 3 sprints; no comparable data exists.\n\n**Step 3 — Available resources:** Existing product surface with enterprise users; no\nengineering capacity for a prototype; PM can send targeted in-app messages.\n\n**Advisor output: Fake Door**\nRationale: Solution hypothesis + high risk + existing product surface = fake door.\nPlace an \"Audit Log\" menu item in the admin panel. Clicking shows: \"Audit log is\nin development — notify me when it's ready.\" Measure click rate among admin users\nover 2 weeks. Success bar: ≥ 15% of admin users engage.\n\n**Ruled out:**\n- Landing page: audience is existing users, not acquisition prospects.\n- Concierge: PM can't manually produce audit logs at enterprise data volumes.\n- Wizard of Oz: requires engineering to fake the log output — not available.",
+    "language": "markdown",
+    "description": "advisor applied — hypothesis type → risk → resources → probe type"
   },
   {
     "ruleId": "",
