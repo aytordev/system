@@ -40,6 +40,13 @@
     # Project commands
     "changelog" = "docs-writer";
 
+    # PM commands
+    "prd" = "product-manager";
+    "user-story" = "product-manager";
+    "discovery" = "product-manager";
+    "roadmap" = "product-manager";
+    "prioritize" = "product-manager";
+
     # Design commands
     "interface-design-init" = "dotfiles-coder";
     "interface-design-audit" = "code-reviewer";
