@@ -10,8 +10,8 @@
       "Glob"
     ];
     model = {
-      claude = "sonnet";
-      opencode = "anthropic/claude-sonnet-4-5";
+      claude = "opus";
+      opencode = "anthropic/claude-opus-4-6";
     };
     permission = {
       edit = "ask";
