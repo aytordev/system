@@ -1,6 +1,18 @@
 {lib, ...}: let
   agents = lib.importSubdirs ./agents {};
 
+  # Strip YAML frontmatter (---\n...\n---) from skill content
+  stripFrontmatter = content: let
+    parts = lib.splitString "---" content;
+  in
+    if lib.length parts >= 3 && lib.trim (builtins.head parts) == ""
+    then lib.trim (lib.concatStringsSep "---" (lib.drop 2 parts))
+    else lib.trim content;
+
+  # Resolve agent content: strip frontmatter from SKILL.md files
+  resolveContent = agent: agent // {content = stripFrontmatter agent.content;};
+  resolvedAgents = lib.mapAttrs (_: resolveContent) agents;
+
   # Claude Code: YAML frontmatter with name, description, tools, model
   renderClaudeFrontmatter = agent: ''
     ---
@@ -35,9 +47,9 @@
     inherit (agent) description;
   };
 
-  toClaudeMarkdown = lib.mapAttrs (_: renderClaudeAgent) agents;
-  toOpenCodeAgents = lib.mapAttrs (_: toOpenCodeAgent) agents;
-  toGeminiAgents = lib.mapAttrs (_: toGeminiAgent) agents;
+  toClaudeMarkdown = lib.mapAttrs (_: renderClaudeAgent) resolvedAgents;
+  toOpenCodeAgents = lib.mapAttrs (_: toOpenCodeAgent) resolvedAgents;
+  toGeminiAgents = lib.mapAttrs (_: toGeminiAgent) resolvedAgents;
 in {
   inherit agents toClaudeMarkdown toOpenCodeAgents toGeminiAgents;
 }
