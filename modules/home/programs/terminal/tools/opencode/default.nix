@@ -11,9 +11,7 @@
 
   # Primary agents: most commonly used, Tab-switchable in OpenCode
   primaryAgents = [
-    "nix-coder"
-    "code-reviewer"
-    "system-planner"
+    "product-manager"
   ];
 
   # Add mode (primary vs subagent) to each agent config

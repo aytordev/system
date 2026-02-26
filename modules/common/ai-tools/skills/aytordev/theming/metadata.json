@@ -1,8 +1,0 @@
-{
-    "name": "aytordev-theming",
-    "description": "aytordev theme system patterns. Use when configuring themes, consuming the semantic palette, or implementing theme-aware module configuration.",
-    "version": "2.0.0",
-    "organization": "aytordev",
-    "date": "February 2026",
-    "abstract": "Guide for consuming the centralized aytordev.theme module and its semantic palette API."
-}

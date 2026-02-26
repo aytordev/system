@@ -1,0 +1,8 @@
+{
+    "name": "dotfiles-coder",
+    "description": "aytordev configuration specialist - architecture, patterns, conventions, flake structure, secrets, and theming.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "February 2026",
+    "abstract": "Comprehensive guide for the aytordev dotfiles system. Covers architecture, code patterns, options design, flake structure, secrets management, theming, and maintenance workflows."
+}

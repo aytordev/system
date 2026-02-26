@@ -1,0 +1,290 @@
+[
+  {
+    "ruleId": "",
+    "ruleTitle": "Auto-Discovery",
+    "type": "bad",
+    "code": "# Adding explicit imports for auto-discovered modules\n{ ... }:\n{\n  imports = [\n    ../../modules/home/programs/terminal/tools/git/default.nix\n    ../../modules/home/programs/graphical/browsers/firefox/default.nix\n  ];\n\n  # These are already auto-discovered!\n}",
+    "language": "nix",
+    "description": "Manual Imports"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Auto-Discovery",
+    "type": "good",
+    "code": "# Just enable the module - it's already imported\n{ ... }:\n{\n  aytordev.programs.terminal.tools.git.enable = true;\n  aytordev.programs.graphical.browsers.firefox.enable = true;\n\n  # Only use manual imports for modules/common/ from platform modules\n}",
+    "language": "nix",
+    "description": "Option Enablement"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "7-Level Configuration Hierarchy",
+    "type": "bad",
+    "code": "# Defining user-specific packages in a shared common module\n# modules/common/tools/default.nix\n{ pkgs, ... }:\n{\n  # BAD: This forces spotify on ALL users on ALL hosts\n  home.packages = [ pkgs.spotify ];\n  programs.git.userName = \"aytordev\";\n}",
+    "language": "nix",
+    "description": "Wrong Level"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "7-Level Configuration Hierarchy",
+    "type": "good",
+    "code": "# Level 3 (module) — set overridable defaults\n# modules/home/programs/terminal/tools/git/default.nix\n{ config, lib, ... }:\nlet\n  cfg = config.aytordev.programs.terminal.tools.git;\n  user = config.aytordev.user;\nin\n{\n  options.aytordev.programs.terminal.tools.git = {\n    enable = lib.mkEnableOption \"git\";\n  };\n\n  config = lib.mkIf cfg.enable {\n    programs.git = {\n      enable = true;\n      userName = lib.mkDefault user.fullName;\n      userEmail = lib.mkDefault user.email;\n    };\n  };\n}\n\n# Level 7 (user config) — per-user-per-host overrides\n# homes/aarch64-darwin/aytordev@wang-lin/default.nix\n{ pkgs, ... }:\n{\n  home.packages = [ pkgs.spotify ];\n}",
+    "language": "nix",
+    "description": "Proper Layering"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Module Organization & Platform Separation",
+    "type": "bad",
+    "code": "# Putting macOS config in nixos directory\n# modules/nixos/services/yabai/default.nix  <-- WRONG\n{ config, lib, ... }:\n{\n  # yabai is macOS-only, doesn't belong in nixos/\n  services.yabai.enable = true;\n  system.defaults.dock.autohide = true;\n}",
+    "language": "nix",
+    "description": "Mixed Platforms"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Module Organization & Platform Separation",
+    "type": "good",
+    "code": "# Platform-correct placement:\n# modules/nixos/   → NixOS system-level (Linux only)\n# modules/darwin/  → macOS system-level (nix-darwin)\n# modules/home/    → Home Manager user-space (cross-platform)\n# modules/common/  → Shared functionality (imported by others)\n\n# modules/darwin/services/yabai/default.nix  <-- CORRECT\n{ config, lib, ... }:\nlet\n  cfg = config.aytordev.services.yabai;\nin\n{\n  options.aytordev.services.yabai = {\n    enable = lib.mkEnableOption \"yabai window manager\";\n  };\n\n  config = lib.mkIf cfg.enable {\n    services.yabai.enable = true;\n  };\n}",
+    "language": "nix",
+    "description": "Strict Isolation"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Home Module Categories",
+    "type": "bad",
+    "code": "# Everything dumped in modules/home/\n# modules/home/firefox.nix\n# modules/home/git.nix\n# modules/home/yabai.nix\n# No distinction between GUI, CLI, services",
+    "language": "nix",
+    "description": "Flat Structure"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Home Module Categories",
+    "type": "good",
+    "code": "# modules/home/\n# ├── programs/\n# │   ├── graphical/        # GUI: browsers, editors, tools\n# │   │   └── browsers/firefox/default.nix\n# │   └── terminal/         # CLI: editors, shells, tools\n# │       └── tools/git/default.nix\n# ├── services/             # User services\n# ├── desktop/              # Desktop environment config\n# └── suites/               # Grouped functionality\n\n# Correct: terminal tool in the right category\n# modules/home/programs/terminal/tools/git/default.nix\n{ config, lib, ... }:\nlet\n  cfg = config.aytordev.programs.terminal.tools.git;\nin\n{\n  options.aytordev.programs.terminal.tools.git = {\n    enable = lib.mkEnableOption \"git\";\n  };\n\n  config = lib.mkIf cfg.enable {\n    programs.git.enable = true;\n  };\n}",
+    "language": "nix",
+    "description": "Semantic Categories"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Input Management",
+    "type": "bad",
+    "code": "{\n  inputs = {\n    nixpkgs.url = \"github:NixOS/nixpkgs/nixos-unstable\";\n    home-manager.url = \"github:nix-community/home-manager\";\n    sops-nix.url = \"github:Mic92/sops-nix\";\n    neovim-nightly.url = \"github:nix-community/neovim-nightly-overlay\";\n    # No follows, no categorization, duplicated nixpkgs\n  };\n}",
+    "language": "nix",
+    "description": "Uncategorized Inputs"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Input Management",
+    "type": "good",
+    "code": "{\n  inputs = {\n    # Core\n    nixpkgs.url = \"github:NixOS/nixpkgs/nixos-unstable\";\n    home-manager = {\n      url = \"github:nix-community/home-manager\";\n      inputs.nixpkgs.follows = \"nixpkgs\";\n    };\n\n    # System\n    sops-nix = {\n      url = \"github:Mic92/sops-nix\";\n      inputs.nixpkgs.follows = \"nixpkgs\";\n    };\n\n    # Programs\n    neovim-nightly = {\n      url = \"github:nix-community/neovim-nightly-overlay\";\n      inputs.nixpkgs.follows = \"nixpkgs\";\n    };\n  };\n}",
+    "language": "nix",
+    "description": "Categorized with Follows"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Output Organization",
+    "type": "bad",
+    "code": "{\n  outputs = { self, nixpkgs, ... }: {\n    # Hardcoded systems, no abstraction\n    nixosConfigurations.my-host = nixpkgs.lib.nixosSystem {\n      system = \"x86_64-linux\";\n      modules = [\n        ./hosts/my-host/configuration.nix\n        ./modules/nixos/services/docker.nix\n        ./modules/nixos/services/nginx.nix\n        # Manually listing every module...\n      ];\n    };\n  };\n}",
+    "language": "nix",
+    "description": "Manual Outputs"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Output Organization",
+    "type": "good",
+    "code": "{\n  outputs = inputs:\n    inputs.flake-parts.lib.mkFlake { inherit inputs; } {\n      systems = [ \"x86_64-linux\" \"aarch64-linux\" \"aarch64-darwin\" ];\n\n      flake = {\n        # Auto-discovered via recursive directory scan\n        nixosConfigurations = lib.mkSystem {\n          inherit inputs;\n          # Modules auto-imported via importModulesRecursive\n        };\n\n        darwinConfigurations = lib.mkDarwin {\n          inherit inputs;\n        };\n\n        homeConfigurations = lib.mkHome {\n          inherit inputs;\n        };\n      };\n    };\n}",
+    "language": "nix",
+    "description": "Flake-parts with Builders"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Package List Convention",
+    "type": "bad",
+    "code": "{ config, lib, pkgs, ... }:\n{\n  config = lib.mkIf config.aytordev.dev.enable {\n    # Verbose for many packages\n    home.packages = [\n      pkgs.git\n      pkgs.ripgrep\n      pkgs.fd\n      pkgs.jq\n      pkgs.yq\n      pkgs.htop\n    ];\n  };\n}",
+    "language": "nix",
+    "description": "Inconsistent"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Package List Convention",
+    "type": "good",
+    "code": "{ config, lib, pkgs, ... }:\n{\n  config = lib.mkIf config.aytordev.dev.enable {\n    # 2+ packages: use with pkgs for cleanliness\n    home.packages = with pkgs; [\n      git\n      ripgrep\n      fd\n      jq\n      yq\n      htop\n    ];\n\n    # Single package: explicit prefix\n    programs.editor.package = pkgs.neovim;\n  };\n}",
+    "language": "nix",
+    "description": "Contextual with"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Code Quality Tools",
+    "type": "bad",
+    "code": "# Committing unformatted code with unused variables\n{config,lib,pkgs,...}:\nlet\n  unused_var = \"never used\";\n  cfg=config.aytordev.foo;\nin {\n  options.aytordev.foo={\n    enable=lib.mkEnableOption \"foo\";\n  };\n  config=lib.mkIf cfg.enable {\n      programs.git.enable=true;\n  };\n}",
+    "language": "nix",
+    "description": "No Tooling"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Code Quality Tools",
+    "type": "good",
+    "code": "{\n  config,\n  lib,\n  pkgs,\n  ...\n}:\nlet\n  inherit (lib) mkIf mkEnableOption;\n  cfg = config.aytordev.foo;\nin\n{\n  options.aytordev.foo = {\n    enable = mkEnableOption \"foo\";\n  };\n\n  config = mkIf cfg.enable {\n    programs.git.enable = true;\n  };\n}",
+    "language": "nix",
+    "description": "Formatted & Clean"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Development Templates",
+    "type": "bad",
+    "code": "# Creating ad-hoc devShells without using the template system\n{\n  devShells.x86_64-linux.default = pkgs.mkShell {\n    buildInputs = [ pkgs.nodejs pkgs.pnpm ];\n    # No structure, no reusability\n  };\n}",
+    "language": "nix",
+    "description": "Manual Shells"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Development Templates",
+    "type": "good",
+    "code": "# templates/node/flake.nix\n{\n  description = \"Node.js development template\";\n\n  inputs.nixpkgs.url = \"github:NixOS/nixpkgs/nixos-unstable\";\n\n  outputs = { self, nixpkgs }:\n    let\n      forEachSystem = nixpkgs.lib.genAttrs [\n        \"x86_64-linux\" \"aarch64-linux\" \"aarch64-darwin\"\n      ];\n    in\n    {\n      devShells = forEachSystem (system: {\n        default = nixpkgs.legacyPackages.${system}.mkShell {\n          buildInputs = with nixpkgs.legacyPackages.${system}; [\n            nodejs_22\n            nodePackages.pnpm\n          ];\n        };\n      });\n    };\n}",
+    "language": "nix",
+    "description": "Template System"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Helper Patterns",
+    "type": "bad",
+    "code": "{ config, lib, ... }:\nlet\n  cfg = config.aytordev.programs.dev;\nin\n{\n  config = lib.mkIf cfg.enable {\n    programs.git = { enable = true; };\n    programs.vim = { enable = true; };\n    programs.tmux = { enable = false; };\n\n    # Verbose option definition\n    options.aytordev.programs.dev.port = lib.mkOption {\n      type = lib.types.port;\n      default = 8080;\n      description = \"Development server port\";\n    };\n  };\n}",
+    "language": "nix",
+    "description": "Verbose"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Helper Patterns",
+    "type": "good",
+    "code": "{ config, lib, ... }:\nlet\n  inherit (lib) mkIf mkEnableOption mkDefault mkForce;\n  inherit (lib.aytordev) mkOpt enabled disabled;\n  cfg = config.aytordev.programs.dev;\nin\n{\n  options.aytordev.programs.dev = {\n    enable = mkEnableOption \"dev tools\";\n    port = mkOpt lib.types.port 8080 \"Development server port\";\n  };\n\n  config = mkIf cfg.enable {\n    programs.git = enabled;\n    programs.vim = enabled;\n    programs.tmux = disabled;\n\n    # Override patterns\n    programs.bash = mkDefault enabled;   # User can override\n    programs.zsh = mkForce enabled;      # Cannot override\n  };\n}",
+    "language": "nix",
+    "description": "Helpers"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Library Usage Rules",
+    "type": "bad",
+    "code": "{ config, lib, ... }:\nwith lib;\n{\n  # Where does mkIf come from? Unclear!\n  options.aytordev.foo = {\n    enable = mkEnableOption \"foo\";\n  };\n  config = mkIf config.aytordev.foo.enable { };\n}",
+    "language": "nix",
+    "description": "with lib"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Library Usage Rules",
+    "type": "good",
+    "code": "{ config, lib, ... }:\nlet\n  inherit (lib) mkIf mkEnableOption mkOption types;\n  inherit (lib.aytordev) mkOpt enabled;\n  cfg = config.aytordev.foo;\nin\n{\n  options.aytordev.foo = {\n    enable = mkEnableOption \"foo\";\n    name = mkOpt types.str \"default\" \"Display name\";\n  };\n\n  config = mkIf cfg.enable {\n    programs.bar = enabled;\n  };\n}",
+    "language": "nix",
+    "description": "Explicit Access"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Standard Module Structure",
+    "type": "bad",
+    "code": "{ config, lib, pkgs, ... }:\n{\n  # No options, no enable guard, hardcoded values\n  environment.systemPackages = [ pkgs.hello ];\n  services.myapp = {\n    enable = true;\n    config = \"hardcoded\";\n  };\n}",
+    "language": "nix",
+    "description": "No Structure"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Standard Module Structure",
+    "type": "good",
+    "code": "{\n  config,\n  lib,\n  pkgs,\n  osConfig ? { },  # Only when home module needs system config\n  ...\n}:\nlet\n  inherit (lib) mkIf mkEnableOption;\n  inherit (lib.aytordev) mkOpt enabled;\n\n  cfg = config.aytordev.{namespace}.{module};\nin\n{\n  options.aytordev.{namespace}.{module} = {\n    enable = mkEnableOption \"{description}\";\n  };\n\n  config = mkIf cfg.enable {\n    # All configuration here\n  };\n}",
+    "language": "nix",
+    "description": "Standard Pattern"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Naming Conventions",
+    "type": "bad",
+    "code": "# File: modules/home/programs/MyApp/Default.nix  <-- WRONG\n{ config, lib, ... }:\nlet\n  my_config = config.aytordev.programs.myApp;  # snake_case\n  AppName = \"My App\";  # PascalCase\n  max_retries = 3;  # snake_case\nin\n{\n  options.aytordev.programs.myApp = {\n    enable = lib.mkEnableOption AppName;\n  };\n\n  config = lib.mkIf my_config.enable { };\n}",
+    "language": "nix",
+    "description": "Mixed Styles"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Naming Conventions",
+    "type": "good",
+    "code": "# File: modules/home/programs/terminal/tools/my-app/default.nix  <-- kebab-case\n{ config, lib, ... }:\nlet\n  inherit (lib) mkIf mkEnableOption;\n  cfg = config.aytordev.programs.terminal.tools.myApp;  # cfg pattern\n  appName = \"My App\";  # camelCase\n  MAX_RETRIES = 3;  # UPPER_CASE constant\nin\n{\n  options.aytordev.programs.terminal.tools.myApp = {\n    enable = mkEnableOption appName;\n  };\n\n  config = mkIf cfg.enable { };\n}",
+    "language": "nix",
+    "description": "Consistent Conventions"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Options Namespace & Design",
+    "type": "bad",
+    "code": "{ config, lib, ... }:\n{\n  # Pollutes the global namespace\n  options.programs.myApp.customSetting = lib.mkOption {\n    type = lib.types.str;\n    default = \"value\";\n    description = \"My custom setting\";\n  };\n\n  # Hardcoded user values\n  config.programs.git.userName = \"aytordev\";\n}",
+    "language": "nix",
+    "description": "Global Namespace"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Options Namespace & Design",
+    "type": "good",
+    "code": "{ config, lib, ... }:\nlet\n  inherit (lib) mkIf mkEnableOption;\n  inherit (lib.aytordev) mkOpt;\n  cfg = config.aytordev.programs.myApp;\n  user = config.aytordev.user;\nin\n{\n  options.aytordev.programs.myApp = {\n    enable = mkEnableOption \"My App\";\n    userName = mkOpt lib.types.str user.fullName \"Display name\";\n  };\n\n  config = mkIf cfg.enable {\n    programs.git.userName = cfg.userName;\n    programs.git.userEmail = user.email;\n  };\n}",
+    "language": "nix",
+    "description": "aytordev Namespace"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "osConfig Usage",
+    "type": "bad",
+    "code": "{ config, lib, osConfig, ... }:\nlet\n  cfg = config.aytordev.programs.myApp;\nin\n{\n  config = lib.mkIf cfg.enable {\n    # Crashes if osConfig is missing (standalone HM)\n    programs.myApp.sopsEnabled = osConfig.aytordev.security.sops.enable;\n  };\n}",
+    "language": "nix",
+    "description": "Unsafe Access"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "osConfig Usage",
+    "type": "good",
+    "code": "{\n  config,\n  lib,\n  osConfig ? { },  # Default to empty set\n  ...\n}:\nlet\n  inherit (lib) mkIf mkEnableOption optionalString;\n  cfg = config.aytordev.programs.myApp;\n  sopsEnabled = osConfig.aytordev.security.sops.enable or false;\nin\n{\n  options.aytordev.programs.myApp = {\n    enable = mkEnableOption \"my app\";\n  };\n\n  config = mkIf cfg.enable {\n    programs.myApp.extraConfig = optionalString sopsEnabled ''\n      secrets-backend = sops\n    '';\n  };\n}",
+    "language": "nix",
+    "description": "Guarded Access"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Host & User Customization",
+    "type": "bad",
+    "code": "# modules/home/programs/terminal/tools/git/default.nix\n{ config, lib, ... }:\n{\n  config = lib.mkIf config.aytordev.programs.terminal.tools.git.enable {\n    # BAD: checking hostname inside a generic module\n    programs.git.signing.key =\n      if config.networking.hostName == \"wang-lin\"\n      then \"key-for-wang-lin\"\n      else \"key-for-other\";\n  };\n}",
+    "language": "nix",
+    "description": "Host Logic in Modules"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Host & User Customization",
+    "type": "good",
+    "code": "# Module provides overridable defaults\n# modules/home/programs/terminal/tools/git/default.nix\n{ config, lib, ... }:\nlet\n  cfg = config.aytordev.programs.terminal.tools.git;\n  user = config.aytordev.user;\nin\n{\n  config = lib.mkIf cfg.enable {\n    programs.git = {\n      userName = lib.mkDefault user.fullName;\n      userEmail = lib.mkDefault user.email;\n    };\n  };\n}\n\n# Host-specific override at the correct layer\n# homes/aarch64-darwin/aytordev@wang-lin/default.nix\n# { ... }:\n# {\n#   programs.git.signing.key = \"key-for-wang-lin\";\n# }",
+    "language": "nix",
+    "description": "Layered Configs"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Secrets Management",
+    "type": "bad",
+    "code": "{ config, lib, ... }:\nlet\n  cfg = config.aytordev.services.myService;\nin\n{\n  config = lib.mkIf cfg.enable {\n    # BAD: crashes on hosts without sops configured\n    sops.secrets.my-api-key = {\n      sopsFile = ./secrets.yaml;\n    };\n\n    services.myService.apiKeyFile = config.sops.secrets.my-api-key.path;\n  };\n}",
+    "language": "nix",
+    "description": "Unconditional Secrets"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Secrets Management",
+    "type": "good",
+    "code": "{\n  config,\n  lib,\n  osConfig ? { },\n  ...\n}:\nlet\n  inherit (lib) mkIf mkEnableOption optionalAttrs;\n  cfg = config.aytordev.services.myService;\n  sopsEnabled = osConfig.aytordev.security.sops.enable or false;\nin\n{\n  options.aytordev.services.myService = {\n    enable = mkEnableOption \"my service\";\n  };\n\n  config = mkIf cfg.enable {\n    # Only configure secrets when sops is available\n    sops.secrets = optionalAttrs sopsEnabled {\n      my-api-key = {\n        sopsFile = ./secrets.yaml;\n      };\n    };\n\n    services.myService.apiKeyFile =\n      if sopsEnabled\n      then config.sops.secrets.my-api-key.path\n      else null;\n  };\n}",
+    "language": "nix",
+    "description": "Conditional Secrets"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Theme System",
+    "type": "bad",
+    "code": "{ config, lib, ... }:\nlet\n  cfg = config.aytordev.programs.myApp;\nin\n{\n  config = lib.mkIf cfg.enable {\n    # BAD: hardcoded colors\n    programs.myApp.accentColor = \"#7e9cd8\";\n\n    # BAD: variant-specific names\n    programs.myApp.theme =\n      if config.aytordev.theme.variant == \"wave\"\n      then \"Kanagawa Wave\"\n      else \"Kanagawa Lotus\";\n  };\n}",
+    "language": "nix",
+    "description": "Hardcoded Colors"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Theme System",
+    "type": "good",
+    "code": "{ config, lib, ... }:\nlet\n  cfg = config.aytordev.programs.myApp;\n  theme = config.aytordev.theme;\nin\n{\n  config = lib.mkIf cfg.enable {\n    programs.myApp = {\n      # Semantic colors — work with any theme/variant\n      accentColor = theme.palette.accent.hex;\n      errorColor = theme.palette.red.hex;\n      bgColor = theme.palette.bg.hex;\n\n      # Pre-calculated theme name formats\n      theme = theme.appTheme.capitalized;  # \"Kanagawa Wave\"\n\n      # Polarity detection\n      lightMode = theme.isLight;\n    };\n  };\n}",
+    "language": "nix",
+    "description": "Semantic Palette"
+  }
+]
