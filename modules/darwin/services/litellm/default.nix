@@ -45,7 +45,8 @@ in {
     launchd.user.agents.litellm = {
       command = "${cfg.package}/bin/litellm --config ${configFile} --host ${cfg.host} --port ${toString cfg.port}";
       serviceConfig = {
-        KeepAlive = true;
+        # Only restart on crash, not unconditionally — allows clean stop
+        KeepAlive = {SuccessfulExit = false;};
         RunAtLoad = false;
         StandardOutPath = "${logDir}/litellm.out.log";
         StandardErrorPath = "${logDir}/litellm.err.log";
