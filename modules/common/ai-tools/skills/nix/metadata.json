@@ -1,0 +1,8 @@
+{
+    "name": "nix",
+    "description": "Comprehensive guide for writing idiomatic, performant Nix code covering code style, module system, option types, conditionals, overlays, flakes, validation, and performance.",
+    "version": "1.0.0",
+    "organization": "nix",
+    "date": "February 2026",
+    "abstract": "Comprehensive guide for writing idiomatic, performant Nix code. Covers code style, module system, option types, conditional configuration, overlays, flakes, validation, and performance optimization."
+}
