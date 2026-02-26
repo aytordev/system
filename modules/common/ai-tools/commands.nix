@@ -3,56 +3,11 @@
 
   # Map commands to their preferred agent
   commandAgents = {
-    # Git commands
-    "add-and-format" = "code-reviewer";
-    "commit-changes" = "code-reviewer";
-    "review" = "code-reviewer";
-    "analyze-git-history" = "code-reviewer";
-    "resolve-conflicts" = "code-reviewer";
-    "git-bisect" = "code-reviewer";
-    "git-branch-cleanup" = "code-reviewer";
-
-    # LLM / code analysis commands
-    "explain-code" = "dotfiles-coder";
-    "extract-interface" = "dotfiles-coder";
-    "find-usages" = "dotfiles-coder";
-    "summarize-module" = "dotfiles-coder";
-    "refactor-suggest" = "code-reviewer";
-    "generate-docs" = "docs-writer";
-    "generate-tests" = "code-reviewer";
-
-    # Quality commands
-    "check-todos" = "code-reviewer";
-    "code-review" = "code-reviewer";
-    "deep-check" = "code-reviewer";
-    "dependency-audit" = "code-reviewer";
-    "module-lint" = "code-reviewer";
-    "parse-sarif" = "code-reviewer";
-    "style-audit" = "code-reviewer";
-
-    # Nix commands
-    "flake-update" = "flake-coder";
-    "module-scaffold" = "nix-module-coder";
-    "option-migrate" = "nix-module-coder";
-    "nix-refactor" = "nix-coder";
-    "template-new" = "template-writer";
-
-    # Project commands
-    "changelog" = "docs-writer";
-
-    # PM commands
-    "prd" = "product-manager";
-    "user-story" = "product-manager";
-    "discovery" = "product-manager";
-    "roadmap" = "product-manager";
-    "prioritize" = "product-manager";
-
-    # Design commands
-    "interface-design-init" = "dotfiles-coder";
-    "interface-design-audit" = "code-reviewer";
-    "interface-design-status" = "code-reviewer";
-    "interface-design-critique" = "dotfiles-coder";
-    "interface-design-extract" = "code-reviewer";
+    "interface-design-init" = "product-manager";
+    "interface-design-audit" = "product-manager";
+    "interface-design-status" = "product-manager";
+    "interface-design-critique" = "product-manager";
+    "interface-design-extract" = "product-manager";
   };
 
   # Parse YAML frontmatter from old-format string commands
@@ -90,7 +45,7 @@
       if builtins.isString command
       then parseFrontmatter name command
       else command;
-    agent = parsed.agent or (commandAgents.${name} or "dotfiles-coder");
+    agent = parsed.agent or (commandAgents.${name} or "product-manager");
   in {
     commandName = parsed.commandName or name;
     description = parsed.description or null;
