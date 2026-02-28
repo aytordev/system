@@ -1,8 +1,0 @@
-{
-    "name": "product-management",
-    "description": "Product management frameworks for discovery, strategy, requirements, validation, planning, and financial analysis.",
-    "version": "1.0.0",
-    "organization": "community",
-    "date": "February 2026",
-    "abstract": "42 battle-tested product management frameworks distilled into actionable rules. Covers the full PM lifecycle from discovery and strategy through requirements, validation, planning, and financial analysis. Based on frameworks by Geoffrey Moore, Jeff Patton, Teresa Torres, Mike Cohn, Jeff Gothelf, and others."
-}

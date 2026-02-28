@@ -1,8 +1,0 @@
-{
-    "name": "interface-design",
-    "description": "Design engineering for interface design. Build dashboards, admin panels, and app interfaces with craft, memory, and consistency.",
-    "version": "1.0.0",
-    "organization": "community",
-    "date": "February 2026",
-    "abstract": "Interface design skill for dashboards, admin panels, SaaS apps, tools, and interactive products. Enforces craft through intent-driven design, domain exploration, and design system memory that persists across sessions."
-}
