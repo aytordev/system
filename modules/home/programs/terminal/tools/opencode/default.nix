@@ -11,7 +11,7 @@
 
   # Primary agents: most commonly used, Tab-switchable in OpenCode
   primaryAgents = [
-    "product-manager"
+    "sdd-orchestrator"
   ];
 
   # Add mode (primary vs subagent) to each agent config

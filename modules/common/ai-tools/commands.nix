@@ -1,15 +1,6 @@
 {lib, ...}: let
   commands = lib.importSubdirs ./commands {};
 
-  # Map commands to their preferred agent
-  commandAgents = {
-    "interface-design-init" = "product-manager";
-    "interface-design-audit" = "product-manager";
-    "interface-design-status" = "product-manager";
-    "interface-design-critique" = "product-manager";
-    "interface-design-extract" = "product-manager";
-  };
-
   # Parse YAML frontmatter from old-format string commands
   parseFrontmatter = name: text: let
     parts = lib.splitString "---" text;
@@ -45,7 +36,7 @@
       if builtins.isString command
       then parseFrontmatter name command
       else command;
-    agent = parsed.agent or (commandAgents.${name} or "product-manager");
+    agent = parsed.agent or "sdd-orchestrator";
   in {
     commandName = parsed.commandName or name;
     description = parsed.description or null;
