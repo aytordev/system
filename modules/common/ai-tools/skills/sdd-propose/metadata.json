@@ -1,0 +1,8 @@
+{
+    "name": "sdd-propose",
+    "description": "Create a change proposal with intent, scope, and approach.",
+    "version": "1.0.0",
+    "organization": "sdd",
+    "date": "February 2026",
+    "abstract": "Takes exploration analysis or direct user input and produces a structured proposal with rollback plan, success criteria, and affected areas."
+}

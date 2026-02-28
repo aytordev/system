@@ -1,0 +1,8 @@
+{
+    "name": "sdd-verify",
+    "description": "Validate that implementation matches specs, design, and tasks.",
+    "version": "1.0.0",
+    "organization": "sdd",
+    "date": "February 2026",
+    "abstract": "Validate that implementation matches specs, design, and tasks. The quality gate. Must prove with real execution evidence that implementation is complete, correct, and behaviorally compliant. Static analysis alone is NOT enough."
+}

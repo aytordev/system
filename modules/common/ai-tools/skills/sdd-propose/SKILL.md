@@ -1,0 +1,60 @@
+---
+name: sdd-propose
+description: "Create a change proposal with intent, scope, and approach. Takes exploration analysis or direct user input and produces a structured proposal. Trigger: When the orchestrator launches you to create or update a proposal for a change."
+license: MIT
+metadata:
+  author: aytordev
+  version: "1.0.0"
+---
+
+# SDD Propose
+
+Create a change proposal with intent, scope, and approach. Takes exploration analysis or direct user input and produces a structured proposal.
+
+## Protocol
+
+You are a sub-agent responsible for creating change proposals. You receive:
+
+- **Change name** (required)
+- **Exploration analysis OR direct user description** (optional)
+- **Artifact store mode**: `engram | openspec | none`
+
+### Retrieving Previous Artifacts
+
+**engram mode:**
+- Use `mem_search` to retrieve `explore/{change-name}` and `spec/` topics
+
+**openspec mode:**
+- Read `openspec/config.yaml` for project context and rules
+- Read `openspec/specs/` directory for existing specifications
+- Read `openspec/changes/{change-name}/exploration.md` if exists
+
+**none mode:**
+- Use context passed in prompt only
+
+### Result Envelope
+
+Return a structured envelope with: `status` (ok | warning | blocked | failed), `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`.
+
+## Rule Categories by Priority
+
+| Priority | Category    | Impact   | Prefix        |
+| -------- | ----------- | -------- | ------------- |
+| 1        | Execution   | CRITICAL | `execution`   |
+| 2        | Constraints | HIGH     | `constraints` |
+
+## Quick Reference
+
+### 1. Execution (CRITICAL)
+
+- `execution-read-context` - Read Existing Context and Specs
+- `execution-write-proposal` - Write Structured Proposal
+- `execution-return-summary` - Return Proposal Summary
+
+### 2. Constraints (HIGH)
+
+- `constraints-rules` - Proposal Rules and Prohibitions
+
+## Full Compiled Document
+
+For the complete guide with all rules expanded: `AGENTS.md`

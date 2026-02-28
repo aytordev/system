@@ -1,0 +1,8 @@
+{
+    "name": "sdd-design",
+    "description": "Create technical design document with architecture decisions and approach.",
+    "version": "1.0.0",
+    "organization": "sdd",
+    "date": "February 2026",
+    "abstract": "Create technical design document with architecture decisions and approach. Takes proposal and specs, produces design.md capturing HOW the change will be implemented. Always reads the actual codebase before designing to match existing patterns."
+}

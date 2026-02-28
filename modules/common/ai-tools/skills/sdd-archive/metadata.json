@@ -1,0 +1,8 @@
+{
+    "name": "sdd-archive",
+    "description": "Sync delta specs to main specs and archive a completed change.",
+    "version": "1.0.0",
+    "organization": "sdd",
+    "date": "February 2026",
+    "abstract": "Sync delta specs to main specs and archive a completed change. Completes the SDD cycle. Merges delta specs into the source of truth, moves change folder to archive."
+}
