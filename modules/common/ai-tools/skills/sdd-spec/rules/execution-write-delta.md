@@ -2,7 +2,7 @@
 
 **Impact: CRITICAL**
 
-Write specifications to `openspec/changes/{change-name}/specs/{domain}/spec.md`.
+Write delta specifications to `openspec/changes/{change-name}/specs/{domain}/delta.md`.
 
 ### Delta Spec Format
 
@@ -16,16 +16,19 @@ New requirements with Given/When/Then scenarios:
 ## ADDED Requirements
 
 ### Requirement: OAuth2 Support
+
 The system MUST support OAuth2 authentication flow.
 
 #### Scenarios
 
 **Scenario: Successful OAuth2 login**
+
 - Given: A user with valid OAuth2 credentials
 - When: They initiate the OAuth2 flow
 - Then: They are redirected to the provider and returned with a valid token
 
 **Scenario: Invalid OAuth2 state parameter**
+
 - Given: An OAuth2 callback with mismatched state
 - When: The system validates the state parameter
 - Then: The request is rejected with a 400 error
@@ -39,6 +42,7 @@ Changed requirements with "Previously:" note showing what changed:
 ## MODIFIED Requirements
 
 ### Requirement: Session Duration
+
 User sessions MUST expire after 24 hours of inactivity.
 
 (Previously: Sessions expired after 1 hour)
@@ -46,6 +50,7 @@ User sessions MUST expire after 24 hours of inactivity.
 #### Scenarios
 
 **Scenario: Session timeout after 24 hours**
+
 - Given: A user session inactive for 24 hours
 - When: The user attempts an authenticated action
 - Then: They are redirected to login
@@ -59,6 +64,7 @@ Removed requirements with reason:
 ## REMOVED Requirements
 
 ### Requirement: Password Complexity Rules
+
 (Reason: Replaced by OAuth2-only authentication)
 ```
 
@@ -70,16 +76,19 @@ For NEW domains (no existing spec), write a full spec with:
 # Spec: {domain}
 
 ## Purpose
+
 Brief description of what this domain covers.
 
 ## Requirements
 
 ### Requirement: {Name}
+
 {Description using RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)}
 
 #### Scenarios
 
 **Scenario: {name}**
+
 - Given: {precondition}
 - When: {action}
 - Then: {expected result}
