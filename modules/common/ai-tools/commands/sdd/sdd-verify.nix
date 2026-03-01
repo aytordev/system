@@ -13,7 +13,7 @@
       3. Check design coherence
       4. Execute tests and build
       5. Generate spec compliance matrix
-      6. Return verification report with verdict
+      6. Return verification report with verdict (PASS / PASS WITH WARNINGS / FAIL)
 
       Present the verification report to the user.
     '';

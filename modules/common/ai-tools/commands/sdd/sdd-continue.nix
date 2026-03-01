@@ -7,14 +7,16 @@
     prompt = ''
       Continue the SDD workflow for the active change (or "{argument}" if specified).
 
-      Check which artifacts already exist and determine the next phase from the dependency graph:
-      - proposal exists, no specs/design → launch sdd-spec and sdd-design (can be parallel)
-      - specs and design exist, no tasks → launch sdd-tasks
-      - tasks exist, not all applied → launch sdd-apply
-      - all applied, not verified → launch sdd-verify
-      - verified → launch sdd-archive
+      This requires multi-phase coordination. Launch the SDD orchestrator to:
 
-      Launch the appropriate sub-agent(s) and present results to the user.
+      1. Check which artifacts already exist for the change
+      2. Determine the next phase from the dependency graph:
+         proposal → [specs ‖ design] → tasks → apply → verify → archive
+      3. Launch the appropriate sub-agent(s) for the next phase
+         (specs and design can run in parallel if both are needed)
+      4. Present results to the user and ask to proceed
+
+      Do NOT execute phase work inline — always delegate to sub-agents.
     '';
   };
 }

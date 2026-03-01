@@ -7,10 +7,8 @@
     prompt = ''
       Explore the following topic: {argument}
 
-      Launch the sdd-explore sub-agent to:
-      1. Investigate the codebase related to this topic
-      2. Compare multiple approaches
-      3. Return a structured analysis
+      Launch the sdd-explore sub-agent to investigate the codebase, compare
+      multiple approaches, and return a structured analysis.
 
       This is exploration only — no files or code should be modified.
       Present the analysis to the user when complete.

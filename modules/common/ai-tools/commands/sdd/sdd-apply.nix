@@ -7,13 +7,12 @@
     prompt = ''
       Implement tasks for the active SDD change (or "{argument}" if specified).
 
-      Launch the sdd-apply sub-agent to:
-      1. Read specs, design, and tasks
-      2. Implement the next batch of incomplete tasks
-      3. Mark completed tasks in tasks.md
+      Launch the sdd-apply sub-agent to read specs, design, and tasks,
+      then implement the next batch of incomplete tasks.
 
       Batch tasks — do not send all at once. After each batch, show progress
-      and ask the user to continue.
+      to the user (which tasks completed, any issues or deviations) and ask
+      to continue with the next batch.
     '';
   };
 }

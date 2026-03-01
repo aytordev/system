@@ -7,12 +7,16 @@
     prompt = ''
       Start a new SDD change named "{argument}".
 
-      1. Launch sdd-explore sub-agent to investigate the codebase for this change
-      2. Present exploration results to the user
-      3. Launch sdd-propose sub-agent to create a proposal
-      4. Present the proposal and ask to continue with specs/design
+      This requires multi-phase coordination (explore → propose). Launch the SDD orchestrator
+      to manage the workflow:
 
-      Follow the dependency graph: explore → propose.
+      1. Launch sdd-explore sub-agent to investigate the codebase for this change
+      2. Present the exploration summary to the user
+      3. Launch sdd-propose sub-agent to create a proposal based on the exploration
+      4. Present the proposal and ask the user if they want to continue with specs and design
+
+      Follow the dependency graph and present results between phases.
+      Do NOT execute phase work inline — always delegate to sub-agents.
     '';
   };
 }

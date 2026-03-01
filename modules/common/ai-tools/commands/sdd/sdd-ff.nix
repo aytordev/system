@@ -7,7 +7,9 @@
     prompt = ''
       Fast-forward all SDD planning phases for "{argument}".
 
-      Launch sub-agents in sequence:
+      This requires multi-phase coordination. Launch the SDD orchestrator to run
+      sub-agents in sequence:
+
       1. sdd-propose — create the change proposal
       2. sdd-spec — write specifications
       3. sdd-design — create technical design
@@ -15,6 +17,7 @@
 
       Show a combined summary after ALL phases complete (not between each one).
       Recommend /sdd-apply as the next step.
+      Do NOT execute phase work inline — always delegate to sub-agents.
     '';
   };
 }
