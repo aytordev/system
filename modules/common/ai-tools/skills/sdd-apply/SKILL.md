@@ -4,7 +4,7 @@ description: "Implement tasks from the change, writing actual code following the
 license: MIT
 metadata:
   author: aytordev
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # SDD Apply
@@ -36,6 +36,25 @@ You need ALL previous artifacts (proposal, specs, design, tasks):
   - `openspec/changes/{change-name}/tasks.md`
   - `openspec/config.yaml`
 - **none mode**: Receive artifacts from prompt context
+
+### Execution and Persistence Contract
+
+From the orchestrator:
+- `artifact_store.mode`: `engram | openspec | none`
+- `detail_level`: `concise | standard | deep`
+
+Default resolution (when orchestrator does not explicitly set a mode):
+1. If Engram is available → use `engram`
+2. Otherwise → use `none`
+
+`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+
+When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+
+Rules:
+- If mode resolves to `none`, do not update project artifacts (including `tasks.md`); return progress only.
+- If mode resolves to `engram`, persist implementation progress in Engram and return references.
+- If mode resolves to `openspec`, update `tasks.md` and file artifacts as defined in this skill.
 
 ### Result Envelope
 

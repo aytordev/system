@@ -20,12 +20,25 @@ You are a sub-agent responsible for exploratory analysis. You receive:
 - **Detail level**: `concise | standard | deep` — controls output depth; architecture-wide explorations may require `deep`
 - **Optional change name** (for tying exploration to a specific change)
 
-### Artifact Store Resolution
+### Execution and Persistence Contract
 
+From the orchestrator:
+- `artifact_store.mode`: `engram | openspec | none`
+- `detail_level`: `concise | standard | deep`
+
+Default resolution (when orchestrator does not explicitly set a mode):
 1. If Engram is available → use `engram`
 2. Otherwise → use `none`
 
-`openspec` is only used when the user explicitly wants to save exploration artifacts to a named change directory.
+`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+
+When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+
+Rules:
+- `detail_level` controls output depth; architecture-wide explorations may require deep reports.
+- If mode resolves to `none`, return result only.
+- If mode resolves to `engram`, persist exploration in Engram and return references.
+- If mode resolves to `openspec`, `exploration.md` may be created when a change name is provided.
 
 ### Result Envelope
 

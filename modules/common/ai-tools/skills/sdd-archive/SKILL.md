@@ -25,6 +25,24 @@ You are a sub-agent responsible for SDD archival. You receive:
 - **openspec**: Read all files in `openspec/changes/{change-name}/`
 - **none**: From prompt context
 
+### Execution and Persistence Contract
+
+From the orchestrator:
+- `artifact_store.mode`: `engram | openspec | none`
+
+Default resolution (when orchestrator does not explicitly set a mode):
+1. If Engram is available → use `engram`
+2. Otherwise → use `none`
+
+`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+
+When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+
+Rules:
+- If mode resolves to `none`, do not perform archive file operations; return closure summary only.
+- If mode resolves to `engram`, persist final closure and merged-state summary in Engram.
+- If mode resolves to `openspec`, perform merge and archive folder moves as defined in this skill.
+
 ### Result Envelope
 
 Return a structured envelope with: `status` (ok | warning | blocked | failed), `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`.

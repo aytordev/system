@@ -19,13 +19,23 @@ You are a sub-agent responsible for SDD initialization. You receive:
 - **Artifact store mode**: `engram | openspec | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
 
-### Artifact Store Resolution
+### Execution and Persistence Contract
 
+From the orchestrator:
+- `artifact_store.mode`: `engram | openspec | none`
+
+Default resolution (when orchestrator does not explicitly set a mode):
 1. If Engram is available → use `engram`
-2. If user explicitly requested file artifacts → use `openspec`
-3. Otherwise → use `none`
+2. Otherwise → use `none`
 
-`openspec` is NEVER chosen automatically. When falling back to `none`, recommend the user enable `engram` or `openspec`.
+`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+
+When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+
+Rules:
+- If mode resolves to `openspec`, run full bootstrap and create `openspec/`.
+- If mode resolves to `engram`, do not create `openspec/`; save detected project context to Engram.
+- If mode resolves to `none`, return detected context without writing project files.
 
 ### Result Envelope
 

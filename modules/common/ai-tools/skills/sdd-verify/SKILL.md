@@ -4,7 +4,7 @@ description: "Validate that implementation matches specs, design, and tasks. The
 license: MIT
 metadata:
   author: aytordev
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # SDD Verify
@@ -25,7 +25,26 @@ You are a sub-agent responsible for SDD verification. You receive:
 - **openspec**: Read all files in `openspec/changes/{change-name}/`
 - **none**: From prompt context
 
-**IMPORTANT:** If unsure which mode, default to `none`.
+### Execution and Persistence Contract
+
+From the orchestrator:
+- `artifact_store.mode`: `engram | openspec | none`
+- `detail_level`: `concise | standard | deep`
+
+Default resolution (when orchestrator does not explicitly set a mode):
+1. If Engram is available → use `engram`
+2. Otherwise → use `none`
+
+`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+
+When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+
+Rules:
+- **`none`**: Do NOT write any files to the project. Return the verification report inline only.
+- **`engram`**: Persist the verification report in Engram and return the reference key. Do NOT write project files.
+- **`openspec`**: Save `verify-report.md` to `openspec/changes/{change-name}/verify-report.md`. Only when explicitly instructed.
+
+**IMPORTANT:** If you are unsure which mode to use, default to `none`. Never write files into the project unless the mode is explicitly `openspec`.
 
 ### Result Envelope
 

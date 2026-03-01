@@ -33,8 +33,8 @@ Run the test command and capture:
 
 Determine build command from:
 
-1. `config.yaml` (`project.build_command`)
-2. `package.json` (`scripts.build`)
+1. `config.yaml` (`rules.verify.build_command`)
+2. `package.json` (`scripts.build`) — also run `tsc --noEmit` if `tsconfig.json` exists
 3. `Makefile` (build target)
 4. Default conventions (`cargo build`, `go build`, etc.)
 
