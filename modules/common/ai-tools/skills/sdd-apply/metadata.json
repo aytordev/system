@@ -1,0 +1,8 @@
+{
+    "name": "sdd-apply",
+    "description": "Implement tasks from the change, writing actual code following specs and design.",
+    "version": "2.0.0",
+    "organization": "sdd",
+    "date": "February 2026",
+    "abstract": "Implement tasks from the change, writing actual code following the specs and design. Supports both TDD workflow (RED → GREEN → REFACTOR) and standard implementation mode. Marks tasks complete as work progresses."
+}

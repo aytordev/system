@@ -30,6 +30,14 @@ in {
         nixos = {
           command = getExe pkgs.mcp-nixos;
         };
+
+        engram = {
+          command = getExe pkgs.aytordev.engram;
+          args = ["mcp"];
+          env = {
+            ENGRAM_DATA_DIR = "${config.xdg.dataHome}/engram";
+          };
+        };
       };
     };
   };

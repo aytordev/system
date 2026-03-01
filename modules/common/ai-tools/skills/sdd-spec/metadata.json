@@ -1,0 +1,8 @@
+{
+    "name": "sdd-spec",
+    "description": "Write specifications with requirements and scenarios for changes.",
+    "version": "2.0.0",
+    "organization": "sdd",
+    "date": "March 2026",
+    "abstract": "Write specifications with requirements and scenarios (delta specs for changes). Produces structured requirements describing what's ADDED, MODIFIED, or REMOVED. Ensures every requirement has testable Given/When/Then scenarios using RFC 2119 keywords."
+}

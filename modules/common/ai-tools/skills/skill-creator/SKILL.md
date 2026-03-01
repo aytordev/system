@@ -46,4 +46,4 @@ A comprehensive guide for creating effective AI agent skills. This skill provide
 
 ## Full Compiled Document
 
-For the complete guide with all rules expanded: `AGENTS.md`
+Read all files in `rules/` for the complete guide with all rules expanded.

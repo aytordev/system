@@ -1,0 +1,8 @@
+{
+    "name": "sdd-tasks",
+    "description": "Break down a change into an implementation task checklist.",
+    "version": "2.0.0",
+    "organization": "sdd",
+    "date": "March 2026",
+    "abstract": "Break down a change into an implementation task checklist. Produces tasks.md with concrete, actionable implementation steps organized by phase (Foundation, Core Implementation, Integration, Testing, Cleanup)."
+}
