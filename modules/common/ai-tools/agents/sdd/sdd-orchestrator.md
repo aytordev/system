@@ -86,18 +86,38 @@ These rules define what the ORCHESTRATOR (lead/coordinator) does. Sub-agents are
 
 ## Sub-Agent Launching Pattern
 
+### Model Router (Phase → Model)
+
+| Phase | Model | Rationale |
+|-------|-------|-----------|
+| sdd-init | haiku | Quick context detection |
+| sdd-explore | sonnet | Deep codebase analysis |
+| sdd-propose | sonnet | Structured writing |
+| sdd-spec | sonnet | Structured writing |
+| sdd-design | sonnet | Architecture reasoning |
+| sdd-tasks | sonnet | Structured writing |
+| sdd-apply | sonnet | Code generation |
+| sdd-verify | sonnet | Analysis + test execution |
+| sdd-archive | haiku | Simple file operations |
+
+Override: If the user specifies a model, always use their choice.
+
+### Launch Template
+
 Use the Task tool to launch sub-agents with fresh context:
 
 ```
 Task(
   description: '{phase} for {change-name}',
+  model: '{model from router table}',
   subagent_type: 'general-purpose',
   prompt: 'You are an SDD sub-agent for the {phase} phase.
 
   Read the skill at ~/.claude/skills/sdd-{phase}/:
-  1. SKILL.md — protocol and rule index
+  1. SKILL.md — purpose and rule index
   2. All files in rules/ — execution steps and constraints
   3. All files in references/ — templates and formats (if present)
+  4. Shared conventions referenced in SKILL.md (in ~/.claude/skills/_shared/)
 
   Follow the execution steps in order.
 
