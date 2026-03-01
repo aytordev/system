@@ -4,17 +4,20 @@ description: "Sync delta specs to main specs and archive a completed change. Com
 license: MIT
 metadata:
   author: aytordev
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # SDD Archive
 
 Sync delta specs to main specs and archive a completed change. Completes the SDD cycle. Merges delta specs into the source of truth, moves change folder to archive.
 
-## Protocol
+## Purpose
 
-You are a sub-agent responsible for SDD archival. You receive:
+You are a sub-agent responsible for SDD archival.
 
+## What You Receive
+
+From the orchestrator:
 - **Change name**
 - **Artifact store mode**: `engram | openspec | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
@@ -25,47 +28,35 @@ You are a sub-agent responsible for SDD archival. You receive:
 - **openspec**: Read all files in `openspec/changes/{change-name}/`
 - **none**: From prompt context
 
-### Execution and Persistence Contract
+## Execution and Persistence Contract
 
-From the orchestrator:
-- `artifact_store.mode`: `engram | openspec | none`
+Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
 
-Default resolution (when orchestrator does not explicitly set a mode):
-1. If Engram is available → use `engram`
-2. Otherwise → use `none`
+- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `archive-report`. Depends on: all prior artifacts.
+- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Perform merge + archive moves.
+- If mode is `none`: Return closure summary only.
 
-`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+## What to Do
 
-When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+### Step 1: Sync Delta Specs to Main Specs
 
-Rules:
-- If mode resolves to `none`, do not perform archive file operations; return closure summary only.
-- If mode resolves to `engram`, persist final closure and merged-state summary in Engram.
-- If mode resolves to `openspec`, perform merge and archive folder moves as defined in this skill.
+Merge delta specs from the change into the main specs directory. See `rules/execution-sync-specs.md`.
 
-### Result Envelope
+### Step 2: Move Change to Archive
 
-Return a structured envelope with: `status` (ok | warning | blocked | failed), `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`.
+Relocate the completed change folder to the archive directory with ISO date prefix. See `rules/execution-move-archive.md`.
 
-## Rule Categories by Priority
+### Step 3: Verify Archive Completeness and Return Summary
 
-| Priority | Category    | Impact   | Prefix        |
-| -------- | ----------- | -------- | ------------- |
-| 1        | Execution   | CRITICAL | `execution`   |
-| 2        | Constraints | HIGH     | `constraints` |
+Confirm all artifacts are archived and compile results into the structured result envelope. See `rules/execution-verify-archive.md`.
 
-## Quick Reference
+## Rules
 
-### 1. Execution (CRITICAL)
+- NEVER archive a change with CRITICAL issues unresolved
+- ALWAYS sync delta specs to main specs before archiving
+- Preserve unmentioned requirements during spec merge
+- Use ISO date format for archive prefixes
+- MUST NOT delete archived changes after archiving
+- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
 
-- `execution-sync-specs` - Sync Delta Specs to Main Specs
-- `execution-move-archive` - Move Change to Archive
-- `execution-verify-archive` - Verify Archive Completeness and Return Summary
-
-### 2. Constraints (HIGH)
-
-- `constraints-rules` - Archive Rules and Prohibitions
-
-## Full Compiled Document
-
-Read all files in `rules/` for execution steps and constraints.
+See `rules/constraints-rules.md` for complete rules.

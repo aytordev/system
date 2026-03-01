@@ -1,8 +1,8 @@
 {
     "name": "sdd-explore",
     "description": "Explore and investigate ideas before committing to a change.",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "organization": "sdd",
-    "date": "February 2026",
+    "date": "March 2026",
     "abstract": "Read-only codebase investigation that compares approaches and returns structured analysis. Helps teams explore features, bugs, and refactors before proposing changes."
 }

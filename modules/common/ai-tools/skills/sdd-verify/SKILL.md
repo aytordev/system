@@ -11,10 +11,13 @@ metadata:
 
 Validate that implementation matches specs, design, and tasks. The quality gate. Must prove with real execution evidence that implementation is complete, correct, and behaviorally compliant. Static analysis alone is NOT enough.
 
-## Protocol
+## Purpose
 
-You are a sub-agent responsible for SDD verification. You receive:
+You are a sub-agent responsible for SDD verification — the quality gate.
 
+## What You Receive
+
+From the orchestrator:
 - **Change name**
 - **Artifact store mode**: `engram | openspec | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
@@ -25,53 +28,49 @@ You are a sub-agent responsible for SDD verification. You receive:
 - **openspec**: Read all files in `openspec/changes/{change-name}/`
 - **none**: From prompt context
 
-### Execution and Persistence Contract
+## Execution and Persistence Contract
 
-From the orchestrator:
-- `artifact_store.mode`: `engram | openspec | none`
-- `detail_level`: `concise | standard | deep`
+Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
 
-Default resolution (when orchestrator does not explicitly set a mode):
-1. If Engram is available → use `engram`
-2. Otherwise → use `none`
+- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `verify-report`. Depends on: all prior artifacts.
+- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Save `verify-report.md` (only when explicit).
+- If mode is `none`: Return report only. **Default to `none` if unsure.**
 
-`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+## What to Do
 
-When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+### Step 1: Check Task Completion Status
 
-Rules:
-- **`none`**: Do NOT write any files to the project. Return the verification report inline only.
-- **`engram`**: Persist the verification report in Engram and return the reference key. Do NOT write project files.
-- **`openspec`**: Save `verify-report.md` to `openspec/changes/{change-name}/verify-report.md`. Only when explicitly instructed.
+Verify all assigned tasks are marked complete and account for every task. See `rules/execution-check-completeness.md`.
 
-**IMPORTANT:** If you are unsure which mode to use, default to `none`. Never write files into the project unless the mode is explicitly `openspec`.
+### Step 2: Verify Static Specs Match
 
-### Result Envelope
+Check that implementation satisfies every requirement and scenario in the specs. See `rules/execution-check-correctness.md`.
 
-Return a structured envelope with: `status` (ok | warning | blocked | failed), `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`.
+### Step 3: Verify Design Match
 
-## Rule Categories by Priority
+Confirm implementation follows the architecture and decisions in the design document. See `rules/execution-check-coherence.md`.
 
-| Priority | Category    | Impact   | Prefix        |
-| -------- | ----------- | -------- | ------------- |
-| 1        | Execution   | CRITICAL | `execution`   |
-| 2        | Constraints | HIGH     | `constraints` |
+### Step 4: Execute Tests and Build
 
-## Quick Reference
+Run the actual test suite and build to collect real execution evidence. See `rules/execution-run-tests.md`.
 
-### 1. Execution (CRITICAL)
+### Step 5: Generate Spec Compliance Matrix
 
-- `execution-check-completeness` - Check Task Completion Status
-- `execution-check-correctness` - Verify Static Specs Match
-- `execution-check-coherence` - Verify Design Match
-- `execution-run-tests` - Execute Tests and Build
-- `execution-compliance-matrix` - Generate Spec Compliance Matrix
-- `execution-return-report` - Return Verification Report
+Produce a requirement-by-requirement compliance matrix with pass/fail status. See `rules/execution-compliance-matrix.md`.
 
-### 2. Constraints (HIGH)
+### Step 6: Return Verification Report
 
-- `constraints-rules` - Verification Rules and Prohibitions
+Compile all findings into the structured result envelope. See `rules/execution-return-report.md`.
 
-## Full Compiled Document
+Consult `references/` for templates and formats.
 
-Read all files in `rules/` for execution steps and constraints, and `references/` for compliance matrix format.
+## Rules
+
+- MUST read actual source code — never assume from artifact descriptions
+- MUST execute tests and build — static analysis alone is insufficient
+- MUST NOT fix any issues found (report only — orchestrator decides next steps)
+- A scenario is COMPLIANT only when a corresponding test PASSED
+- DO NOT fix — report issues and let the orchestrator decide
+- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
+
+See `rules/constraints-rules.md` for complete rules.

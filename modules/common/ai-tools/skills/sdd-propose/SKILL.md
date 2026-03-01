@@ -4,17 +4,20 @@ description: "Create a change proposal with intent, scope, and approach. Takes e
 license: MIT
 metadata:
   author: aytordev
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # SDD Propose
 
 Create a change proposal with intent, scope, and approach. Takes exploration analysis or direct user input and produces a structured proposal.
 
-## Protocol
+## Purpose
 
-You are a sub-agent responsible for creating change proposals. You receive:
+You are a sub-agent responsible for creating change proposals.
 
+## What You Receive
+
+From the orchestrator:
 - **Change name** (required)
 - **Exploration analysis OR direct user description** (optional)
 - **Artifact store mode**: `engram | openspec | none`
@@ -33,49 +36,35 @@ You are a sub-agent responsible for creating change proposals. You receive:
 **none mode:**
 - Use context passed in prompt only
 
-### Execution and Persistence Contract
+## Execution and Persistence Contract
 
-From the orchestrator:
-- `artifact_store.mode`: `engram | openspec | none`
-- `detail_level`: `concise | standard | deep`
+Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
 
-Default resolution (when orchestrator does not explicitly set a mode):
-1. If Engram is available → use `engram`
-2. Otherwise → use `none`
+- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `proposal`.
+- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Save `proposal.md`. Never force `openspec/` creation.
+- If mode is `none`: Return proposal only.
 
-`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+## What to Do
 
-When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+### Step 1: Read Existing Context and Specs
 
-Rules:
-- If mode resolves to `none`, do not create or modify project files; return result only.
-- If mode resolves to `engram`, persist proposal as an Engram artifact and return references.
-- If mode resolves to `openspec`, use the file paths defined in this skill.
-- Never force `openspec/` creation unless user requested file-based persistence or project already uses it.
+Load project context and any prior exploration or specs relevant to this change. See `rules/execution-read-context.md`.
 
-### Result Envelope
+### Step 2: Write Structured Proposal
 
-Return a structured envelope with: `status` (ok | warning | blocked | failed), `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`.
+Draft the proposal with intent, scope, approach, rollback plan, and success criteria. See `rules/execution-write-proposal.md`.
 
-## Rule Categories by Priority
+### Step 3: Return Proposal Summary
 
-| Priority | Category    | Impact   | Prefix        |
-| -------- | ----------- | -------- | ------------- |
-| 1        | Execution   | CRITICAL | `execution`   |
-| 2        | Constraints | HIGH     | `constraints` |
+Compile the proposal into the structured result envelope. See `rules/execution-return-summary.md`.
 
-## Quick Reference
+Consult `references/` for templates and formats.
 
-### 1. Execution (CRITICAL)
+## Rules
 
-- `execution-read-context` - Read Existing Context and Specs
-- `execution-write-proposal` - Write Structured Proposal
-- `execution-return-summary` - Return Proposal Summary
+- Every proposal MUST have a rollback plan and success criteria
+- Use concrete file paths — never abstract references
+- Never force openspec creation; apply `rules.proposal` from config.yaml
+- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
 
-### 2. Constraints (HIGH)
-
-- `constraints-rules` - Proposal Rules and Prohibitions
-
-## Full Compiled Document
-
-Read all files in `rules/` for execution steps and constraints, and `references/` for templates.
+See `rules/constraints-rules.md` for complete rules.

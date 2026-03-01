@@ -4,66 +4,57 @@ description: "Explore and investigate ideas before committing to a change. Read-
 license: MIT
 metadata:
   author: aytordev
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # SDD Explore
 
 Explore and investigate ideas before committing to a change. Read-only codebase investigation that compares approaches and returns structured analysis.
 
-## Protocol
+## Purpose
 
-You are a sub-agent responsible for exploratory analysis. You receive:
+You are a sub-agent responsible for exploratory analysis. Read-only investigation.
 
+## What You Receive
+
+From the orchestrator:
 - **Topic or feature** to explore
 - **Artifact store mode**: `engram | openspec | none`
 - **Detail level**: `concise | standard | deep` — controls output depth; architecture-wide explorations may require `deep`
 - **Optional change name** (for tying exploration to a specific change)
 
-### Execution and Persistence Contract
+## Execution and Persistence Contract
 
-From the orchestrator:
-- `artifact_store.mode`: `engram | openspec | none`
-- `detail_level`: `concise | standard | deep`
+Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
 
-Default resolution (when orchestrator does not explicitly set a mode):
-1. If Engram is available → use `engram`
-2. Otherwise → use `none`
+- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `explore`.
+- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Create `exploration.md` if change name provided.
+- If mode is `none`: Return analysis only.
 
-`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+## What to Do
 
-When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+### Step 1: Parse Exploration Request
 
-Rules:
-- `detail_level` controls output depth; architecture-wide explorations may require deep reports.
-- If mode resolves to `none`, return result only.
-- If mode resolves to `engram`, persist exploration in Engram and return references.
-- If mode resolves to `openspec`, `exploration.md` may be created when a change name is provided.
+Understand the scope and intent of what needs to be explored. See `rules/execution-understand-request.md`.
 
-### Result Envelope
+### Step 2: Read and Search Codebase
 
-Return a structured envelope with: `status` (ok | warning | blocked | failed), `executive_summary`, `detailed_report`, `artifacts`, `next_recommended`, `risks`.
+Investigate the relevant parts of the codebase through read-only analysis. See `rules/execution-investigate.md`.
 
-## Rule Categories by Priority
+### Step 3: Compare Approaches
 
-| Priority | Category    | Impact   | Prefix        |
-| -------- | ----------- | -------- | ------------- |
-| 1        | Execution   | CRITICAL | `execution`   |
-| 2        | Constraints | HIGH     | `constraints` |
+Evaluate multiple approaches with tradeoffs and recommendations. See `rules/execution-analyze-options.md`.
 
-## Quick Reference
+### Step 4: Return Structured Analysis
 
-### 1. Execution (CRITICAL)
+Compile findings into the structured result envelope. See `rules/execution-return-analysis.md`.
 
-- `execution-understand-request` - Parse Exploration Request
-- `execution-investigate` - Read and Search Codebase
-- `execution-analyze-options` - Compare Approaches
-- `execution-return-analysis` - Return Structured Analysis
+## Rules
 
-### 2. Constraints (HIGH)
+- MUST read real code — never fabricate file contents or structures
+- MUST NOT modify anything in the codebase (read-only)
+- SHOULD present at least 2 approaches with tradeoffs when applicable
+- Keep analysis concise and actionable
+- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
 
-- `constraints-rules` - Exploration Rules and Prohibitions
-
-## Full Compiled Document
-
-Read all files in `rules/` for execution steps and constraints.
+See `rules/constraints-rules.md` for complete rules.

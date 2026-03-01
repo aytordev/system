@@ -4,17 +4,20 @@ description: "Create technical design document with architecture decisions and a
 license: MIT
 metadata:
   author: aytordev
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # SDD Design
 
 Create technical design document with architecture decisions and approach. Takes proposal and specs, produces design.md capturing HOW the change will be implemented.
 
-## Protocol
+## Purpose
 
-You are a sub-agent responsible for technical design. You receive:
+You are a sub-agent responsible for technical design.
 
+## What You Receive
+
+From the orchestrator:
 - **Change name**: The identifier for the change being designed
 - **Artifact store mode**: `engram | openspec | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
@@ -25,48 +28,37 @@ You are a sub-agent responsible for technical design. You receive:
 2. **openspec mode**: Read `openspec/changes/{change-name}/proposal.md`, `openspec/changes/{change-name}/specs/`, and `openspec/config.yaml`
 3. **none mode**: Work from prompt context only
 
-### Execution and Persistence Contract
+## Execution and Persistence Contract
 
-From the orchestrator:
-- `artifact_store.mode`: `engram | openspec | none`
-- `detail_level`: `concise | standard | deep`
+Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
 
-Default resolution (when orchestrator does not explicitly set a mode):
-1. If Engram is available → use `engram`
-2. Otherwise → use `none`
+- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `design`. Depends on: `proposal`.
+- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Save `design.md`.
+- If mode is `none`: Return design only.
 
-`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+## What to Do
 
-When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+### Step 1: Read the Actual Codebase
 
-Rules:
-- If mode resolves to `none`, do not create or modify project files; return result only.
-- If mode resolves to `engram`, persist design output as Engram artifact(s) and return references.
-- If mode resolves to `openspec`, use the file paths defined in this skill.
+Investigate the real project structure and existing patterns before designing. See `rules/execution-read-codebase.md`.
 
-### Result Envelope
+### Step 2: Write Technical Design Document
 
-Return a structured envelope with: `status` (ok | warning | blocked | failed), `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`.
+Draft the design document with architecture decisions, rationale, and approach. See `rules/execution-write-design.md`.
 
-## Rule Categories by Priority
+### Step 3: Return Design Summary
 
-| Priority | Category    | Impact   | Prefix        |
-| -------- | ----------- | -------- | ------------- |
-| 1        | Execution   | CRITICAL | `execution`   |
-| 2        | Constraints | HIGH     | `constraints` |
+Compile design results into the structured result envelope. See `rules/execution-return-summary.md`.
 
-## Quick Reference
+Consult `references/` for templates and formats.
 
-### 1. Execution (CRITICAL)
+## Rules
 
-- `execution-read-codebase` - Read the Actual Codebase
-- `execution-write-design` - Write Technical Design Document
-- `execution-return-summary` - Return Design Summary
+- MUST read the actual codebase before writing any design
+- Every design decision MUST have a rationale
+- Use concrete file paths — never abstract references
+- Follow existing project patterns and conventions
+- MUST NOT use UML diagrams
+- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
 
-### 2. Constraints (HIGH)
-
-- `constraints-rules` - Design Rules and Prohibitions
-
-## Full Compiled Document
-
-Read all files in `rules/` for execution steps and constraints, and `references/` for templates.
+See `rules/constraints-rules.md` for complete rules.

@@ -4,17 +4,20 @@ description: "Write specifications with requirements and scenarios for changes. 
 license: MIT
 metadata:
   author: aytordev
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # SDD Spec
 
 Write specifications with requirements and scenarios (delta specs for changes). Produces structured requirements describing what's ADDED, MODIFIED, or REMOVED.
 
-## Protocol
+## Purpose
 
-You are a sub-agent responsible for writing specifications. You receive:
+You are a sub-agent responsible for writing specifications.
 
+## What You Receive
+
+From the orchestrator:
 - **Change name**: The identifier for the change being specified
 - **Artifact store mode**: `engram | openspec | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
@@ -25,49 +28,40 @@ You are a sub-agent responsible for writing specifications. You receive:
 2. **openspec mode**: Read `openspec/changes/{change-name}/proposal.md`, `openspec/specs/`, and `openspec/config.yaml`
 3. **none mode**: Work from prompt context only
 
-### Execution and Persistence Contract
+## Execution and Persistence Contract
 
-From the orchestrator:
-- `artifact_store.mode`: `engram | openspec | none`
-- `detail_level`: `concise | standard | deep`
+Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
 
-Default resolution (when orchestrator does not explicitly set a mode):
-1. If Engram is available → use `engram`
-2. Otherwise → use `none`
+- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `spec`. Depends on: `proposal`.
+- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Save to `specs/{domain}/spec.md`.
+- If mode is `none`: Return specs only.
 
-`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+## What to Do
 
-When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+### Step 1: Identify Domains from Proposal
 
-Rules:
-- If mode resolves to `none`, do not create or modify project files; return result only.
-- If mode resolves to `engram`, persist spec output as Engram artifact(s) and return references.
-- If mode resolves to `openspec`, use the file paths defined in this skill.
+Analyze the proposal to determine which specification domains are affected. See `rules/execution-identify-domains.md`.
 
-### Result Envelope
+### Step 2: Read Existing Specifications
 
-Return a structured envelope with: `status` (ok | warning | blocked | failed), `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`.
+Load current specs to understand what already exists and what needs delta treatment. See `rules/execution-read-existing.md`.
 
-## Rule Categories by Priority
+### Step 3: Write Delta or Full Specifications
 
-| Priority | Category    | Impact   | Prefix        |
-| -------- | ----------- | -------- | ------------- |
-| 1        | Execution   | CRITICAL | `execution`   |
-| 2        | Constraints | HIGH     | `constraints` |
+Write ADDED/MODIFIED/REMOVED delta specs or full specs for new domains. See `rules/execution-write-delta.md`.
 
-## Quick Reference
+### Step 4: Return Specification Summary
 
-### 1. Execution (CRITICAL)
+Compile specification results into the structured result envelope. See `rules/execution-return-summary.md`.
 
-- `execution-identify-domains` - Identify Domains from Proposal
-- `execution-read-existing` - Read Existing Specifications
-- `execution-write-delta` - Write Delta or Full Specifications
-- `execution-return-summary` - Return Specification Summary
+Consult `references/` for templates and formats.
 
-### 2. Constraints (HIGH)
+## Rules
 
-- `constraints-rules` - Specification Rules and Prohibitions
+- MUST use Given/When/Then format for all scenarios
+- MUST use RFC 2119 keywords (MUST, SHOULD, MAY, etc.)
+- MUST NOT include implementation details in specifications
+- Every requirement needs at least one scenario
+- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
 
-## Full Compiled Document
-
-Read all files in `rules/` for execution steps and constraints, and `references/` for formats.
+See `rules/constraints-rules.md` for complete rules.

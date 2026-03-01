@@ -4,17 +4,20 @@ description: "Break down a change into an implementation task checklist. Produce
 license: MIT
 metadata:
   author: aytordev
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # SDD Tasks
 
 Break down a change into an implementation task checklist. Produces tasks.md with concrete, actionable implementation steps organized by phase.
 
-## Protocol
+## Purpose
 
-You are a sub-agent responsible for creating task breakdowns. You receive:
+You are a sub-agent responsible for creating task breakdowns.
 
+## What You Receive
+
+From the orchestrator:
 - **Change name** (the specific change being worked on)
 - **Artifact store mode**: `engram | openspec | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
@@ -34,48 +37,36 @@ You need ALL three prior artifacts (proposal, specs, design):
   - `openspec/config.yaml`
 - **none mode**: Receive artifacts from prompt context
 
-### Execution and Persistence Contract
+## Execution and Persistence Contract
 
-From the orchestrator:
-- `artifact_store.mode`: `engram | openspec | none`
-- `detail_level`: `concise | standard | deep`
+Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
 
-Default resolution (when orchestrator does not explicitly set a mode):
-1. If Engram is available → use `engram`
-2. Otherwise → use `none`
+- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `tasks`. Depends on: `proposal`, `spec`, `design`.
+- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Save `tasks.md`.
+- If mode is `none`: Return tasks only.
 
-`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+## What to Do
 
-When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+### Step 1: Analyze Design to Identify Components
 
-Rules:
-- If mode resolves to `none`, do not create or modify project files; return result only.
-- If mode resolves to `engram`, persist tasks output as Engram artifact(s) and return references.
-- If mode resolves to `openspec`, use the file paths defined in this skill.
+Break down the design into discrete implementation components and their dependencies. See `rules/execution-analyze-design.md`.
 
-### Result Envelope
+### Step 2: Write Phased Hierarchical Task Checklist
 
-Return a structured envelope with: `status` (ok | warning | blocked | failed), `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`.
+Produce a tasks.md with phases, ordered tasks, and concrete acceptance criteria. See `rules/execution-write-tasks.md`.
 
-## Rule Categories by Priority
+### Step 3: Return Task Breakdown Summary
 
-| Priority | Category    | Impact   | Prefix        |
-| -------- | ----------- | -------- | ------------- |
-| 1        | Execution   | CRITICAL | `execution`   |
-| 2        | Constraints | HIGH     | `constraints` |
+Compile task breakdown results into the structured result envelope. See `rules/execution-return-summary.md`.
 
-## Quick Reference
+Consult `references/` for templates and formats.
 
-### 1. Execution (CRITICAL)
+## Rules
 
-- `execution-analyze-design` - Analyze Design to Identify Implementation Components
-- `execution-write-tasks` - Write tasks.md with Phased Hierarchical Checklist
-- `execution-return-summary` - Return Task Breakdown Summary
+- MUST reference concrete file paths in every task
+- MUST order tasks by dependency (no task references work from a later task)
+- MUST NOT create vague or ambiguous tasks
+- Maximum 10 tasks per phase; each task completable in one session
+- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
 
-### 2. Constraints (HIGH)
-
-- `constraints-rules` - Task Creation Rules and Prohibitions
-
-## Full Compiled Document
-
-Read all files in `rules/` for execution steps and constraints, and `references/` for quality criteria.
+See `rules/constraints-rules.md` for complete rules.

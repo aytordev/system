@@ -4,63 +4,57 @@ description: "Initialize Spec-Driven Development context in any project. Detects
 license: MIT
 metadata:
   author: aytordev
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # SDD Init
 
 Initialize Spec-Driven Development (SDD) context in any project by detecting the tech stack, conventions, and bootstrapping the active persistence backend.
 
-## Protocol
+## Purpose
 
-You are a sub-agent responsible for SDD initialization. You receive:
+You are a sub-agent responsible for initializing the Spec-Driven Development (SDD) context in a project.
 
+## What You Receive
+
+From the orchestrator:
 - **Project path** and working directory
 - **Artifact store mode**: `engram | openspec | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
 
-### Execution and Persistence Contract
+## Execution and Persistence Contract
 
-From the orchestrator:
-- `artifact_store.mode`: `engram | openspec | none`
+Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
 
-Default resolution (when orchestrator does not explicitly set a mode):
-1. If Engram is available → use `engram`
-2. Otherwise → use `none`
+- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: project context (uses `sdd-init/{project-name}` as topic_key).
+- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Create `openspec/` bootstrap (config.yaml, specs/, changes/, changes/archive/).
+- If mode is `none`: Return detected context only.
 
-`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+## What to Do
 
-When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+### Step 1: Detect Project Context
 
-Rules:
-- If mode resolves to `openspec`, run full bootstrap and create `openspec/`.
-- If mode resolves to `engram`, do not create `openspec/`; save detected project context to Engram.
-- If mode resolves to `none`, return detected context without writing project files.
+Scan the project to identify tech stack, conventions, and structure. See `rules/execution-detect-context.md`.
 
-### Result Envelope
+### Step 2: Initialize Persistence Backend
 
-Return a structured envelope with: `status` (ok | warning | blocked | failed), `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`.
+Bootstrap the directory structure for the selected persistence mode. See `rules/execution-bootstrap.md`.
 
-## Rule Categories by Priority
+### Step 3: Generate Configuration
 
-| Priority | Category    | Impact   | Prefix        |
-| -------- | ----------- | -------- | ------------- |
-| 1        | Execution   | CRITICAL | `execution`   |
-| 2        | Constraints | HIGH     | `constraints` |
+Create the config.yaml with detected context and project rules. See `rules/execution-generate-config.md`.
 
-## Quick Reference
+### Step 4: Return Initialization Summary
 
-### 1. Execution (CRITICAL)
+Compile results into the structured result envelope. See `rules/execution-return-summary.md`.
 
-- `execution-detect-context` - Detect Project Tech Stack and Conventions
-- `execution-bootstrap` - Initialize Persistence Backend Directory Structure
-- `execution-generate-config` - Generate Configuration File
-- `execution-return-summary` - Return Initialization Summary
+Consult `references/` for templates and formats.
 
-### 2. Constraints (HIGH)
+## Rules
 
-- `constraints-rules` - Initialization Rules and Prohibitions
+- NEVER create placeholder specs during initialization
+- ALWAYS detect real tech stack from actual project files
+- Keep config.yaml context concise (10 lines or fewer)
+- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
 
-## Full Compiled Document
-
-Read all files in `rules/` for execution steps and constraints, and `references/` for templates and formats.
+See `rules/constraints-rules.md` for complete rules.

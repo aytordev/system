@@ -11,10 +11,13 @@ metadata:
 
 Implement tasks from the change, writing actual code following the specs and design. Receives specific tasks and implements them.
 
-## Protocol
+## Purpose
 
-You are a sub-agent responsible for implementing tasks. You receive:
+You are a sub-agent responsible for implementing tasks.
 
+## What You Receive
+
+From the orchestrator:
 - **Change name** (the specific change being worked on)
 - **Specific task(s)** to implement (e.g., "Phase 1, tasks 1.1-1.3")
 - **Artifact store mode**: `engram | openspec | none`
@@ -37,50 +40,42 @@ You need ALL previous artifacts (proposal, specs, design, tasks):
   - `openspec/config.yaml`
 - **none mode**: Receive artifacts from prompt context
 
-### Execution and Persistence Contract
+## Execution and Persistence Contract
 
-From the orchestrator:
-- `artifact_store.mode`: `engram | openspec | none`
-- `detail_level`: `concise | standard | deep`
+Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
 
-Default resolution (when orchestrator does not explicitly set a mode):
-1. If Engram is available → use `engram`
-2. Otherwise → use `none`
+- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `apply-progress`. Depends on: `spec`, `design`, `tasks`.
+- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Update `tasks.md` with completion marks.
+- If mode is `none`: Return progress only.
 
-`openspec` is NEVER used by default — only when the orchestrator explicitly passes `openspec`.
+## What to Do
 
-When falling back to `none`, recommend the user enable `engram` or `openspec` for better results.
+### Step 1: Read Specs, Design, Tasks, and Existing Code
 
-Rules:
-- If mode resolves to `none`, do not update project artifacts (including `tasks.md`); return progress only.
-- If mode resolves to `engram`, persist implementation progress in Engram and return references.
-- If mode resolves to `openspec`, update `tasks.md` and file artifacts as defined in this skill.
+Load all prior artifacts and understand the current codebase state. See `rules/execution-read-context.md`.
 
-### Result Envelope
+### Step 2: Detect Implementation Mode (TDD vs Standard)
 
-Return a structured envelope with: `status` (ok | warning | blocked | failed), `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`.
+Determine whether the project uses TDD or standard implementation workflow. See `rules/execution-detect-mode.md`.
 
-## Rule Categories by Priority
+### Step 3: TDD Workflow (RED -> GREEN -> REFACTOR)
 
-| Priority | Category    | Impact   | Prefix        |
-| -------- | ----------- | -------- | ------------- |
-| 1        | Execution   | CRITICAL | `execution`   |
-| 2        | Constraints | HIGH     | `constraints` |
+If TDD detected, follow the red-green-refactor cycle for each task. See `rules/execution-tdd-workflow.md`.
 
-## Quick Reference
+### Step 4: Standard Implementation Workflow
 
-### 1. Execution (CRITICAL)
+If no TDD framework detected, implement tasks following standard workflow. See `rules/execution-standard-workflow.md`.
 
-- `execution-read-context` - Read Specs, Design, Tasks, and Existing Code
-- `execution-detect-mode` - Detect Implementation Mode (TDD vs Standard)
-- `execution-tdd-workflow` - TDD Workflow (RED → GREEN → REFACTOR)
-- `execution-standard-workflow` - Standard Implementation Workflow
-- `execution-mark-complete` - Mark Tasks Complete and Return Summary
+### Step 5: Mark Tasks Complete and Return Summary
 
-### 2. Constraints (HIGH)
+Update task status and compile results into the structured result envelope. See `rules/execution-mark-complete.md`.
 
-- `constraints-rules` - Implementation Rules and Prohibitions
+## Rules
 
-## Full Compiled Document
+- MUST read specs and design before writing any code
+- MUST follow design decisions — never silently deviate
+- MUST NOT implement tasks not assigned to this invocation
+- If TDD detected, never skip the RED phase (write failing test first)
+- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
 
-Read all files in `rules/` for execution steps and constraints.
+See `rules/constraints-rules.md` for complete rules.
