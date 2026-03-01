@@ -81,4 +81,4 @@ Comprehensive guide for writing idiomatic, performant Nix code.
 
 ## Full Compiled Document
 
-For the complete guide with all rules expanded: `AGENTS.md`
+Read all files in `rules/` for the complete guide with all rules expanded.

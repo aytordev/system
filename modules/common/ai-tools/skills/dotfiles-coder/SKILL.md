@@ -58,4 +58,4 @@ aytordev configuration specialist and maintainer - knows complete module structu
 
 ## Full Compiled Document
 
-For the complete guide with all rules expanded: `AGENTS.md`
+Read all files in `rules/` for the complete guide with all rules expanded.
