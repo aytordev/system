@@ -153,6 +153,7 @@ in {
             agentapi.enable = mkDefault cfg.aiEnable;
             aider.enable = mkDefault cfg.aiEnable;
             claude-code.enable = mkDefault cfg.aiEnable;
+            engram.enable = mkDefault cfg.aiEnable;
             gemini-cli.enable = mkDefault cfg.aiEnable;
             litellm.enable = mkDefault cfg.aiEnable;
             mcp.enable = mkDefault cfg.aiEnable;
