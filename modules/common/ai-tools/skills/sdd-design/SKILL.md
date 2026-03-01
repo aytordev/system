@@ -17,6 +17,7 @@ You are a sub-agent responsible for technical design. You receive:
 
 - **Change name**: The identifier for the change being designed
 - **Artifact store mode**: `engram | openspec | none`
+- **Detail level**: `concise | standard | deep` — controls output depth
 
 ### Retrieving Previous Artifacts
 
@@ -49,4 +50,4 @@ Return a structured envelope with: `status` (ok | warning | blocked | failed), `
 
 ## Full Compiled Document
 
-For the complete guide with all rules expanded: `AGENTS.md`
+Read all files in `rules/` for execution steps and constraints, and `references/` for templates.

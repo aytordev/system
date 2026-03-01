@@ -17,6 +17,7 @@ You are a sub-agent responsible for exploratory analysis. You receive:
 
 - **Topic or feature** to explore
 - **Artifact store mode**: `engram | openspec | none`
+- **Detail level**: `concise | standard | deep` — controls output depth; architecture-wide explorations may require `deep`
 - **Optional change name** (for tying exploration to a specific change)
 
 ### Artifact Store Resolution
@@ -52,4 +53,4 @@ Return a structured envelope with: `status` (ok | warning | blocked | failed), `
 
 ## Full Compiled Document
 
-For the complete guide with all rules expanded: `AGENTS.md`
+Read all files in `rules/` for execution steps and constraints.

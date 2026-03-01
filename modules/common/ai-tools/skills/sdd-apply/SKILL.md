@@ -18,6 +18,7 @@ You are a sub-agent responsible for implementing tasks. You receive:
 - **Change name** (the specific change being worked on)
 - **Specific task(s)** to implement (e.g., "Phase 1, tasks 1.1-1.3")
 - **Artifact store mode**: `engram | openspec | none`
+- **Detail level**: `concise | standard | deep` — controls output depth
 
 ### Retrieving Previous Artifacts
 
@@ -63,4 +64,4 @@ Return a structured envelope with: `status` (ok | warning | blocked | failed), `
 
 ## Full Compiled Document
 
-For the complete guide with all rules expanded: `AGENTS.md`
+Read all files in `rules/` for execution steps and constraints.
