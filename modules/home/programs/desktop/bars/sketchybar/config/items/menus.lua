@@ -6,6 +6,8 @@ local colors = require("colors")
 
 -- Menu state
 local menu_visible = false
+local TRANSITION_FRAMES = 30
+local TRANSITION_SECONDS = TRANSITION_FRAMES / 60 -- ~0.5s
 
 -- Register custom events for curtain coordination
 sbar.add("event", "fade_out_spaces")
@@ -92,27 +94,48 @@ end
 
 -- Show menus with curtain effect
 local function show_menus()
-	menu_visible = true
+	if not menu_visible then
+		menu_visible = true
+	else
+		return
+	end
 	menu_watcher:set({ updates = true })
 
-	-- Fade out workspaces
+	-- Fade out workspaces (starts immediately)
 	sbar.trigger("fade_out_spaces")
 
-	-- Update menu content
-	update_menus()
-
-	-- Animate menu items in
-	sbar.animate("tanh", 30, function()
-		for i = 1, max_items do
-			local query = menu_items[i]:query()
-			if query and query.label and query.label.string ~= "" then
-				menu_items[i]:set({
-					drawing = true,
-					width = "dynamic",
-					label = { drawing = true },
-				})
-			end
+	-- Fetch menu content, then animate in
+	sbar.exec("$CONFIG_DIR/helpers/menus/bin/menus -l", function(menus)
+		if not menu_visible then
+			return
 		end
+
+		-- Update labels
+		local id = 1
+		for menu in string.gmatch(menus, "[^\r\n]+") do
+			if id <= max_items then
+				menu_items[id]:set({
+					label = { string = menu },
+					drawing = true,
+				})
+			else
+				break
+			end
+			id = id + 1
+		end
+
+		-- Animate menu items expanding
+		sbar.animate("tanh", TRANSITION_FRAMES, function()
+			for i = 1, max_items do
+				local query = menu_items[i]:query()
+				if query and query.label and query.label.string ~= "" then
+					menu_items[i]:set({
+						width = "dynamic",
+						label = { drawing = true, color = colors.white },
+					})
+				end
+			end
+		end)
 	end)
 
 	-- Highlight trigger
@@ -123,25 +146,33 @@ end
 
 -- Hide menus with curtain effect
 local function hide_menus()
-	menu_visible = false
+	if menu_visible then
+		menu_visible = false
+	else
+		return
+	end
 
-	-- Animate menu items out
-	sbar.animate("tanh", 30, function()
+	-- Animate menu items collapsing
+	sbar.animate("tanh", TRANSITION_FRAMES, function()
 		for i = 1, max_items do
-			menu_items[i]:set({ width = 0 })
+			menu_items[i]:set({
+				width = 0,
+				label = { color = colors.transparent },
+			})
 		end
 	end)
 
-	-- After animation, hide items and fade workspaces back in
-	-- Small delay to let the collapse animation finish
-	sbar.exec("sleep 0.3", function()
-		for i = 1, max_items do
-			menu_items[i]:set({ drawing = false })
-		end
-		menu_watcher:set({ updates = false })
+	-- Fade workspaces back in (parallel with menu collapse)
+	sbar.trigger("fade_in_spaces")
 
-		-- Fade workspaces back in
-		sbar.trigger("fade_in_spaces")
+	-- After animation completes, clean up
+	sbar.exec("sleep " .. TRANSITION_SECONDS, function()
+		if not menu_visible then
+			for i = 1, max_items do
+				menu_items[i]:set({ drawing = false })
+			end
+			menu_watcher:set({ updates = false })
+		end
 	end)
 
 	-- Reset trigger color
@@ -164,11 +195,13 @@ menu_trigger:subscribe("mouse.clicked", function(env)
 	end
 end)
 
--- Auto-collapse when mouse leaves bar area
+-- Auto-collapse when mouse leaves bar area (with anti-flicker delay)
 menu_trigger:subscribe("mouse.exited.global", function()
-	if menu_visible then
-		hide_menus()
-	end
+	sbar.exec("sleep 0.01", function()
+		if menu_visible then
+			hide_menus()
+		end
+	end)
 end)
 
 -- Update menu contents when frontmost app changes

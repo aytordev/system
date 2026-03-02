@@ -183,15 +183,15 @@ local function updateWindow(workspace_index, args)
 
 	-- Bounce animation when workspace becomes focused
 	if bounce_animation and is_focused and prev_focused ~= workspace_index and workspaces[workspace_index] then
-		sbar.animate("sin", 15, function()
+		sbar.animate("sin", 10, function()
 			workspaces[workspace_index]:set({ y_offset = 6 })
-		end)
-		sbar.animate("sin", 15, function()
-			workspaces[workspace_index]:set({ y_offset = 0 })
+			sbar.animate("sin", 10, function()
+				workspaces[workspace_index]:set({ y_offset = 0 })
+			end)
 		end)
 	end
 
-	sbar.animate("tanh", 10.0, function()
+	sbar.animate("tanh", 30, function()
 		if no_app and not is_visible and not is_focused then
 			workspaces[workspace_index]:set({ drawing = false })
 			return
@@ -255,6 +255,20 @@ root:subscribe("fade_out_spaces", function()
 end)
 
 root:subscribe("fade_in_spaces", function()
+	-- Instant reset to zero state (prevents glitches from stale sizes)
+	for _, ws in pairs(workspaces) do
+		ws:set({
+			width = 0,
+			icon = { color = colors.transparent },
+			label = { color = colors.transparent },
+		})
+	end
+	mode_indicator:set({
+		width = 0,
+		icon = { color = colors.transparent },
+	})
+
+	-- Then animate expansion
 	sbar.animate("tanh", 30, function()
 		for _, ws in pairs(workspaces) do
 			ws:set({
