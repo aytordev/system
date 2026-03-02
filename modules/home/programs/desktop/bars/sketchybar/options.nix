@@ -57,12 +57,12 @@ in {
   bar = {
     height = mkOption {
       type = int;
-      default = 30;
+      default = 25;
       description = "Height of the bar in pixels.";
     };
     blurRadius = mkOption {
       type = int;
-      default = 20;
+      default = 30;
       description = "Blur radius for the bar background.";
     };
     shadow = mkOption {
@@ -89,6 +89,16 @@ in {
       type = int;
       default = 10;
       description = "Right padding of the bar.";
+    };
+    cornerRadius = mkOption {
+      type = int;
+      default = 15;
+      description = "Corner radius for the bar and bracket backgrounds.";
+    };
+    borderWidth = mkOption {
+      type = int;
+      default = 1;
+      description = "Border width for the bar.";
     };
   };
 
@@ -118,6 +128,14 @@ in {
         type = bool;
         default = true;
         description = "Poll until AeroSpace is ready before loading workspaces.";
+      };
+    };
+
+    frontApp = {
+      enable = mkOption {
+        type = bool;
+        default = true;
+        description = "Show frontmost application name on the left side.";
       };
     };
 

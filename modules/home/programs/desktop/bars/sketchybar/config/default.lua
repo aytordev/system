@@ -9,10 +9,10 @@ sbar.default({
 		border_color = colors.accent_bright,
 		border_width = 0,
 		color = colors.bg1,
-		corner_radius = 6,
+		corner_radius = 15,
 		height = settings.height,
 		image = {
-			corner_radius = 9,
+			corner_radius = 15,
 			border_color = colors.grey,
 			border_width = 1,
 		},
@@ -42,7 +42,7 @@ sbar.default({
 		align = "center",
 		background = {
 			border_width = 0,
-			corner_radius = 6,
+			corner_radius = 15,
 			color = colors.popup.bg,
 			shadow = { drawing = true },
 		},
