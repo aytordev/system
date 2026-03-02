@@ -122,11 +122,11 @@ local function volume_toggle_details(env)
 		sbar.exec("SwitchAudioSource -t output -c", function(result)
 			current_audio_device = result:sub(1, -2)
 			sbar.exec("SwitchAudioSource -a -t output", function(available)
-				current = current_audio_device
+				local current = current_audio_device
 				local counter = 0
 
 				for device in string.gmatch(available, "[^\r\n]+") do
-					local color = colors.bg1
+					local color = colors.grey
 					if current == device then
 						color = colors.white
 					end
@@ -138,7 +138,7 @@ local function volume_toggle_details(env)
 						click_script = 'SwitchAudioSource -s "'
 							.. device
 							.. '" && sketchybar --set /volume.device\\.*/ label.color='
-							.. colors.bg1
+							.. colors.grey
 							.. " --set $NAME label.color="
 							.. colors.white,
 					})
@@ -153,7 +153,7 @@ end
 
 local function volume_scroll(env)
 	local delta = env.INFO.delta
-	if not (env.INFO.modifier == "ctrl") then
+	if env.INFO.modifier ~= "ctrl" then
 		delta = delta * 10.0
 	end
 
