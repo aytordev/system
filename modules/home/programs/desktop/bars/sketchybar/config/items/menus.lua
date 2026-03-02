@@ -1,38 +1,58 @@
+-- App menu bar items with curtain effect
+-- Shares the left side of the bar with workspaces.
+-- When menus expand, workspaces fade out (and vice versa).
 local settings = require("settings")
+local colors = require("colors")
 
--- Create a menu trigger item
-local menu_item = sbar.add("item", "menu_trigger", {
+-- Menu state
+local menu_visible = false
+
+-- Register custom events for curtain coordination
+sbar.add("event", "fade_out_spaces")
+sbar.add("event", "fade_in_spaces")
+
+-- Apple menu trigger (always visible)
+local menu_trigger = sbar.add("item", "menu_trigger", {
+	position = "left",
 	drawing = true,
 	updates = true,
 	icon = {
+		string = "􀣺",
 		font = {
-			size = 14.0,
+			family = settings.font.text,
+			style = "Regular",
+			size = 16.0,
 		},
-		padding_left = settings.padding.icon_item.icon.padding_left,
-		padding_right = settings.padding.icon_item.icon.padding_right,
-		string = "≡",
+		color = colors.white,
+		padding_left = 8,
+		padding_right = 8,
 	},
 	label = { drawing = false },
+	background = {
+		color = colors.bg1,
+		drawing = true,
+		corner_radius = 6,
+	},
 })
-
-menu_item:subscribe("mouse.clicked", function(env)
-	sbar.trigger("swap_menus_and_spaces")
-end)
 
 -- Maximum number of menu items to display
 local max_items = 15
 local menu_items = {}
 
--- Create the menu items that will appear inline
-for i = 1, max_items, 1 do
+-- Create inline menu items (hidden by default)
+for i = 1, max_items do
 	local menu = sbar.add("item", "menu." .. i, {
-		position = "left", -- Position them on the left of the bar
-		drawing = false, -- Hidden by default
+		position = "left",
+		drawing = false,
+		width = 0,
 		icon = { drawing = false },
 		label = {
 			font = {
+				family = settings.font.text,
 				style = settings.font.style_map["Semibold"],
+				size = 13.0,
 			},
+			color = colors.white,
 			padding_left = settings.paddings,
 			padding_right = settings.paddings,
 		},
@@ -41,31 +61,24 @@ for i = 1, max_items, 1 do
 	menu_items[i] = menu
 end
 
--- Menu watcher to monitor app changes
+-- Menu watcher for front app changes
 local menu_watcher = sbar.add("item", {
 	drawing = false,
 	updates = false,
 })
 
--- Menu state variable
-local menu_visible = false
-
--- Function to update menu contents
+-- Update menu contents from current app
 local function update_menus()
 	sbar.exec("$CONFIG_DIR/helpers/menus/bin/menus -l", function(menus)
-		-- Reset all menu items
 		for i = 1, max_items do
 			menu_items[i]:set({ drawing = false, width = 0 })
 		end
 
-		-- Update with new menu items
 		local id = 1
 		for menu in string.gmatch(menus, "[^\r\n]+") do
 			if id <= max_items then
 				menu_items[id]:set({
-					label = {
-						string = menu,
-					},
+					label = { string = menu },
 					drawing = menu_visible,
 					width = menu_visible and "dynamic" or 0,
 				})
@@ -77,99 +90,93 @@ local function update_menus()
 	end)
 end
 
--- Function to toggle the menu
-local function toggle_menu()
-	-- Toggle the menu state
-	menu_visible = not menu_visible
+-- Show menus with curtain effect
+local function show_menus()
+	menu_visible = true
+	menu_watcher:set({ updates = true })
 
-	if menu_visible then
-		-- Show menu items with animation
-		menu_watcher:set({ updates = true })
+	-- Fade out workspaces
+	sbar.trigger("fade_out_spaces")
 
-		-- Prepare menu items but keep them hidden until animation starts
-		update_menus()
+	-- Update menu content
+	update_menus()
 
-		-- Initialize items with drawing=false and width=0
+	-- Animate menu items in
+	sbar.animate("tanh", 30, function()
 		for i = 1, max_items do
 			local query = menu_items[i]:query()
-			local has_content = query.label.string ~= ""
-
-			if has_content then
-				-- Make sure items aren't visible at 0 width
+			if query and query.label and query.label.string ~= "" then
 				menu_items[i]:set({
-					drawing = false,
-					width = 0,
-					label = {
-						drawing = false,
-					},
+					drawing = true,
+					width = "dynamic",
+					label = { drawing = true },
 				})
 			end
 		end
+	end)
 
-		-- First make them drawing=true but with label still hidden
-		for i = 1, max_items do
-			local query = menu_items[i]:query()
-			local has_content = query.label.string ~= ""
-
-			if has_content then
-				menu_items[i]:set({ drawing = true })
-			end
-		end
-
-		-- Animate the expansion
-		sbar.animate("tanh", 30.0, function()
-			for i = 1, max_items do
-				local query = menu_items[i]:query()
-				local is_drawing = query.geometry.drawing == "on"
-
-				if is_drawing then
-					-- First set the width
-					menu_items[i]:set({ width = "dynamic" })
-					-- Then make label visible
-					menu_items[i]:set({
-						label = {
-							drawing = true,
-						},
-					})
-				end
-			end
-		end)
-	else
-		update_menus()
-		-- Hide menu items with animation
-		sbar.animate("tanh", 30.0, function()
-			for i = 1, max_items do
-				menu_items[i]:set({ width = 0, drawing = true })
-			end
-			for i = 1, max_items do
-				menu_items[i]:set({ width = 0, drawing = false })
-			end
-			menu_watcher:set({ updates = false })
-		end)
-		-- sbar.animate("tanh", 30, function()
-		--     for i = 1, max_items do
-		--         menu_items[i]:set({ width = 0 })
-		--     end
-		-- end, function()
-		--     for i = 1, max_items do
-		--         menu_items[i]:set({ drawing = false })
-		--     end
-		--     menu_watcher:set({ updates = false })
-		-- end)
-	end
+	-- Highlight trigger
+	menu_trigger:set({
+		icon = { color = colors.accent },
+	})
 end
 
--- Click to toggle menu
-menu_item:subscribe("mouse.clicked", function(env)
-	toggle_menu()
+-- Hide menus with curtain effect
+local function hide_menus()
+	menu_visible = false
+
+	-- Animate menu items out
+	sbar.animate("tanh", 30, function()
+		for i = 1, max_items do
+			menu_items[i]:set({ width = 0 })
+		end
+	end)
+
+	-- After animation, hide items and fade workspaces back in
+	-- Small delay to let the collapse animation finish
+	sbar.exec("sleep 0.3", function()
+		for i = 1, max_items do
+			menu_items[i]:set({ drawing = false })
+		end
+		menu_watcher:set({ updates = false })
+
+		-- Fade workspaces back in
+		sbar.trigger("fade_in_spaces")
+	end)
+
+	-- Reset trigger color
+	menu_trigger:set({
+		icon = { color = colors.white },
+	})
+end
+
+-- Toggle on click
+menu_trigger:subscribe("mouse.clicked", function(env)
+	if env.BUTTON == "left" then
+		if menu_visible then
+			hide_menus()
+		else
+			show_menus()
+		end
+	elseif env.BUTTON == "right" then
+		-- Right-click opens Apple menu
+		sbar.exec("$CONFIG_DIR/helpers/menus/bin/menus -s 'Apple' &")
+	end
 end)
 
--- Subscribe to front app changes
-menu_watcher:subscribe("front_app_switched", function(env)
-	update_menus()
+-- Auto-collapse when mouse leaves bar area
+menu_trigger:subscribe("mouse.exited.global", function()
+	if menu_visible then
+		hide_menus()
+	end
 end)
 
--- Initial update
+-- Update menu contents when frontmost app changes
+menu_watcher:subscribe("front_app_switched", function()
+	if menu_visible then
+		update_menus()
+	end
+end)
+
+-- Initial menu content load
 update_menus()
-
-return menu_watcher

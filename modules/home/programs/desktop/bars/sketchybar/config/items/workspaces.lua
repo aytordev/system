@@ -1,39 +1,24 @@
 local colors = require("colors")
 local settings = require("settings")
 local app_icons = require("helpers.app_icons")
+local constants = require("nix_constants")
+
+-- Configuration from Nix
+local ws_config = (constants.items and constants.items.workspaces) or {}
+local bounce_animation = ws_config.bounce_animation ~= false
+local deferred_loading = ws_config.deferred_loading ~= false
 
 -- Load AeroSpaceLua
 local Aerospace = require("helpers.aerospace")
 local aerospace = nil
-local max_retries = 30
-local retry_count = 0
 
--- Wait for AeroSpace connection with retry logic
-while retry_count < max_retries do
-	local success, result = pcall(function()
-		return Aerospace.new()
-	end)
+-- Root is used to handle event subscriptions
+local root = sbar.add("item", { drawing = false })
+local workspaces = {}
+local initialized = false
 
-	if success and result:is_initialized() then
-		aerospace = result
-		-- print("[WORKSPACES] Connected to AeroSpace successfully")
-		break
-	else
-		-- print(string.format("[WORKSPACES] Connection attempt %d/%d failed, retrying...", retry_count + 1, max_retries))
-		os.execute("sleep 0.5")
-		retry_count = retry_count + 1
-	end
-end
-
-if not aerospace or not aerospace:is_initialized() then
-	-- print("[WORKSPACES] ERROR: Failed to connect to AeroSpace after " .. max_retries .. " attempts")
-	return
-end
-
--- Build NSScreen ID to SketchyBar display position mapping (ONCE at startup)
--- AeroSpace uses NSScreen IDs, SketchyBar uses left-to-right physical positions
+-- Build NSScreen ID to SketchyBar display position mapping
 local nsscreen_to_display = {}
-local mapping_complete = false
 local log_file = "/tmp/sketchybar_workspaces.log"
 
 local function log(msg)
@@ -44,9 +29,8 @@ local function log(msg)
 	end
 end
 
--- Build the mapping synchronously at startup
+-- Build the mapping synchronously
 local function build_monitor_mapping()
-	-- Get monitor positions (left-to-right order from aerospace)
 	local monitors_output = aerospace:list_monitors()
 	local monitor_names_by_position = {}
 	for line in monitors_output:gmatch("[^\r\n]+") do
@@ -56,10 +40,9 @@ local function build_monitor_mapping()
 		end
 	end
 
-	-- Query workspaces to get NSScreen IDs and build the mapping
 	local workspace_info = aerospace:query_workspaces()
 	local processed = {}
-	nsscreen_to_display = {} -- Clear old mapping
+	nsscreen_to_display = {}
 	for _, ws in ipairs(workspace_info) do
 		local nsscreen_id = math.floor(ws["monitor-appkit-nsscreen-screens-id"])
 		local monitor_name = ws["monitor-name"] or ""
@@ -68,26 +51,14 @@ local function build_monitor_mapping()
 		if not processed[nsscreen_id] and monitor_names_by_position[monitor_name] then
 			nsscreen_to_display[nsscreen_id] = monitor_names_by_position[monitor_name]
 			processed[nsscreen_id] = true
-			log(
-				string.format(
-					"[MAPPING] NSScreen %d (%s) -> display %d",
-					nsscreen_id,
-					monitor_name,
-					nsscreen_to_display[nsscreen_id]
-				)
-			)
+			log(string.format(
+				"[MAPPING] NSScreen %d (%s) -> display %d",
+				nsscreen_id, monitor_name, nsscreen_to_display[nsscreen_id]
+			))
 		end
 	end
-	mapping_complete = true
 	log("[MAPPING] Complete")
 end
-
--- Build mapping synchronously before anything else
-build_monitor_mapping()
-
--- Root is used to handle event subscriptions
-local root = sbar.add("item", { drawing = false })
-local workspaces = {}
 
 -- AeroSpace mode indicator
 local mode_indicator = sbar.add("item", "aerospace.mode", {
@@ -111,11 +82,11 @@ local mode_indicator = sbar.add("item", "aerospace.mode", {
 })
 
 local function update_mode_indicator()
-	-- Query current mode using AeroSpaceLua API
+	if not aerospace then
+		return
+	end
 	aerospace:list_modes(true, function(current_mode)
-		-- print("[AEROSPACE MODE] Query result: [" .. current_mode .. "]")
 		current_mode = current_mode:match("^%s*(.-)%s*$")
-		-- print("[AEROSPACE MODE] Trimmed: [" .. current_mode .. "]")
 
 		local icon_str = "M"
 		local icon_color = colors.green
@@ -124,8 +95,6 @@ local function update_mode_indicator()
 			icon_str = "S"
 			icon_color = colors.yellow
 		end
-
-		-- print("[AEROSPACE MODE] Setting icon to: " .. icon_str)
 
 		mode_indicator:set({
 			icon = {
@@ -136,18 +105,16 @@ local function update_mode_indicator()
 	end)
 end
 
-mode_indicator:subscribe("aerospace_mode_change", function(env)
-	-- print("[AEROSPACE MODE] Event received! Querying current mode...")
+mode_indicator:subscribe("aerospace_mode_change", function()
 	update_mode_indicator()
 end)
 
--- Initialize mode on startup
-update_mode_indicator()
+-- Track previously focused workspace for bounce animation
+local prev_focused = nil
 
 -- Helper function to get windows grouped by workspace with callbacks
 local function withWindows(f)
 	aerospace:list_all_windows(function(windows)
-		-- Group windows by workspace
 		local open_windows = {}
 		for _, window in ipairs(windows) do
 			local workspace = window.workspace
@@ -158,11 +125,9 @@ local function withWindows(f)
 			table.insert(open_windows[workspace], app)
 		end
 
-		-- Get focused workspace
 		aerospace:list_current(function(focused_workspace)
 			focused_workspace = focused_workspace:match("^%s*(.-)%s*$")
 
-			-- Get workspace info (focused, visible, monitor)
 			aerospace:query_workspaces(function(workspace_info)
 				local visible_workspaces = {}
 				local workspace_monitors = {}
@@ -174,14 +139,7 @@ local function withWindows(f)
 					local nsscreen_id = math.floor(ws["monitor-appkit-nsscreen-screens-id"])
 					local display_id = nsscreen_to_display[nsscreen_id]
 					if not display_id then
-						log(
-							string.format(
-								"[WARNING] No mapping for NSScreen %d (ws %s, monitor %s), falling back",
-								nsscreen_id,
-								ws.workspace,
-								ws["monitor-name"]
-							)
-						)
+						log(string.format("[WARNING] No mapping for NSScreen %d (ws %s)", nsscreen_id, ws.workspace))
 						display_id = nsscreen_id
 					end
 					workspace_monitors[ws.workspace] = display_id
@@ -199,71 +157,48 @@ local function withWindows(f)
 end
 
 local function updateWindow(workspace_index, args)
-	local open_windows = args.open_windows[workspace_index]
+	local open_windows = args.open_windows[workspace_index] or {}
 	local focused_workspace = args.focused_workspace
 	local visible_workspaces = args.visible_workspaces
 	local workspace_monitors = args.workspace_monitors
 
-	if open_windows == nil then
-		open_windows = {}
-	end
-
 	local icon_line = ""
-	local no_app = true
-	for i, open_window in ipairs(open_windows) do
-		no_app = false
-		local app = open_window
-		local lookup = app_icons[app]
+	local no_app = #open_windows == 0
+	for _, open_window in ipairs(open_windows) do
+		local lookup = app_icons[open_window]
 		local icon = ((lookup == nil) and app_icons["Default"] or lookup)
 		icon_line = icon_line .. " " .. icon
 	end
 
-	-- Determine if this workspace is focused
 	local is_focused = workspace_index == focused_workspace
 
+	-- Check if this workspace is visible
+	local is_visible = false
+	for _, visible_ws in ipairs(visible_workspaces) do
+		if workspace_index == visible_ws.workspace then
+			is_visible = true
+			break
+		end
+	end
+
+	-- Bounce animation when workspace becomes focused
+	if bounce_animation and is_focused and prev_focused ~= workspace_index and workspaces[workspace_index] then
+		sbar.animate("sin", 15, function()
+			workspaces[workspace_index]:set({ y_offset = 6 })
+		end)
+		sbar.animate("sin", 15, function()
+			workspaces[workspace_index]:set({ y_offset = 0 })
+		end)
+	end
+
 	sbar.animate("tanh", 10.0, function()
-		-- Check if this workspace is visible
-		local is_visible = false
-		for _, visible_ws in ipairs(visible_workspaces) do
-			if workspace_index == visible_ws.workspace then
-				is_visible = true
-				break
-			end
+		if no_app and not is_visible and not is_focused then
+			workspaces[workspace_index]:set({ drawing = false })
+			return
 		end
 
-		if no_app and is_visible then
+		if no_app then
 			icon_line = " —"
-			workspaces[workspace_index]:set({
-				drawing = true,
-				icon = { highlight = is_focused },
-				label = {
-					string = icon_line,
-					highlight = is_focused,
-				},
-				display = workspace_monitors[workspace_index],
-			})
-			return
-		end
-
-		if no_app and workspace_index ~= focused_workspace then
-			workspaces[workspace_index]:set({
-				drawing = false,
-			})
-			return
-		end
-
-		if no_app and workspace_index == focused_workspace then
-			icon_line = " —"
-			workspaces[workspace_index]:set({
-				drawing = true,
-				icon = { highlight = is_focused },
-				label = {
-					string = icon_line,
-					highlight = is_focused,
-				},
-				display = workspace_monitors[workspace_index],
-			})
-			return
 		end
 
 		workspaces[workspace_index]:set({
@@ -283,6 +218,7 @@ local function updateWindows()
 		for workspace_index, _ in pairs(workspaces) do
 			updateWindow(workspace_index, args)
 		end
+		prev_focused = args.focused_workspace
 	end)
 end
 
@@ -292,80 +228,165 @@ local function updateWorkspaceMonitor()
 			local space_index = ws.workspace
 			local nsscreen_id = math.floor(ws["monitor-appkit-nsscreen-screens-id"])
 			local display_id = nsscreen_to_display[nsscreen_id] or nsscreen_id
-			-- print(string.format("[UPDATE_MONITOR] WS%s: NSScreen %d -> display %d", space_index, nsscreen_id, display_id))
 			if workspaces[space_index] then
-				workspaces[space_index]:set({
-					display = display_id,
-				})
+				workspaces[space_index]:set({ display = display_id })
 			end
 		end
 	end)
 end
 
--- Initialize workspaces
-aerospace:query_workspaces(function(workspace_info)
-	for _, entry in ipairs(workspace_info) do
-		local workspace_index = entry.workspace
+-- ── Curtain Effect Support ──────────────────────────────────────────────
+-- When menus expand, workspaces fade out. When menus collapse, fade back in.
 
-		local workspace = sbar.add("item", {
-			background = {
-				color = colors.bg1,
-				drawing = true,
-			},
-			click_script = "aerospace workspace " .. workspace_index .. " 2>/dev/null",
-			drawing = false, -- Hide all items at first
-			icon = {
-				color = colors.with_alpha(colors.white, 0.3),
-				drawing = true,
-				font = { family = settings.font.numbers },
-				highlight_color = colors.white,
-				padding_left = 5,
-				padding_right = 4,
-				string = workspace_index,
-			},
-			label = {
-				color = colors.with_alpha(colors.white, 0.3),
-				drawing = true,
-				font = "sketchybar-app-font:Regular:16.0",
-				highlight_color = colors.white,
-				padding_left = 2,
-				padding_right = 12,
-				y_offset = -1,
-			},
-		})
-
-		workspaces[workspace_index] = workspace
-	end
-
-	-- Initial setup
-	updateWindows()
-	updateWorkspaceMonitor()
-
-	-- Subscribe to window creation/destruction events
-	root:subscribe("aerospace_workspace_change", function(env)
-		-- updateWindows() will handle both app icons and highlighting
-		updateWindows()
-	end)
-
-	-- Subscribe to front app changes too
-	root:subscribe("front_app_switched", function()
-		updateWindows()
-	end)
-
-	root:subscribe("display_change", function()
-		-- Rebuild the NSScreen to display mapping when monitors change
-		build_monitor_mapping()
-		updateWorkspaceMonitor()
-		updateWindows()
-	end)
-
-	aerospace:list_current(function(focused_workspace)
-		focused_workspace = focused_workspace:match("^%s*(.-)%s*$")
-		if workspaces[focused_workspace] then
-			workspaces[focused_workspace]:set({
-				icon = { highlight = true },
-				label = { highlight = true },
+root:subscribe("fade_out_spaces", function()
+	sbar.animate("tanh", 30, function()
+		for _, ws in pairs(workspaces) do
+			ws:set({
+				width = 0,
+				icon = { color = colors.transparent },
+				label = { color = colors.transparent },
 			})
 		end
+		mode_indicator:set({
+			width = 0,
+			icon = { color = colors.transparent },
+		})
 	end)
 end)
+
+root:subscribe("fade_in_spaces", function()
+	sbar.animate("tanh", 30, function()
+		for _, ws in pairs(workspaces) do
+			ws:set({
+				width = "dynamic",
+				icon = { color = colors.with_alpha(colors.white, 0.3) },
+				label = { color = colors.with_alpha(colors.white, 0.3) },
+			})
+		end
+		mode_indicator:set({
+			width = "dynamic",
+			icon = { color = colors.green },
+		})
+	end)
+	-- Restore proper highlight state
+	updateWindows()
+end)
+
+-- ── Initialization ──────────────────────────────────────────────────────
+
+local function initialize_workspaces()
+	if initialized then
+		return
+	end
+	initialized = true
+
+	build_monitor_mapping()
+	update_mode_indicator()
+
+	aerospace:query_workspaces(function(workspace_info)
+		for _, entry in ipairs(workspace_info) do
+			local workspace_index = entry.workspace
+
+			local workspace = sbar.add("item", {
+				background = {
+					color = colors.bg1,
+					drawing = true,
+				},
+				click_script = "aerospace workspace " .. workspace_index .. " 2>/dev/null",
+				drawing = false,
+				icon = {
+					color = colors.with_alpha(colors.white, 0.3),
+					drawing = true,
+					font = { family = settings.font.numbers },
+					highlight_color = colors.white,
+					padding_left = 5,
+					padding_right = 4,
+					string = workspace_index,
+				},
+				label = {
+					color = colors.with_alpha(colors.white, 0.3),
+					drawing = true,
+					font = "sketchybar-app-font:Regular:16.0",
+					highlight_color = colors.white,
+					padding_left = 2,
+					padding_right = 12,
+					y_offset = -1,
+				},
+			})
+
+			workspaces[workspace_index] = workspace
+		end
+
+		updateWindows()
+		updateWorkspaceMonitor()
+
+		root:subscribe("aerospace_workspace_change", function()
+			updateWindows()
+		end)
+
+		root:subscribe("front_app_switched", function()
+			updateWindows()
+		end)
+
+		root:subscribe("display_change", function()
+			build_monitor_mapping()
+			updateWorkspaceMonitor()
+			updateWindows()
+		end)
+
+		aerospace:list_current(function(focused_workspace)
+			focused_workspace = focused_workspace:match("^%s*(.-)%s*$")
+			prev_focused = focused_workspace
+			if workspaces[focused_workspace] then
+				workspaces[focused_workspace]:set({
+					icon = { highlight = true },
+					label = { highlight = true },
+				})
+			end
+		end)
+	end)
+end
+
+-- ── Deferred or Immediate Loading ───────────────────────────────────────
+
+if deferred_loading then
+	-- Register custom event for deferred loading
+	sbar.add("event", "aerospace_is_ready")
+
+	-- Background poll: wait for AeroSpace to respond
+	sbar.exec(
+		'while ! aerospace list-workspaces --all 2>/dev/null; do sleep 0.5; done && sketchybar --trigger aerospace_is_ready',
+		function() end
+	)
+
+	-- When AeroSpace is ready, connect and initialize
+	root:subscribe("aerospace_is_ready", function()
+		local success, result = pcall(function()
+			return Aerospace.new()
+		end)
+		if success and result:is_initialized() then
+			aerospace = result
+			initialize_workspaces()
+		end
+	end)
+else
+	-- Blocking retry loop (original behavior)
+	local max_retries = 30
+	local retry_count = 0
+	while retry_count < max_retries do
+		local success, result = pcall(function()
+			return Aerospace.new()
+		end)
+		if success and result:is_initialized() then
+			aerospace = result
+			break
+		else
+			os.execute("sleep 0.5")
+			retry_count = retry_count + 1
+		end
+	end
+
+	if aerospace and aerospace:is_initialized() then
+		initialize_workspaces()
+	end
+end

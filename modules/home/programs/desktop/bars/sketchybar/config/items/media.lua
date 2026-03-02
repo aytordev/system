@@ -1,14 +1,24 @@
-local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
-local whitelist = {
-	["Google Chrome"] = true,
-	["Firefox"] = true,
-	["Music"] = true,
-	["Plexamp"] = true,
-	["Safari"] = true,
-	["Spotify"] = true,
-}
+local constants = require("nix_constants")
+
+-- Build whitelist from Nix configuration
+local whitelist = {}
+if constants.items and constants.items.media and constants.items.media.whitelist then
+	for _, app in ipairs(constants.items.media.whitelist) do
+		whitelist[app] = true
+	end
+else
+	-- Fallback if no Nix config available
+	whitelist = {
+		["Google Chrome"] = true,
+		["Firefox"] = true,
+		["Music"] = true,
+		["Plexamp"] = true,
+		["Safari"] = true,
+		["Spotify"] = true,
+	}
+end
 
 -- Function to get the appropriate background color based on media app
 local function get_media_app_color(app_name)
@@ -81,6 +91,6 @@ now_playing:subscribe("media_change", function(env)
 end)
 
 -- Make sure the item is updated when sketchybar starts
-now_playing:subscribe("system_woke", function(env)
+now_playing:subscribe("system_woke", function(_env)
 	sbar.trigger("media_change")
 end)
