@@ -123,14 +123,14 @@
     ];
 
   # ── Right bracket endpoints (range syntax) ──
-  # Right items ordered rightmost first (same as require order)
+  # Theme picker is intentionally excluded — it sits outside the bracket
+  # on the far right. Media is also outside, to the left of the bracket.
   rightItemNames =
     lib.optionals cfg.items.calendar.enable ["calendar.time"]
     ++ lib.optionals cfg.items.vpn.enable ["vpn"]
     ++ lib.optionals cfg.items.widgets.brew.enable ["widgets.brew"]
     ++ lib.optionals cfg.items.widgets.volume.enable ["widgets.volume2"]
     ++ lib.optionals cfg.items.widgets.battery.enable ["widgets.battery"]
-    ++ lib.optionals cfg.items.themePicker.enable ["theme_picker"]
     ++ lib.optionals cfg.items.pomodoro.enable ["pomodoro"]
     ++ lib.optionals cfg.items.clipboard.enable ["clipboard"];
 
@@ -192,8 +192,12 @@
       ];
 
     # Right side: first added = rightmost on screen
+    # Theme picker goes first (far right, outside bracket)
     rightLines =
-      lib.optionals cfg.items.calendar.enable [
+      lib.optionals cfg.items.themePicker.enable [
+        ''require("items.theme_picker")''
+      ]
+      ++ lib.optionals cfg.items.calendar.enable [
         ''require("items.calendar")''
       ]
       ++ lib.optionals cfg.items.vpn.enable [
@@ -207,9 +211,6 @@
       ]
       ++ lib.optionals cfg.items.widgets.battery.enable [
         ''require("items.widgets.battery")''
-      ]
-      ++ lib.optionals cfg.items.themePicker.enable [
-        ''require("items.theme_picker")''
       ]
       ++ lib.optionals cfg.items.pomodoro.enable [
         ''require("items.pomodoro")''
