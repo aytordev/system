@@ -2,8 +2,10 @@ local settings = require("settings")
 local colors = require("colors")
 
 -- Equivalent to the --default domain
+-- background.drawing defaults to false — brackets provide group backgrounds
 sbar.default({
 	background = {
+		drawing = false,
 		border_color = colors.accent_bright,
 		border_width = 0,
 		color = colors.bg1,
