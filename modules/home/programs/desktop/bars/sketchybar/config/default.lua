@@ -6,11 +6,11 @@ local colors = require("colors")
 sbar.default({
 	background = {
 		drawing = false,
-		border_color = colors.accent_bright,
-		border_width = 0,
 		color = colors.bg1,
+		border_color = colors.bg2,
+		border_width = 1,
 		corner_radius = 15,
-		height = settings.height,
+		height = 25,
 		image = {
 			corner_radius = 15,
 			border_color = colors.grey,
@@ -25,8 +25,9 @@ sbar.default({
 		},
 		color = colors.white,
 		highlight_color = colors.bg1,
-		padding_left = 0,
-		padding_right = 0,
+		padding_left = settings.paddings,
+		padding_right = settings.paddings,
+		y_offset = 1,
 	},
 	label = {
 		font = {
@@ -35,13 +36,13 @@ sbar.default({
 			size = settings.font.size,
 		},
 		color = colors.white,
-		padding_left = settings.paddings,
 		padding_right = settings.paddings,
 	},
 	popup = {
 		align = "center",
 		background = {
-			border_width = 0,
+			border_width = 1,
+			border_color = colors.popup.border,
 			corner_radius = 15,
 			color = colors.popup.bg,
 			shadow = { drawing = true },

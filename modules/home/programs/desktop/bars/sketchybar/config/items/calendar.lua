@@ -1,5 +1,6 @@
 -- Stacked date/time display
 -- Time on top, date on bottom (two-line layout).
+local colors = require("colors")
 local settings = require("settings")
 
 local base_size = settings.font.size
@@ -37,6 +38,7 @@ local cal_date = sbar.add("item", "calendar.date", {
 			style = settings.font.style_map["Regular"],
 			size = base_size * 0.70,
 		},
+		color = colors.grey,
 		padding_left = 6,
 		padding_right = 6,
 		align = "right",
@@ -63,3 +65,5 @@ end
 
 cal_time:subscribe("mouse.clicked", on_click)
 cal_date:subscribe("mouse.clicked", on_click)
+
+update_calendar()

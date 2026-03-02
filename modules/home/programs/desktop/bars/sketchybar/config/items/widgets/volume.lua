@@ -1,41 +1,20 @@
 local colors = require("colors")
 local icons = require("icons")
-local settings = require("settings")
 
 local popup_width = 150
 
--- Volume percentage display
+-- Volume percentage (hidden by default, used internally for slider sync)
 local volume_percent = sbar.add("item", "widgets.volume1", {
 	position = "right",
 	icon = { drawing = false },
-	label = {
-		string = "??%",
-		padding_left = -1,
-		padding_right = settings.padding.icon_label_item.label.padding_right,
-		font = {
-			family = settings.font.numbers,
-			style = settings.font.style_map["Bold"],
-			size = settings.label_size,
-		},
-		align = "right",
-	},
+	label = { drawing = false },
 	background = { drawing = false },
 })
 
--- Volume icon display
+-- Volume icon display (icon-only, no label)
 local volume_icon = sbar.add("item", "widgets.volume2", {
 	position = "right",
-	icon = {
-		color = colors.white,
-		font = {
-			family = settings.font_icon.text,
-			style = settings.font_icon.style_map["Bold"],
-			size = settings.icon_size,
-		},
-		padding_left = settings.padding.icon_label_item.icon.padding_left - 4,
-		padding_right = settings.padding.icon_item.icon.padding_right - 10,
-		string = icons.volume._100,
-	},
+	icon = { string = icons.volume._100 },
 	background = { drawing = false },
 	label = { drawing = false },
 })

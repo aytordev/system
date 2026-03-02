@@ -19,11 +19,11 @@ sbar.exec(
 		.. " network_update 2.0"
 )
 
-local rate_label_width = 60
+local rate_label_width = 55
 local rate_font = {
 	family = settings.font.numbers,
 	style = settings.font.style_map["Bold"],
-	size = 10.0,
+	size = settings.font.size * 0.75,
 }
 
 -- Upload item (top line, stacked)

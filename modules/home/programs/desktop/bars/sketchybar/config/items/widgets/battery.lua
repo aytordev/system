@@ -2,27 +2,11 @@ local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 
--- Battery indicator item
+-- Battery indicator — icon-only by default, label appears on hover or low battery
 local battery = sbar.add("item", "widgets.battery", {
 	position = "right",
 	update_freq = 180,
-	icon = {
-		font = {
-			family = settings.font_icon.text,
-			style = settings.font_icon.style_map["Bold"],
-			size = settings.icon_size,
-		},
-		padding_left = settings.padding.icon_label_item.icon.padding_left,
-		padding_right = settings.padding.icon_label_item.icon.padding_right,
-	},
-	label = {
-		font = {
-			family = settings.font.numbers,
-			style = settings.font.style_map["Bold"],
-			size = settings.label_size,
-		},
-		padding_right = settings.padding.icon_label_item.label.padding_right,
-	},
+	label = { drawing = false },
 })
 
 -- Time remaining popup item
@@ -46,7 +30,7 @@ local remaining_time = sbar.add("item", {
 })
 
 -- Battery update function
-battery:subscribe({ "routine", "power_source_change", "system_woke" }, function()
+local function battery_update()
 	sbar.exec("pmset -g batt", function(batt_info)
 		local icon
 		local label = "?"
@@ -57,8 +41,9 @@ battery:subscribe({ "routine", "power_source_change", "system_woke" }, function(
 			label = charge .. "%"
 		end
 
-		local color = colors.green
+		local color = colors.white
 		local charging, _, _ = batt_info:find("AC Power")
+		local show_label = false
 
 		if charging then
 			icon = icons.battery.charging
@@ -72,9 +57,11 @@ battery:subscribe({ "routine", "power_source_change", "system_woke" }, function(
 			elseif found and charge > 20 then
 				icon = icons.battery._25
 				color = colors.orange
+				show_label = true
 			else
 				icon = icons.battery._0
 				color = colors.red
+				show_label = true
 			end
 		end
 
@@ -84,13 +71,21 @@ battery:subscribe({ "routine", "power_source_change", "system_woke" }, function(
 		end
 
 		battery:set({
-			icon = {
-				string = icon,
-				color = color,
-			},
-			label = { string = lead .. label },
+			icon = { string = icon, color = color },
+			label = { string = lead .. label, color = color, drawing = show_label },
 		})
 	end)
+end
+
+battery:subscribe({ "routine", "power_source_change", "system_woke" }, battery_update)
+
+-- Hover to show percentage
+battery:subscribe("mouse.entered", function()
+	battery:set({ label = { drawing = true } })
+end)
+
+battery:subscribe("mouse.exited", function()
+	battery_update()
 end)
 
 -- Click handler for popup

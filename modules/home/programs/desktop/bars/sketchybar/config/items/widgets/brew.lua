@@ -3,25 +3,14 @@ local settings = require("settings")
 
 local brew = sbar.add("item", "widgets.brew", {
 	position = "right",
-	update_freq = 3600, -- Check every hour (3600s) for efficiency
+	update_freq = 3600,
 	icon = {
-		string = "󰏖", -- Nerd font brew icon
-		font = {
-			family = settings.font_icon.text,
-			style = settings.font_icon.style_map["Bold"],
-			size = settings.icon_size,
-		},
-		padding_left = settings.padding.icon_label_item.icon.padding_left,
-		padding_right = settings.padding.icon_label_item.icon.padding_right,
+		string = "󰏖",
+		padding_right = settings.paddings * 0.5,
 	},
 	label = {
 		string = "?",
-		font = {
-			family = settings.font.numbers,
-			style = settings.font.style_map["Bold"],
-			size = settings.label_size,
-		},
-		padding_right = settings.padding.icon_label_item.label.padding_right,
+		padding_right = 0,
 	},
 	popup = {
 		align = "center",
