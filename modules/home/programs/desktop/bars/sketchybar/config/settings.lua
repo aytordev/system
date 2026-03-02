@@ -1,5 +1,5 @@
 -- Settings module - consumes values from nix_constants.lua
-local constants = require("nix_constants")
+local constants = require("nix_constants") -- luacheck: ignore 211
 
 return {
 	font = {

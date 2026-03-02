@@ -1,4 +1,3 @@
-local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 
@@ -27,7 +26,7 @@ local ram = sbar.add("item", "widgets.ram", {
 	},
 })
 
-ram:subscribe({ "routine", "forced" }, function(env)
+ram:subscribe({ "routine", "forced" }, function()
 	sbar.exec("memory_pressure", function(output)
 		-- Parse memory pressure output to calculate RAM usage
 		local pages_free = output:match("Pages free:%s+(%d+)")
@@ -76,7 +75,7 @@ ram:subscribe({ "routine", "forced" }, function(env)
 	end)
 end)
 
-ram:subscribe("mouse.clicked", function(env)
+ram:subscribe("mouse.clicked", function()
 	sbar.exec("open -a 'Activity Monitor'")
 end)
 

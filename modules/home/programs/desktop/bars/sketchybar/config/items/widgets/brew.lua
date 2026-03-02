@@ -1,4 +1,3 @@
-local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 
@@ -51,7 +50,7 @@ local function is_package_line(line)
 	return true
 end
 
-local function update_brew(env)
+local function update_brew()
 	local brew_cmd = '/bin/zsh -c "brew outdated -q"'
 
 	-- print("[BREW OUTDATED] Running command: " .. brew_cmd)
@@ -70,9 +69,7 @@ local function update_brew(env)
 				count = count + 1
 				table.insert(cached_packages, line)
 				-- print("[BREW OUTDATED] Valid package: " .. line)
-			else
-				-- print("[BREW OUTDATED] Filtered line: " .. line)
-			end
+				end
 		end
 
 		-- print("[BREW OUTDATED] Final count: " .. count .. ", cached: " .. #cached_packages)
@@ -157,7 +154,7 @@ local function populate_popup()
 end
 
 -- Click to toggle popup
-brew:subscribe("mouse.clicked", function(env)
+brew:subscribe("mouse.clicked", function()
 	local query = brew:query()
 	local should_draw = query and query.popup and query.popup.drawing == "off" or true
 

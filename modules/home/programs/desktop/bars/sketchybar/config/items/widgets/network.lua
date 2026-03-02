@@ -113,15 +113,15 @@ network_down:subscribe("network_update", function(env)
 	})
 end)
 
-network_up:subscribe("mouse.clicked", function(env)
+network_up:subscribe("mouse.clicked", function()
 	sbar.exec("open -a 'Activity Monitor'")
 end)
 
-network_down:subscribe("mouse.clicked", function(env)
+network_down:subscribe("mouse.clicked", function()
 	sbar.exec("open -a 'Activity Monitor'")
 end)
 
-network:subscribe("mouse.clicked", function(env)
+network:subscribe("mouse.clicked", function()
 	sbar.exec("open -a 'Activity Monitor'")
 end)
 
