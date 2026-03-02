@@ -35,11 +35,13 @@ local function get_media_app_color(app_name)
 	end
 end
 
-local now_playing = sbar.add("item", {
+local now_playing = sbar.add("item", "now_playing", {
 	position = "right",
 	drawing = false,
 	background = {
+		drawing = true,
 		color = colors.spotify_green,
+		corner_radius = 9,
 	},
 	icon = {
 		padding_left = settings.padding.icon_label_item.icon.padding_left,
