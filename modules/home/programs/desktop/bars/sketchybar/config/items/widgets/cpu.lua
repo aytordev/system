@@ -7,7 +7,7 @@ local settings = require("settings")
 sbar.exec("killall cpu_load >/dev/null; $CONFIG_DIR/helpers/event_providers/cpu_load/bin/cpu_load cpu_update 2.0")
 
 local cpu = sbar.add("item", "widgets.cpu", {
-	position = "right",
+	position = "left",
 	icon = {
 		string = icons.cpu,
 		font = {
@@ -58,16 +58,4 @@ cpu:subscribe("mouse.clicked", function()
 	sbar.exec("open -a 'Activity Monitor'")
 end)
 
--- Background around the cpu item
-sbar.add("bracket", "widgets.cpu.bracket", { cpu.name }, {
-	background = { color = colors.bg1 },
-})
-
--- Padding after cpu item
-sbar.add("item", "widgets.cpu.padding", {
-	position = "right",
-	width = settings.group_paddings,
-	background = { drawing = false },
-	icon = { drawing = false },
-	label = { drawing = false },
-})
+-- Bracket grouping is handled by the unified resources.bracket in init.lua

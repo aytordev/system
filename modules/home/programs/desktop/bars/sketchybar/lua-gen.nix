@@ -86,74 +86,178 @@
   # ── Items Registry ─────────────────────────────────────────────────────
 
   # Fixed ordering determines bar layout.
-  # Left side first, then right side.
-  itemRegistry = [
-    {
-      luaPath = "items.menus";
-      enable = cfg.items.menus.enable;
-    }
-    {
-      luaPath = "items.workspaces";
-      enable = cfg.items.workspaces.enable;
-    }
-    {
-      luaPath = "items.calendar";
-      enable = cfg.items.calendar.enable;
-    }
-    {
-      luaPath = "items.vpn";
-      enable = cfg.items.vpn.enable;
-    }
-    {
-      luaPath = "items.widgets.brew";
-      enable = cfg.items.widgets.brew.enable;
-    }
-    {
-      luaPath = "items.widgets.volume";
-      enable = cfg.items.widgets.volume.enable;
-    }
-    {
-      luaPath = "items.widgets.battery";
-      enable = cfg.items.widgets.battery.enable;
-    }
-    {
-      luaPath = "items.widgets.network";
-      enable = cfg.items.widgets.network.enable;
-    }
-    {
-      luaPath = "items.widgets.ram";
-      enable = cfg.items.widgets.ram.enable;
-    }
-    {
-      luaPath = "items.widgets.cpu";
-      enable = cfg.items.widgets.cpu.enable;
-    }
-    {
-      luaPath = "items.theme_picker";
-      enable = cfg.items.themePicker.enable;
-    }
-    {
-      luaPath = "items.pomodoro";
-      enable = cfg.items.pomodoro.enable;
-    }
-    {
-      luaPath = "items.clipboard";
-      enable = cfg.items.clipboard.enable;
-    }
-    {
-      luaPath = "items.media";
-      enable = cfg.items.media.enable;
-    }
-  ];
+  # Left side: menus → workspaces → front_app → resources (cpu, ram, network)
+  # Right side (first added = rightmost): calendar → vpn → brew → volume →
+  #   battery → theme_picker → pomodoro → clipboard → media
 
-  enabledItems = builtins.filter (i: i.enable) itemRegistry;
+  # ── Layout Generation ────────────────────────────────────────────────
+
+  # Separator: invisible item creating a gap between bracket groups
+  mkSeparator = name: pos: ''sbar.add("item", "${name}", {position = "${pos}", icon = {drawing = false}, label = {drawing = false}})'';
+
+  # Bracket using range syntax: wraps all items visually between first and last
+  mkRangeBracket = name: first: last:
+    ''sbar.add("bracket", "${name}", {"${first}", "${last}"}, {background = {color = colors.bg1}})'';
+
+  # Bracket with explicit item list
+  mkListBracket = name: items: let
+    itemsStr = builtins.concatStringsSep ", " (map (i: "\"${i}\"") items);
+  in ''sbar.add("bracket", "${name}", {${itemsStr}}, {background = {color = colors.bg1}})'';
+
+  # ── Section flags ──
+  hasMenus = cfg.items.menus.enable;
+  hasSpaces = cfg.items.workspaces.enable || cfg.items.frontApp.enable;
+  hasResources =
+    cfg.items.widgets.cpu.enable
+    || cfg.items.widgets.ram.enable
+    || cfg.items.widgets.network.enable;
+
+  # ── Resource bracket items ──
+  resourceItems =
+    lib.optionals cfg.items.widgets.cpu.enable ["widgets.cpu"]
+    ++ lib.optionals cfg.items.widgets.ram.enable ["widgets.ram"]
+    ++ lib.optionals cfg.items.widgets.network.enable [
+      "widgets.network.padding"
+      "widgets.network.up"
+      "widgets.network.down"
+    ];
+
+  # ── Right bracket endpoints (range syntax) ──
+  # Right items ordered rightmost first (same as require order)
+  rightItemNames =
+    lib.optionals cfg.items.calendar.enable ["calendar.time"]
+    ++ lib.optionals cfg.items.vpn.enable ["vpn"]
+    ++ lib.optionals cfg.items.widgets.brew.enable ["widgets.brew"]
+    ++ lib.optionals cfg.items.widgets.volume.enable ["widgets.volume2"]
+    ++ lib.optionals cfg.items.widgets.battery.enable ["widgets.battery"]
+    ++ lib.optionals cfg.items.themePicker.enable ["theme_picker"]
+    ++ lib.optionals cfg.items.pomodoro.enable ["pomodoro"]
+    ++ lib.optionals cfg.items.clipboard.enable ["clipboard"];
+
+  # ── Reorder command for deferred workspace loading ──
+  leftItemOrder =
+    lib.optionals hasMenus ["menu_trigger"]
+    ++ lib.optionals hasMenus ["separator.menus"]
+    ++ lib.optionals cfg.items.workspaces.enable ["aerospace.mode" "/space\\\\..*/"]
+    ++ lib.optionals cfg.items.frontApp.enable ["front_app"]
+    ++ lib.optionals (hasSpaces && hasResources) ["separator.resources"]
+    ++ lib.optionals cfg.items.widgets.cpu.enable ["widgets.cpu"]
+    ++ lib.optionals cfg.items.widgets.ram.enable ["widgets.ram"]
+    ++ lib.optionals cfg.items.widgets.network.enable [
+      "widgets.network.padding"
+      "widgets.network.up"
+      "widgets.network.down"
+    ];
+
+  reorderStr = builtins.concatStringsSep " " leftItemOrder;
+
+  # ── Spaces bracket endpoints ──
+  spacesFirst =
+    if cfg.items.workspaces.enable
+    then "aerospace.mode"
+    else "front_app";
+  spacesLast =
+    if cfg.items.frontApp.enable
+    then "front_app"
+    else "aerospace.mode";
+
+  # ── Build generated init.lua ──────────────────────────────────────────
 
   generatedItemsInit = let
-    requireLines = builtins.concatStringsSep "\n"
-      (map (i: "require(\"${i.luaPath}\")") enabledItems);
+    # Left side: menus → separator → workspaces → front_app → separator → resources
+    leftLines =
+      lib.optionals cfg.items.menus.enable [
+        ''require("items.menus")''
+      ]
+      ++ lib.optionals (hasMenus && hasSpaces) [
+        (mkSeparator "separator.menus" "left")
+      ]
+      ++ lib.optionals cfg.items.workspaces.enable [
+        ''require("items.workspaces")''
+      ]
+      ++ lib.optionals cfg.items.frontApp.enable [
+        ''require("items.front_app")''
+      ]
+      ++ lib.optionals (hasSpaces && hasResources) [
+        (mkSeparator "separator.resources" "left")
+      ]
+      ++ lib.optionals cfg.items.widgets.cpu.enable [
+        ''require("items.widgets.cpu")''
+      ]
+      ++ lib.optionals cfg.items.widgets.ram.enable [
+        ''require("items.widgets.ram")''
+      ]
+      ++ lib.optionals cfg.items.widgets.network.enable [
+        ''require("items.widgets.network")''
+      ];
+
+    # Right side: first added = rightmost on screen
+    rightLines =
+      lib.optionals cfg.items.calendar.enable [
+        ''require("items.calendar")''
+      ]
+      ++ lib.optionals cfg.items.vpn.enable [
+        ''require("items.vpn")''
+      ]
+      ++ lib.optionals cfg.items.widgets.brew.enable [
+        ''require("items.widgets.brew")''
+      ]
+      ++ lib.optionals cfg.items.widgets.volume.enable [
+        ''require("items.widgets.volume")''
+      ]
+      ++ lib.optionals cfg.items.widgets.battery.enable [
+        ''require("items.widgets.battery")''
+      ]
+      ++ lib.optionals cfg.items.themePicker.enable [
+        ''require("items.theme_picker")''
+      ]
+      ++ lib.optionals cfg.items.pomodoro.enable [
+        ''require("items.pomodoro")''
+      ]
+      ++ lib.optionals cfg.items.clipboard.enable [
+        ''require("items.clipboard")''
+      ]
+      ++ lib.optionals cfg.items.media.enable [
+        ''require("items.media")''
+      ];
+
+    allLines = leftLines ++ rightLines;
+
+    # Static brackets (created immediately)
+    bracketLines =
+      lib.optionals (builtins.length resourceItems >= 2) [
+        (mkListBracket "resources.bracket" resourceItems)
+      ]
+      ++ lib.optionals (builtins.length rightItemNames >= 2) [
+        (mkRangeBracket "right.bracket" (builtins.head rightItemNames) (lib.last rightItemNames))
+      ];
+
+    # Deferred reorder + spaces bracket (only when workspaces use deferred loading)
+    deferredLines =
+      if cfg.items.workspaces.enable
+      then [
+        ''local _reorder = sbar.add("item", {drawing = false})''
+        ''_reorder:subscribe("aerospace_is_ready", function()''
+        ''  sbar.exec("sketchybar --reorder ${reorderStr}")''
+      ]
+      ++ lib.optionals hasSpaces [
+        ''  sbar.add("bracket", "spaces.bracket", {"${spacesFirst}", "${spacesLast}"}, {background = {color = colors.bg1}})''
+      ]
+      ++ [
+        ''end)''
+      ]
+      else [];
+
+    bodyLines =
+      allLines
+      ++ (
+        if (bracketLines != [] || deferredLines != [])
+        then ["" ''local colors = require("colors")''] ++ bracketLines ++ deferredLines
+        else []
+      );
   in ''
     -- Auto-generated by Nix. Do not edit manually.
-    ${requireLines}
+    ${builtins.concatStringsSep "\n" bodyLines}
   '';
 
   # ── Per-item Configuration ─────────────────────────────────────────────
@@ -167,7 +271,7 @@
   in
     lib.filterAttrs (_: v: v != {}) {
       media = optionalItem cfg.items.media.enable {
-        whitelist = cfg.items.media.whitelist;
+        inherit (cfg.items.media) whitelist;
       };
       workspaces = optionalItem cfg.items.workspaces.enable {
         bounce_animation = cfg.items.workspaces.bounceAnimation;
@@ -185,7 +289,8 @@
   # ── Packages ───────────────────────────────────────────────────────────
 
   # Base packages always needed
-  basePackages = with pkgs; [
+  inherit (pkgs) coreutils curl gh gh-notify gnugrep gnused;
+  basePackages = [
     coreutils
     curl
     gh
@@ -195,10 +300,10 @@
   ];
 
   # Conditional packages based on enabled items
-  conditionalPackages = with pkgs;
-    lib.optionals cfg.items.workspaces.enable [aerospace]
-    ++ lib.optionals cfg.items.widgets.volume.enable [blueutil switchaudio-osx]
-    ++ lib.optionals cfg.items.menus.enable [jankyborders];
+  conditionalPackages =
+    lib.optionals cfg.items.workspaces.enable [pkgs.aerospace]
+    ++ lib.optionals cfg.items.widgets.volume.enable [pkgs.blueutil pkgs.switchaudio-osx]
+    ++ lib.optionals cfg.items.menus.enable [pkgs.jankyborders];
 
   allPackages = basePackages ++ conditionalPackages ++ cfg.extraPackages;
 
@@ -254,7 +359,9 @@
     },
         topmost = "${cfg.bar.topmost}",
         padding_left = ${toString cfg.bar.paddingLeft},
-        padding_right = ${toString cfg.bar.paddingRight}
+        padding_right = ${toString cfg.bar.paddingRight},
+        corner_radius = ${toString cfg.bar.cornerRadius},
+        border_width = ${toString cfg.bar.borderWidth}
       }${itemsSection}
     }
   '';

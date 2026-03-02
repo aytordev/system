@@ -165,13 +165,4 @@ brew:subscribe("mouse.clicked", function()
 	sbar.exec("sketchybar --set widgets.brew popup.drawing=toggle")
 end)
 
--- Background around the brew item
-sbar.add("bracket", "widgets.brew.bracket", { brew.name }, {
-	background = { color = colors.bg1 },
-})
-
--- Padding after brew item
-sbar.add("item", "widgets.brew.padding", {
-	position = "right",
-	width = settings.group_paddings,
-})
+-- Bracket grouping is handled by the unified right.bracket in init.lua

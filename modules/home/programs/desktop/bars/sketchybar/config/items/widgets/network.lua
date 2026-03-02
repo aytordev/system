@@ -28,7 +28,7 @@ local rate_font = {
 
 -- Upload item (top line, stacked)
 local network_up = sbar.add("item", "widgets.network.up", {
-	position = "right",
+	position = "left",
 	width = 0,
 	padding_left = 0,
 	padding_right = 0,
@@ -48,7 +48,7 @@ local network_up = sbar.add("item", "widgets.network.up", {
 
 -- Download item (bottom line, stacked)
 local network_down = sbar.add("item", "widgets.network.down", {
-	position = "right",
+	position = "left",
 	padding_left = 0,
 	padding_right = 0,
 	icon = { drawing = false },
@@ -67,7 +67,7 @@ local network_down = sbar.add("item", "widgets.network.down", {
 
 -- Padding item
 local network = sbar.add("item", "widgets.network.padding", {
-	position = "right",
+	position = "left",
 	label = { drawing = false },
 })
 
@@ -125,17 +125,4 @@ network:subscribe("mouse.clicked", function()
 	sbar.exec("open -a 'Activity Monitor'")
 end)
 
--- Background bracket around all network items
-sbar.add("bracket", "widgets.network.bracket", {
-	network.name,
-	network_up.name,
-	network_down.name,
-}, {
-	background = { color = colors.bg1 },
-})
-
--- Padding after network widget
-sbar.add("item", "widgets.network.padding2", {
-	position = "right",
-	width = settings.group_paddings,
-})
+-- Bracket grouping is handled by the unified resources.bracket in init.lua

@@ -2,7 +2,7 @@ local colors = require("colors")
 local settings = require("settings")
 
 local ram = sbar.add("item", "widgets.ram", {
-	position = "right",
+	position = "left",
 	update_freq = 2,
 	icon = {
 		string = "􀫦", -- SF Symbol for memory
@@ -79,13 +79,4 @@ ram:subscribe("mouse.clicked", function()
 	sbar.exec("open -a 'Activity Monitor'")
 end)
 
--- Background around the ram item
-sbar.add("bracket", "widgets.ram.bracket", { ram.name }, {
-	background = { color = colors.bg1 },
-})
-
--- Padding after ram item
-sbar.add("item", "widgets.ram.padding", {
-	position = "right",
-	width = settings.group_paddings,
-})
+-- Bracket grouping is handled by the unified resources.bracket in init.lua

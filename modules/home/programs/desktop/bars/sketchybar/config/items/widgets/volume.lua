@@ -40,12 +40,12 @@ local volume_icon = sbar.add("item", "widgets.volume2", {
 	label = { drawing = false },
 })
 
--- Bracket for both items
+-- Bracket for popup functionality (visual grouping handled by right.bracket)
 local volume_bracket = sbar.add("bracket", "widgets.volume.bracket", {
 	volume_icon.name,
 	volume_percent.name,
 }, {
-	background = { color = colors.bg1 },
+	background = { drawing = false },
 	popup = { align = "center" },
 })
 
