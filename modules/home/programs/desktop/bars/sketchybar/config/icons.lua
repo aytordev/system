@@ -14,6 +14,7 @@ local icons = {
 		timer = "􀐱",
 		theme = "􀎑",
 		now_playing = "󰐌",
+		rift = "󰀘",
 
 		switch = {
 			on = "􁏮",
@@ -59,6 +60,7 @@ local icons = {
 		brew = "󰏖",
 		ram = "󰍛",
 		timer = "󰔛",
+		rift = "󰀘",
 		theme = "󰏘",
 		now_playing = "󰐌",
 

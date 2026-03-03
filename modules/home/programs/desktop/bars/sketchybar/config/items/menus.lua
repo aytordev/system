@@ -20,7 +20,7 @@ local menu_trigger = sbar.add("item", "menu_trigger", {
 	drawing = true,
 	updates = true,
 	icon = {
-		string = icons.apple,
+		string = icons.rift,
 		font = { size = settings.font_icon.size * 1.25 },
 		color = colors.white,
 	},
