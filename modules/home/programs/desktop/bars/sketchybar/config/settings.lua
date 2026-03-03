@@ -30,6 +30,5 @@ return {
 	-- Icon style from Nix configuration
 	icons = constants.settings.icons_style,
 
-	height = 24,
 	paddings = 8,
 }

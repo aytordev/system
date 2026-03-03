@@ -362,7 +362,9 @@
         padding_left = ${toString cfg.bar.paddingLeft},
         padding_right = ${toString cfg.bar.paddingRight},
         corner_radius = ${toString cfg.bar.cornerRadius},
-        border_width = ${toString cfg.bar.borderWidth}
+        border_width = ${toString cfg.bar.borderWidth},
+        color = ${cfg.bar.color},
+        y_offset = ${toString cfg.bar.yOffset}
       }${itemsSection}
     }
   '';

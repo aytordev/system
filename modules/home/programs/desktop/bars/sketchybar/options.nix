@@ -57,12 +57,12 @@ in {
   bar = {
     height = mkOption {
       type = int;
-      default = 25;
+      default = 40;
       description = "Height of the bar in pixels.";
     };
     blurRadius = mkOption {
       type = int;
-      default = 30;
+      default = 0;
       description = "Blur radius for the bar background.";
     };
     shadow = mkOption {
@@ -99,6 +99,16 @@ in {
       type = int;
       default = 0;
       description = "Border width for the bar.";
+    };
+    color = mkOption {
+      type = str;
+      default = "0x00000000";
+      description = "Background color of the bar (ARGB hex literal, e.g. 0xAARRGGBB).";
+    };
+    yOffset = mkOption {
+      type = int;
+      default = 2;
+      description = "Vertical offset of the bar in pixels.";
     };
   };
 
