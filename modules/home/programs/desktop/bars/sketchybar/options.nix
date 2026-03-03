@@ -67,7 +67,7 @@ in {
     };
     shadow = mkOption {
       type = bool;
-      default = true;
+      default = false;
       description = "Whether to show shadow under the bar.";
     };
     sticky = mkOption {
@@ -77,7 +77,7 @@ in {
     };
     topmost = mkOption {
       type = enum ["off" "window" "layer"];
-      default = "window";
+      default = "off";
       description = "Bar topmost mode.";
     };
     paddingLeft = mkOption {
@@ -92,12 +92,12 @@ in {
     };
     cornerRadius = mkOption {
       type = int;
-      default = 15;
+      default = 0;
       description = "Corner radius for the bar and bracket backgrounds.";
     };
     borderWidth = mkOption {
       type = int;
-      default = 1;
+      default = 0;
       description = "Border width for the bar.";
     };
   };
