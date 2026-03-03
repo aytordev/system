@@ -96,13 +96,13 @@
   mkSeparator = name: pos: ''sbar.add("item", "${name}", {position = "${pos}", icon = {drawing = false}, label = {drawing = false}})'';
 
   # Bracket using range syntax: wraps all items visually between first and last
-  mkRangeBracket = name: first: last: style:
-    ''sbar.add("bracket", "${name}", {"${first}", "${last}"}, ${style})'';
+  mkRangeBracket = name: first: last:
+    ''sbar.add("bracket", "${name}", {"${first}", "${last}"}, {background = {drawing = false}})'';
 
   # Bracket with explicit item list
-  mkListBracket = name: items: style: let
+  mkListBracket = name: items: let
     itemsStr = builtins.concatStringsSep ", " (map (i: "\"${i}\"") items);
-  in ''sbar.add("bracket", "${name}", {${itemsStr}}, ${style})'';
+  in ''sbar.add("bracket", "${name}", {${itemsStr}}, {background = {drawing = false}})'';
 
   # ── Section flags ──
   hasMenus = cfg.items.menus.enable;
@@ -227,10 +227,10 @@
     # Static brackets (created immediately)
     bracketLines =
       lib.optionals (builtins.length resourceItems >= 2) [
-        (mkListBracket "resources.bracket" resourceItems "bracket_style")
+        (mkListBracket "resources.bracket" resourceItems)
       ]
       ++ lib.optionals (builtins.length rightItemNames >= 2) [
-        (mkRangeBracket "right.bracket" (builtins.head rightItemNames) (lib.last rightItemNames) "bracket_style")
+        (mkRangeBracket "right.bracket" (builtins.head rightItemNames) (lib.last rightItemNames))
       ];
 
     # Deferred reorder + spaces bracket (only when workspaces use deferred loading)
@@ -242,7 +242,7 @@
         ''  sbar.exec("sketchybar --reorder ${reorderStr}")''
       ]
       ++ lib.optionals hasSpaces [
-        ''  sbar.add("bracket", "spaces.bracket", {"${spacesFirst}", "${spacesLast}"}, bracket_style)''
+        ''  sbar.add("bracket", "spaces.bracket", {"${spacesFirst}", "${spacesLast}"}, {background = {drawing = false}})''
       ]
       ++ [
         ''end)''
@@ -253,12 +253,7 @@
       allLines
       ++ (
         if (bracketLines != [] || deferredLines != [])
-        then [
-          ""
-          ''local colors = require("colors")''
-          ''local constants = require("nix_constants")''
-          ''local bracket_style = {background = {drawing = true, color = colors.with_alpha(colors.bg1, constants.bar.bracket.bg_alpha), corner_radius = constants.bar.bracket.corner_radius, height = constants.bar.bracket.height, border_width = constants.bar.bracket.border_width, border_color = colors.with_alpha(colors.accent, constants.bar.bracket.border_alpha)}, blur_radius = constants.bar.bracket.blur_radius}''
-        ] ++ bracketLines ++ deferredLines
+        then ["" ''local colors = require("colors")''] ++ bracketLines ++ deferredLines
         else []
       );
   in ''
@@ -369,15 +364,7 @@
         corner_radius = ${toString cfg.bar.cornerRadius},
         border_width = ${toString cfg.bar.borderWidth},
         color = ${cfg.bar.color},
-        y_offset = ${toString cfg.bar.yOffset},
-        bracket = {
-          corner_radius = ${toString cfg.bar.bracket.cornerRadius},
-          height = ${toString cfg.bar.bracket.height},
-          border_width = ${toString cfg.bar.bracket.borderWidth},
-          blur_radius = ${toString cfg.bar.bracket.blurRadius},
-          bg_alpha = ${toString cfg.bar.bracket.bgAlpha},
-          border_alpha = ${toString cfg.bar.bracket.borderAlpha}
-        }
+        y_offset = ${toString cfg.bar.yOffset}
       }${itemsSection}
     }
   '';

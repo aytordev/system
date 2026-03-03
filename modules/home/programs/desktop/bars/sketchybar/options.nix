@@ -110,40 +110,6 @@ in {
       default = 2;
       description = "Vertical offset of the bar in pixels.";
     };
-
-    # Bracket group styling
-    bracket = {
-      cornerRadius = mkOption {
-        type = int;
-        default = 16;
-        description = "Corner radius for bracket group backgrounds.";
-      };
-      height = mkOption {
-        type = int;
-        default = 34;
-        description = "Height of bracket group backgrounds.";
-      };
-      borderWidth = mkOption {
-        type = int;
-        default = 1;
-        description = "Border width for bracket group backgrounds.";
-      };
-      blurRadius = mkOption {
-        type = int;
-        default = 30;
-        description = "Blur radius for bracket group backgrounds.";
-      };
-      bgAlpha = mkOption {
-        type = float;
-        default = 0.82;
-        description = "Alpha for bracket background color (0.0-1.0, applied over theme bg).";
-      };
-      borderAlpha = mkOption {
-        type = float;
-        default = 0.19;
-        description = "Alpha for bracket border color (0.0-1.0, applied over theme accent).";
-      };
-    };
   };
 
   # ── Items ────────────────────────────────────────────────────────────
