@@ -29,7 +29,6 @@ in {
                 menus.enable = true;
                 themePicker.enable = true;
                 pomodoro.enable = true;
-                clipboard.enable = true;
               };
             };
           };

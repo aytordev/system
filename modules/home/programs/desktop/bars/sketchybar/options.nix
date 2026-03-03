@@ -151,7 +151,7 @@ in {
     vpn = {
       enable = mkOption {
         type = bool;
-        default = true;
+        default = false;
         description = "VPN status indicator (WireGuard, GlobalProtect, F5).";
       };
     };
@@ -227,14 +227,14 @@ in {
       battery = {
         enable = mkOption {
           type = bool;
-          default = true;
+          default = false;
           description = "Battery percentage and time remaining.";
         };
       };
       network = {
         enable = mkOption {
           type = bool;
-          default = true;
+          default = false;
           description = "Upload/download speeds.";
         };
       };
