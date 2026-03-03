@@ -165,7 +165,10 @@ local function updateWindow(workspace_index, args)
 	for _, open_window in ipairs(open_windows) do
 		local lookup = app_icons[open_window]
 		local icon = ((lookup == nil) and app_icons["Default"] or lookup)
-		icon_line = icon_line .. " " .. icon
+		if icon_line ~= "" then
+			icon_line = icon_line .. " "
+		end
+		icon_line = icon_line .. icon
 	end
 
 	local is_focused = workspace_index == focused_workspace
@@ -196,7 +199,7 @@ local function updateWindow(workspace_index, args)
 		end
 
 		if no_app then
-			icon_line = " —"
+			icon_line = "—"
 		end
 
 		workspaces[workspace_index]:set({
