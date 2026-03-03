@@ -4,6 +4,7 @@
 local icons = require("icons")
 local settings = require("settings")
 local colors = require("colors")
+local constants = require("nix_constants")
 
 -- Menu state
 local menu_visible = false
@@ -54,10 +55,17 @@ for i = 1, max_items do
 end
 
 -- Bracket: single shared background for trigger + all menu items
+local bc = constants.bar.bracket
 sbar.add("bracket", "menus.bracket", { "menu_trigger", "menu." .. max_items }, {
 	background = {
-		drawing = false,
+		drawing = true,
+		color = colors.with_alpha(colors.bg1, bc.bg_alpha),
+		corner_radius = bc.corner_radius,
+		height = bc.height,
+		border_width = bc.border_width,
+		border_color = colors.with_alpha(colors.accent, bc.border_alpha),
 	},
+	blur_radius = bc.blur_radius,
 })
 
 -- Menu watcher for front app changes
