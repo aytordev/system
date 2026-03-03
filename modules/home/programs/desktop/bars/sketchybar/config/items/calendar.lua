@@ -18,12 +18,11 @@ local cal_time = sbar.add("item", "calendar.time", {
 			style = settings.font.style_map["Bold"],
 			size = base_size * 0.85,
 		},
-		padding_left = 6,
-		padding_right = 6,
+		padding_left = settings.paddings,
+		padding_right = 0,
 		align = "right",
 	},
-	y_offset = 4,
-	background = { drawing = false },
+	y_offset = 6,
 })
 
 -- Date (bottom line, provides width)
@@ -38,9 +37,9 @@ local cal_date = sbar.add("item", "calendar.date", {
 			style = settings.font.style_map["Regular"],
 			size = base_size * 0.70,
 		},
-		color = colors.grey,
-		padding_left = 6,
-		padding_right = 6,
+		color = colors.accent_bright,
+		padding_left = settings.paddings,
+		padding_right = 0,
 		align = "right",
 	},
 	y_offset = -6,
@@ -55,12 +54,8 @@ end
 
 cal_date:subscribe({ "forced", "routine", "system_woke" }, update_calendar)
 
--- Click to toggle Itsycal menu bar item
 local function on_click()
-	sbar.exec(
-		"osascript -e 'tell application \"System Events\" to "
-			.. "tell process \"Itsycal\" to click menu bar item 1 of menu bar 2' &>/dev/null"
-	)
+	sbar.exec("open -a Calendar")
 end
 
 cal_time:subscribe("mouse.clicked", on_click)
