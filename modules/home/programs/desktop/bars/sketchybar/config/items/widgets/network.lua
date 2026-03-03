@@ -40,7 +40,7 @@ local network_up = sbar.add("item", "widgets.network.up", {
 		string = icons.wifi.upload .. " ???",
 		color = colors.red,
 	},
-	y_offset = 5,
+	y_offset = 6,
 	background = { drawing = false },
 })
 
@@ -55,7 +55,7 @@ local network_down = sbar.add("item", "widgets.network.down", {
 		string = icons.wifi.download .. " ???",
 		color = colors.blue,
 	},
-	y_offset = -5,
+	y_offset = -6,
 	background = { drawing = false },
 })
 

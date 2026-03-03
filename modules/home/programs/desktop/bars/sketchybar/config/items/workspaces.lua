@@ -320,7 +320,6 @@ local function initialize_workspaces()
 					drawing = true,
 					font = "sketchybar-app-font:Regular:16.0",
 					highlight_color = colors.white,
-					y_offset = -1,
 				},
 			})
 

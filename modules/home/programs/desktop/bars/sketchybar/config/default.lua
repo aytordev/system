@@ -27,7 +27,6 @@ sbar.default({
 		highlight_color = colors.bg1,
 		padding_left = settings.paddings,
 		padding_right = settings.paddings,
-		y_offset = 1,
 	},
 	label = {
 		font = {
