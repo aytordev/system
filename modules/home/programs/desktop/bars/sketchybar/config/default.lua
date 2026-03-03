@@ -1,5 +1,6 @@
 local settings = require("settings")
 local colors = require("colors")
+local constants = require("nix_constants")
 
 -- Equivalent to the --default domain
 -- background.drawing defaults to false — brackets provide group backgrounds
@@ -9,8 +10,8 @@ sbar.default({
 		color = colors.bg1,
 		border_color = colors.bg2,
 		border_width = 1,
-		corner_radius = 15,
-		height = 25,
+		corner_radius = constants.bar.bracket.corner_radius,
+		height = constants.bar.bracket.height,
 		image = {
 			corner_radius = 15,
 			border_color = colors.grey,
