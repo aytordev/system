@@ -19,15 +19,7 @@ local icon_picker = sbar.add("item", "theme_picker", {
 		padding_right = settings.padding.icon_item.icon.padding_right,
 	},
 	label = { drawing = false },
-	popup = {
-		align = "center",
-		background = {
-			color = colors.popup.bg,
-			border_color = colors.popup.border,
-			border_width = 1,
-			corner_radius = 6,
-		},
-	},
+	popup = { align = "right" },
 })
 
 -- Build popup entries from available themes
@@ -60,11 +52,6 @@ for _, name in ipairs(variant_names) do
 			padding_right = 0,
 			font = { size = 10.0 },
 		},
-		background = {
-			color = colors.popup.bg,
-			height = 28,
-			corner_radius = 4,
-		},
 	})
 
 	item:subscribe("mouse.clicked", function()
@@ -72,6 +59,13 @@ for _, name in ipairs(variant_names) do
 		theme.apply(name)
 	end)
 
+	item:subscribe("mouse.entered", function()
+		item:set({ background = { drawing = true, color = 0x33ffffff } })
+	end)
+
+	item:subscribe("mouse.exited", function()
+		item:set({ background = { drawing = false } })
+	end)
 end
 
 -- Toggle popup on click

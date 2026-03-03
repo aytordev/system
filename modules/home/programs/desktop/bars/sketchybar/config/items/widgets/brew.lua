@@ -154,4 +154,8 @@ brew:subscribe("mouse.clicked", function()
 	sbar.exec("sketchybar --set widgets.brew popup.drawing=toggle")
 end)
 
+brew:subscribe("mouse.exited.global", function()
+	brew:set({ popup = { drawing = false } })
+end)
+
 -- Bracket grouping is handled by the unified right.bracket in init.lua

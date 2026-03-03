@@ -44,6 +44,14 @@ local vpn_wireguard = sbar.add("item", {
 	},
 })
 
+vpn_wireguard:subscribe("mouse.entered", function()
+	vpn_wireguard:set({ background = { drawing = true, color = 0x33ffffff } })
+end)
+
+vpn_wireguard:subscribe("mouse.exited", function()
+	vpn_wireguard:set({ background = { drawing = false } })
+end)
+
 vpn_wireguard:subscribe("mouse.clicked", function()
 	sbar.exec(
 		'if ! pgrep -x "WireGuard" > /dev/null 2>&1; then '
@@ -70,6 +78,14 @@ local vpn_globalprotect = sbar.add("item", {
 	},
 })
 
+vpn_globalprotect:subscribe("mouse.entered", function()
+	vpn_globalprotect:set({ background = { drawing = true, color = 0x33ffffff } })
+end)
+
+vpn_globalprotect:subscribe("mouse.exited", function()
+	vpn_globalprotect:set({ background = { drawing = false } })
+end)
+
 vpn_globalprotect:subscribe("mouse.clicked", function()
 	sbar.exec(
 		"osascript -e 'tell application \"System Events\" to "
@@ -81,6 +97,10 @@ end)
 -- Toggle popup on click
 vpn:subscribe("mouse.clicked", function()
 	sbar.exec("sketchybar --set vpn popup.drawing=toggle")
+end)
+
+vpn:subscribe("mouse.exited.global", function()
+	vpn:set({ popup = { drawing = false } })
 end)
 
 local function check_vpn_status()

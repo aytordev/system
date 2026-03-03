@@ -34,15 +34,6 @@ local pomodoro = sbar.add("item", "pomodoro", {
 		padding_left = settings.padding.icon_label_item.label.padding_left,
 		padding_right = settings.padding.icon_label_item.label.padding_right,
 	},
-	popup = {
-		align = "center",
-		background = {
-			color = colors.popup.bg,
-			border_color = colors.popup.border,
-			border_width = 1,
-			corner_radius = 6,
-		},
-	},
 })
 
 local function format_time(seconds)
@@ -136,15 +127,18 @@ for _, minutes in ipairs(presets) do
 			padding_left = 8,
 			padding_right = 0,
 		},
-		background = {
-			color = colors.popup.bg,
-			height = 28,
-			corner_radius = 4,
-		},
 	})
 
 	item:subscribe("mouse.clicked", function()
 		start_timer(minutes)
+	end)
+
+	item:subscribe("mouse.entered", function()
+		item:set({ background = { drawing = true, color = 0x33ffffff } })
+	end)
+
+	item:subscribe("mouse.exited", function()
+		item:set({ background = { drawing = false } })
 	end)
 end
 
@@ -168,12 +162,15 @@ local custom_item = sbar.add("item", "pomodoro.custom", {
 		padding_left = 8,
 		padding_right = 0,
 	},
-	background = {
-		color = colors.popup.bg,
-		height = 28,
-		corner_radius = 4,
-	},
 })
+
+custom_item:subscribe("mouse.entered", function()
+	custom_item:set({ background = { drawing = true, color = 0x33ffffff } })
+end)
+
+custom_item:subscribe("mouse.exited", function()
+	custom_item:set({ background = { drawing = false } })
+end)
 
 custom_item:subscribe("mouse.clicked", function()
 	pomodoro:set({ popup = { drawing = false } })
