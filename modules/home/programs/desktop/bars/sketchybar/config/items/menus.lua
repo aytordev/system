@@ -26,8 +26,6 @@ local menu_trigger = sbar.add("item", "menu_trigger", {
 			size = 16.0,
 		},
 		color = colors.white,
-		padding_left = 8,
-		padding_right = 8,
 	},
 	label = { drawing = false },
 	background = {

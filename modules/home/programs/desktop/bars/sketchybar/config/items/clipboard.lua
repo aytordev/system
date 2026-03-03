@@ -27,8 +27,6 @@ local clipboard = sbar.add("item", "clipboard", {
 			size = settings.icon_size,
 		},
 		color = colors.white,
-		padding_left = settings.padding.icon_item.icon.padding_left,
-		padding_right = settings.padding.icon_item.icon.padding_right,
 	},
 	label = { drawing = false },
 	popup = {
@@ -75,12 +73,6 @@ local function rebuild_popup()
 					size = 12.0,
 				},
 				color = colors.grey,
-				padding_left = 10,
-				padding_right = 10,
-			},
-			background = {
-				color = colors.popup.bg,
-				height = 28,
 			},
 		})
 		popup_items[1] = empty
@@ -99,20 +91,11 @@ local function rebuild_popup()
 					size = 12.0,
 				},
 				color = i == 1 and colors.accent or colors.white,
-				padding_left = 10,
-				padding_right = 10,
 			},
 			icon = {
 				string = tostring(i),
 				font = { size = 10.0 },
 				color = colors.grey,
-				padding_left = 8,
-				padding_right = 0,
-			},
-			background = {
-				color = colors.popup.bg,
-				height = 28,
-				corner_radius = 4,
 			},
 		})
 

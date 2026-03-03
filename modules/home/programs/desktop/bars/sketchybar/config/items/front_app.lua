@@ -9,8 +9,6 @@ local front_app = sbar.add("item", "front_app", {
 	icon = {
 		font = "sketchybar-app-font:Regular:16.0",
 		color = colors.white,
-		padding_left = 8,
-		padding_right = 4,
 	},
 	label = {
 		font = {
@@ -19,7 +17,6 @@ local front_app = sbar.add("item", "front_app", {
 			size = 13.0,
 		},
 		color = colors.white,
-		padding_right = 8,
 	},
 	background = { drawing = false },
 })

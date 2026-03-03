@@ -26,13 +26,9 @@ local pomodoro = sbar.add("item", "pomodoro", {
 			size = settings.icon_size,
 		},
 		color = colors.white,
-		padding_left = settings.padding.icon_label_item.icon.padding_left,
-		padding_right = settings.padding.icon_label_item.icon.padding_right,
 	},
 	label = {
 		drawing = false,
-		padding_left = settings.padding.icon_label_item.label.padding_left,
-		padding_right = settings.padding.icon_label_item.label.padding_right,
 	},
 })
 
@@ -118,14 +114,10 @@ for _, minutes in ipairs(presets) do
 				size = 13.0,
 			},
 			color = colors.white,
-			padding_left = 10,
-			padding_right = 10,
 		},
 		icon = {
 			string = "􀐱",
 			color = minutes == default_duration and colors.accent or colors.grey,
-			padding_left = 8,
-			padding_right = 0,
 		},
 	})
 
@@ -153,14 +145,10 @@ local custom_item = sbar.add("item", "pomodoro.custom", {
 			size = 13.0,
 		},
 		color = colors.grey,
-		padding_left = 10,
-		padding_right = 10,
 	},
 	icon = {
 		string = "􀍡",
 		color = colors.grey,
-		padding_left = 8,
-		padding_right = 0,
 	},
 })
 

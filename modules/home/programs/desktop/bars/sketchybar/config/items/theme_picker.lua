@@ -15,8 +15,6 @@ local icon_picker = sbar.add("item", "theme_picker", {
 			size = settings.icon_size,
 		},
 		color = colors.accent,
-		padding_left = settings.padding.icon_item.icon.padding_left,
-		padding_right = settings.padding.icon_item.icon.padding_right,
 	},
 	label = { drawing = false },
 	popup = { align = "right" },
@@ -42,14 +40,10 @@ for _, name in ipairs(variant_names) do
 				size = 13.0,
 			},
 			color = is_active and colors.accent or colors.white,
-			padding_left = 10,
-			padding_right = 10,
 		},
 		icon = {
 			string = "●",
 			color = item_color,
-			padding_left = 8,
-			padding_right = 0,
 			font = { size = 10.0 },
 		},
 	})

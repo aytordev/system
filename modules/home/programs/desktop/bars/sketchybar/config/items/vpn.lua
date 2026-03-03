@@ -17,8 +17,6 @@ local vpn = sbar.add("item", "vpn", {
 			style = settings.font_icon.style_map["Bold"],
 			size = settings.font_icon.size,
 		},
-		padding_left = settings.padding.icon_item.icon.padding_left,
-		padding_right = settings.padding.icon_item.icon.padding_right,
 	},
 	label = { drawing = false },
 	update_freq = 10,
@@ -34,13 +32,9 @@ local vpn_wireguard = sbar.add("item", {
 	icon = {
 		string = app_icons["Wireguard"] or "󱇱",
 		font = "sketchybar-app-font:Regular:16.0",
-		padding_left = 8,
-		padding_right = 4,
 	},
 	label = {
 		string = "WireGuard",
-		padding_left = 4,
-		padding_right = 8,
 	},
 })
 
@@ -68,13 +62,9 @@ local vpn_globalprotect = sbar.add("item", {
 	icon = {
 		string = app_icons["Global Protect"] or "󰒄",
 		font = "sketchybar-app-font:Regular:16.0",
-		padding_left = 8,
-		padding_right = 4,
 	},
 	label = {
 		string = "GlobalProtect",
-		padding_left = 4,
-		padding_right = 8,
 	},
 })
 

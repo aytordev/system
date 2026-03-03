@@ -1,5 +1,4 @@
 local colors = require("colors")
-local settings = require("settings")
 local constants = require("nix_constants")
 
 -- Build whitelist from Nix configuration
@@ -44,14 +43,10 @@ local now_playing = sbar.add("item", "now_playing", {
 		corner_radius = 9,
 	},
 	icon = {
-		padding_left = settings.padding.icon_label_item.icon.padding_left,
-		padding_right = settings.padding.icon_label_item.icon.padding_right,
 		string = "󰐌",
 	},
 	label = {
 		highlight = false,
-		padding_left = settings.padding.icon_label_item.label.padding_left,
-		padding_right = settings.padding.icon_label_item.label.padding_right,
 	},
 	popup = { align = "center" },
 })

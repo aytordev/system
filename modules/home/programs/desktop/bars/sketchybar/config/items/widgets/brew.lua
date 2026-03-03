@@ -109,8 +109,6 @@ local function populate_popup()
 					style = settings.font.style_map["Regular"],
 					size = settings.font.size,
 				},
-				padding_left = 8,
-				padding_right = 8,
 			},
 			icon = { drawing = false },
 		})
@@ -128,13 +126,9 @@ local function populate_popup()
 						style = settings.font.style_map["Regular"],
 						size = 10.0,
 					},
-					padding_left = 8,
-					padding_right = 8,
 				},
 				icon = {
 					string = "•",
-					padding_left = 8,
-					padding_right = 4,
 				},
 			})
 			table.insert(popup_items, pkg_item)
