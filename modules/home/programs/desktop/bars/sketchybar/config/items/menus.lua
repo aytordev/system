@@ -28,11 +28,6 @@ local menu_trigger = sbar.add("item", "menu_trigger", {
 		color = colors.white,
 	},
 	label = { drawing = false },
-	background = {
-		color = colors.bg1,
-		drawing = true,
-		corner_radius = 6,
-	},
 })
 
 -- Maximum number of menu items to display
@@ -60,6 +55,14 @@ for i = 1, max_items do
 	})
 	menu_items[i] = menu
 end
+
+-- Bracket: single shared background for trigger + all menu items
+sbar.add("bracket", "menus.bracket", { "menu_trigger", "menu." .. max_items }, {
+	background = {
+		drawing = true,
+		color = colors.bg1,
+	},
+})
 
 -- Menu watcher for front app changes
 local menu_watcher = sbar.add("item", {
