@@ -21,7 +21,7 @@ local menu_trigger = sbar.add("item", "menu_trigger", {
 	updates = true,
 	icon = {
 		string = icons.rift,
-		font = { size = settings.font_icon.size * 1.25 },
+		font = { size = settings.font_icon.size * 1.5 },
 		color = colors.white,
 	},
 	label = { drawing = false },
