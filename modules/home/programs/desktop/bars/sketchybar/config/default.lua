@@ -23,7 +23,7 @@ sbar.default({
 			style = settings.font_icon.style_map["Bold"],
 			size = settings.font_icon.size,
 		},
-		color = colors.white,
+		color = colors.accent,
 		highlight_color = colors.bg1,
 		padding_left = settings.paddings,
 		padding_right = settings.paddings,
@@ -35,7 +35,7 @@ sbar.default({
 			style = settings.font.style_map["Semibold"],
 			size = settings.font.size,
 		},
-		color = colors.white,
+		color = colors.accent,
 		padding_right = settings.paddings,
 	},
 	popup = {
