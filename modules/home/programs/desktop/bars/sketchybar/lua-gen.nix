@@ -97,12 +97,12 @@
 
   # Bracket using range syntax: wraps all items visually between first and last
   mkRangeBracket = name: first: last:
-    ''sbar.add("bracket", "${name}", {"${first}", "${last}"}, {background = {color = colors.bg1}})'';
+    ''sbar.add("bracket", "${name}", {"${first}", "${last}"}, {background = {drawing = true, color = colors.bg1}})'';
 
   # Bracket with explicit item list
   mkListBracket = name: items: let
     itemsStr = builtins.concatStringsSep ", " (map (i: "\"${i}\"") items);
-  in ''sbar.add("bracket", "${name}", {${itemsStr}}, {background = {color = colors.bg1}})'';
+  in ''sbar.add("bracket", "${name}", {${itemsStr}}, {background = {drawing = true, color = colors.bg1}})'';
 
   # ── Section flags ──
   hasMenus = cfg.items.menus.enable;
@@ -123,10 +123,10 @@
     ];
 
   # ── Right bracket endpoints (range syntax) ──
-  # Theme picker is intentionally excluded — it sits outside the bracket
-  # on the far right. Media is also outside, to the left of the bracket.
+  # Media is outside, to the left of the bracket.
   rightItemNames =
-    lib.optionals cfg.items.calendar.enable ["calendar.time"]
+    lib.optionals cfg.items.themePicker.enable ["theme_picker"]
+    ++ lib.optionals cfg.items.calendar.enable ["calendar.time"]
     ++ lib.optionals cfg.items.vpn.enable ["vpn"]
     ++ lib.optionals cfg.items.widgets.brew.enable ["widgets.brew"]
     ++ lib.optionals cfg.items.widgets.volume.enable ["widgets.volume2"]
@@ -242,7 +242,7 @@
         ''  sbar.exec("sketchybar --reorder ${reorderStr}")''
       ]
       ++ lib.optionals hasSpaces [
-        ''  sbar.add("bracket", "spaces.bracket", {"${spacesFirst}", "${spacesLast}"}, {background = {color = colors.bg1}})''
+        ''  sbar.add("bracket", "spaces.bracket", {"${spacesFirst}", "${spacesLast}"}, {background = {drawing = true, color = colors.bg1}})''
       ]
       ++ [
         ''end)''
