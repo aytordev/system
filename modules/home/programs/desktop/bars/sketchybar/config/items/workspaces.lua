@@ -72,10 +72,6 @@ local mode_indicator = sbar.add("item", "aerospace.mode", {
 		},
 	},
 	label = { drawing = false },
-	background = {
-		color = colors.bg1,
-		drawing = true,
-	},
 })
 
 local function update_mode_indicator()
@@ -302,10 +298,6 @@ local function initialize_workspaces()
 			local workspace_index = entry.workspace
 
 			local workspace = sbar.add("item", {
-				background = {
-					color = colors.bg1,
-					drawing = true,
-				},
 				click_script = "aerospace workspace " .. workspace_index .. " 2>/dev/null",
 				drawing = false,
 				icon = {

@@ -97,12 +97,12 @@
 
   # Bracket using range syntax: wraps all items visually between first and last
   mkRangeBracket = name: first: last:
-    ''sbar.add("bracket", "${name}", {"${first}", "${last}"}, {background = {drawing = true, color = colors.bg1}})'';
+    ''sbar.add("bracket", "${name}", {"${first}", "${last}"}, {background = {drawing = false}})'';
 
   # Bracket with explicit item list
   mkListBracket = name: items: let
     itemsStr = builtins.concatStringsSep ", " (map (i: "\"${i}\"") items);
-  in ''sbar.add("bracket", "${name}", {${itemsStr}}, {background = {drawing = true, color = colors.bg1}})'';
+  in ''sbar.add("bracket", "${name}", {${itemsStr}}, {background = {drawing = false}})'';
 
   # ── Section flags ──
   hasMenus = cfg.items.menus.enable;
@@ -242,7 +242,7 @@
         ''  sbar.exec("sketchybar --reorder ${reorderStr}")''
       ]
       ++ lib.optionals hasSpaces [
-        ''  sbar.add("bracket", "spaces.bracket", {"${spacesFirst}", "${spacesLast}"}, {background = {drawing = true, color = colors.bg1}})''
+        ''  sbar.add("bracket", "spaces.bracket", {"${spacesFirst}", "${spacesLast}"}, {background = {drawing = false}})''
       ]
       ++ [
         ''end)''

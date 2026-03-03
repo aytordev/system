@@ -56,8 +56,7 @@ end
 -- Bracket: single shared background for trigger + all menu items
 sbar.add("bracket", "menus.bracket", { "menu_trigger", "menu." .. max_items }, {
 	background = {
-		drawing = true,
-		color = colors.bg1,
+		drawing = false,
 	},
 })
 
