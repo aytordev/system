@@ -1,3 +1,4 @@
+local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 
@@ -5,7 +6,7 @@ local brew = sbar.add("item", "widgets.brew", {
 	position = "right",
 	update_freq = 3600,
 	icon = {
-		string = "󰏖",
+		string = icons.brew,
 	},
 	label = {
 		string = "?",

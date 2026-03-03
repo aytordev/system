@@ -1,6 +1,7 @@
 -- Theme variant picker popup
 -- Click to open a popup listing available theme variants.
 -- Selecting a variant applies it immediately via sketchybar --reload.
+local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 local theme = require("helpers.theme")
@@ -8,7 +9,7 @@ local theme = require("helpers.theme")
 local icon_picker = sbar.add("item", "theme_picker", {
 	position = "right",
 	icon = {
-		string = "􀎑",
+		string = icons.theme,
 		color = colors.accent,
 	},
 	label = { drawing = false },

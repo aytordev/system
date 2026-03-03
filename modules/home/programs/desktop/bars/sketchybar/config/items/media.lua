@@ -1,3 +1,4 @@
+local icons = require("icons")
 local colors = require("colors")
 local constants = require("nix_constants")
 
@@ -43,7 +44,7 @@ local now_playing = sbar.add("item", "now_playing", {
 		corner_radius = 9,
 	},
 	icon = {
-		string = "󰐌",
+		string = icons.now_playing,
 	},
 	label = {
 		highlight = false,

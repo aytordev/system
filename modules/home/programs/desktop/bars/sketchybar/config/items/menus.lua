@@ -1,6 +1,7 @@
 -- App menu bar items with curtain effect
 -- Shares the left side of the bar with workspaces.
 -- When menus expand, workspaces fade out (and vice versa).
+local icons = require("icons")
 local settings = require("settings")
 local colors = require("colors")
 
@@ -19,7 +20,7 @@ local menu_trigger = sbar.add("item", "menu_trigger", {
 	drawing = true,
 	updates = true,
 	icon = {
-		string = "􀣺",
+		string = icons.apple,
 		color = colors.white,
 	},
 	label = { drawing = false },

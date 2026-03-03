@@ -9,6 +9,11 @@ local icons = {
 		gear = "􀍟",
 		cpu = "􀫥",
 		clipboard = "􀉄",
+		brew = "􀎗",
+		ram = "􀫦",
+		timer = "􀐱",
+		theme = "􀎑",
+		now_playing = "󰐌",
 
 		switch = {
 			on = "􁏮",
@@ -51,6 +56,11 @@ local icons = {
 		gear = "",
 		cpu = "",
 		clipboard = "Missing Icon",
+		brew = "󰏖",
+		ram = "󰍛",
+		timer = "󰔛",
+		theme = "󰏘",
+		now_playing = "󰐌",
 
 		switch = {
 			on = "󱨥",

@@ -1,6 +1,7 @@
 -- Clipboard history item
 -- Shows a popup with recent clipboard entries.
 -- Click an entry to restore it to clipboard.
+local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 local constants = require("nix_constants")
@@ -20,7 +21,7 @@ local clipboard = sbar.add("item", "clipboard", {
 	position = "right",
 	update_freq = poll_interval,
 	icon = {
-		string = "􀉄",
+		string = icons.clipboard,
 		color = colors.white,
 	},
 	label = { drawing = false },

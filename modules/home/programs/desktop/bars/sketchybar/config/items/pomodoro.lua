@@ -2,6 +2,7 @@
 -- Left-click: popup with duration presets + custom option.
 -- Right-click: start default timer / stop if running.
 -- Shows countdown in label when running.
+local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 local constants = require("nix_constants")
@@ -19,7 +20,7 @@ local pomodoro = sbar.add("item", "pomodoro", {
 	position = "right",
 	update_freq = 0, -- Updated manually when running
 	icon = {
-		string = "􀐱",
+		string = icons.timer,
 		color = colors.white,
 	},
 	label = {
@@ -111,7 +112,7 @@ for _, minutes in ipairs(presets) do
 			color = colors.white,
 		},
 		icon = {
-			string = "􀐱",
+			string = icons.timer,
 			color = minutes == default_duration and colors.accent or colors.grey,
 		},
 	})
@@ -142,7 +143,7 @@ local custom_item = sbar.add("item", "pomodoro.custom", {
 		color = colors.grey,
 	},
 	icon = {
-		string = "􀍡",
+		string = icons.gear,
 		color = colors.grey,
 	},
 })
