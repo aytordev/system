@@ -9,11 +9,6 @@ local icon_picker = sbar.add("item", "theme_picker", {
 	position = "right",
 	icon = {
 		string = "􀎑",
-		font = {
-			family = settings.font.text,
-			style = "Regular",
-			size = settings.icon_size,
-		},
 		color = colors.accent,
 	},
 	label = { drawing = false },

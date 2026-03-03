@@ -21,11 +21,6 @@ local clipboard = sbar.add("item", "clipboard", {
 	update_freq = poll_interval,
 	icon = {
 		string = "􀉄",
-		font = {
-			family = settings.font.text,
-			style = "Regular",
-			size = settings.icon_size,
-		},
 		color = colors.white,
 	},
 	label = { drawing = false },

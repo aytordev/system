@@ -20,11 +20,6 @@ local pomodoro = sbar.add("item", "pomodoro", {
 	update_freq = 0, -- Updated manually when running
 	icon = {
 		string = "􀐱",
-		font = {
-			family = settings.font.text,
-			style = "Regular",
-			size = settings.icon_size,
-		},
 		color = colors.white,
 	},
 	label = {

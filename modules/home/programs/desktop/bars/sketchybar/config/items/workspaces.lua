@@ -69,7 +69,6 @@ local mode_indicator = sbar.add("item", "aerospace.mode", {
 		font = {
 			family = settings.font.text,
 			style = settings.font.style_map["Bold"],
-			size = 14.0,
 		},
 	},
 	label = { drawing = false },
