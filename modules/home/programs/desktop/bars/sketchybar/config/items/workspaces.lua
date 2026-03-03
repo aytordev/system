@@ -311,8 +311,6 @@ local function initialize_workspaces()
 					drawing = true,
 					font = { family = settings.font.numbers },
 					highlight_color = colors.white,
-					padding_left = 5,
-					padding_right = 4,
 					string = workspace_index,
 				},
 				label = {
@@ -320,8 +318,6 @@ local function initialize_workspaces()
 					drawing = true,
 					font = "sketchybar-app-font:Regular:16.0",
 					highlight_color = colors.white,
-					padding_left = 2,
-					padding_right = 12,
 					y_offset = -1,
 				},
 			})

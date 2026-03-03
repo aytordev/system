@@ -1,16 +1,14 @@
 local colors = require("colors")
-local settings = require("settings")
+
 
 local ram = sbar.add("item", "widgets.ram", {
 	position = "left",
 	update_freq = 2,
 	icon = {
 		string = "􀫦",
-		padding_right = settings.paddings * 0.5,
 	},
 	label = {
 		string = "??%",
-		padding_right = 0,
 	},
 })
 

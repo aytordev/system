@@ -6,11 +6,9 @@ local brew = sbar.add("item", "widgets.brew", {
 	update_freq = 3600,
 	icon = {
 		string = "󰏖",
-		padding_right = settings.paddings * 0.5,
 	},
 	label = {
 		string = "?",
-		padding_right = 0,
 	},
 	popup = {
 		align = "center",

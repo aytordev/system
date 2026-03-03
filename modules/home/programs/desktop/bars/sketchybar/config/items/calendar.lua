@@ -18,8 +18,6 @@ local cal_time = sbar.add("item", "calendar.time", {
 			style = settings.font.style_map["Bold"],
 			size = base_size * 0.85,
 		},
-		padding_left = settings.paddings,
-		padding_right = 0,
 		align = "right",
 	},
 	y_offset = 6,
@@ -28,8 +26,6 @@ local cal_time = sbar.add("item", "calendar.time", {
 -- Date (bottom line, provides width)
 local cal_date = sbar.add("item", "calendar.date", {
 	position = "right",
-	padding_left = 0,
-	padding_right = 0,
 	icon = { drawing = false },
 	label = {
 		font = {
@@ -38,8 +34,6 @@ local cal_date = sbar.add("item", "calendar.date", {
 			size = base_size * 0.70,
 		},
 		color = colors.accent_bright,
-		padding_left = settings.paddings,
-		padding_right = 0,
 		align = "right",
 	},
 	y_offset = -6,
