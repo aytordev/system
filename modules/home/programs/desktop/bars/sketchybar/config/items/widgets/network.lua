@@ -36,8 +36,6 @@ local network_up = sbar.add("item", "widgets.network.up", {
 	label = {
 		font = rate_font,
 		width = rate_label_width,
-		padding_left = 2,
-		padding_right = 6,
 		align = "left",
 		string = icons.wifi.upload .. " ???",
 		color = colors.red,
@@ -49,14 +47,10 @@ local network_up = sbar.add("item", "widgets.network.up", {
 -- Download item (bottom line, stacked)
 local network_down = sbar.add("item", "widgets.network.down", {
 	position = "left",
-	padding_left = 0,
-	padding_right = 0,
 	icon = { drawing = false },
 	label = {
 		font = rate_font,
 		width = rate_label_width,
-		padding_left = 2,
-		padding_right = 6,
 		align = "left",
 		string = icons.wifi.download .. " ???",
 		color = colors.blue,
