@@ -12,6 +12,7 @@ local icons = {
 		brew = "􀎗",
 		ram = "􀫦",
 		timer = "􀐱",
+		clock = "􀐫",
 		theme = "􀎑",
 		now_playing = "󰐌",
 		rift = "󰀘",
@@ -47,6 +48,9 @@ local icons = {
 			forward = "􀊌",
 			play_pause = "􀊈",
 		},
+		workspaces = {
+			B = "網", C = "編", D = "端", W = "業", S = "話", O = "雑",
+		},
 	},
 
 	-- Alternative NerdFont icons
@@ -55,11 +59,12 @@ local icons = {
 		loading = "",
 		apple = "",
 		gear = "",
-		cpu = "",
+		cpu = "󰻠",
 		clipboard = "Missing Icon",
 		brew = "󰏖",
 		ram = "󰍛",
 		timer = "󰔛",
+		clock = "󰥔",
 		rift = "󰀘",
 		theme = "󰏘",
 		now_playing = "󰐌",
@@ -69,11 +74,11 @@ local icons = {
 			off = "󱨦",
 		},
 		volume = {
-			_100 = "",
-			_66 = "",
-			_33 = "",
-			_10 = "",
-			_0 = "",
+			_100 = "󰕾",
+			_66 = "󰖀",
+			_33 = "󰕿",
+			_10 = "󰕿",
+			_0 = "󰝟",
 		},
 		battery = {
 			_100 = "",
@@ -94,6 +99,9 @@ local icons = {
 			back = "",
 			forward = "",
 			play_pause = "",
+		},
+		workspaces = {
+			B = "網", C = "編", D = "端", W = "業", S = "話", O = "雑",
 		},
 	},
 }
