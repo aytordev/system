@@ -46,9 +46,9 @@ in {
         inherit (cfg) style;
         inherit (cfg) width;
         hidpi = "off";
-        # Use accent color for active, border color for inactive
-        active_color = palette.accent.sketchybar;
-        inactive_color = palette.border.sketchybar;
+        # Use carpYellow for active (matches astronaut+jellyfish wallpaper), border color for inactive
+        active_color = palette.yellow_bright.sketchybar;
+        inactive_color = palette.yellow.sketchybar;
       };
     };
   };
