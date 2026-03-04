@@ -12,8 +12,12 @@ local deferred_loading = ws_config.deferred_loading ~= false
 -- Workspace icons and colors (Kanagawa palette)
 local space_icons = icons.workspaces
 local space_colors = {
-	B = colors.blue, C = colors.magenta, D = colors.pink,
-	W = colors.cyan, S = colors.green, O = colors.yellow,
+	B = colors.blue,
+	C = colors.magenta,
+	D = colors.pink,
+	W = colors.cyan,
+	S = colors.green,
+	O = colors.yellow,
 }
 
 -- Load AeroSpaceLua
@@ -59,10 +63,14 @@ local function build_monitor_mapping()
 		if not processed[nsscreen_id] and monitor_names_by_position[monitor_name] then
 			nsscreen_to_display[nsscreen_id] = monitor_names_by_position[monitor_name]
 			processed[nsscreen_id] = true
-			log(string.format(
-				"[MAPPING] NSScreen %d (%s) -> display %d",
-				nsscreen_id, monitor_name, nsscreen_to_display[nsscreen_id]
-			))
+			log(
+				string.format(
+					"[MAPPING] NSScreen %d (%s) -> display %d",
+					nsscreen_id,
+					monitor_name,
+					nsscreen_to_display[nsscreen_id]
+				)
+			)
 		end
 	end
 	log("[MAPPING] Complete")
@@ -368,7 +376,7 @@ if deferred_loading then
 
 	-- Background poll: wait for AeroSpace to respond
 	sbar.exec(
-		'while ! aerospace list-workspaces --all 2>/dev/null; do sleep 0.5; done && sketchybar --trigger aerospace_is_ready',
+		"while ! aerospace list-workspaces --all 2>/dev/null; do sleep 0.5; done && sketchybar --trigger aerospace_is_ready",
 		function() end
 	)
 

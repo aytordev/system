@@ -59,7 +59,7 @@ local function update_brew()
 				count = count + 1
 				table.insert(cached_packages, line)
 				-- print("[BREW OUTDATED] Valid package: " .. line)
-				end
+			end
 		end
 
 		-- print("[BREW OUTDATED] Final count: " .. count .. ", cached: " .. #cached_packages)

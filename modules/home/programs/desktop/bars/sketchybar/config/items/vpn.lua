@@ -52,7 +52,7 @@ vpn_wireguard:subscribe("mouse.clicked", function()
 	sbar.exec(
 		'if ! pgrep -x "WireGuard" > /dev/null 2>&1; then '
 			.. "open -a WireGuard; else "
-			.. "osascript -e 'tell application \"System Events\" to "
+			.. 'osascript -e \'tell application "System Events" to '
 			.. 'tell process "WireGuard" to click menu bar item 1 of menu bar 2\' &>/dev/null; fi'
 	)
 	sbar.exec("sketchybar --set vpn popup.drawing=off")
@@ -81,8 +81,8 @@ end)
 
 vpn_globalprotect:subscribe("mouse.clicked", function()
 	sbar.exec(
-		"osascript -e 'tell application \"System Events\" to "
-			.. "tell process \"GlobalProtect\" to click menu bar item 1 of menu bar 2' &>/dev/null"
+		'osascript -e \'tell application "System Events" to '
+			.. 'tell process "GlobalProtect" to click menu bar item 1 of menu bar 2\' &>/dev/null'
 	)
 	sbar.exec("sketchybar --set vpn popup.drawing=off")
 end)

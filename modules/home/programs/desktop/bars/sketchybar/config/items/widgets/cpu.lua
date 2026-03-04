@@ -2,7 +2,6 @@ local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 
-
 -- Execute the event provider binary which provides the event "cpu_update" for
 -- the cpu load data, which is fired every 2.0 seconds.
 sbar.exec("killall cpu_load >/dev/null; $CONFIG_DIR/helpers/event_providers/cpu_load/bin/cpu_load cpu_update 2.0")

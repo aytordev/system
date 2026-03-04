@@ -25,12 +25,19 @@ local clock = sbar.add("item", "calendar.time", {
 })
 
 local function ordinal(d)
-	if d == 11 or d == 12 or d == 13 then return d .. "th" end
+	if d == 11 or d == 12 or d == 13 then
+		return d .. "th"
+	end
 	local last = d % 10
-	if last == 1 then return d .. "st"
-	elseif last == 2 then return d .. "nd"
-	elseif last == 3 then return d .. "rd"
-	else return d .. "th" end
+	if last == 1 then
+		return d .. "st"
+	elseif last == 2 then
+		return d .. "nd"
+	elseif last == 3 then
+		return d .. "rd"
+	else
+		return d .. "th"
+	end
 end
 
 clock:subscribe({ "routine", "forced", "system_woke" }, function()
