@@ -24,7 +24,7 @@ local pomodoro = sbar.add("item", "pomodoro", {
 	background = { drawing = false },
 	icon = {
 		string = icons.timer,
-		color = colors.white,
+		color = colors.red,
 		font = { size = settings.font_icon.size * 2 },
 	},
 	label = {

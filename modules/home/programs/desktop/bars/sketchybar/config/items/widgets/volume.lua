@@ -17,6 +17,7 @@ local volume_icon = sbar.add("item", "widgets.volume2", {
 	position = "right",
 	icon = {
 		string = icons.volume._100,
+		color = colors.cyan,
 		font = { size = settings.font_icon.size * 2 },
 	},
 	background = { drawing = false },

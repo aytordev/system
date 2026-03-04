@@ -11,7 +11,7 @@ local icon_picker = sbar.add("item", "theme_picker", {
 	background = { drawing = false },
 	icon = {
 		string = icons.theme,
-		color = colors.accent,
+		color = colors.pink,
 		font = { size = settings.font_icon.size * 2 },
 	},
 	label = { drawing = false },
