@@ -7,6 +7,8 @@ local colors = require("colors")
 local settings = require("settings")
 local constants = require("nix_constants")
 
+local popup_width = 100
+
 local default_duration = 25
 if constants.items and constants.items.pomodoro then
 	default_duration = constants.items.pomodoro.default_duration or 25
@@ -27,6 +29,16 @@ local pomodoro = sbar.add("item", "pomodoro", {
 	},
 	label = {
 		drawing = false,
+	},
+	popup = {
+		align = "center",
+		height = 30,
+		background = {
+			color = colors.popup.bg,
+			border_color = colors.popup.border,
+			border_width = 1,
+			corner_radius = 9,
+		},
 	},
 })
 
@@ -106,10 +118,12 @@ for _, minutes in ipairs(presets) do
 		position = "popup.pomodoro",
 		label = {
 			string = minutes .. " min",
+			width = popup_width,
+			align = "center",
 			font = {
 				family = settings.font.text,
-				style = "Regular",
-				size = 13.0,
+				style = settings.font.style_map["Regular"],
+				size = settings.font.size,
 			},
 			color = colors.white,
 		},
@@ -137,10 +151,12 @@ local custom_item = sbar.add("item", "pomodoro.custom", {
 	position = "popup.pomodoro",
 	label = {
 		string = "Custom...",
+		width = popup_width,
+		align = "center",
 		font = {
 			family = settings.font.text,
-			style = "Regular",
-			size = 13.0,
+			style = settings.font.style_map["Regular"],
+			size = settings.font.size,
 		},
 		color = colors.grey,
 	},
