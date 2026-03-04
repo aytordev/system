@@ -49,7 +49,7 @@ in {
   # Icon style
   iconsStyle = mkOption {
     type = enum ["sf_symbols" "nerdfont"];
-    default = "sf_symbols";
+    default = "nerdfont";
     description = "Icon set to use (SF Symbols or Nerd Font icons).";
   };
 
