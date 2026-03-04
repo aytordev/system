@@ -19,16 +19,16 @@ sbar.exec(
 		.. " network_update 2.0"
 )
 
-local rate_label_width = 60
+local rate_label_width = 55
 local rate_font = {
 	family = settings.font.numbers,
 	style = settings.font.style_map["Bold"],
-	size = 10.0,
+	size = settings.font.size * 0.75,
 }
 
 -- Upload item (top line, stacked)
 local network_up = sbar.add("item", "widgets.network.up", {
-	position = "right",
+	position = "left",
 	width = 0,
 	padding_left = 0,
 	padding_right = 0,
@@ -36,38 +36,33 @@ local network_up = sbar.add("item", "widgets.network.up", {
 	label = {
 		font = rate_font,
 		width = rate_label_width,
-		padding_left = 2,
-		padding_right = 6,
 		align = "left",
 		string = icons.wifi.upload .. " ???",
 		color = colors.red,
 	},
-	y_offset = 5,
+	y_offset = 6,
 	background = { drawing = false },
 })
 
 -- Download item (bottom line, stacked)
 local network_down = sbar.add("item", "widgets.network.down", {
-	position = "right",
-	padding_left = 0,
-	padding_right = 0,
+	position = "left",
 	icon = { drawing = false },
 	label = {
 		font = rate_font,
 		width = rate_label_width,
-		padding_left = 2,
-		padding_right = 6,
 		align = "left",
 		string = icons.wifi.download .. " ???",
 		color = colors.blue,
 	},
-	y_offset = -5,
+	y_offset = -6,
 	background = { drawing = false },
 })
 
 -- Padding item
 local network = sbar.add("item", "widgets.network.padding", {
-	position = "right",
+	position = "left",
+	background = { drawing = false },
 	label = { drawing = false },
 })
 
@@ -113,29 +108,16 @@ network_down:subscribe("network_update", function(env)
 	})
 end)
 
-network_up:subscribe("mouse.clicked", function(env)
+network_up:subscribe("mouse.clicked", function()
 	sbar.exec("open -a 'Activity Monitor'")
 end)
 
-network_down:subscribe("mouse.clicked", function(env)
+network_down:subscribe("mouse.clicked", function()
 	sbar.exec("open -a 'Activity Monitor'")
 end)
 
-network:subscribe("mouse.clicked", function(env)
+network:subscribe("mouse.clicked", function()
 	sbar.exec("open -a 'Activity Monitor'")
 end)
 
--- Background bracket around all network items
-sbar.add("bracket", "widgets.network.bracket", {
-	network.name,
-	network_up.name,
-	network_down.name,
-}, {
-	background = { color = colors.bg1 },
-})
-
--- Padding after network widget
-sbar.add("item", "widgets.network.padding2", {
-	position = "right",
-	width = settings.group_paddings,
-})
+-- Bracket grouping is handled by the unified resources.bracket in init.lua

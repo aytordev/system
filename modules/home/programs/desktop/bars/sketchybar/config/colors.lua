@@ -1,5 +1,10 @@
-local constants = require("nix_constants")
-local colors = constants.colors
+-- Color module - reads from runtime theme manager
+-- The return table shape is identical to the previous version,
+-- so all downstream items see the same API.
+local theme = require("helpers.theme")
+theme.init()
+
+local colors = theme.palette()
 
 return {
 	default = colors.default,
@@ -14,6 +19,8 @@ return {
 	orange = colors.orange,
 	magenta = colors.magenta,
 	grey = colors.grey,
+	pink = colors.pink,
+	cyan = colors.cyan,
 	transparent = colors.transparent,
 
 	bar = {

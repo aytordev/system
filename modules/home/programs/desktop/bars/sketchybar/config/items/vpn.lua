@@ -1,5 +1,4 @@
 local app_icons = require("helpers.app_icons")
-local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 
@@ -10,6 +9,7 @@ local VPN_DISCONNECTED_COLOR = colors.with_alpha(colors.white, 0.3)
 
 local vpn = sbar.add("item", "vpn", {
 	position = "right",
+	background = { drawing = false },
 	icon = {
 		string = VPN_ICON,
 		color = VPN_DISCONNECTED_COLOR,
@@ -18,8 +18,6 @@ local vpn = sbar.add("item", "vpn", {
 			style = settings.font_icon.style_map["Bold"],
 			size = settings.font_icon.size,
 		},
-		padding_left = settings.padding.icon_item.icon.padding_left,
-		padding_right = settings.padding.icon_item.icon.padding_right,
 	},
 	label = { drawing = false },
 	update_freq = 10,
@@ -32,57 +30,70 @@ local vpn = sbar.add("item", "vpn", {
 -- Add WireGuard item to popup
 local vpn_wireguard = sbar.add("item", {
 	position = "popup.vpn",
+	background = { drawing = false },
 	icon = {
 		string = app_icons["Wireguard"] or "󱇱",
 		font = "sketchybar-app-font:Regular:16.0",
-		padding_left = 8,
-		padding_right = 4,
 	},
 	label = {
 		string = "WireGuard",
-		padding_left = 4,
-		padding_right = 8,
 	},
 })
 
-vpn_wireguard:subscribe("mouse.clicked", function(env)
-	-- Check if WireGuard is running using pgrep (faster), open if not, otherwise click menu bar
-	sbar.exec([[
-        if ! pgrep -x "WireGuard" > /dev/null 2>&1; then
-            open -a WireGuard
-        else
-            osascript -e 'tell application "System Events" to tell process "WireGuard" to click menu bar item 1 of menu bar 2' &>/dev/null
-        fi
-    ]])
+vpn_wireguard:subscribe("mouse.entered", function()
+	vpn_wireguard:set({ background = { drawing = true, color = 0x33ffffff } })
+end)
+
+vpn_wireguard:subscribe("mouse.exited", function()
+	vpn_wireguard:set({ background = { drawing = false } })
+end)
+
+vpn_wireguard:subscribe("mouse.clicked", function()
+	sbar.exec(
+		'if ! pgrep -x "WireGuard" > /dev/null 2>&1; then '
+			.. "open -a WireGuard; else "
+			.. 'osascript -e \'tell application "System Events" to '
+			.. 'tell process "WireGuard" to click menu bar item 1 of menu bar 2\' &>/dev/null; fi'
+	)
 	sbar.exec("sketchybar --set vpn popup.drawing=off")
 end)
 
 -- Add GlobalProtect item to popup
 local vpn_globalprotect = sbar.add("item", {
 	position = "popup.vpn",
+	background = { drawing = false },
 	icon = {
 		string = app_icons["Global Protect"] or "󰒄",
 		font = "sketchybar-app-font:Regular:16.0",
-		padding_left = 8,
-		padding_right = 4,
 	},
 	label = {
 		string = "GlobalProtect",
-		padding_left = 4,
-		padding_right = 8,
 	},
 })
 
-vpn_globalprotect:subscribe("mouse.clicked", function(env)
+vpn_globalprotect:subscribe("mouse.entered", function()
+	vpn_globalprotect:set({ background = { drawing = true, color = 0x33ffffff } })
+end)
+
+vpn_globalprotect:subscribe("mouse.exited", function()
+	vpn_globalprotect:set({ background = { drawing = false } })
+end)
+
+vpn_globalprotect:subscribe("mouse.clicked", function()
 	sbar.exec(
-		'osascript -e \'tell application "System Events" to tell process "GlobalProtect" to click menu bar item 1 of menu bar 2\' &>/dev/null'
+		'osascript -e \'tell application "System Events" to '
+			.. 'tell process "GlobalProtect" to click menu bar item 1 of menu bar 2\' &>/dev/null'
 	)
 	sbar.exec("sketchybar --set vpn popup.drawing=off")
 end)
 
 -- Toggle popup on click
-vpn:subscribe("mouse.clicked", function(env)
+vpn:subscribe("mouse.clicked", function()
 	sbar.exec("sketchybar --set vpn popup.drawing=toggle")
+end)
+
+vpn:subscribe("mouse.exited.global", function()
+	vpn:set({ popup = { drawing = false } })
 end)
 
 local function check_vpn_status()

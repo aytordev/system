@@ -3,31 +3,19 @@ local colors = require("colors")
 local settings = require("settings")
 
 local ram = sbar.add("item", "widgets.ram", {
-	position = "right",
+	position = "left",
 	update_freq = 2,
+	background = { drawing = false },
 	icon = {
-		string = "􀫦", -- SF Symbol for memory
-		font = {
-			family = settings.font_icon.text,
-			style = settings.font_icon.style_map["Bold"],
-			size = settings.icon_size,
-		},
-		padding_left = settings.padding.icon_label_item.icon.padding_left,
-		padding_right = settings.padding.icon_label_item.icon.padding_right,
+		string = icons.ram,
+		font = { size = settings.font_icon.size * 2 },
 	},
 	label = {
 		string = "??%",
-		font = {
-			family = settings.font.numbers,
-			style = settings.font.style_map["Bold"],
-			size = settings.label_size,
-		},
-		align = "right",
-		padding_right = settings.padding.icon_label_item.label.padding_right,
 	},
 })
 
-ram:subscribe({ "routine", "forced" }, function(env)
+ram:subscribe({ "routine", "forced" }, function()
 	sbar.exec("memory_pressure", function(output)
 		-- Parse memory pressure output to calculate RAM usage
 		local pages_free = output:match("Pages free:%s+(%d+)")
@@ -76,17 +64,8 @@ ram:subscribe({ "routine", "forced" }, function(env)
 	end)
 end)
 
-ram:subscribe("mouse.clicked", function(env)
+ram:subscribe("mouse.clicked", function()
 	sbar.exec("open -a 'Activity Monitor'")
 end)
 
--- Background around the ram item
-sbar.add("bracket", "widgets.ram.bracket", { ram.name }, {
-	background = { color = colors.bg1 },
-})
-
--- Padding after ram item
-sbar.add("item", "widgets.ram.padding", {
-	position = "right",
-	width = settings.group_paddings,
-})
+-- Bracket grouping is handled by the unified resources.bracket in init.lua

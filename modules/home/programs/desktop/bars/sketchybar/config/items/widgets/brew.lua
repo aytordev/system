@@ -4,25 +4,14 @@ local settings = require("settings")
 
 local brew = sbar.add("item", "widgets.brew", {
 	position = "right",
-	update_freq = 3600, -- Check every hour (3600s) for efficiency
+	update_freq = 3600,
+	background = { drawing = false },
 	icon = {
-		string = "󰏖", -- Nerd font brew icon
-		font = {
-			family = settings.font_icon.text,
-			style = settings.font_icon.style_map["Bold"],
-			size = settings.icon_size,
-		},
-		padding_left = settings.padding.icon_label_item.icon.padding_left,
-		padding_right = settings.padding.icon_label_item.icon.padding_right,
+		string = icons.brew,
+		font = { size = settings.font_icon.size * 2 },
 	},
 	label = {
 		string = "?",
-		font = {
-			family = settings.font.numbers,
-			style = settings.font.style_map["Bold"],
-			size = settings.label_size,
-		},
-		padding_right = settings.padding.icon_label_item.label.padding_right,
 	},
 	popup = {
 		align = "center",
@@ -51,7 +40,7 @@ local function is_package_line(line)
 	return true
 end
 
-local function update_brew(env)
+local function update_brew()
 	local brew_cmd = '/bin/zsh -c "brew outdated -q"'
 
 	-- print("[BREW OUTDATED] Running command: " .. brew_cmd)
@@ -70,8 +59,6 @@ local function update_brew(env)
 				count = count + 1
 				table.insert(cached_packages, line)
 				-- print("[BREW OUTDATED] Valid package: " .. line)
-			else
-				-- print("[BREW OUTDATED] Filtered line: " .. line)
 			end
 		end
 
@@ -123,8 +110,6 @@ local function populate_popup()
 					style = settings.font.style_map["Regular"],
 					size = settings.font.size,
 				},
-				padding_left = 8,
-				padding_right = 8,
 			},
 			icon = { drawing = false },
 		})
@@ -142,13 +127,9 @@ local function populate_popup()
 						style = settings.font.style_map["Regular"],
 						size = 10.0,
 					},
-					padding_left = 8,
-					padding_right = 8,
 				},
 				icon = {
 					string = "•",
-					padding_left = 8,
-					padding_right = 4,
 				},
 			})
 			table.insert(popup_items, pkg_item)
@@ -157,7 +138,7 @@ local function populate_popup()
 end
 
 -- Click to toggle popup
-brew:subscribe("mouse.clicked", function(env)
+brew:subscribe("mouse.clicked", function()
 	local query = brew:query()
 	local should_draw = query and query.popup and query.popup.drawing == "off" or true
 
@@ -168,13 +149,8 @@ brew:subscribe("mouse.clicked", function(env)
 	sbar.exec("sketchybar --set widgets.brew popup.drawing=toggle")
 end)
 
--- Background around the brew item
-sbar.add("bracket", "widgets.brew.bracket", { brew.name }, {
-	background = { color = colors.bg1 },
-})
+brew:subscribe("mouse.exited.global", function()
+	brew:set({ popup = { drawing = false } })
+end)
 
--- Padding after brew item
-sbar.add("item", "widgets.brew.padding", {
-	position = "right",
-	width = settings.group_paddings,
-})
+-- Bracket grouping is handled by the unified right.bracket in init.lua

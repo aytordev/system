@@ -162,6 +162,17 @@ in {
         Prefer palette for standard consumption.
       '';
     };
+
+    allVariantPalettes = mkOption {
+      type = types.attrsOf paletteType;
+      readOnly = true;
+      default = lib.mapAttrs (_: v: v.palette) activeTheme.variants;
+      description = ''
+        All variant palettes for the active theme.
+        Useful for apps that support runtime theme switching.
+        Example: config.aytordev.theme.allVariantPalettes.dragon.accent.hex
+      '';
+    };
   };
 
   config = mkIf cfg.enable {

@@ -23,7 +23,14 @@ in {
       programs = {
         desktop = {
           bars = {
-            sketchybar = enabled;
+            sketchybar = {
+              enable = true;
+              items = {
+                menus.enable = true;
+                themePicker.enable = true;
+                pomodoro.enable = true;
+              };
+            };
           };
           browsers = {
             brave = enabled;

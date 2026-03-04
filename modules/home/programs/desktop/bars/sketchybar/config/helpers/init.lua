@@ -11,4 +11,4 @@ package.path = package.path
 	.. "/.luarocks/share/lua/5.4/?/init.lua"
 package.cpath = package.cpath .. ";/Users/" .. USER .. "/.luarocks/lib/lua/5.4/?.so"
 
-os.execute("(cd helpers && make)")
+-- NOTE: C event providers are compiled from config.text (sketchybarrc) before items load

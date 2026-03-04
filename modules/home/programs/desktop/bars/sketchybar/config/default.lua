@@ -2,15 +2,17 @@ local settings = require("settings")
 local colors = require("colors")
 
 -- Equivalent to the --default domain
+-- background.drawing defaults to false — brackets provide group backgrounds
 sbar.default({
 	background = {
-		border_color = colors.accent_bright,
-		border_width = 0,
+		drawing = false,
 		color = colors.bg1,
-		corner_radius = 6,
-		height = settings.height,
+		border_color = colors.bg2,
+		border_width = 1,
+		corner_radius = 15,
+		height = 25,
 		image = {
-			corner_radius = 9,
+			corner_radius = 15,
 			border_color = colors.grey,
 			border_width = 1,
 		},
@@ -21,10 +23,10 @@ sbar.default({
 			style = settings.font_icon.style_map["Bold"],
 			size = settings.font_icon.size,
 		},
-		color = colors.white,
+		color = colors.accent,
 		highlight_color = colors.bg1,
-		padding_left = 0,
-		padding_right = 0,
+		padding_left = settings.paddings,
+		padding_right = settings.paddings,
 	},
 	label = {
 		font = {
@@ -32,14 +34,14 @@ sbar.default({
 			style = settings.font.style_map["Semibold"],
 			size = settings.font.size,
 		},
-		color = colors.white,
-		padding_left = settings.paddings,
+		color = colors.accent,
 		padding_right = settings.paddings,
 	},
 	popup = {
 		align = "center",
 		background = {
-			border_width = 0,
+			border_width = 1,
+			border_color = colors.popup.border,
 			corner_radius = 6,
 			color = colors.popup.bg,
 			shadow = { drawing = true },
