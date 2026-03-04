@@ -6,12 +6,14 @@ local settings = require("settings")
 local battery = sbar.add("item", "widgets.battery", {
 	position = "right",
 	update_freq = 180,
+	background = { drawing = false },
 	label = { drawing = false },
 })
 
 -- Time remaining popup item
 local remaining_time = sbar.add("item", {
 	position = "popup." .. battery.name,
+	background = { drawing = false },
 	icon = {
 		string = "Time remaining:",
 		align = "left",

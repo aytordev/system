@@ -20,6 +20,7 @@ local last_content = ""
 local clipboard = sbar.add("item", "clipboard", {
 	position = "right",
 	update_freq = poll_interval,
+	background = { drawing = false },
 	icon = {
 		string = icons.clipboard,
 		color = colors.white,

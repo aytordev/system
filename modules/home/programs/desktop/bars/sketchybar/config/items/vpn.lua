@@ -9,6 +9,7 @@ local VPN_DISCONNECTED_COLOR = colors.with_alpha(colors.white, 0.3)
 
 local vpn = sbar.add("item", "vpn", {
 	position = "right",
+	background = { drawing = false },
 	icon = {
 		string = VPN_ICON,
 		color = VPN_DISCONNECTED_COLOR,
@@ -29,6 +30,7 @@ local vpn = sbar.add("item", "vpn", {
 -- Add WireGuard item to popup
 local vpn_wireguard = sbar.add("item", {
 	position = "popup.vpn",
+	background = { drawing = false },
 	icon = {
 		string = app_icons["Wireguard"] or "󱇱",
 		font = "sketchybar-app-font:Regular:16.0",
@@ -59,6 +61,7 @@ end)
 -- Add GlobalProtect item to popup
 local vpn_globalprotect = sbar.add("item", {
 	position = "popup.vpn",
+	background = { drawing = false },
 	icon = {
 		string = app_icons["Global Protect"] or "󰒄",
 		font = "sketchybar-app-font:Regular:16.0",

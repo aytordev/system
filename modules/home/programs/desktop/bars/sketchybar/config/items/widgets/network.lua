@@ -62,6 +62,7 @@ local network_down = sbar.add("item", "widgets.network.down", {
 -- Padding item
 local network = sbar.add("item", "widgets.network.padding", {
 	position = "left",
+	background = { drawing = false },
 	label = { drawing = false },
 })
 
