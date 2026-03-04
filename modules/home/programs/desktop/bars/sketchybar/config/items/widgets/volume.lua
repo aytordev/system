@@ -1,7 +1,8 @@
 local colors = require("colors")
 local icons = require("icons")
+local settings = require("settings")
 
-local popup_width = 150
+local popup_width = 200
 
 -- Volume percentage (hidden by default, used internally for slider sync)
 local volume_percent = sbar.add("item", "widgets.volume1", {
@@ -14,7 +15,10 @@ local volume_percent = sbar.add("item", "widgets.volume1", {
 -- Volume icon display (icon-only, no label)
 local volume_icon = sbar.add("item", "widgets.volume2", {
 	position = "right",
-	icon = { string = icons.volume._100 },
+	icon = {
+		string = icons.volume._100,
+		font = { size = settings.font_icon.size * 2 },
+	},
 	background = { drawing = false },
 	label = { drawing = false },
 })
@@ -38,14 +42,16 @@ local volume_slider = sbar.add("slider", popup_width, {
 			height = 6,
 		},
 		knob = {
-			string = "􀀁",
+			string = "󰏝",
 			drawing = true,
+			font = { size = 18.0 },
+			color = colors.white,
 		},
 	},
 	background = {
 		color = colors.bg1,
 		height = 2,
-		padding_left = 12,
+		padding_left = 0,
 		padding_right = 0,
 	},
 	click_script = 'osascript -e "set volume output volume $PERCENTAGE"',
@@ -111,9 +117,19 @@ local function volume_toggle_details(env)
 					end
 					sbar.add("item", "volume.device." .. counter, {
 						position = "popup." .. volume_bracket.name,
-						width = popup_width,
-						align = "center",
-						label = { string = device, color = color },
+						icon = { drawing = false },
+						label = {
+							string = device,
+							color = color,
+							width = popup_width,
+							align = "center",
+							font = {
+								family = settings.font.text,
+								style = settings.font.style_map["Regular"],
+								size = 13.0,
+							},
+						},
+						background = { drawing = false },
 						click_script = 'SwitchAudioSource -s "'
 							.. device
 							.. '" && sketchybar --set /volume.device\\.*/ label.color='
