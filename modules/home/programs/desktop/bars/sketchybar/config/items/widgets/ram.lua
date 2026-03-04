@@ -1,11 +1,14 @@
 local icons = require("icons")
 local colors = require("colors")
+local settings = require("settings")
 
 local ram = sbar.add("item", "widgets.ram", {
 	position = "left",
 	update_freq = 2,
+	background = { drawing = false },
 	icon = {
 		string = icons.ram,
+		font = { size = settings.font_icon.size * 2 },
 	},
 	label = {
 		string = "??%",

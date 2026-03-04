@@ -5,8 +5,10 @@ local settings = require("settings")
 local brew = sbar.add("item", "widgets.brew", {
 	position = "right",
 	update_freq = 3600,
+	background = { drawing = false },
 	icon = {
 		string = icons.brew,
+		font = { size = settings.font_icon.size * 2 },
 	},
 	label = {
 		string = "?",

@@ -8,9 +8,11 @@ local theme = require("helpers.theme")
 
 local icon_picker = sbar.add("item", "theme_picker", {
 	position = "right",
+	background = { drawing = false },
 	icon = {
 		string = icons.theme,
 		color = colors.accent,
+		font = { size = settings.font_icon.size * 2 },
 	},
 	label = { drawing = false },
 	popup = { align = "right" },

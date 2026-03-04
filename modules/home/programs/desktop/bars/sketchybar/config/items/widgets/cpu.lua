@@ -1,5 +1,6 @@
 local icons = require("icons")
 local colors = require("colors")
+local settings = require("settings")
 
 
 -- Execute the event provider binary which provides the event "cpu_update" for
@@ -8,8 +9,10 @@ sbar.exec("killall cpu_load >/dev/null; $CONFIG_DIR/helpers/event_providers/cpu_
 
 local cpu = sbar.add("item", "widgets.cpu", {
 	position = "left",
+	background = { drawing = false },
 	icon = {
 		string = icons.cpu,
+		font = { size = settings.font_icon.size * 2 },
 	},
 	label = {
 		string = "??%",

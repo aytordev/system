@@ -19,9 +19,11 @@ local is_running = false
 local pomodoro = sbar.add("item", "pomodoro", {
 	position = "right",
 	update_freq = 0, -- Updated manually when running
+	background = { drawing = false },
 	icon = {
 		string = icons.timer,
 		color = colors.white,
+		font = { size = settings.font_icon.size * 2 },
 	},
 	label = {
 		drawing = false,
