@@ -41,12 +41,12 @@ in {
         enable-normalization-opposite-orientation-for-nested-containers = true;
 
         # Persistent workspaces - always visible in Sketchybar even when empty
-        # B = Browsers
-        # C = Coding
-        # D = Development
-        # W = Work
-        # S = Social
-        # O = Other
+        # B = Browsers    (網 - web/net)
+        # C = Coding      (編 - edit/compile)
+        # D = Development  (端 - terminal)
+        # W = Work        (業 - work/business)
+        # S = Social      (話 - conversation)
+        # O = Other       (雑 - miscellaneous)
 
         persistent-workspaces = ["B" "C" "D" "W" "S" "O"];
 
@@ -73,7 +73,7 @@ in {
 
         mode = {
           main.binding = {
-            # Workspace Navigation - Semantic Names
+            # Workspace Navigation
             alt-1 = "workspace B";
             alt-2 = "workspace C";
             alt-3 = "workspace D";
@@ -162,8 +162,8 @@ in {
           C = "main";
           D = "main";
           W = "main";
-          S = "main";
-          O = "main";
+          S = "secondary";
+          O = "secondary";
         };
 
         # Application-Specific Rules - Floating apps
@@ -200,7 +200,7 @@ in {
           # }
           # ══════════════════════════════════════════════════════════════════
 
-          # ─── Workspace B (Browsers) ────────────────────────────────────────
+          # ─── Workspace B (Browsers / 網) ─────────────────────────────────
           {
             "if".app-id = "com.google.Chrome";
             run = "move-node-to-workspace B";
@@ -232,7 +232,7 @@ in {
             check-further-callbacks = false;
           }
 
-          # ─── Workspace C (Coding) ──────────────────────────────────────────
+          # ─── Workspace C (Coding / 編) ──────────────────────────────────
           {
             "if".app-id = "com.google.antigravity";
             run = "move-node-to-workspace C";
@@ -249,20 +249,20 @@ in {
           #   check-further-callbacks = false;
           # }
 
-          # ─── Workspace D (Development) ─────────────────────────────────────
+          # ─── Workspace D (Development / 端) ─────────────────────────────
           {
             "if".app-id = "com.mitchellh.ghostty";
             run = "move-node-to-workspace D";
             check-further-callbacks = false;
           }
 
-          # ─── Workspace W (Work) ────────────────────────────────────────────
+          # ─── Workspace W (Work / 業) ────────────────────────────────────
           # Examples: Slack, Teams, Outlook
 
-          # ─── Workspace S (Social) ──────────────────────────────────────────
+          # ─── Workspace S (Social / 話) ──────────────────────────────────
           # Examples: Signal, Telegram, Discord, Messages
 
-          # ─── Workspace O (Other) ───────────────────────────────────────────
+          # ─── Workspace O (Other / 雑) ───────────────────────────────────
           # Examples: Mail, Obsidian, Notes, Calendar, Notion
         ];
 
