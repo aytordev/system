@@ -23,18 +23,30 @@ local volume_icon = sbar.add("item", "widgets.volume2", {
 	label = { drawing = false },
 })
 
--- Bracket for popup functionality (visual grouping handled by right.bracket)
+-- Bracket for popup functionality
 local volume_bracket = sbar.add("bracket", "widgets.volume.bracket", {
 	volume_icon.name,
 	volume_percent.name,
 }, {
 	background = { drawing = false },
-	popup = { align = "center" },
+	popup = {
+		align = "center",
+		height = 30,
+		background = {
+			color = colors.popup.bg,
+			border_color = colors.popup.border,
+			border_width = 1,
+			corner_radius = 9,
+		},
+	},
 })
 
 -- Volume slider popup
-local volume_slider = sbar.add("slider", popup_width, {
+local slider_padding = 16
+local volume_slider = sbar.add("slider", popup_width - slider_padding, {
 	position = "popup." .. volume_bracket.name,
+	icon = { drawing = false, width = 0, padding_left = 0, padding_right = 0 },
+	label = { drawing = false, width = 0, padding_left = 0, padding_right = 0 },
 	slider = {
 		highlight_color = colors.accent,
 		background = {
@@ -42,18 +54,13 @@ local volume_slider = sbar.add("slider", popup_width, {
 			height = 6,
 		},
 		knob = {
-			string = "󰏝",
+			string = "●",
 			drawing = true,
-			font = { size = 18.0 },
+			font = { size = 32.0 },
 			color = colors.white,
 		},
 	},
-	background = {
-		color = colors.bg1,
-		height = 2,
-		padding_left = 0,
-		padding_right = 0,
-	},
+	background = { drawing = false, padding_left = slider_padding / 2, padding_right = 0 },
 	click_script = 'osascript -e "set volume output volume $PERCENTAGE"',
 })
 
@@ -117,19 +124,21 @@ local function volume_toggle_details(env)
 					end
 					sbar.add("item", "volume.device." .. counter, {
 						position = "popup." .. volume_bracket.name,
-						icon = { drawing = false },
+						icon = { drawing = false, width = 0, padding_left = 0, padding_right = 0 },
 						label = {
 							string = device,
 							color = color,
 							width = popup_width,
 							align = "center",
+							padding_left = 0,
+							padding_right = 0,
 							font = {
 								family = settings.font.text,
 								style = settings.font.style_map["Regular"],
-								size = 13.0,
+								size = settings.font.size,
 							},
 						},
-						background = { drawing = false },
+						background = { drawing = false, padding_left = 0, padding_right = 0 },
 						click_script = 'SwitchAudioSource -s "'
 							.. device
 							.. '" && sketchybar --set /volume.device\\.*/ label.color='
