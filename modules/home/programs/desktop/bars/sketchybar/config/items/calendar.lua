@@ -1,58 +1,43 @@
--- Stacked date/time display
--- Time on top, date on bottom (two-line layout).
+-- Clock display — single item with icon + time label
 local colors = require("colors")
+local icons = require("icons")
 local settings = require("settings")
 
-local base_size = settings.font.size
-
--- Time (top line, stacked)
-local cal_time = sbar.add("item", "calendar.time", {
+local clock = sbar.add("item", "calendar.time", {
 	position = "right",
-	width = 0,
-	padding_left = 0,
-	padding_right = 0,
-	icon = { drawing = false },
-	label = {
-		font = {
-			family = settings.font.text,
-			style = settings.font.style_map["Bold"],
-			size = base_size * 0.85,
-		},
-		align = "right",
-	},
-	y_offset = 6,
-})
-
--- Date (bottom line, provides width)
-local cal_date = sbar.add("item", "calendar.date", {
-	position = "right",
-	icon = { drawing = false },
-	label = {
-		font = {
-			family = settings.font.text,
-			style = settings.font.style_map["Regular"],
-			size = base_size * 0.70,
-		},
-		color = colors.accent_bright,
-		align = "right",
-	},
-	y_offset = -6,
+	update_freq = 1,
 	background = { drawing = false },
-	update_freq = 30,
+	icon = {
+		string = icons.clock,
+		color = colors.blue,
+		font = { size = settings.font_icon.size * 2 },
+	},
+	label = {
+		color = colors.white,
+		font = {
+			family = settings.font.text,
+			style = settings.font.style_map["Semibold"],
+			size = settings.font.size,
+		},
+		padding_left = 8,
+		padding_right = 12,
+	},
 })
 
-local function update_calendar()
-	cal_time:set({ label = { string = os.date("%H:%M") } })
-	cal_date:set({ label = { string = string.upper(os.date("%a %b %d")) } })
+local function ordinal(d)
+	if d == 11 or d == 12 or d == 13 then return d .. "th" end
+	local last = d % 10
+	if last == 1 then return d .. "st"
+	elseif last == 2 then return d .. "nd"
+	elseif last == 3 then return d .. "rd"
+	else return d .. "th" end
 end
 
-cal_date:subscribe({ "forced", "routine", "system_woke" }, update_calendar)
+clock:subscribe({ "routine", "forced", "system_woke" }, function()
+	local day = tonumber(os.date("%d"))
+	clock:set({ label = { string = ordinal(day) .. " of " .. os.date("%b %H:%M:%S") } })
+end)
 
-local function on_click()
+clock:subscribe("mouse.clicked", function()
 	sbar.exec("open -a Calendar")
-end
-
-cal_time:subscribe("mouse.clicked", on_click)
-cal_date:subscribe("mouse.clicked", on_click)
-
-update_calendar()
+end)

@@ -1,4 +1,5 @@
 local colors = require("colors")
+local icons = require("icons")
 local settings = require("settings")
 local app_icons = require("helpers.app_icons")
 local constants = require("nix_constants")
@@ -8,12 +9,19 @@ local ws_config = (constants.items and constants.items.workspaces) or {}
 local bounce_animation = ws_config.bounce_animation ~= false
 local deferred_loading = ws_config.deferred_loading ~= false
 
+-- Workspace icons and colors (Kanagawa palette)
+local space_icons = icons.workspaces
+local space_colors = {
+	B = colors.blue, C = colors.magenta, D = colors.pink,
+	W = colors.cyan, S = colors.green, O = colors.yellow,
+}
+
 -- Load AeroSpaceLua
 local Aerospace = require("helpers.aerospace")
 local aerospace = nil
 
 -- Root is used to handle event subscriptions
-local root = sbar.add("item", { drawing = false })
+local root = sbar.add("item", { drawing = false, background = { drawing = false } })
 local workspaces = {}
 local initialized = false
 
@@ -63,6 +71,7 @@ end
 -- AeroSpace mode indicator
 local mode_indicator = sbar.add("item", "aerospace.mode", {
 	position = "left",
+	background = { drawing = false },
 	icon = {
 		string = "M",
 		color = colors.green,
@@ -296,22 +305,25 @@ local function initialize_workspaces()
 	aerospace:query_workspaces(function(workspace_info)
 		for _, entry in ipairs(workspace_info) do
 			local workspace_index = entry.workspace
+			local ws_icon = space_icons[workspace_index] or workspace_index
+			local ws_color = space_colors[workspace_index] or colors.white
 
 			local workspace = sbar.add("item", {
 				click_script = "aerospace workspace " .. workspace_index .. " 2>/dev/null",
 				drawing = false,
+				background = { drawing = false },
 				icon = {
-					color = colors.with_alpha(colors.white, 0.3),
+					color = colors.with_alpha(ws_color, 0.3),
 					drawing = true,
 					font = { family = settings.font.numbers },
-					highlight_color = colors.white,
-					string = workspace_index,
+					highlight_color = ws_color,
+					string = ws_icon,
 				},
 				label = {
-					color = colors.with_alpha(colors.white, 0.3),
+					color = colors.with_alpha(ws_color, 0.3),
 					drawing = true,
 					font = "sketchybar-app-font:Regular:16.0",
-					highlight_color = colors.white,
+					highlight_color = ws_color,
 				},
 			})
 
