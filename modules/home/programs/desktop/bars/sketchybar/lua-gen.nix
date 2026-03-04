@@ -74,6 +74,9 @@
     accent = p.accent.sketchybar;
     accent_bright = p.accent_dim.sketchybar;
 
+    pink = p.pink.sketchybar;
+    cyan = p.cyan.sketchybar;
+
     spotify_green = p.green.sketchybar;
   };
 
@@ -137,7 +140,7 @@
   # ── Reorder command for deferred workspace loading ──
   leftItemOrder =
     lib.optionals hasMenus ["menu_trigger"]
-    ++ lib.optionals hasMenus ["separator.menus"]
+    ++ lib.optionals hasMenus ["cosmic_sep"]
     ++ lib.optionals cfg.items.workspaces.enable ["aerospace.mode" "/space\\\\..*/"]
     ++ lib.optionals cfg.items.frontApp.enable ["front_app"]
     ++ lib.optionals (hasSpaces && hasResources) ["separator.resources"]
@@ -169,9 +172,7 @@
       lib.optionals cfg.items.menus.enable [
         ''require("items.menus")''
       ]
-      ++ lib.optionals (hasMenus && hasSpaces) [
-        (mkSeparator "separator.menus" "left")
-      ]
+      # Note: cosmic_sep separator is created inside menus.lua
       ++ lib.optionals cfg.items.workspaces.enable [
         ''require("items.workspaces")''
       ]

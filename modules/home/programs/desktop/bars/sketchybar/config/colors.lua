@@ -19,6 +19,8 @@ return {
 	orange = colors.orange,
 	magenta = colors.magenta,
 	grey = colors.grey,
+	pink = colors.pink,
+	cyan = colors.cyan,
 	transparent = colors.transparent,
 
 	bar = {

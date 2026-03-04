@@ -19,10 +19,11 @@ local menu_trigger = sbar.add("item", "menu_trigger", {
 	position = "left",
 	drawing = true,
 	updates = true,
+	background = { drawing = false },
 	icon = {
 		string = icons.rift,
-		font = { size = settings.font_icon.size * 1.5 },
-		color = colors.white,
+		font = { size = settings.font_icon.size * 2 },
+		color = colors.pink,
 	},
 	label = { drawing = false },
 })
@@ -37,6 +38,7 @@ for i = 1, max_items do
 		position = "left",
 		drawing = false,
 		width = 0,
+		background = { drawing = false },
 		icon = { drawing = false },
 		label = {
 			font = {
@@ -64,6 +66,7 @@ sbar.add("bracket", "menus.bracket", { "menu_trigger", "menu." .. max_items }, {
 local menu_watcher = sbar.add("item", {
 	drawing = false,
 	updates = false,
+	background = { drawing = false },
 })
 
 -- Update menu contents from current app
@@ -210,3 +213,21 @@ end)
 
 -- Initial menu content load
 update_menus()
+
+-- Separator after rift icon
+sbar.add("item", "cosmic_sep", {
+	position = "left",
+	icon = {
+		string = "│",
+		font = {
+			family = settings.font.text,
+			style = settings.font.style_map["Regular"],
+			size = settings.font.size,
+		},
+		color = colors.with_alpha(colors.grey, 0.25),
+		padding_left = 4,
+		padding_right = 4,
+	},
+	background = { drawing = false },
+	label = { drawing = false },
+})
