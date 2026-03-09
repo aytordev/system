@@ -142,9 +142,9 @@ in {
         };
 
         terminal = {
-          # TODO: Add terminal.editors when neovim module exists
-          # helix = enabled;
-          # neovim = { enable = true; default = true; };
+          editors = {
+            neovim = {enable = true; default = true;};
+          };
 
           tools = {
             act = mkDefault enabled;
