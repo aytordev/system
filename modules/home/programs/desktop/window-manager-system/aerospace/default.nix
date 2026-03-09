@@ -65,7 +65,7 @@ in {
           outer = {
             left = 7;
             bottom = 7;
-            top = 32;
+            top = 40;
             right = 7;
           };
         };
