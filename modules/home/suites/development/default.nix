@@ -155,9 +155,9 @@ in {
             claude-code.enable = mkDefault cfg.aiEnable;
             engram.enable = mkDefault cfg.aiEnable;
             gemini-cli.enable = mkDefault cfg.aiEnable;
-            litellm.enable = mkDefault cfg.aiEnable;
+            litellm.enable = mkDefault false;
             mcp.enable = mkDefault cfg.aiEnable;
-            ollama.enable = mkDefault cfg.aiEnable;
+            ollama.enable = mkDefault false;
             opencode.enable = mkDefault cfg.aiEnable;
             git-crypt = mkDefault enabled;
             # go.enable = cfg.goEnable;  # TODO: module doesn't exist
