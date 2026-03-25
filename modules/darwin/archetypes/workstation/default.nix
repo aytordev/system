@@ -20,7 +20,7 @@ in {
         development = {
           enable = true;
           dockerEnable = true;
-          aiEnable = true;
+          aiEnable = false;
         };
         networking = enabled;
       };
