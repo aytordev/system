@@ -143,7 +143,10 @@ in {
 
         terminal = {
           editors = {
-            neovim = {enable = true; default = true;};
+            neovim = {
+              enable = true;
+              default = true;
+            };
           };
 
           tools = {

@@ -25,7 +25,8 @@ in {
     homebrew = {
       casks = [
         "sf-symbols"
-        "zen-browser"
+        "zen"
+        "boosteroid"
       ];
 
       masApps = mkIf config.aytordev.tools.homebrew.masEnable {
