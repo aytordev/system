@@ -19,7 +19,6 @@ jobs:
         uses: DeterminateSystems/flake-checker-action@v12
       - uses: cachix/install-nix-action@v31
         with:
-          install_url: https://nixos.org/nix/install
           extra_nix_config: |
             system = ${{ matrix.arch }}
             extra-platforms = ${{ matrix.arch }}
