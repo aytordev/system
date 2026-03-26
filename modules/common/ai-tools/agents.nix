@@ -29,6 +29,29 @@
     ${lib.trim agent.content}
   '';
 
+  # OpenCode: YAML frontmatter with tools as boolean record
+  renderOpenCodeFrontmatter = agent: let
+    hasWrite = builtins.elem "Write" agent.tools;
+    hasEdit = builtins.elem "Edit" agent.tools;
+    hasBash = builtins.elem "Bash" agent.tools;
+  in ''
+    ---
+    name: ${agent.name}
+    description: ${agent.description}
+    tools:
+      write: ${lib.boolToString hasWrite}
+      edit: ${lib.boolToString hasEdit}
+      bash: ${lib.boolToString hasBash}
+    model: ${agent.model.opencode}
+    ---
+  '';
+
+  renderOpenCodeMarkdownAgent = agent: ''
+    ${lib.trim (renderOpenCodeFrontmatter agent)}
+
+    ${lib.trim agent.content}
+  '';
+
   # OpenCode: structured config with model, tools (as booleans), permissions
   toOpenCodeAgent = agent: {
     model = agent.model.opencode;
@@ -48,8 +71,9 @@
   };
 
   toClaudeMarkdown = lib.mapAttrs (_: renderClaudeAgent) resolvedAgents;
+  toOpenCodeMarkdown = lib.mapAttrs (_: renderOpenCodeMarkdownAgent) resolvedAgents;
   toOpenCodeAgents = lib.mapAttrs (_: toOpenCodeAgent) resolvedAgents;
   toGeminiAgents = lib.mapAttrs (_: toGeminiAgent) resolvedAgents;
 in {
-  inherit agents toClaudeMarkdown toOpenCodeAgents toGeminiAgents;
+  inherit agents toClaudeMarkdown toOpenCodeMarkdown toOpenCodeAgents toGeminiAgents;
 }

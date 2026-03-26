@@ -14,7 +14,7 @@ in {
 
   opencode = {
     commands = aiCommands.toOpenCodeMarkdown;
-    agents = aiAgents.toClaudeMarkdown;
+    agents = aiAgents.toOpenCodeMarkdown;
     agentConfigs = aiAgents.toOpenCodeAgents;
   };
 
