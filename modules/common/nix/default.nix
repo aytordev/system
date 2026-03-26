@@ -21,8 +21,9 @@ with lib; let
     allowed-users = allowedUsers;
     trusted-users = allowedUsers;
     sandbox = true;
-    auto-optimise-store = pkgs.stdenv.hostPlatform.isLinux;
+    auto-optimise-store = true;
     builders-use-substitutes = true;
+    accept-flake-config = false;
     http-connections = 50;
     keep-derivations = true;
     keep-going = true;
@@ -45,10 +46,14 @@ in {
       distributedBuilds = true;
       gc = {
         automatic = true;
-        options = "--delete-older-than 7d";
+        options = "--delete-older-than 14d";
       };
       optimise.automatic = true;
       settings = nixDaemonSettings;
+      extraOptions = ''
+        min-free = ${toString (5 * 1024 * 1024 * 1024)}
+        max-free = ${toString (15 * 1024 * 1024 * 1024)}
+      '';
     };
   };
 }
