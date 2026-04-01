@@ -36,11 +36,10 @@
     shellNames = lib.attrNames shellDirs;
 
     # Custom mkShell wrapper that injects common packages and pre-commit hooks
-    # FIXME: pre-commit is disabled on Darwin because nixpkgs' pre-commit package
+    # NOTE: pkgs.pre-commit (Python) is Linux-only because nixpkgs' pre-commit
     # has dotnet-sdk in nativeCheckInputs, which requires Swift to build.
-    # Swift 5.10.1 is currently broken in nixpkgs-unstable.
-    # Overlays cannot fix this because nativeCheckInputs are evaluated at derivation
-    # instantiation time, not build time. Pre-commit hooks will run via CI on Linux.
+    # git-hooks-nix's installationScript does NOT depend on pkgs.pre-commit —
+    # it generates bash hooks that call tools directly, so it works on Darwin.
     mkShell = shellAttrs:
       pkgs.mkShell (shellAttrs
         // {
@@ -51,7 +50,8 @@
           packages = shellAttrs.packages or [];
           shellHook =
             (shellAttrs.shellHook or "")
-            + lib.optionalString pkgs.stdenv.hostPlatform.isLinux ("\n" + config.pre-commit.installationScript);
+            + "\n"
+            + config.pre-commit.installationScript;
         });
 
     # Function to import and build a single shell

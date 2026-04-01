@@ -2,9 +2,9 @@
   config,
   lib,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkIf
     mkEnableOption
     mkOption
@@ -13,24 +13,25 @@ let
 
   cfg = config.aytordev.programs.terminal.tools.opencode;
 
-  aiTools = import (lib.getFile "modules/common/ai-tools") { inherit lib; };
+  aiTools = import (lib.getFile "modules/common/ai-tools") {inherit lib;};
 
   primaryAgents = [
     "sdd-orchestrator"
   ];
 
-  buildAgentConfigs =
-    agentConfigs:
+  buildAgentConfigs = agentConfigs:
     lib.mapAttrs (
       name: agentConfig:
-      agentConfig
-      // {
-        mode = if builtins.elem name primaryAgents then "primary" else "subagent";
-      }
-    ) agentConfigs;
-
-in
-{
+        agentConfig
+        // {
+          mode =
+            if builtins.elem name primaryAgents
+            then "primary"
+            else "subagent";
+        }
+    )
+    agentConfigs;
+in {
   options.aytordev.programs.terminal.tools.opencode = {
     enable = mkEnableOption "OpenCode configuration";
 

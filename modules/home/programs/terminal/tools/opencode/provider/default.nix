@@ -2,12 +2,10 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   ollamaCfg = config.aytordev.programs.terminal.tools.ollama;
   litellmCfg = config.aytordev.programs.terminal.tools.litellm;
-in
-{
+in {
   config = {
     programs.opencode.settings.provider = {
       ollama = lib.mkIf ollamaCfg.enable {
