@@ -12,12 +12,25 @@ Return a summary appropriate for the resolved persistence mode.
 **Project**: {name}
 **Stack**: {stack summary}
 **Persistence**: Engram (artifacts saved to memory)
+**Strict TDD Mode**: {enabled / disabled / unavailable (no test runner)}
 
-### Detected Context
-- Language: {language}
-- Framework: {framework}
-- Test runner: {test command}
-- Build: {build command}
+### Testing Capabilities
+| Capability | Status |
+|------------|--------|
+| Test Runner | {tool} found / Not found |
+| Unit Tests | Available / Not available |
+| Integration Tests | {tool} / Not installed |
+| E2E Tests | {tool} / Not installed |
+| Coverage | Available / Not available |
+| Linter | {tool} / Not available |
+| Formatter | {tool} / Not available |
+
+### Context Saved
+- **Engram key**: sdd-init/{project-name}
+- **Testing capabilities key**: sdd/{project-name}/testing-capabilities
+- **Skill registry**: .atl/skill-registry.md
+
+No project files created.
 
 ### Next Steps
 - Use `/sdd-new <change-name>` to start a new change
