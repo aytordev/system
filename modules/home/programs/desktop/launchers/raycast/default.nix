@@ -3,8 +3,8 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkEnableOption mkOption types;
   cfg = config.aytordev.programs.desktop.launchers.raycast;
 in {
   options.aytordev.programs.desktop.launchers.raycast = {

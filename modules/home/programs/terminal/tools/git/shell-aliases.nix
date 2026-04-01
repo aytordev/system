@@ -1,5 +1,4 @@
-{lib, ...}:
-with lib; let
+{lib, ...}: let
   coreAliases = {
     g = "git";
     add = "git add";

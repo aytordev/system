@@ -3,8 +3,8 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkEnableOption;
   cfg = config.aytordev.programs.terminal.tools.btop;
 in {
   options.aytordev.programs.terminal.tools.btop = {

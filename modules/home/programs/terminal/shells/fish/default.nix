@@ -3,8 +3,8 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkEnableOption mkMerge;
   cfg = config.aytordev.programs.terminal.shells.fish;
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";

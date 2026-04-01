@@ -5,14 +5,20 @@ on:
   push:
     branches: [main]
     paths:
-      - "shells/**"
+      - "dev-shells/**"
+      - "flake/dev/dev-shells/**"
       - "flake.nix"
       - "flake.lock"
+      - "flake/dev/flake.nix"
+      - "flake/dev/flake.lock"
   pull_request:
     paths:
-      - "shells/**"
+      - "dev-shells/**"
+      - "flake/dev/dev-shells/**"
       - "flake.nix"
       - "flake.lock"
+      - "flake/dev/flake.nix"
+      - "flake/dev/flake.lock"
   workflow_dispatch:
   schedule:
     # Run weekly to keep cache fresh

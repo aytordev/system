@@ -3,8 +3,8 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkEnableOption mkOption types;
   cfg = config.aytordev.programs.terminal.tools.gh;
   hasToken = cfg.auth.tokenPath != null;
 in {

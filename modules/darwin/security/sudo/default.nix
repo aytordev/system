@@ -2,8 +2,8 @@
   config,
   lib,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkEnableOption;
   cfg = config.aytordev.security.sudo;
 in {
   options.aytordev.security.sudo = {

@@ -4,8 +4,8 @@
   pkgs,
   inputs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkEnableOption mkOption literalExpression optionalAttrs types;
   cfg = config.aytordev.programs.terminal.tools.jujutsu;
 in {
   options.aytordev.programs.terminal.tools.jujutsu = {

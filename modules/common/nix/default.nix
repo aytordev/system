@@ -3,8 +3,8 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkEnableOption;
   inherit (config.system) primaryUser;
   allowedUsers = [
     "root"
