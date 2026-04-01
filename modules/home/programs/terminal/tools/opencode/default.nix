@@ -2,34 +2,51 @@
   config,
   lib,
   ...
-}: let
-  inherit (lib) mkIf mkEnableOption;
+}:
+let
+  inherit (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    types
+    ;
 
   cfg = config.aytordev.programs.terminal.tools.opencode;
 
-  aiTools = import (lib.getFile "modules/common/ai-tools") {inherit lib;};
+  aiTools = import (lib.getFile "modules/common/ai-tools") { inherit lib; };
 
-  # Primary agents: most commonly used, Tab-switchable in OpenCode
   primaryAgents = [
     "sdd-orchestrator"
   ];
 
-  # Add mode (primary vs subagent) to each agent config
-  buildAgentConfigs = agentConfigs:
+  buildAgentConfigs =
+    agentConfigs:
     lib.mapAttrs (
       name: agentConfig:
-        agentConfig
-        // {
-          mode =
-            if builtins.elem name primaryAgents
-            then "primary"
-            else "subagent";
-        }
-    )
-    agentConfigs;
-in {
+      agentConfig
+      // {
+        mode = if builtins.elem name primaryAgents then "primary" else "subagent";
+      }
+    ) agentConfigs;
+
+in
+{
   options.aytordev.programs.terminal.tools.opencode = {
     enable = mkEnableOption "OpenCode configuration";
+
+    model = {
+      model = mkOption {
+        type = types.str;
+        default = "anthropic/claude-sonnet-4-5";
+        description = "Default model to use";
+      };
+
+      provider = mkOption {
+        type = types.str;
+        default = "anthropic";
+        description = "Default provider for model";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -38,11 +55,10 @@ in {
 
       settings = {
         theme = "opencode";
-        model = "anthropic/claude-sonnet-4-5";
+        model = lib.mkDefault cfg.model.model;
         autoshare = false;
         autoupdate = false;
 
-        # Agent configurations with model, tools, and permissions
         agent = buildAgentConfigs aiTools.opencode.agentConfigs;
       };
 
