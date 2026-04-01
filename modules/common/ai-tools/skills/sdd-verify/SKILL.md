@@ -57,11 +57,19 @@ Confirm implementation follows the architecture and decisions in the design docu
 
 Run the actual test suite and build to collect real execution evidence. See `rules/execution-run-tests.md`.
 
-### Step 5: Generate Spec Compliance Matrix
+### Step 5: Assertion Quality Audit
+
+Scan all test files for trivial/meaningless assertions (tautologies, ghost loops, smoke-test-only, CSS class assertions). See `rules/execution-assertion-audit.md`.
+
+### Step 5a: TDD Compliance + Test Layers + Coverage (Strict TDD only)
+
+If Strict TDD Mode active, load `modules/strict-tdd-verify.md` for TDD compliance check, test layer distribution, per-file coverage of changed files, and quality metrics.
+
+### Step 6: Generate Spec Compliance Matrix
 
 Produce a requirement-by-requirement compliance matrix with pass/fail status. See `rules/execution-compliance-matrix.md`.
 
-### Step 6: Return Verification Report
+### Step 7: Return Verification Report
 
 Compile all findings into the structured result envelope. See `rules/execution-return-report.md`.
 
