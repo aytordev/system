@@ -61,6 +61,7 @@ ai-tools/
 |------|----------|-------------|
 | skill-creator | core | How to create and maintain skills |
 | skill-registry | core | Generate skill registry with compact rules for sub-agent injection |
+| judgment-day | review | Parallel adversarial review with two blind judges |
 | dotfiles-coder | core | aytordev dotfiles architecture and conventions |
 | nix | core | Idiomatic Nix code patterns and best practices |
 | sdd-init | sdd | Initialize SDD context — detect stack, bootstrap persistence |
