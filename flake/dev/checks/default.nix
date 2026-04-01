@@ -41,7 +41,7 @@
         clang-tidy.enable = pkgs.stdenv.hostPlatform.isLinux;
         deadnix = {
           enable = true;
-          settings.edit = true;
+          settings.edit = false;
         };
         eslint = {
           enable = true;
