@@ -12,23 +12,32 @@ Write `proposal.md` with all required sections using the template from `referenc
    - In Scope: What IS included in this change
    - Out of Scope: What is explicitly NOT included
 
-3. **Approach** — High-level description of how the change will be implemented
+3. **Capabilities** — CONTRACT between proposal and specs phases. The sdd-spec agent reads this to know exactly which spec files to create or update. Research existing specs before filling this in.
+   - **New Capabilities**: Capabilities being introduced. Each becomes a new spec file. Use kebab-case names. Leave empty if none.
+   - **Modified Capabilities**: Existing capabilities whose REQUIREMENTS are changing (not just implementation). Each needs a delta spec. Leave empty if none.
+   - If nothing changes at the spec level (pure refactor, config change), explicitly write "None" under both — don't leave template placeholders.
 
-4. **Affected Areas** — Table format:
+4. **Approach** — High-level description of how the change will be implemented
+
+5. **Affected Areas** — Table format:
    - Column 1: File/module (use concrete paths)
    - Column 2: Impact (high/medium/low)
    - Column 3: Description of what changes
 
-5. **Risks** — Table format:
+6. **Risks** — Table format:
    - Column 1: Risk description
    - Column 2: Likelihood (high/medium/low)
    - Column 3: Mitigation strategy
 
-6. **Rollback Plan** — How to revert this change if needed
+7. **Rollback Plan** — How to revert this change if needed
 
-7. **Dependencies** — External dependencies or "None"
+8. **Dependencies** — External dependencies or "None"
 
-8. **Success Criteria** — Checklist of measurable criteria
+9. **Success Criteria** — Checklist of measurable criteria
+
+### Size Budget
+
+Proposal artifact MUST be under 450 words. Use bullet points and tables over prose.
 
 ### Writing Rules
 

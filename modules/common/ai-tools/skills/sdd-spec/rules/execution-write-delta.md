@@ -34,9 +34,17 @@ The system MUST support OAuth2 authentication flow.
 - Then: The request is rejected with a 400 error
 ```
 
-#### MODIFIED Requirements
+#### MODIFIED Requirements (CRITICAL workflow)
 
-Changed requirements with "Previously:" note showing what changed:
+When writing a `## MODIFIED Requirements` section, follow this exact workflow:
+
+1. Locate the requirement in the existing main spec
+2. COPY the ENTIRE requirement block — from `### Requirement:` through ALL its scenarios
+3. PASTE it under `## MODIFIED Requirements`
+4. EDIT the copy to reflect the new behavior
+5. Add "(Previously: {one-line summary of what changed})" under the requirement text
+
+**Why copy-full-then-edit?** The archive step REPLACES the requirement in main specs with your MODIFIED block. If your block is partial, the archive will lose scenarios you didn't copy. If adding NEW behavior WITHOUT changing existing behavior, use ADDED instead.
 
 ```markdown
 ## MODIFIED Requirements
@@ -54,6 +62,12 @@ User sessions MUST expire after 24 hours of inactivity.
 - Given: A user session inactive for 24 hours
 - When: The user attempts an authenticated action
 - Then: They are redirected to login
+
+**Scenario: Active session stays alive**
+
+- Given: A user session with activity in the last 24 hours
+- When: The user performs an authenticated action
+- Then: The session is extended
 ```
 
 #### REMOVED Requirements

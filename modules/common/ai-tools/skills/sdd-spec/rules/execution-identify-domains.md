@@ -2,31 +2,37 @@
 
 **Impact: CRITICAL**
 
-From the proposal's "Affected Areas", group changes by domain. Each domain gets its own spec file.
+Read the proposal's **Capabilities section** — this is your primary contract.
 
-### What is a Domain?
+### Primary: Capabilities Section
 
-A domain is a logical grouping of related functionality. Examples:
-- `auth` — authentication and authorization
-- `api` — API endpoints and contracts
-- `ui` — user interface components
-- `storage` — data persistence layer
-- `notifications` — notification system
+```
+FOR EACH entry under "New Capabilities":
+├── This becomes a NEW full spec (not a delta)
+└── Domain name = the capability kebab-case name
 
-### How to Identify Domains
+FOR EACH entry under "Modified Capabilities":
+├── This becomes a DELTA spec
+├── Read existing spec for that capability first
+└── Your delta modifies the existing spec
+```
 
+### Fallback: Affected Areas
+
+If the proposal has no Capabilities section (older format), fall back to inferring from "Affected Areas":
 1. Read the proposal's "Affected Areas" section
-2. Group related changes together
+2. Group related changes by logical domain
 3. Each domain should be cohesive (changes that belong together)
-4. Avoid creating too many tiny domains (prefer 2-5 domains per change)
+4. Prefer 2-5 domains per change
+
+Always prefer the explicit Capabilities mapping when present.
 
 ### Output
 
-Produce a list of domains:
+Produce a list of domains with their type:
 
 ```
 Domains identified:
-- auth (login flow, session management)
-- api (new endpoint /api/users)
-- ui (login form, error messages)
+- user-auth (NEW — from New Capabilities)
+- session-management (MODIFIED — from Modified Capabilities)
 ```
