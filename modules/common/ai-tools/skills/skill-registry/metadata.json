@@ -1,0 +1,8 @@
+{
+  "name": "skill-registry",
+  "version": "1.0.0",
+  "description": "Create or update the skill registry with compact rules for sub-agent injection",
+  "author": "aytordev",
+  "license": "MIT",
+  "tags": ["core", "registry", "skills"]
+}
