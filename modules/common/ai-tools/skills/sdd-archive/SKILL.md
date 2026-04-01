@@ -24,13 +24,16 @@ From the orchestrator:
 
 ### Retrieving Previous Artifacts
 
-- **engram**: `mem_search` for `verify/{change-name}` and all change artifacts
+- **engram**: `mem_search` for `sdd/{change-name}/verify-report` and all change artifacts via `sdd/{change-name}/`
 - **openspec**: Read all files in `openspec/changes/{change-name}/`
 - **none**: From prompt context
 
 ## Execution and Persistence Contract
 
-Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow these shared protocols:
+- `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
+- `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
+- `~/.claude/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `archive-report`. Depends on: all prior artifacts.
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Perform merge + archive moves.

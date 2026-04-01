@@ -45,7 +45,7 @@ Write `proposal.md` with all required sections using the template from `referenc
 - Create directory if it doesn't exist
 
 **engram mode:**
-- Save as Engram artifact with topic `proposal/{change-name}`
+- Save as Engram artifact with topic_key `sdd/{change-name}/proposal`
 
 **none mode:**
 - Return inline only (no file writing)

@@ -7,9 +7,9 @@ Read existing specs from the artifact store if available. Load exploration analy
 ### Context Retrieval by Mode
 
 **engram mode:**
-1. Use `mem_search` for topic `explore/{change-name}` to retrieve exploration analysis
-2. Use `mem_search` for topic `spec/` to retrieve existing specifications
-3. Use `mem_search` for topic `project-context` to get project setup
+1. Use `mem_search` for topic_key `sdd/{change-name}/explore` to retrieve exploration analysis
+2. Use `mem_search` for `sdd/` prefix to retrieve existing specifications
+3. Use `mem_search` for topic_key `sdd-init/{project}` to get project context
 
 **openspec mode:**
 1. Read `openspec/config.yaml` for project context and rules

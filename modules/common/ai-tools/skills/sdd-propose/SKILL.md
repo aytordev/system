@@ -26,7 +26,7 @@ From the orchestrator:
 ### Retrieving Previous Artifacts
 
 **engram mode:**
-- Use `mem_search` to retrieve `explore/{change-name}` and `spec/` topics
+- Use `mem_search` to retrieve `sdd/{change-name}/explore` and existing specs
 
 **openspec mode:**
 - Read `openspec/config.yaml` for project context and rules
@@ -38,7 +38,10 @@ From the orchestrator:
 
 ## Execution and Persistence Contract
 
-Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow these shared protocols:
+- `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
+- `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
+- `~/.claude/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `proposal`.
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Save `proposal.md`. Never force `openspec/` creation.

@@ -27,9 +27,9 @@ From the orchestrator:
 You need ALL three prior artifacts (proposal, specs, design):
 
 - **engram mode**: Use `mem_search` to retrieve:
-  - `proposal/{change-name}`
-  - `spec/{change-name}`
-  - `design/{change-name}`
+  - `sdd/{change-name}/proposal`
+  - `sdd/{change-name}/spec`
+  - `sdd/{change-name}/design`
 - **openspec mode**: Read from filesystem:
   - `openspec/changes/{change-name}/proposal.md`
   - `openspec/changes/{change-name}/specs/`
@@ -39,7 +39,10 @@ You need ALL three prior artifacts (proposal, specs, design):
 
 ## Execution and Persistence Contract
 
-Read and follow `~/.claude/skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow these shared protocols:
+- `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
+- `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
+- `~/.claude/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `tasks`. Depends on: `proposal`, `spec`, `design`.
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Save `tasks.md`.

@@ -84,6 +84,21 @@ These rules define what the ORCHESTRATOR (lead/coordinator) does. Sub-agents are
 
 **Sub-agents have FULL access** — they read source code, write code, run commands, and follow the user's coding skills (TDD workflows, framework conventions, testing patterns, etc.).
 
+## Skill Resolver Protocol
+
+Before launching ANY sub-agent that reads, writes, or reviews code, follow `~/.claude/skills/_shared/skill-resolver.md`:
+
+1. **Obtain the skill registry** (once per session): search engram (`mem_search(query: "skill-registry", project: "{project}")`) → fallback to `.atl/skill-registry.md` → warn if none found
+2. **Match relevant skills** by code context (file types) and task context (what the sub-agent does)
+3. **Inject compact rules** from the registry's Compact Rules section into the sub-agent's prompt as `## Project Standards (auto-resolved)`
+4. **Include project conventions** from the registry if the sub-agent will work on project code
+
+### Self-Correction
+
+After each sub-agent returns, check the `skill_resolution` field in the return envelope:
+- `injected` → skills were passed correctly
+- `fallback-registry`, `fallback-path`, or `none` → skill cache was lost (likely compaction). Re-read the registry immediately and inject compact rules in all subsequent delegations.
+
 ## Sub-Agent Launching Pattern
 
 ### Model Router (Phase → Model)
@@ -113,6 +128,13 @@ Task(
   subagent_type: 'general-purpose',
   prompt: 'You are an SDD sub-agent for the {phase} phase.
 
+  {IF compact rules were resolved via Skill Resolver Protocol:}
+  ## Project Standards (auto-resolved)
+  {paste matching compact rules blocks from the skill registry}
+
+  ## Project Conventions
+  {paste convention file paths from the registry}
+
   Read the skill at ~/.claude/skills/sdd-{phase}/:
   1. SKILL.md — purpose and rule index
   2. All files in rules/ — execution steps and constraints
@@ -133,7 +155,8 @@ Task(
   {specific task description}
 
   Return structured output with: status, executive_summary,
-  detailed_report (optional), artifacts, next_recommended, risks.'
+  detailed_report (optional), artifacts, next_recommended, risks,
+  skill_resolution.'
 )
 ```
 
@@ -183,6 +206,23 @@ After each sub-agent completes, track:
 - **Artifacts**: which exist (proposal, specs, design, tasks — checked/unchecked)
 - **Task progress**: if in apply phase, how many tasks done vs total
 - **Issues/blockers**: any problems reported by sub-agents
+- **Skill resolution**: did the sub-agent report `injected` or a fallback?
+
+### State Persistence (engram mode)
+
+Save DAG state to engram after each phase completes for recovery after context compaction:
+
+```
+mem_save(
+  title: "sdd/{change-name}/state",
+  topic_key: "sdd/{change-name}/state",
+  type: "architecture",
+  project: "{project}",
+  content: "change: {change-name}\nphase: {last-phase}\nartifact_store: engram\nartifacts:\n  proposal: true/false\n  specs: true/false\n  design: true/false\n  tasks: true/false\nlast_updated: {ISO date}"
+)
+```
+
+Recovery: `mem_search("sdd/{change-name}/state")` → `mem_get_observation(id)` → parse → restore state.
 
 ## Fast-Forward (/sdd-ff)
 
