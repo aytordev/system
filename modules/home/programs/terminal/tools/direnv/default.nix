@@ -3,8 +3,8 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkEnableOption mkMerge mkOption types;
   cfg = config.aytordev.programs.terminal.tools.direnv;
 in {
   options.aytordev.programs.terminal.tools.direnv = {

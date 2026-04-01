@@ -3,8 +3,8 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkEnableOption mkOption types;
   cfg = config.aytordev.services.protonmail-bridge;
 in {
   options.aytordev.services.protonmail-bridge = {

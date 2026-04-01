@@ -3,8 +3,8 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
+  inherit (lib) mkIf mkEnableOption getExe;
   cfg = config.aytordev.programs.terminal.tools.eza;
 in {
   options.aytordev.programs.terminal.tools.eza = {

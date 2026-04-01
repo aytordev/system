@@ -1,5 +1,4 @@
-{lib}:
-with lib; let
+{lib}: let
   coreAliases = {
     a = "add";
     ap = "add -p";
