@@ -18,7 +18,7 @@ openspec/
 
 ### Mode: `engram`
 
-Do NOT create `openspec/` directory. Save detected project context to Engram using `mem_save` with topic `project-context`.
+Do NOT create `openspec/` directory. Save detected project context to Engram using `mem_save` with topic_key `sdd-init/{project-name}`.
 
 ### Mode: `none`
 

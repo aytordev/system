@@ -39,15 +39,27 @@ Read and follow these shared protocols:
 
 Scan the project to identify tech stack, conventions, and structure. See `rules/execution-detect-context.md`.
 
-### Step 2: Initialize Persistence Backend
+### Step 2: Detect Testing Capabilities
+
+Scan for test runners, test layers (unit/integration/E2E), coverage tools, and quality tools. Persist results for downstream use. See `rules/execution-detect-testing.md`.
+
+### Step 3: Resolve Strict TDD Mode
+
+Determine whether Strict TDD Mode should be enabled based on config priority chain. See `rules/execution-strict-tdd-resolution.md`.
+
+### Step 4: Initialize Persistence Backend
 
 Bootstrap the directory structure for the selected persistence mode. See `rules/execution-bootstrap.md`.
 
-### Step 3: Generate Configuration
+### Step 5: Generate Configuration
 
 Create the config.yaml with detected context and project rules. See `rules/execution-generate-config.md`.
 
-### Step 4: Return Initialization Summary
+### Step 6: Build Skill Registry
+
+Scan user skills and project conventions, generate compact rules, write `.atl/skill-registry.md`. Follow the same logic as the `skill-registry` skill.
+
+### Step 7: Return Initialization Summary
 
 Compile results into the structured result envelope. See `rules/execution-return-summary.md`.
 
