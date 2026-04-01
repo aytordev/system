@@ -60,6 +60,7 @@ ai-tools/
 | Name | Category | Description |
 |------|----------|-------------|
 | skill-creator | core | How to create and maintain skills |
+| skill-registry | core | Generate skill registry with compact rules for sub-agent injection |
 | dotfiles-coder | core | aytordev dotfiles architecture and conventions |
 | nix | core | Idiomatic Nix code patterns and best practices |
 | sdd-init | sdd | Initialize SDD context — detect stack, bootstrap persistence |
