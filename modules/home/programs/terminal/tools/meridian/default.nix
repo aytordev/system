@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkIf
     mkEnableOption
     mkOption
@@ -14,8 +14,7 @@ let
 
   cfg = config.aytordev.programs.terminal.tools.meridian;
   opencodeEnabled = config.aytordev.programs.terminal.tools.opencode.enable;
-in
-{
+in {
   options.aytordev.programs.terminal.tools.meridian = {
     enable = mkEnableOption ''
       Meridian proxy for Claude Max subscription.
@@ -62,13 +61,14 @@ in
       ];
 
       # Make opencode-with-claude plugin discoverable via NODE_PATH
-      sessionVariables.NODE_PATH = mkIf (opencodeEnabled && cfg.opencode.plugin)
+      sessionVariables.NODE_PATH =
+        mkIf (opencodeEnabled && cfg.opencode.plugin)
         "${pkgs.aytordev.opencode-with-claude}/lib/node_modules";
     };
 
     # OpenCode integration: register plugin, configure provider
     programs.opencode.settings = mkIf opencodeEnabled {
-      plugin = mkIf cfg.opencode.plugin [ "opencode-with-claude" ];
+      plugin = mkIf cfg.opencode.plugin ["opencode-with-claude"];
 
       model = cfg.opencode.defaultModel;
 
