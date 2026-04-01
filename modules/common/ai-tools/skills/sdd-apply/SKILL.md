@@ -28,10 +28,10 @@ From the orchestrator:
 You need ALL previous artifacts (proposal, specs, design, tasks):
 
 - **engram mode**: Use `mem_search` to retrieve:
-  - `proposal/{change-name}`
-  - `spec/{change-name}`
-  - `design/{change-name}`
-  - `tasks/{change-name}`
+  - `sdd/{change-name}/proposal`
+  - `sdd/{change-name}/spec`
+  - `sdd/{change-name}/design`
+  - `sdd/{change-name}/tasks`
 - **openspec mode**: Read from filesystem:
   - `openspec/changes/{change-name}/proposal.md`
   - `openspec/changes/{change-name}/specs/`

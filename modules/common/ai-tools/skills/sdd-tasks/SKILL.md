@@ -27,9 +27,9 @@ From the orchestrator:
 You need ALL three prior artifacts (proposal, specs, design):
 
 - **engram mode**: Use `mem_search` to retrieve:
-  - `proposal/{change-name}`
-  - `spec/{change-name}`
-  - `design/{change-name}`
+  - `sdd/{change-name}/proposal`
+  - `sdd/{change-name}/spec`
+  - `sdd/{change-name}/design`
 - **openspec mode**: Read from filesystem:
   - `openspec/changes/{change-name}/proposal.md`
   - `openspec/changes/{change-name}/specs/`

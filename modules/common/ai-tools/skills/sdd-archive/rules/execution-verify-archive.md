@@ -63,5 +63,5 @@ Return:
 ### Persistence
 
 - **openspec** mode: Summary already exists in archive folder
-- **engram** mode: Save summary to Engram with topic `archive/{change-name}`
+- **engram** mode: Save summary to Engram with topic_key `sdd/{change-name}/archive-report`
 - **none** mode: Return inline only

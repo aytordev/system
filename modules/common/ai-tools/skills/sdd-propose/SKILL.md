@@ -26,7 +26,7 @@ From the orchestrator:
 ### Retrieving Previous Artifacts
 
 **engram mode:**
-- Use `mem_search` to retrieve `explore/{change-name}` and `spec/` topics
+- Use `mem_search` to retrieve `sdd/{change-name}/explore` and existing specs
 
 **openspec mode:**
 - Read `openspec/config.yaml` for project context and rules

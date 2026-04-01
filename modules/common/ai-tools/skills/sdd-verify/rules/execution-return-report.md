@@ -63,7 +63,7 @@ Generated: {timestamp}
 ### Persistence
 
 - **openspec** mode: Write `openspec/changes/{change-name}/verify-report.md`
-- **engram** mode: Save to Engram with topic `verify/{change-name}`
+- **engram** mode: Save to Engram with topic_key `sdd/{change-name}/verify-report`
 - **none** mode: Return inline only (do not persist)
 
 ### Result Envelope

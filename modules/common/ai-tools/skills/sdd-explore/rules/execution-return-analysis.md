@@ -44,7 +44,7 @@ Return structured analysis with clearly defined sections.
 ### Persistence Logic
 
 **engram mode:**
-- Save analysis to Engram with topic `explore/{change-name}` or `explore/{topic-slug}`
+- Save analysis to Engram with topic_key `sdd/{change-name}/explore` or `sdd/explore/{topic-slug}`
 
 **openspec mode with named change:**
 - Write to `openspec/changes/{change-name}/exploration.md`

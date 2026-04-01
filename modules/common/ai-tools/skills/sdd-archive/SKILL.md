@@ -24,7 +24,7 @@ From the orchestrator:
 
 ### Retrieving Previous Artifacts
 
-- **engram**: `mem_search` for `verify/{change-name}` and all change artifacts
+- **engram**: `mem_search` for `sdd/{change-name}/verify-report` and all change artifacts via `sdd/{change-name}/`
 - **openspec**: Read all files in `openspec/changes/{change-name}/`
 - **none**: From prompt context
 

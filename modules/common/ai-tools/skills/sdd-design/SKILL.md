@@ -24,7 +24,7 @@ From the orchestrator:
 
 ### Retrieving Previous Artifacts
 
-1. **engram mode**: Use `mem_search` for `proposal/{change-name}` and `spec/{change-name}`
+1. **engram mode**: Use `mem_search` for `sdd/{change-name}/proposal` and `sdd/{change-name}/spec`
 2. **openspec mode**: Read `openspec/changes/{change-name}/proposal.md`, `openspec/changes/{change-name}/specs/`, and `openspec/config.yaml`
 3. **none mode**: Work from prompt context only
 
