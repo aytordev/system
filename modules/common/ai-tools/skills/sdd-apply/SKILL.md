@@ -57,13 +57,13 @@ Read and follow these shared protocols:
 
 Load all prior artifacts and understand the current codebase state. See `rules/execution-read-context.md`.
 
-### Step 2: Detect Implementation Mode (TDD vs Standard)
+### Step 2: Detect Implementation Mode
 
-Determine whether the project uses TDD or standard implementation workflow. See `rules/execution-detect-mode.md`.
+Read cached testing capabilities and resolve Strict TDD vs Standard mode. See `rules/execution-detect-mode.md`.
 
-### Step 3: TDD Workflow (RED -> GREEN -> REFACTOR)
+### Step 3: TDD Workflow (RED -> GREEN -> TRIANGULATE -> REFACTOR)
 
-If TDD detected, follow the red-green-refactor cycle for each task. See `rules/execution-tdd-workflow.md`.
+If TDD detected, follow the cycle with Safety Net and TRIANGULATE. See `rules/execution-tdd-workflow.md`. If Strict TDD Mode active, also load `modules/strict-tdd.md` for assertion quality rules, approval testing, and pure function preference.
 
 ### Step 4: Standard Implementation Workflow
 

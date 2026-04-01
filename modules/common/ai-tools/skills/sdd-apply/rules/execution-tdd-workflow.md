@@ -1,12 +1,19 @@
-## TDD Workflow (RED → GREEN → REFACTOR)
+## TDD Workflow (RED → GREEN → TRIANGULATE → REFACTOR)
 
 **Impact: CRITICAL**
 
-When TDD mode is detected, follow the RED → GREEN → REFACTOR cycle for each task.
+When TDD mode is detected, follow the RED → GREEN → TRIANGULATE → REFACTOR cycle for each task. When Strict TDD Mode is active (from sdd-init detection), load `modules/strict-tdd.md` for the full protocol including assertion quality rules, approval testing, and pure function preference.
 
 ### The TDD Cycle
 
 For **each assigned task**, execute this workflow:
+
+#### 0. SAFETY NET (only if modifying existing files)
+
+Run existing tests for files being modified:
+- Capture baseline: "{N} tests passing"
+- If any FAIL → STOP, report as "pre-existing failure" (do NOT fix — report to orchestrator)
+- This proves you did not break what already worked
 
 #### 1. UNDERSTAND
 
@@ -22,101 +29,42 @@ Write a test that:
 - Describes the expected behavior from the spec
 - Calls the function/method that doesn't exist yet (or doesn't have the new behavior)
 - Asserts the expected outcome
-
-**Run the test** — Confirm it **FAILS** (RED).
-
-**Example:**
-
-```typescript
-// auth.test.ts
-describe('hashPassword', () => {
-  it('should return a bcrypt hash different from the input', async () => {
-    const password = 'mySecurePassword123';
-    const hash = await hashPassword(password);
-
-    expect(hash).not.toBe(password);
-    expect(hash).toMatch(/^\$2[aby]\$/); // bcrypt format
-  });
-});
-```
-
-Run: `npm test -- auth.test.ts`
-
-Expected output: **FAIL** (hashPassword is not defined)
+- **GATE**: Do NOT proceed to GREEN until the test is written
 
 #### 3. GREEN (Write Minimum Code)
 
-Write **just enough code** to make the test pass. No more, no less.
+Write **just enough code** to make the test pass. Fake It is VALID (hardcoded values OK).
+- **Run the test** — Confirm it **PASSES**
+- **GATE**: Do NOT proceed until GREEN is confirmed by execution
 
-**Example:**
+#### 4. TRIANGULATE (force real logic)
 
-```typescript
-// services/auth.ts
-import bcrypt from 'bcrypt';
+Add a second test case with DIFFERENT inputs/expected outputs:
+- If Fake It breaks (hardcoded no longer works) → generalize to real logic
+- Repeat until ALL spec scenarios for this task are covered
+- **MINIMUM**: at least 2 test cases per behavior (happy path + edge case)
+- Skip ONLY when task is purely structural (config, constant, type export) AND there is literally ONE possible output. Note "Triangulation skipped: {reason}" in evidence table.
 
-export async function hashPassword(password: string): Promise<string> {
-  return bcrypt.hash(password, 10);
-}
-```
-
-**Run the test** — Confirm it **PASSES** (GREEN).
-
-#### 4. REFACTOR (Clean Up)
+#### 5. REFACTOR (Clean Up)
 
 Improve the code without changing behavior:
-- Extract magic numbers to constants (e.g., `10` → `BCRYPT_ROUNDS`)
-- Improve variable names
-- Remove duplication
-- Add comments if needed
+- Extract constants, functions, improve naming
+- **Run tests after EACH refactoring step** — must STILL PASS
+- If test fails after refactor → REVERT that step, try smaller
 
-**Example:**
-
-```typescript
-// services/auth.ts
-import bcrypt from 'bcrypt';
-
-const BCRYPT_ROUNDS = 10;
-
-export async function hashPassword(password: string): Promise<string> {
-  return bcrypt.hash(password, BCRYPT_ROUNDS);
-}
-```
-
-**Run the test again** — Confirm tests still **PASS**.
-
-#### 5. Mark Task Complete
-
-Update `tasks.md`:
-
-```diff
-- - [ ] 2.1 Implement hashPassword in services/auth.ts
-+ - [x] 2.1 Implement hashPassword in services/auth.ts
-```
+#### 6. Mark Task Complete
 
 ### Test Running Strategy
 
-**ONLY run the relevant test file or suite**, not the entire test suite.
+ONLY run the relevant test file, not the entire suite.
 
-**Good:**
-```bash
-npm test -- auth.test.ts
-go test ./internal/auth/...
-pytest tests/auth/
-```
-
-**Bad (slow, noisy):**
-```bash
-npm test  # runs everything
-pytest    # runs everything
-```
-
-### TDD Output Format
+### TDD Cycle Evidence Table
 
 For each task, record:
 
-| Task | RED | GREEN | REFACTOR |
-|------|-----|-------|----------|
-| 2.1 hashPassword | ✓ (test failed as expected) | ✓ (test passes) | ✓ (extracted BCRYPT_ROUNDS) |
-| 2.2 verifyPassword | ✓ | ✓ | — (no refactor needed) |
+| Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
+|------|-----------|-------|------------|-----|-------|-------------|----------|
+| 1.1 | `path/test` | Unit | N/A (new) | Written | Passed | 3 cases | Clean |
+| 1.2 | `path/test` | Integration | 5/5 | Written | Passed | 2 cases | None needed |
 
-This table goes in the detailed report.
+This table goes in the return summary.

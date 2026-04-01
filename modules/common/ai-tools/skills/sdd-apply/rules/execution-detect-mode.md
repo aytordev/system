@@ -2,55 +2,44 @@
 
 **Impact: CRITICAL**
 
-Determine whether to use TDD workflow or standard implementation mode.
+Read cached testing capabilities to determine implementation mode.
 
-### Mode Detection Priority
+### Read Testing Capabilities
 
-Check in this order (first match wins):
+```
+Read from (in order):
+├── engram: mem_search("sdd/{project}/testing-capabilities") → mem_get_observation(id)
+├── openspec: openspec/config.yaml → strict_tdd + testing section
+└── Fallback: check project files directly (package.json, go.mod, etc.)
+```
 
-1. **Explicit config** — `openspec/config.yaml`:
-   ```yaml
-   rules:
-     apply:
-       tdd: true  # or false
-   ```
+### Mode Resolution
 
-2. **Installed skills** — Check if user has TDD skills:
-   - If `skills/tdd/SKILL.md` exists → TDD mode
-   - If user's global skills include TDD → TDD mode
+```
+IF strict_tdd: true AND test runner exists
+└── STRICT TDD MODE → Load and follow modules/strict-tdd.md
+    (read the file at the skill directory level)
 
-3. **Existing test patterns** — Analyze the codebase:
-   - If existing tests follow TDD conventions (RED comments, test-first structure) → TDD mode
-   - If tests exist but not TDD-style → Standard mode
+IF strict_tdd: false OR no test runner
+└── STANDARD MODE → use execution-standard-workflow.md (no TDD module loaded)
+```
 
-4. **Default** — No tests, no config, no skills → **Standard mode**
+**Key principle**: If Strict TDD Mode is not active, ZERO TDD instructions are loaded. The `strict-tdd.md` module is never read, never processed, never consumes tokens.
 
-### Test Runner Detection
+### Test Runner Detection (fallback)
 
-Detect the test command from:
+If not cached, detect the test command from:
 
 1. `config.yaml` → `project.test_runner`
 2. `package.json` → `scripts.test`
 3. `pyproject.toml` → `[tool.pytest]`
 4. `Makefile` → `test:` target
-5. **Fallback by stack**:
-   - JavaScript/TypeScript: `npm test`
-   - Python: `pytest`
-   - Go: `go test ./...`
-   - Rust: `cargo test`
+5. `flake.nix` → `nix flake check`
+6. **Fallback by stack**: `npm test`, `pytest`, `go test ./...`, `cargo test`
 
 ### Result
 
-Store detected mode and test runner for use in subsequent execution steps:
-
 ```
-Mode: TDD
-Test runner: npm test -- auth.test.ts
-```
-
-or
-
-```
-Mode: Standard
-Test runner: (not applicable)
+Mode: Strict TDD | Standard
+Test runner: {command}
 ```
