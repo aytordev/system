@@ -10,6 +10,7 @@ Constraints that apply during task breakdown creation.
 - **Order tasks by dependency** — Tasks in earlier phases must not depend on tasks in later phases
 - **Use hierarchical numbering** — Format: `{phase}.{task}` (e.g., `1.1`, `1.2`, `2.1`)
 - **Every task must be completable in ONE session** — If a task requires multiple sessions, break it down further
+- **Tasks artifact MUST be under 530 words** — Each task: 1-2 lines max. Use checklist format, not paragraphs.
 - **Return a structured envelope** — Include `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`
 
 ### MUST NOT
