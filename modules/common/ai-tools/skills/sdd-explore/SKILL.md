@@ -26,7 +26,10 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow these shared protocols:
-- `~/.claude/skills/_shared/sdd-phase-common.md` — executor protocol (Sections A–D: skill loading, artifact retrieval, persistence, return envelope)
+- `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
+- `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
+- `~/.claude/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
+- `~/.claude/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `explore`.
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Create `exploration.md` if change name provided.
