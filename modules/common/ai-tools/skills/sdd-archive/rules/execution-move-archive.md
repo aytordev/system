@@ -25,7 +25,7 @@ openspec/changes/{change-name}/ → openspec/changes/archive/2026-03-01-{change-
 
 This includes all artifacts:
 - proposal.md
-- specs/{domain}/delta.md
+- specs/{domain}/spec.md
 - design.md
 - tasks.md
 - verify-report.md

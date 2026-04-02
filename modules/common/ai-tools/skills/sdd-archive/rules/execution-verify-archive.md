@@ -33,7 +33,7 @@ Confirm:
 
 ## Archive Contents
 - [x] proposal.md
-- [x] specs/{domain}/delta.md
+- [x] specs/{domain}/spec.md
 - [x] design.md
 - [x] tasks.md
 - [x] verify-report.md
