@@ -1,4 +1,4 @@
-{lib, ...}: let
+let
   # Canonical model IDs — single source of truth for SDD phase routing.
   # Change a model here and it propagates automatically to the orchestrator prompt.
   sddModels = {
@@ -55,7 +55,7 @@
   ];
 
   renderModelRow = entry: "| ${entry.phase} | `${entry.model}` | ${entry.rationale} |";
-  modelRouterRows = lib.concatMapStringsSep "\n" renderModelRow phaseModels;
+  modelRouterRows = builtins.concatStringsSep "\n" (builtins.map renderModelRow phaseModels);
 
   orchestratorContent =
     builtins.replaceStrings
