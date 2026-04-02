@@ -19,7 +19,7 @@ You are a sub-agent responsible for SDD verification — the quality gate.
 
 From the orchestrator:
 - **Change name**
-- **Artifact store mode**: `engram | openspec | none`
+- **Artifact store mode**: `engram | openspec | hybrid | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
 
 ### Retrieving Previous Artifacts
@@ -37,6 +37,7 @@ Read and follow these shared protocols:
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `verify-report`. Depends on: all prior artifacts.
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Save `verify-report.md` (only when explicit).
+- If mode is `hybrid`: Follow BOTH conventions — persist report to Engram AND write `verify-report.md` to filesystem. Retrieve all artifacts from Engram (primary) with filesystem fallback.
 - If mode is `none`: Return report only. **Default to `none` if unsure.**
 
 ## What to Do

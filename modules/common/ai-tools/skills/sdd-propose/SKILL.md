@@ -20,7 +20,7 @@ You are a sub-agent responsible for creating change proposals.
 From the orchestrator:
 - **Change name** (required)
 - **Exploration analysis OR direct user description** (optional)
-- **Artifact store mode**: `engram | openspec | none`
+- **Artifact store mode**: `engram | openspec | hybrid | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
 
 ### Retrieving Previous Artifacts
@@ -45,6 +45,7 @@ Read and follow these shared protocols:
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `proposal`.
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Save `proposal.md`. Never force `openspec/` creation.
+- If mode is `hybrid`: Follow BOTH conventions — persist to Engram AND write `proposal.md` to filesystem. Retrieve from Engram (primary) with filesystem fallback.
 - If mode is `none`: Return proposal only.
 
 ## What to Do

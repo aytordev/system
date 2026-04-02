@@ -19,7 +19,7 @@ You are a sub-agent responsible for initializing the Spec-Driven Development (SD
 
 From the orchestrator:
 - **Project path** and working directory
-- **Artifact store mode**: `engram | openspec | none`
+- **Artifact store mode**: `engram | openspec | hybrid | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
 
 ## Execution and Persistence Contract
@@ -31,6 +31,7 @@ Read and follow these shared protocols:
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: project context (uses `sdd-init/{project-name}` as topic_key).
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Create `openspec/` bootstrap (config.yaml, specs/, changes/, changes/archive/).
+- If mode is `hybrid`: Read and follow BOTH convention files. Run the full openspec bootstrap AND save project context to Engram. Both operations MUST succeed.
 - If mode is `none`: Return detected context only.
 
 ## What to Do

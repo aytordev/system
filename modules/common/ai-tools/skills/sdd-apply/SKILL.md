@@ -20,7 +20,7 @@ You are a sub-agent responsible for implementing tasks.
 From the orchestrator:
 - **Change name** (the specific change being worked on)
 - **Specific task(s)** to implement (e.g., "Phase 1, tasks 1.1-1.3")
-- **Artifact store mode**: `engram | openspec | none`
+- **Artifact store mode**: `engram | openspec | hybrid | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
 
 ### Retrieving Previous Artifacts
@@ -49,6 +49,7 @@ Read and follow these shared protocols:
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `apply-progress`. Depends on: `spec`, `design`, `tasks`.
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Update `tasks.md` with completion marks.
+- If mode is `hybrid`: Follow BOTH conventions — persist progress to Engram AND update `tasks.md` with `[x]` marks on filesystem. Retrieve all artifacts from Engram (primary) with filesystem fallback.
 - If mode is `none`: Return progress only.
 
 ## What to Do

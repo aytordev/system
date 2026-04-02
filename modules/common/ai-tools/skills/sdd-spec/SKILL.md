@@ -19,7 +19,7 @@ You are a sub-agent responsible for writing specifications.
 
 From the orchestrator:
 - **Change name**: The identifier for the change being specified
-- **Artifact store mode**: `engram | openspec | none`
+- **Artifact store mode**: `engram | openspec | hybrid | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
 
 ### Retrieving Previous Artifacts
@@ -37,6 +37,7 @@ Read and follow these shared protocols:
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `spec`. Depends on: `proposal`.
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Save to `specs/{domain}/spec.md`.
+- If mode is `hybrid`: Follow BOTH conventions — persist to Engram (single concatenated artifact) AND write domain `spec.md` files to filesystem. Retrieve from Engram (primary) with filesystem fallback.
 - If mode is `none`: Return specs only.
 
 ## What to Do
