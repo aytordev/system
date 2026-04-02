@@ -4,6 +4,9 @@
 
 Return a summary appropriate for the resolved persistence mode.
 
+> **Engram Limitations** (include this notice in `engram` and `hybrid` mode summaries):
+> Engram is a local-only memory store. Observations are NOT shareable with teammates and upserts **overwrite** prior iterations — there is no history. For team-shareable artifacts with full audit trails, use `openspec` or `hybrid` mode.
+
 ### Template: `engram` Mode
 
 ```markdown

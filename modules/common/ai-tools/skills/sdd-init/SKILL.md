@@ -58,7 +58,11 @@ Create the config.yaml with detected context and project rules. See `rules/execu
 
 Scan user skills and project conventions, generate compact rules, write `.atl/skill-registry.md`. Follow the same logic as the `skill-registry` skill.
 
-### Step 7: Return Initialization Summary
+### Step 7: Persist Context to Engram
+
+For `engram` and `hybrid` modes: save the full project context snapshot to Engram after the skill registry is built. See `rules/execution-persist-context.md`.
+
+### Step 8: Return Initialization Summary
 
 Compile results into the structured result envelope. See `rules/execution-return-summary.md`.
 
