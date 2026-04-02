@@ -1,0 +1,8 @@
+{
+  "name": "sdd-onboard",
+  "version": "1.0.0",
+  "description": "Guided end-to-end SDD walkthrough using the user's real codebase",
+  "author": "aytordev",
+  "license": "MIT",
+  "tags": ["sdd", "onboarding", "guided", "workflow"]
+}
