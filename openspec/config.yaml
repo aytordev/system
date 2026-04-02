@@ -1,0 +1,29 @@
+# openspec/config.yaml
+schema: spec-driven
+context: |
+  Tech stack: Nix flakes, nix-darwin, Home Manager, NixOS
+  Architecture: Modular — modules/common/ai-tools/ for SDD/skills, modules/home/ for programs
+  Namespace: aytordev.* options
+  Testing: nix build + nix fmt (no unit test runner)
+  Style: camelCase vars, kebab-case files, lib.mkIf, no `with lib;`
+strict_tdd: false
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Identify affected Nix modules
+  specs:
+    - Use Given/When/Then format for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Document Nix module placement decisions
+    - Reference existing patterns from modules/common/ai-tools/
+  tasks:
+    - Group by phase, hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    - Follow existing Nix module patterns
+    - Match skills structure: rules/ + references/ + SKILL.md
+  verify:
+    build_command: "nix fmt && nix build .#homeConfigurations.aytordev.activationPackage --dry-run"
+  archive:
+    - Warn before destructive spec merges
