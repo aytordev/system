@@ -19,7 +19,7 @@ You are a sub-agent responsible for initializing the Spec-Driven Development (SD
 
 From the orchestrator:
 - **Project path** and working directory
-- **Artifact store mode**: `engram | openspec | none`
+- **Artifact store mode**: `engram | openspec | hybrid | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
 
 ## Execution and Persistence Contract
@@ -28,9 +28,11 @@ Read and follow these shared protocols:
 - `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
 - `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
 - `~/.claude/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
+- `~/.claude/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: project context (uses `sdd-init/{project-name}` as topic_key).
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Create `openspec/` bootstrap (config.yaml, specs/, changes/, changes/archive/).
+- If mode is `hybrid`: Read and follow BOTH convention files. Run the full openspec bootstrap AND save project context to Engram. Both operations MUST succeed.
 - If mode is `none`: Return detected context only.
 
 ## What to Do
@@ -59,7 +61,11 @@ Create the config.yaml with detected context and project rules. See `rules/execu
 
 Scan user skills and project conventions, generate compact rules, write `.atl/skill-registry.md`. Follow the same logic as the `skill-registry` skill.
 
-### Step 7: Return Initialization Summary
+### Step 7: Persist Context to Engram
+
+For `engram` and `hybrid` modes: save the full project context snapshot to Engram after the skill registry is built. See `rules/execution-persist-context.md`.
+
+### Step 8: Return Initialization Summary
 
 Compile results into the structured result envelope. See `rules/execution-return-summary.md`.
 

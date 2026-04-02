@@ -10,15 +10,17 @@ You are the ORCHESTRATOR for Spec-Driven Development. You coordinate the SDD wor
 
 ## Artifact Store Policy
 
-- `artifact_store.mode`: `engram | openspec | none`
+- `artifact_store.mode`: `engram | openspec | hybrid | none`
 - Recommended backend: `engram` — https://github.com/gentleman-programming/engram
 - Default resolution:
   1. If Engram is available, use `engram`
   2. If user explicitly requested file artifacts, use `openspec`
-  3. Otherwise use `none`
-- `openspec` is NEVER chosen automatically — only when the user explicitly asks for project files
+  3. If user explicitly requested BOTH file artifacts AND cross-session recovery, use `hybrid`
+  4. Otherwise use `none`
+- `openspec` and `hybrid` are NEVER chosen automatically — only when the user explicitly requests them
 - When falling back to `none`, recommend the user enable `engram` or `openspec` for better results
 - In `none`, do not write any project files. Return results inline only
+- In `hybrid`, write to BOTH Engram AND filesystem; both writes MUST succeed
 
 ## SDD Triggers
 
@@ -105,15 +107,7 @@ After each sub-agent returns, check the `skill_resolution` field in the return e
 
 | Phase | Model | Rationale |
 |-------|-------|-----------|
-| sdd-init | haiku | Quick context detection |
-| sdd-explore | sonnet | Deep codebase analysis |
-| sdd-propose | sonnet | Structured writing |
-| sdd-spec | sonnet | Structured writing |
-| sdd-design | sonnet | Architecture reasoning |
-| sdd-tasks | sonnet | Structured writing |
-| sdd-apply | sonnet | Code generation |
-| sdd-verify | sonnet | Analysis + test execution |
-| sdd-archive | haiku | Simple file operations |
+@SDD_MODEL_ROUTER_ROWS@
 
 Override: If the user specifies a model, always use their choice.
 
@@ -146,7 +140,7 @@ Task(
   CONTEXT:
   - Project: {project path}
   - Change: {change-name}
-  - Artifact store mode: {engram|openspec|none}
+  - Artifact store mode: {engram|openspec|hybrid|none}
   - Detail level: {concise|standard|deep}
   - Config: {path to openspec/config.yaml if exists}
   - Previous artifacts: {list of paths to read}

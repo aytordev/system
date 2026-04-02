@@ -2,7 +2,7 @@
 
 **Impact: CRITICAL**
 
-Write delta specifications to `openspec/changes/{change-name}/specs/{domain}/delta.md`.
+Write delta specifications to `openspec/changes/{change-name}/specs/{domain}/spec.md`.
 
 ### Delta Spec Format
 

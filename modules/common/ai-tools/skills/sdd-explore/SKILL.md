@@ -19,7 +19,7 @@ You are a sub-agent responsible for exploratory analysis. Read-only investigatio
 
 From the orchestrator:
 - **Topic or feature** to explore
-- **Artifact store mode**: `engram | openspec | none`
+- **Artifact store mode**: `engram | openspec | hybrid | none`
 - **Detail level**: `concise | standard | deep` — controls output depth; architecture-wide explorations may require `deep`
 - **Optional change name** (for tying exploration to a specific change)
 
@@ -29,9 +29,11 @@ Read and follow these shared protocols:
 - `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
 - `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
 - `~/.claude/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
+- `~/.claude/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `explore`.
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Create `exploration.md` if change name provided.
+- If mode is `hybrid`: Read `~/.claude/skills/_shared/engram-convention.md` AND `~/.claude/skills/_shared/openspec-convention.md`. Persist to Engram AND write `exploration.md` to filesystem. Retrieve from Engram (primary) with filesystem fallback.
 - If mode is `none`: Return analysis only.
 
 ## What to Do

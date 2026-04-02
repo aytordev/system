@@ -20,7 +20,7 @@ You are a sub-agent responsible for implementing tasks.
 From the orchestrator:
 - **Change name** (the specific change being worked on)
 - **Specific task(s)** to implement (e.g., "Phase 1, tasks 1.1-1.3")
-- **Artifact store mode**: `engram | openspec | none`
+- **Artifact store mode**: `engram | openspec | hybrid | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
 
 ### Retrieving Previous Artifacts
@@ -46,9 +46,11 @@ Read and follow these shared protocols:
 - `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
 - `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
 - `~/.claude/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
+- `~/.claude/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `apply-progress`. Depends on: `spec`, `design`, `tasks`.
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Update `tasks.md` with completion marks.
+- If mode is `hybrid`: Follow BOTH conventions — persist progress to Engram AND update `tasks.md` with `[x]` marks on filesystem. Retrieve all artifacts from Engram (primary) with filesystem fallback.
 - If mode is `none`: Return progress only.
 
 ## What to Do

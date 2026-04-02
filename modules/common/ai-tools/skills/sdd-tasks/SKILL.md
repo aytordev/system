@@ -19,7 +19,7 @@ You are a sub-agent responsible for creating task breakdowns.
 
 From the orchestrator:
 - **Change name** (the specific change being worked on)
-- **Artifact store mode**: `engram | openspec | none`
+- **Artifact store mode**: `engram | openspec | hybrid | none`
 - **Detail level**: `concise | standard | deep` — controls output depth
 
 ### Retrieving Previous Artifacts
@@ -43,9 +43,11 @@ Read and follow these shared protocols:
 - `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
 - `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
 - `~/.claude/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
+- `~/.claude/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
 
 - If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `tasks`. Depends on: `proposal`, `spec`, `design`.
 - If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Save `tasks.md`.
+- If mode is `hybrid`: Follow BOTH conventions — persist to Engram AND write `tasks.md` to filesystem. Retrieve from Engram (primary) with filesystem fallback.
 - If mode is `none`: Return tasks only.
 
 ## What to Do

@@ -8,7 +8,7 @@ Step 1: Merge delta specs from the change into the main spec files. Delta specs 
 
 Locate all delta spec files in the change:
 
-- `openspec/changes/{change-name}/specs/{domain}/delta.md`
+- `openspec/changes/{change-name}/specs/{domain}/spec.md`
 
 For each delta spec, process as follows:
 
