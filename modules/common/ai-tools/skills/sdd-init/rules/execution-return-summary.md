@@ -57,6 +57,42 @@ No project files created.
 - Use `/sdd-explore <topic>` to investigate before committing
 ```
 
+### Template: `hybrid` Mode
+
+```markdown
+## SDD Initialized (Hybrid)
+
+**Project**: {name}
+**Stack**: {stack summary}
+**Persistence**: Hybrid (Engram + openspec/)
+**Strict TDD Mode**: {enabled / disabled / unavailable (no test runner)}
+
+### Testing Capabilities
+| Capability | Status |
+|------------|--------|
+| Test Runner | {tool} found / Not found |
+| Unit Tests | Available / Not available |
+| Integration Tests | {tool} / Not installed |
+| E2E Tests | {tool} / Not installed |
+| Coverage | Available / Not available |
+| Linter | {tool} / Not available |
+| Formatter | {tool} / Not available |
+
+### Created (OpenSpec)
+- `openspec/config.yaml` — project configuration
+- `openspec/specs/` — specification directory
+- `openspec/changes/` — active changes directory
+
+### Saved (Engram)
+- **Context key**: sdd-init/{project-name}
+- **Testing capabilities key**: sdd/{project-name}/testing-capabilities
+- **Skill registry**: .atl/skill-registry.md
+
+### Next Steps
+- Use `/sdd-new <change-name>` to start a new change
+- Use `/sdd-explore <topic>` to investigate before committing
+```
+
 ### Template: `none` Mode
 
 ```markdown

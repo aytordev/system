@@ -20,6 +20,13 @@ openspec/
 
 Do NOT create `openspec/` directory. Save detected project context to Engram using `mem_save` with topic_key `sdd-init/{project-name}`.
 
+### Mode: `hybrid`
+
+Perform BOTH the `openspec` bootstrap AND the `engram` save:
+1. Create the openspec/ directory structure (same as `openspec` mode)
+2. Save detected project context to Engram with topic_key `sdd-init/{project-name}`
+3. Both operations MUST succeed — if either fails, report as blocked
+
 ### Mode: `none`
 
 Do NOT create any files or directories. Return detected context inline without writing to disk.
