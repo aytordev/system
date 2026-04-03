@@ -112,6 +112,7 @@ in {
             tmux = mkDefault enabled;
             yazi = mkDefault enabled;
             zellij = mkDefault enabled;
+            yt-dlp = mkDefault enabled;
             zoxide = mkDefault enabled;
           };
         };
