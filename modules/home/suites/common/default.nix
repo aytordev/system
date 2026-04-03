@@ -93,6 +93,7 @@ in {
             direnv = mkDefault enabled;
             eza = mkDefault enabled;
             fastfetch = mkDefault enabled;
+            ffmpeg = mkDefault enabled;
             fzf = mkDefault enabled;
             git = mkDefault enabled;
             # infat = mkDefault enabled; # TODO: Pending to fix this module.
