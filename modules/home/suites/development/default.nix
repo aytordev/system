@@ -65,6 +65,7 @@ in {
     enable = lib.mkEnableOption "common development configuration";
     azureEnable = lib.mkEnableOption "azure development configuration";
     dockerEnable = lib.mkEnableOption "docker development configuration";
+    podmanEnable = lib.mkEnableOption "podman development configuration";
     gameEnable = lib.mkEnableOption "game development configuration";
     goEnable = lib.mkEnableOption "go development configuration";
     kubernetesEnable = lib.mkEnableOption "kubernetes development configuration";
@@ -88,7 +89,7 @@ in {
         ++ lib.optionals (!isWSL) [
           bruno
         ]
-        ++ lib.optionals cfg.dockerEnable [
+        ++ lib.optionals cfg.podmanEnable [
           podman
           podman-tui
         ]
@@ -169,7 +170,7 @@ in {
             jujutsu = mkDefault enabled;
             jjui = mkDefault enabled;
             k9s.enable = mkDefault cfg.kubernetesEnable;
-            lazydocker.enable = mkDefault cfg.dockerEnable;
+            lazydocker.enable = mkDefault cfg.podmanEnable;
             lazygit = mkDefault enabled;
             # oh-my-posh = mkDefault enabled;  # TODO: module doesn't exist
           };
