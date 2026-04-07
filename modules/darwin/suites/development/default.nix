@@ -8,7 +8,8 @@
 in {
   options.aytordev.suites.development = {
     enable = lib.mkEnableOption "common development configuration";
-    dockerEnable = lib.mkEnableOption "docker development configuration";
+    dockerEnable = lib.mkEnableOption "docker desktop configuration";
+    podmanEnable = lib.mkEnableOption "podman desktop configuration";
     aiEnable = lib.mkEnableOption "ai development configuration";
   };
 
@@ -23,6 +24,8 @@ in {
         ]
         ++ lib.optionals cfg.dockerEnable [
           "docker-desktop"
+        ]
+        ++ lib.optionals cfg.podmanEnable [
           "podman-desktop"
         ];
 

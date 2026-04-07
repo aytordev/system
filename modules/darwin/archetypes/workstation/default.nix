@@ -19,7 +19,8 @@ in {
         desktop = enabled;
         development = {
           enable = true;
-          dockerEnable = true;
+          dockerEnable = false;
+          podmanEnable = true;
           aiEnable = false;
         };
         networking = enabled;

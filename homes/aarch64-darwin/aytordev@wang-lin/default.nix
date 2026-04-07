@@ -18,7 +18,8 @@ in {
       desktop = enabled; # Browsers, raycast, aerospace
       development = {
         enable = true;
-        dockerEnable = true;
+        dockerEnable = false;
+        podmanEnable = true;
         gameEnable = false;
         goEnable = false;
         kubernetesEnable = true;
