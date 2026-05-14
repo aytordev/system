@@ -114,7 +114,11 @@ in {
               display = "inline";
             };
           };
-          mergiraf.enable = true;
+          mergiraf = {
+            enable = true;
+            enableGitIntegration = true;
+            enableJujutsuIntegration = true;
+          };
         };
       }
       (lib.mkIf (shell-aliases.allAliases != {}) {
