@@ -22,16 +22,6 @@ in {
         name = "default";
         isDefault = true;
 
-        extensions = [
-          # Extensions can be installed manually from the Firefox Add-ons store
-          # Common privacy extensions:
-          # - uBlock Origin
-          # - Privacy Badger
-          # - Bitwarden
-          # - ClearURLs
-          # - Decentraleyes
-        ];
-
         settings = {
           # Privacy and Security
           "privacy.trackingprotection.enabled" = true;
