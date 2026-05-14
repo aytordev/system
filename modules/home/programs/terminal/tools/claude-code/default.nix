@@ -49,9 +49,9 @@ in {
 
       inherit ((import (lib.getFile "modules/common/ai-tools") {inherit lib;}).claudeCode) commands;
 
-      skillsDir = lib.getFile "modules/common/ai-tools/skills";
+      skills = lib.getFile "modules/common/ai-tools/skills";
 
-      memory.source = lib.getFile "modules/common/ai-tools/base.md";
+      context = lib.getFile "modules/common/ai-tools/base.md";
     };
   };
 }
