@@ -55,7 +55,6 @@ in {
       enable = true;
 
       settings = {
-        theme = "opencode";
         model = lib.mkDefault cfg.model.model;
         autoshare = false;
         autoupdate = false;
@@ -63,9 +62,13 @@ in {
         agent = buildAgentConfigs aiTools.opencode.agentConfigs;
       };
 
+      tui = {
+        theme = "opencode";
+      };
+
       inherit (aiTools.opencode) agents commands;
 
-      rules = builtins.readFile (lib.getFile "modules/common/ai-tools/base.md");
+      context = builtins.readFile (lib.getFile "modules/common/ai-tools/base.md");
     };
   };
 }
