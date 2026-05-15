@@ -22,7 +22,11 @@
       )
     else {};
 in {
-  flake.overlays = dynamicOverlaysSet;
+  flake.overlays =
+    dynamicOverlaysSet
+    // {
+      meridian = inputs.meridian.overlays.default;
+    };
 
   perSystem = {system, ...}: {
     _module.args.pkgs = import inputs.nixpkgs {
