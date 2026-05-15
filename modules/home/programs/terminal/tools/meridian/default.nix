@@ -39,7 +39,7 @@ in {
       plugin = mkOption {
         type = types.bool;
         default = true;
-        description = "Enable opencode-with-claude plugin integration";
+        description = "Enable meridian opencode plugin integration";
       };
 
       defaultModel = mkOption {
@@ -54,21 +54,12 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home = {
-      packages = [
-        pkgs.aytordev.meridian
-        pkgs.nodejs_22 # Runtime dep: claude-agent-sdk spawns `node cli.js` as child process
-      ];
+    home.packages = [pkgs.meridian];
 
-      # Make opencode-with-claude plugin discoverable via NODE_PATH
-      sessionVariables.NODE_PATH =
-        mkIf (opencodeEnabled && cfg.opencode.plugin)
-        "${pkgs.aytordev.opencode-with-claude}/lib/node_modules";
-    };
-
-    # OpenCode integration: register plugin, configure provider
     programs.opencode.settings = mkIf opencodeEnabled {
-      plugin = mkIf cfg.opencode.plugin ["opencode-with-claude"];
+      plugin = mkIf cfg.opencode.plugin [
+        "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
+      ];
 
       model = cfg.opencode.defaultModel;
 
