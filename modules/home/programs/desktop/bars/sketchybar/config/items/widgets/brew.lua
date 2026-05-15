@@ -41,7 +41,11 @@ local function is_package_line(line)
 end
 
 local function update_brew()
-	local brew_cmd = '/bin/zsh -c "brew outdated -q"'
+	local brew_bin = "/opt/homebrew/bin/brew"
+	if not io.open(brew_bin) then
+		brew_bin = "/usr/local/bin/brew"
+	end
+	local brew_cmd = "/bin/zsh -c '" .. brew_bin .. " outdated -q 2>/dev/null'"
 
 	-- print("[BREW OUTDATED] Running command: " .. brew_cmd)
 

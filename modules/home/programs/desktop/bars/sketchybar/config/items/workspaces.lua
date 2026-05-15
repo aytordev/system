@@ -316,7 +316,7 @@ local function initialize_workspaces()
 			local ws_icon = space_icons[workspace_index] or workspace_index
 			local ws_color = space_colors[workspace_index] or colors.white
 
-			local workspace = sbar.add("item", {
+			local workspace = sbar.add("item", "space." .. workspace_index, {
 				click_script = "aerospace workspace " .. workspace_index .. " 2>/dev/null",
 				drawing = false,
 				background = { drawing = false },
