@@ -51,6 +51,12 @@ in {
   };
 
   config = mkIf cfg.enable {
+    home.shellAliases = {
+      oc = "opencode";
+      oc-sonnet = "opencode run -m anthropic/claude-sonnet-4-6";
+      oc-opus = "opencode run -m anthropic/claude-opus-4-7";
+      oc-haiku = "opencode run -m anthropic/claude-haiku-4-5-20251001";
+    };
     programs.opencode = {
       enable = true;
 

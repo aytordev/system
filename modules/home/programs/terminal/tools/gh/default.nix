@@ -4,7 +4,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkOption types;
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    types
+    ;
   cfg = config.aytordev.programs.terminal.tools.gh;
   hasToken = cfg.auth.tokenPath != null;
 in {
@@ -39,17 +45,16 @@ in {
     };
   };
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      gh
-      gh-eco
-      gh-cal
-      gh-poi
-      gh-notify
-      gh-dash
-    ];
     programs = {
       gh = {
         enable = true;
+        extensions = with pkgs; [
+          gh-eco
+          gh-cal
+          gh-poi
+          gh-notify
+          gh-dash
+        ];
         gitCredentialHelper = {
           enable = true;
           inherit (cfg.gitCredentialHelper) hosts;

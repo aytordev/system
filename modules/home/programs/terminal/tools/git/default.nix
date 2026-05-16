@@ -21,9 +21,15 @@
   ];
   gitConfig = {
     enable = true;
-    package = pkgs.git;
+    package = pkgs.gitFull;
     inherit ignores;
     maintenance.enable = true;
+    hooks.pre-commit = pkgs.writeShellScript "git-pre-commit-conflict-check" ''
+      if git diff --cached | grep -qE '^\+(<{7}|>{7})'; then
+        printf 'Error: staged changes contain conflict markers\n' >&2
+        exit 1
+      fi
+    '';
     settings = {
       alias = aliases;
       user = {
@@ -43,6 +49,10 @@
       };
       rerere.enabled = true;
       rebase.autostash = true;
+      credential.helper =
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then "osxkeychain"
+        else "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
       safe.directory = [
         "/Users/${inputs.secrets.username}/"
         "/etc/nixos"
@@ -87,46 +97,48 @@ in {
     cfg = config.aytordev.programs.terminal.tools.git;
     bashConfigDir = "${config.xdg.configHome}/bash/conf.d";
   in
-    lib.mkIf cfg.enable (lib.mkMerge [
-      {
-        home.packages = gitPackages;
-        programs = {
-          git = gitConfig;
-          delta = {
-            enable = true;
-            enableGitIntegration = true;
-            options = {
-              dark = true;
-              features = mkForce "decorations side-by-side navigate";
-              plus-style = "syntax #2B3328";
-              minus-style = "syntax #3C2C2E";
-              plus-emph-style = "syntax #76946a";
-              minus-emph-style = "syntax #c34043";
-              line-numbers = true;
-              navigate = true;
-              side-by-side = true;
+    lib.mkIf cfg.enable (
+      lib.mkMerge [
+        {
+          home.packages = gitPackages;
+          programs = {
+            git = gitConfig;
+            delta = {
+              enable = true;
+              enableGitIntegration = true;
+              options = {
+                dark = true;
+                features = mkForce "decorations side-by-side navigate";
+                plus-style = "syntax #2B3328";
+                minus-style = "syntax #3C2C2E";
+                plus-emph-style = "syntax #76946a";
+                minus-emph-style = "syntax #c34043";
+                line-numbers = true;
+                navigate = true;
+                side-by-side = true;
+              };
+            };
+            difftastic = {
+              git.diffToolMode = true;
+              options = {
+                background = "dark";
+                display = "inline";
+              };
+            };
+            mergiraf = {
+              enable = true;
+              enableGitIntegration = true;
+              enableJujutsuIntegration = true;
             };
           };
-          difftastic = {
-            git.diffToolMode = true;
-            options = {
-              background = "dark";
-              display = "inline";
-            };
+        }
+        (lib.mkIf (shell-aliases.allAliases != {}) {
+          home.file."${bashConfigDir}/git-aliases.sh" = {
+            text = shell-aliases.generateGitAliasesFile shell-aliases.allAliases;
+            executable = true;
           };
-          mergiraf = {
-            enable = true;
-            enableGitIntegration = true;
-            enableJujutsuIntegration = true;
-          };
-        };
-      }
-      (lib.mkIf (shell-aliases.allAliases != {}) {
-        home.file."${bashConfigDir}/git-aliases.sh" = {
-          text = shell-aliases.generateGitAliasesFile shell-aliases.allAliases;
-          executable = true;
-        };
-        home.shellAliases = shell-aliases.allAliases;
-      })
-    ]);
+          home.shellAliases = shell-aliases.allAliases;
+        })
+      ]
+    );
 }
