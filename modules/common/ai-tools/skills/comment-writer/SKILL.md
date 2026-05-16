@@ -5,14 +5,12 @@ description: "Write warm, direct collaboration comments. Trigger: PR feedback, i
 
 ## When to Use
 
-Load this skill whenever you write a comment that another human will read.
+Load this skill whenever you write a comment that another human will read:
 
-Use it for:
-
-- GitHub PR or issue comments.
-- Review feedback and requested changes.
-- Maintainer replies.
-- Slack, Discord, or async project updates.
+- GitHub PR or issue comments
+- Review feedback and requested changes
+- Maintainer replies
+- Slack, Discord, or async project updates
 
 ## Voice Rules
 
@@ -36,35 +34,12 @@ Use it for:
 <Concrete next action>
 ```
 
-## Examples
-
-### Request change
-
-```markdown
-Buenísimo el enfoque. Acá separaría este cambio en otro commit porque mezcla la validación con el wiring de UI.
-
-Eso le baja carga al reviewer y hace que el rollback sea más claro si falla la integración.
-```
-
-### Approve with a note
-
-```markdown
-Está bien encaminado y el scope se entiende rápido.
-
-Dejo aprobado. Para el próximo PR, agregá el link al anterior y al siguiente así la cadena queda navegable.
-```
-
-### Ask for split
-
-```markdown
-Este PR supera el presupuesto de 400 líneas cambiadas, así que necesitamos dividirlo o justificar `size:exception`.
-
-Mi sugerencia: primero foundation + tests, después integración, después docs. Así cada review tiene inicio y fin claros.
-```
-
 ## Commands
 
 ```bash
-# Inspect a PR before writing review feedback
 gh pr view <PR_NUMBER> --json title,body,additions,deletions,changedFiles
 ```
+
+## References
+
+- [references/examples.md](references/examples.md) — request change, approval, and split examples
