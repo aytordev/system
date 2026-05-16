@@ -1,0 +1,7 @@
+{
+    "name": "issue-creation",
+    "description": "Create Gentle AI issues with issue-first checks. Trigger: creating GitHub issues, bug reports, or feature requests.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
+}

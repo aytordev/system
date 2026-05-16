@@ -1,0 +1,7 @@
+{
+    "name": "sdd-archive",
+    "description": "Sync delta specs to main specs and archive a completed change. Completes the SDD cycle. Trigger: When orchestrator launches you to archive a change after implementation and verification.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
+}

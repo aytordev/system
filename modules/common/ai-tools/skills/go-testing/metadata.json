@@ -1,0 +1,7 @@
+{
+    "name": "go-testing",
+    "description": "Trigger: Go tests, go test coverage, Bubbletea teatest, golden files. Apply focused Go testing patterns.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
+}

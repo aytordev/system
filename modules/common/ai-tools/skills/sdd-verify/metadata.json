@@ -1,0 +1,7 @@
+{
+    "name": "sdd-verify",
+    "description": "Validate that implementation matches specs, design, and tasks. The quality gate. Trigger: When orchestrator launches you to verify completed or partially completed changes.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
+}

@@ -1,0 +1,7 @@
+{
+    "name": "sdd-spec",
+    "description": "Write specifications with requirements and scenarios for changes. Produces delta specs (ADDED/MODIFIED/REMOVED) or full specs for new features. Trigger: When the orchestrator launches you to write or update specs.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
+}

@@ -1,0 +1,7 @@
+{
+    "name": "work-unit-commits",
+    "description": "Plan commits as reviewable work units. Trigger: implementation, commit splitting, chained PRs, or keeping tests and docs with code.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
+}

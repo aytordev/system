@@ -1,0 +1,7 @@
+{
+    "name": "sdd-propose",
+    "description": "Create a change proposal with intent, scope, and approach. Takes exploration analysis or direct user input and produces a structured proposal. Trigger: When the orchestrator launches you to create or update a proposal for a change.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
+}
