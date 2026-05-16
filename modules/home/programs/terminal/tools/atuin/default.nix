@@ -42,6 +42,9 @@ in {
         ];
       };
     };
+    home.shellAliases = {
+      atuin-prune-failed = "atuin search --exclude-exit 0 --delete";
+    };
     xdg.configFile."bash/conf.d/atuin.sh" = lib.mkIf cfg.enableBashIntegration {
       text = ''
         eval "$(atuin init bash)"

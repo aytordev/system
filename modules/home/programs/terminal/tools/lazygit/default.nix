@@ -15,6 +15,7 @@
     programs.lazygit = {
       enable = true;
       settings = {
+        customCommands = import ./custom-commands.nix;
         gui = {
           authorColors = {
             "${inputs.secrets.userfullname}" = "#957fb8";
@@ -26,9 +27,19 @@
             dev = "#7e9cd8";
           };
           nerdFontsVersion = "3";
+          showListFooter = false;
+          showRandomTip = false;
+          expandFocusedSidePanel = true;
         };
         git = {
           overrideGpg = true;
+          mainBranches = [
+            "main"
+            "master"
+          ];
+        };
+        os = {
+          editPreset = "nvim";
         };
       };
     };

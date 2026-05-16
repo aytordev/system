@@ -17,6 +17,16 @@
     then "os"
     else "darwin"
   } switch";
+  nixrbAlias = "nh ${
+    if pkgs.stdenv.hostPlatform.isLinux
+    then "os"
+    else "darwin"
+  } boot";
+  nixrtAlias = "nh ${
+    if pkgs.stdenv.hostPlatform.isLinux
+    then "os"
+    else "darwin"
+  } test";
 in {
   options.aytordev.programs.terminal.tools.nh = {
     enable = lib.mkEnableOption "nh";
@@ -44,7 +54,11 @@ in {
       sessionVariables = {
         NH_SEARCH_PLATFORM = 1;
       };
-      shellAliases.nixre = nixreAlias;
+      shellAliases = {
+        nixre = nixreAlias;
+        nixrb = nixrbAlias;
+        nixrt = nixrtAlias;
+      };
     };
   };
 }

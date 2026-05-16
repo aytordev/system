@@ -5,7 +5,15 @@
   inputs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkOption literalExpression optionalAttrs types;
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    literalExpression
+    optionalAttrs
+    types
+    ;
   cfg = config.aytordev.programs.terminal.tools.jujutsu;
 in {
   options.aytordev.programs.terminal.tools.jujutsu = {
@@ -38,7 +46,11 @@ in {
     };
   };
   config = mkIf cfg.enable {
-    home.packages = [cfg.package];
+    home.packages = [
+      cfg.package
+      pkgs.lazyjj
+    ];
+    home.sessionVariables.RAYON_NUM_THREADS = "4";
     programs.jujutsu = {
       enable = true;
       inherit (cfg) package;
@@ -55,9 +67,18 @@ in {
             default = "current";
           };
           rebase.auto_stash = true;
+          ui = {
+            default-command = "log";
+            diff-editor = ":builtin";
+            diff-instructions = false;
+          };
         }
         // optionalAttrs cfg.signByDefault {
-          operation.signing_key = cfg.signingKey;
+          signing = {
+            backend = "ssh";
+            key = cfg.signingKey;
+            sign-all = true;
+          };
         };
     };
   };

@@ -1,0 +1,328 @@
+[
+  {
+    key = "<c-v>";
+    context = "global";
+    description = "Create conventional commit";
+    loadingText = "Creating conventional commit...";
+    command = "git commit --message '{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}'{{ if .Form.Body }} --message {{ .Form.Body | quote }}{{ end }}";
+    prompts = [
+      {
+        type = "menu";
+        key = "Type";
+        title = "Type of change";
+        options = [
+          {
+            name = "feat";
+            description = "A new feature";
+            value = "feat";
+          }
+          {
+            name = "fix";
+            description = "A bug fix";
+            value = "fix";
+          }
+          {
+            name = "docs";
+            description = "Documentation only changes";
+            value = "docs";
+          }
+          {
+            name = "style";
+            description = "Changes that do not affect the meaning of the code";
+            value = "style";
+          }
+          {
+            name = "refactor";
+            description = "A code change that neither fixes a bug nor adds a feature";
+            value = "refactor";
+          }
+          {
+            name = "perf";
+            description = "A code change that improves performance";
+            value = "perf";
+          }
+          {
+            name = "test";
+            description = "Adding missing tests or correcting existing tests";
+            value = "test";
+          }
+          {
+            name = "build";
+            description = "Changes that affect the build system or external dependencies";
+            value = "build";
+          }
+          {
+            name = "ci";
+            description = "Changes to CI configuration files and scripts";
+            value = "ci";
+          }
+          {
+            name = "chore";
+            description = "Other changes that don't modify src or test files";
+            value = "chore";
+          }
+          {
+            name = "revert";
+            description = "Reverts a previous commit";
+            value = "revert";
+          }
+        ];
+      }
+      {
+        type = "input";
+        title = "Scope (optional)";
+        key = "Scope";
+        initialValue = "";
+      }
+      {
+        type = "menu";
+        key = "Breaking";
+        title = "Breaking change?";
+        options = [
+          {
+            name = "no";
+            value = "";
+          }
+          {
+            name = "yes";
+            value = "!";
+          }
+        ];
+      }
+      {
+        type = "input";
+        title = "Commit subject";
+        key = "Message";
+        initialValue = "";
+      }
+      {
+        type = "input";
+        title = "Commit body (optional)";
+        key = "Body";
+        initialValue = "";
+      }
+      {
+        type = "confirm";
+        key = "Confirm";
+        title = "Commit";
+        body = "Are you sure you want to commit?";
+      }
+    ];
+  }
+
+  {
+    key = "S";
+    context = "commits";
+    description = "Autosquash recent fixup/squash commits (last 100 commits)";
+    loadingText = "Autosquashing fixup commits...";
+    output = "log";
+    command = ''
+      set -eu
+
+      if ! git rev-parse --verify HEAD >/dev/null 2>&1; then
+        echo "No commits found on this branch."
+        exit 1
+      fi
+
+      maxScanCommits=100
+
+      workDir="''${TMPDIR:-/tmp}/lazygit-autosquash-$$"
+      rm -rf "$workDir"
+      mkdir -p "$workDir"
+      trap 'rm -rf "$workDir"' EXIT HUP INT TERM
+
+      historyFile="$workDir/history"
+      latestFile="$workDir/latest"
+      orderFile="$workDir/order"
+      usedFile="$workDir/used"
+      tab="$(printf '\t')"
+
+      : > "$latestFile"
+      : > "$orderFile"
+      : > "$usedFile"
+
+      git --no-pager log --reverse -n "$maxScanCommits" --format='%H%x09%s' HEAD > "$historyFile"
+
+      fixupCount=0
+      resolvedCount=0
+
+      while IFS= read -r line; do
+        sha="''${line%%"$tab"*}"
+        subject="''${line#*"$tab"}"
+
+        case "$subject" in
+          "fixup! "*)
+            fixupCount=$((fixupCount + 1))
+            targetSubject="''${subject#fixup! }"
+            ;;
+          "squash! "*)
+            fixupCount=$((fixupCount + 1))
+            targetSubject="''${subject#squash! }"
+            ;;
+          *)
+            printf '%s\t%s\n' "$sha" "$subject" >> "$latestFile"
+            printf '%s\n' "$sha" >> "$orderFile"
+            continue
+            ;;
+        esac
+
+        targetSha=""
+        while IFS= read -r entry; do
+          entrySha="''${entry%%"$tab"*}"
+          entrySubject="''${entry#*"$tab"}"
+
+          if [ "$entrySubject" = "$targetSubject" ]; then
+            targetSha="$entrySha"
+          fi
+        done < "$latestFile"
+
+        if [ -n "$targetSha" ]; then
+          resolvedCount=$((resolvedCount + 1))
+          printf '%s\n' "$targetSha" >> "$usedFile"
+        fi
+      done < "$historyFile"
+
+      if [ "$fixupCount" -eq 0 ]; then
+        echo "No fixup!/squash! commits found in the last $maxScanCommits commits."
+        exit 1
+      fi
+
+      if [ "$resolvedCount" -eq 0 ]; then
+        echo "Found fixup!/squash! commits in the last $maxScanCommits commits, but none target commits in that window."
+        exit 1
+      fi
+
+      oldestTargetSha=""
+      while IFS= read -r candidateSha; do
+        targetUsed=0
+
+        while IFS= read -r usedSha; do
+          if [ "$usedSha" = "$candidateSha" ]; then
+            targetUsed=1
+            break
+          fi
+        done < "$usedFile"
+
+        if [ "$targetUsed" -eq 1 ]; then
+          oldestTargetSha="$candidateSha"
+          break
+        fi
+      done < "$orderFile"
+
+      if [ -z "$oldestTargetSha" ]; then
+        echo "Unable to determine the oldest fixup target commit."
+        exit 1
+      fi
+
+      if git rev-parse --verify "$oldestTargetSha^" >/dev/null 2>&1; then
+        GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --no-verify "$oldestTargetSha^"
+      else
+        GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --no-verify --root
+      fi
+    '';
+    prompts = [
+      {
+        type = "confirm";
+        key = "ConfirmAutosquash";
+        title = "Rewrite commit history?";
+        body = "This searches the last 100 commits, rebases from the oldest fixup target it finds, and rewrites commit hashes.";
+      }
+    ];
+  }
+
+  {
+    key = "G";
+    context = "localBranches";
+    command = "gh pr view -w {{.SelectedLocalBranch.Name}}";
+    description = "Open GitHub PR in browser";
+  }
+  {
+    key = "G";
+    context = "commits";
+    command = "gh pr view -w";
+    description = "Open GitHub PR in browser";
+  }
+
+  {
+    key = "V";
+    context = "localBranches";
+    loadingText = "Checking out GitHub Pull Request...";
+    command = "gh pr checkout {{.Form.PullRequestNumber}}";
+    description = "Checkout GitHub PR";
+    prompts = [
+      {
+        type = "menuFromCommand";
+        title = "Which PR do you want to check out?";
+        key = "PullRequestNumber";
+        command = "gh pr list --json number,title,headRefName,updatedAt --template '{{range .}}{{printf \"#%v: %s - %s (%s)\n\" .number .title .headRefName (timeago .updatedAt)}}{{end}}'";
+        filter = "#(?P<number>[0-9]+): (?P<title>.+) - (?P<ref_name>[^ ]+).*";
+        valueFormat = "{{.number}}";
+        labelFormat = "{{\"#\" | black | bold}}{{.number | white | bold}} {{.title | yellow | bold}}{{\" [\" | black | bold}}{{.ref_name | green}}{{\"]\" | black | bold}}";
+      }
+    ];
+  }
+
+  {
+    key = "<c-g>";
+    context = "localBranches";
+    command = "git fetch -p && for branch in $(git for-each-ref --format '%(refname) %(upstream:track)' refs/heads | awk '$2 == \"[gone]\" {sub(\"refs/heads/\", \"\", $1); print $1}'); do git branch -D $branch; done";
+    description = "Prune local branches no longer on remote (gone)";
+    loadingText = "Pruning gone branches...";
+  }
+
+  {
+    key = "<c-l>";
+    context = "global";
+    description = "Remove current repo index.lock";
+    loadingText = "Removing index.lock...";
+    output = "log";
+    command = ''
+      set -eu
+
+      lockFile="$(git rev-parse --git-path index.lock)"
+
+      if [ ! -e "$lockFile" ]; then
+        echo "No index.lock file found for this repo."
+        exit 1
+      fi
+
+      rm -f "$lockFile"
+      echo "Removed $lockFile"
+    '';
+    prompts = [
+      {
+        type = "confirm";
+        key = "ConfirmRemoveIndexLock";
+        title = "Remove index.lock?";
+        body = "This deletes the current repo's Git index lock file. Only continue if no other Git process is using it.";
+      }
+    ];
+  }
+
+  {
+    key = "<c-o>";
+    context = "global";
+    description = "Push to a specific remote repository";
+    loadingText = "Pushing...";
+    command = "git {{index .PromptResponses 1}} {{index .PromptResponses 0}}";
+    prompts = [
+      {
+        type = "menuFromCommand";
+        title = "Which remote repository to push to?";
+        command = "bash -c \"git remote --verbose | grep '/.* (push)'\"";
+        filter = "(?P<remote>.*)\\s+(?P<url>.*) \\(push\\)";
+        valueFormat = "{{ .remote }}";
+        labelFormat = "{{ .remote | bold | cyan }} {{ .url }}";
+      }
+      {
+        type = "menu";
+        title = "How to push?";
+        options = [
+          {value = "push";}
+          {value = "push --force-with-lease";}
+          {value = "push --force";}
+        ];
+      }
+    ];
+  }
+]

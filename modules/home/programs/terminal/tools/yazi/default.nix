@@ -18,6 +18,13 @@ in {
       optionalPluginPackage "ouch" pkgs.ouch
       ++ optionalPluginPackage "glow" pkgs.glow
       ++ optionalPluginPackage "duckdb" pkgs.duckdb
+      ++ [
+        pkgs._7zz-rar
+        pkgs.atool
+        pkgs.exiftool
+        pkgs.mediainfo
+        pkgs.unar
+      ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         pkgs.xdragon
       ];
@@ -56,6 +63,7 @@ in {
           jump-to-char
           mount
           ouch
+          piper
           restore
           smart-enter
           smart-filter
