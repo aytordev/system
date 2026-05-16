@@ -42,6 +42,18 @@ in {
         description = "Enable meridian opencode plugin integration";
       };
 
+      scrubPlugin = {
+        enable = mkOption {
+          type = types.bool;
+          default = true;
+          description = ''
+            Strip OpenCode identifying fingerprints from the system prompt.
+            Prevents Anthropic from detecting third-party clients and routing
+            requests to extra usage billing instead of the Max plan.
+          '';
+        };
+      };
+
       defaultModel = mkOption {
         type = types.str;
         default = "claude-sonnet-4-6";
@@ -66,6 +78,17 @@ in {
       provider.anthropic.options = {
         baseURL = "http://${cfg.proxy.host}:${toString cfg.proxy.port}";
         apiKey = "dummy";
+      };
+    };
+
+    xdg.configFile."meridian/plugins.json" = mkIf cfg.opencode.scrubPlugin.enable {
+      text = builtins.toJSON {
+        plugins = [
+          {
+            path = "${pkgs.aytordev.meridian-plugin-opencode-scrub}/lib/dist/index.js";
+            enabled = true;
+          }
+        ];
       };
     };
   };
