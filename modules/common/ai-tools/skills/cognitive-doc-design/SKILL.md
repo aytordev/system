@@ -5,14 +5,12 @@ description: "Design docs that reduce cognitive load. Trigger: writing guides, R
 
 ## When to Use
 
-Load this skill when creating or editing documentation that people need to understand quickly, retain, or use during review.
+Load this skill when creating or editing documentation that people need to understand quickly, retain, or use during review:
 
-Use it especially for:
-
-- PR descriptions and review notes.
-- Contributor or maintainer guides.
-- Architecture, workflow, or onboarding docs.
-- Any doc that currently feels long, dense, or hard to scan.
+- PR descriptions and review notes
+- Contributor or maintainer guides
+- Architecture, workflow, or onboarding docs
+- Any doc that feels long, dense, or hard to scan
 
 ## Critical Patterns
 
@@ -25,40 +23,7 @@ Use it especially for:
 | Recognition over recall | Prefer tables, checklists, examples, and templates over prose that must be remembered. |
 | Review empathy | Design docs so reviewers can verify intent without reconstructing the whole story. |
 
-## Documentation Shape
-
-Use this default structure unless the repo already provides a stronger template:
-
-```markdown
-# <Outcome-oriented title>
-
-<One paragraph: what changed, who it helps, and why it matters.>
-
-## Quick path
-
-1. <First action>
-2. <Second action>
-3. <Verification or expected result>
-
-## Details
-
-| Topic | Decision |
-|-------|----------|
-| <area> | <concise explanation> |
-
-## Checklist
-
-- [ ] <Reader can confirm this>
-- [ ] <Reader can confirm that>
-
-## Next step
-
-<Link or action that continues the workflow.>
-```
-
 ## PR and Review Docs
-
-When documenting a PR, reduce reviewer burnout by making the review path explicit:
 
 - State what to review first.
 - State what is intentionally out of scope.
@@ -69,9 +34,10 @@ When documenting a PR, reduce reviewer burnout by making the review path explici
 ## Commands
 
 ```bash
-# Check markdown files changed in the current branch
 git diff --name-only -- '*.md'
-
-# Inspect PR changed-line count for cognitive load
 gh pr view <PR_NUMBER> --json additions,deletions,changedFiles
 ```
+
+## References
+
+- [references/doc-template.md](references/doc-template.md) — default documentation structure template
