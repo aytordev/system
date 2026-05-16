@@ -22,7 +22,15 @@
       )
     else {};
 in {
-  flake.overlays = dynamicOverlaysSet;
+  flake.overlays =
+    dynamicOverlaysSet
+    // {
+      # meridian.overlays.default uses final.system which is not exposed by
+      # all nixpkgs instantiations; use stdenv.hostPlatform.system instead
+      meridian = final: _prev: {
+        meridian = inputs.meridian.packages.${final.stdenv.hostPlatform.system}.meridian;
+      };
+    };
 
   perSystem = {system, ...}: {
     _module.args.pkgs = import inputs.nixpkgs {
