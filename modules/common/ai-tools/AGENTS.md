@@ -77,6 +77,5 @@ ai-tools/
 | chained-pr | workflow | Split oversized PRs (>400 lines) into chained review slices |
 | cognitive-doc-design | workflow | Design docs that reduce cognitive load |
 | comment-writer | workflow | Write warm, direct collaboration comments |
-| go-testing | workflow | Focused Go testing patterns (table-driven, Bubbletea, golden files) |
 | issue-creation | workflow | Create GitHub issues with issue-first checks |
 | work-unit-commits | workflow | Plan commits as reviewable work units |
