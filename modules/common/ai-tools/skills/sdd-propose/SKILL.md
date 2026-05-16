@@ -1,10 +1,6 @@
 ---
 name: sdd-propose
 description: "Create a change proposal with intent, scope, and approach. Takes exploration analysis or direct user input and produces a structured proposal. Trigger: When the orchestrator launches you to create or update a proposal for a change."
-license: MIT
-metadata:
-  author: aytordev
-  version: "2.0.0"
 ---
 
 # SDD Propose

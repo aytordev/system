@@ -73,3 +73,9 @@ ai-tools/
 | sdd-apply | sdd | Implement tasks following specs and design |
 | sdd-verify | sdd | Quality gate — validate implementation matches specs |
 | sdd-archive | sdd | Sync delta specs to main specs, archive change |
+| branch-pr | workflow | Create PRs with issue-first checks and conventional commits |
+| chained-pr | workflow | Split oversized PRs (>400 lines) into chained review slices |
+| cognitive-doc-design | workflow | Design docs that reduce cognitive load |
+| comment-writer | workflow | Write warm, direct collaboration comments |
+| issue-creation | workflow | Create GitHub issues with issue-first checks |
+| work-unit-commits | workflow | Plan commits as reviewable work units |

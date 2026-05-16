@@ -1,6 +1,0 @@
----
-title: ""
-impact: ""
-impactDescription: ""
-tags: []
----

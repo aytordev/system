@@ -1,10 +1,6 @@
 ---
 name: sdd-design
 description: "Create technical design document with architecture decisions and approach. Takes proposal and specs, produces design.md capturing HOW the change will be implemented. Trigger: When the orchestrator launches you to write or update the technical design."
-license: MIT
-metadata:
-  author: aytordev
-  version: "2.0.0"
 ---
 
 # SDD Design

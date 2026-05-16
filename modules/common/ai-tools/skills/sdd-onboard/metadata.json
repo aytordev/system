@@ -1,8 +1,7 @@
 {
-  "name": "sdd-onboard",
-  "version": "1.0.0",
-  "description": "Guided end-to-end SDD walkthrough using the user's real codebase",
-  "author": "aytordev",
-  "license": "MIT",
-  "tags": ["sdd", "onboarding", "guided", "workflow"]
+    "name": "sdd-onboard",
+    "description": "Guided end-to-end SDD walkthrough using the user's real codebase. Teaches by doing — runs the full SDD cycle with narration at each phase. Trigger: When user says 'sdd onboard', 'onboard sdd', 'teach me sdd', 'guided sdd', 'sdd tutorial', or /sdd-onboard command.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
 }

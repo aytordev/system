@@ -1,0 +1,7 @@
+{
+    "name": "chained-pr",
+    "description": "Trigger: PRs over 400 lines, stacked PRs, review slices. Split oversized changes into chained PRs that protect review focus.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
+}

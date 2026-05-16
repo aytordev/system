@@ -1,8 +1,7 @@
 {
     "name": "sdd-verify",
-    "description": "Validate that implementation matches specs, design, and tasks.",
-    "version": "2.0.0",
-    "organization": "sdd",
-    "date": "February 2026",
-    "abstract": "Validate that implementation matches specs, design, and tasks. The quality gate. Must prove with real execution evidence that implementation is complete, correct, and behaviorally compliant. Static analysis alone is NOT enough."
+    "description": "Validate that implementation matches specs, design, and tasks. The quality gate. Trigger: When orchestrator launches you to verify completed or partially completed changes.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
 }

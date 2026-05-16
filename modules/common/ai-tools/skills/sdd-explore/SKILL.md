@@ -1,10 +1,6 @@
 ---
 name: sdd-explore
 description: "Explore and investigate ideas before committing to a change. Read-only codebase investigation that compares approaches and returns structured analysis. Trigger: When the orchestrator launches you to think through a feature, investigate the codebase, or clarify requirements."
-license: MIT
-metadata:
-  author: aytordev
-  version: "2.0.0"
 ---
 
 # SDD Explore

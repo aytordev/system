@@ -1,8 +1,7 @@
 {
     "name": "sdd-init",
-    "description": "Initialize Spec-Driven Development context in any project.",
-    "version": "2.0.0",
-    "organization": "sdd",
-    "date": "March 2026",
-    "abstract": "Initialize Spec-Driven Development (SDD) context by detecting the project tech stack, conventions, and bootstrapping the active persistence backend (engram, openspec, or none)."
+    "description": "Initialize Spec-Driven Development context in any project. Detects stack, conventions, and bootstraps the active persistence backend. Trigger: When user wants to initialize SDD in a project.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
 }

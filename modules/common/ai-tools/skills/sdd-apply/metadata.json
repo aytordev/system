@@ -1,8 +1,7 @@
 {
     "name": "sdd-apply",
-    "description": "Implement tasks from the change, writing actual code following specs and design.",
-    "version": "2.0.0",
-    "organization": "sdd",
-    "date": "February 2026",
-    "abstract": "Implement tasks from the change, writing actual code following the specs and design. Supports both TDD workflow (RED → GREEN → REFACTOR) and standard implementation mode. Marks tasks complete as work progresses."
+    "description": "Implement tasks from the change, writing actual code following the specs and design. Receives specific tasks and implements them. Trigger: When the orchestrator launches you to implement one or more tasks from a change.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
 }

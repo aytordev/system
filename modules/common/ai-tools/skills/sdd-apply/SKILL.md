@@ -1,10 +1,6 @@
 ---
 name: sdd-apply
 description: "Implement tasks from the change, writing actual code following the specs and design. Receives specific tasks and implements them. Trigger: When the orchestrator launches you to implement one or more tasks from a change."
-license: MIT
-metadata:
-  author: aytordev
-  version: "2.0.0"
 ---
 
 # SDD Apply

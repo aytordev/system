@@ -1,0 +1,7 @@
+{
+    "name": "comment-writer",
+    "description": "Write warm, direct collaboration comments. Trigger: PR feedback, issue replies, reviews, Slack messages, or GitHub comments.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "May 2026"
+}

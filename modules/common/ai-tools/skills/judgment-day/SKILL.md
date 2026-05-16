@@ -1,10 +1,6 @@
 ---
 name: judgment-day
 description: "Parallel adversarial review protocol. Launches two independent blind judge sub-agents simultaneously to review the same target, synthesizes findings, applies fixes, and re-judges until both pass or escalates. Trigger: When user says 'judgment day', 'judgment-day', 'review adversarial', 'dual review', 'double review', 'juzgar', 'que lo juzguen'."
-license: MIT
-metadata:
-  author: aytordev
-  version: "1.0.0"
 ---
 
 # Judgment Day

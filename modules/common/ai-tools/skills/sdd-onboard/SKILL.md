@@ -1,10 +1,6 @@
 ---
 name: sdd-onboard
 description: "Guided end-to-end SDD walkthrough using the user's real codebase. Teaches by doing — runs the full SDD cycle with narration at each phase. Trigger: When user says 'sdd onboard', 'onboard sdd', 'teach me sdd', 'guided sdd', 'sdd tutorial', or /sdd-onboard command."
-license: MIT
-metadata:
-  author: aytordev
-  version: "1.0.0"
 ---
 
 # SDD Onboard
