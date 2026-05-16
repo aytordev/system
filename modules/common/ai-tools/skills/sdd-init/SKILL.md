@@ -1,10 +1,6 @@
 ---
 name: sdd-init
 description: "Initialize Spec-Driven Development context in any project. Detects stack, conventions, and bootstraps the active persistence backend. Trigger: When user wants to initialize SDD in a project."
-license: MIT
-metadata:
-  author: aytordev
-  version: "2.0.0"
 ---
 
 # SDD Init

@@ -1,10 +1,6 @@
 ---
 name: sdd-archive
 description: "Sync delta specs to main specs and archive a completed change. Completes the SDD cycle. Trigger: When orchestrator launches you to archive a change after implementation and verification."
-license: MIT
-metadata:
-  author: aytordev
-  version: "2.0.0"
 ---
 
 # SDD Archive

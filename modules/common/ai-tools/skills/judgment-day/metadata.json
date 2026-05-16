@@ -1,8 +1,0 @@
-{
-  "name": "judgment-day",
-  "version": "1.0.0",
-  "description": "Parallel adversarial review protocol with two blind judges",
-  "author": "aytordev",
-  "license": "MIT",
-  "tags": ["review", "quality", "adversarial"]
-}

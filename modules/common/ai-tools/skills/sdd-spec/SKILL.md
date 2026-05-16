@@ -1,10 +1,6 @@
 ---
 name: sdd-spec
 description: "Write specifications with requirements and scenarios for changes. Produces delta specs (ADDED/MODIFIED/REMOVED) or full specs for new features. Trigger: When the orchestrator launches you to write or update specs."
-license: MIT
-metadata:
-  author: aytordev
-  version: "2.0.0"
 ---
 
 # SDD Spec
