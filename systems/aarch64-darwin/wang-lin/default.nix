@@ -3,15 +3,13 @@
   inputs,
   config,
   ...
-}:
-let
+}: let
   inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.user;
 
   sopsFolder = builtins.toString inputs.secrets + "/hard-secrets";
-in
-{
+in {
   # Host-specific settings only
   # All modules auto-discovered from modules/darwin/
   # All homes auto-injected from homes/aarch64-darwin/aytordev@wang-lin/
@@ -63,6 +61,27 @@ in
             sopsFile = "${sopsFolder}/portfolio.yaml";
             key = "hetzner_ssh_private_key";
             path = "/Users/${inputs.secrets.username}/.ssh/portfolio_hetzner_ed25519";
+            mode = "0600";
+            owner = inputs.secrets.username;
+          };
+          hetzner_api_token = {
+            sopsFile = "${sopsFolder}/portfolio.yaml";
+            key = "hetzner_api_token";
+            path = "/Users/${inputs.secrets.username}/.config/sops/hcloud_token";
+            mode = "0600";
+            owner = inputs.secrets.username;
+          };
+          b2_key_id = {
+            sopsFile = "${sopsFolder}/portfolio.yaml";
+            key = "b2_key_id";
+            path = "/Users/${inputs.secrets.username}/.config/sops/b2_key_id";
+            mode = "0600";
+            owner = inputs.secrets.username;
+          };
+          b2_app_key = {
+            sopsFile = "${sopsFolder}/portfolio.yaml";
+            key = "b2_app_key";
+            path = "/Users/${inputs.secrets.username}/.config/sops/b2_app_key";
             mode = "0600";
             owner = inputs.secrets.username;
           };

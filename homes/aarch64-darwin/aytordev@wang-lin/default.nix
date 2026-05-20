@@ -2,11 +2,9 @@
   lib,
   inputs,
   ...
-}:
-let
+}: let
   inherit (lib.aytordev) enabled disabled;
-in
-{
+in {
   aytordev = {
     user = {
       enable = true;
@@ -95,6 +93,20 @@ in
           # Host-specific gh authentication via sops
           gh.auth.tokenPath = "/Users/${inputs.secrets.username}/.config/sops/github_cli_personal_access_token";
 
+          # Host-specific hcloud authentication via sops
+          hcloud.auth.tokenPath = "/Users/${inputs.secrets.username}/.config/sops/hcloud_token";
+
+          # Portfolio Backblaze B2 backup remote — secrets injected from sops at activation
+          rclone.remotes.portfolio-b2 = {
+            config = {
+              type = "b2";
+            };
+            secrets = {
+              account = "/Users/${inputs.secrets.username}/.config/sops/b2_key_id";
+              key = "/Users/${inputs.secrets.username}/.config/sops/b2_app_key";
+            };
+          };
+
           # Host-specific git signing key
           git.signingKey = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
 
@@ -123,13 +135,13 @@ in
           # Ollama — M3 Ultra optimized (service managed by darwin launchd module)
           ollama = {
             acceleration = "metal";
-            modelPresets = [ "m3-ultra" ];
+            modelPresets = ["m3-ultra"];
             integrations.zed = true;
           };
 
           # Host-specific SSH configuration
           ssh.knownHosts.github = {
-            hostNames = [ "github.com" ];
+            hostNames = ["github.com"];
             user = "git";
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILsKijb0PXKfsAmPu0t0jIsiYqfvhyiwPdrWWIwCSzpJ";
             identityFile = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
@@ -139,7 +151,7 @@ in
 
           # Portfolio Hetzner VPS — update hostNames with the real IP in PR6.T3
           ssh.knownHosts.hetzner-portfolio = {
-            hostNames = [ "hetzner-portfolio-vps" ]; # TODO PR6.T3: replace with actual VPS IP
+            hostNames = ["hetzner-portfolio-vps"]; # TODO PR6.T3: replace with actual VPS IP
             user = "deploy";
             identityFile = "/Users/${inputs.secrets.username}/.ssh/portfolio_hetzner_ed25519";
             identitiesOnly = true;

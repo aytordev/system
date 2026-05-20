@@ -474,10 +474,10 @@
         "sops-nix": "sops-nix"
       },
       "locked": {
-        "lastModified": 1779264620,
-        "narHash": "sha256-jLgF4i9kfqvPqPCB5DvJo0ddPBBan3RUv5tx6vk+Ryw=",
+        "lastModified": 1779283105,
+        "narHash": "sha256-V4iiW+4iXjznZf2UxNFhgv0UiHJBzuiy0vy4tzzJun4=",
         "ref": "main",
-        "rev": "35480f8af4cabec0aa9810153da0e4df36893598",
+        "rev": "fa48caf49c4ce906dfa837df7b78637ac628c320",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/aytordev/secrets.git"
