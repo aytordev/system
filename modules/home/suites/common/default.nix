@@ -102,6 +102,7 @@ in {
             navi = mkDefault enabled;
             nix-search-tv = mkDefault enabled;
             nh = mkDefault enabled;
+            rclone = mkDefault enabled;
             ripgrep = mkDefault enabled;
             run-as-service = mkDefault (
               if pkgs.stdenv.hostPlatform.isLinux
