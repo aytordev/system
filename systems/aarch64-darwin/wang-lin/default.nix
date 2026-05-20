@@ -3,13 +3,15 @@
   inputs,
   config,
   ...
-}: let
+}:
+let
   inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.user;
 
   sopsFolder = builtins.toString inputs.secrets + "/hard-secrets";
-in {
+in
+{
   # Host-specific settings only
   # All modules auto-discovered from modules/darwin/
   # All homes auto-injected from homes/aarch64-darwin/aytordev@wang-lin/
@@ -54,6 +56,13 @@ in {
           github_cli_personal_access_token = {
             key = "github_cli_personal_access_token";
             path = "/Users/${inputs.secrets.username}/.config/sops/github_cli_personal_access_token";
+            mode = "0600";
+            owner = inputs.secrets.username;
+          };
+          hetzner_ssh_private_key = {
+            sopsFile = "${sopsFolder}/portfolio.yaml";
+            key = "hetzner_ssh_private_key";
+            path = "/Users/${inputs.secrets.username}/.ssh/portfolio_hetzner_ed25519";
             mode = "0600";
             owner = inputs.secrets.username;
           };

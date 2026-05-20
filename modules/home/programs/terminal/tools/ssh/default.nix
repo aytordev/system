@@ -3,10 +3,12 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib) mkEnableOption mkOption types;
   cfg = config.aytordev.programs.terminal.tools.ssh;
-in {
+in
+{
   options.aytordev.programs.terminal.tools.ssh = {
     enable = mkEnableOption "SSH configuration";
     port = mkOption {
@@ -16,44 +18,46 @@ in {
     };
     authorizedKeys = mkOption {
       type = types.listOf types.str;
-      default = [];
+      default = [ ];
       description = "List of authorized public keys added to ~/.ssh/authorized_keys";
     };
     knownHosts = mkOption {
-      type = types.attrsOf (types.submodule {
-        options = {
-          hostNames = mkOption {
-            type = types.listOf types.str;
-            description = "List of host names for this known host entry";
+      type = types.attrsOf (
+        types.submodule {
+          options = {
+            hostNames = mkOption {
+              type = types.listOf types.str;
+              description = "List of host names for this known host entry";
+            };
+            user = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Username to use when connecting to this host";
+            };
+            publicKey = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Public key for the host (for verification)";
+            };
+            port = mkOption {
+              type = types.nullOr types.port;
+              default = null;
+              description = "Port to use when connecting to this host";
+            };
+            identityFile = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Path to the private key to use for this host";
+            };
+            identitiesOnly = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              description = "Whether to use only the specified identity file";
+            };
           };
-          user = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "Username to use when connecting to this host";
-          };
-          publicKey = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "Public key for the host (for verification)";
-          };
-          port = mkOption {
-            type = types.nullOr types.port;
-            default = null;
-            description = "Port to use when connecting to this host";
-          };
-          identityFile = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "Path to the private key to use for this host";
-          };
-          identitiesOnly = mkOption {
-            type = types.nullOr types.bool;
-            default = null;
-            description = "Whether to use only the specified identity file";
-          };
-        };
-      });
-      default = {};
+        }
+      );
+      default = { };
       description = "Known hosts configuration with per-host settings";
     };
     extraConfig = mkOption {
@@ -61,10 +65,10 @@ in {
       default = "";
       description = "Additional SSH configuration";
     };
-    matchBlocks = mkOption {
+    extraSettings = mkOption {
       type = types.attrsOf types.attrs;
-      default = {};
-      description = "SSH match blocks for specific hosts";
+      default = { };
+      description = "Additional SSH settings blocks using upstream OpenSSH directive names";
     };
   };
   config = lib.mkIf cfg.enable {
@@ -80,52 +84,49 @@ in {
         TCPKeepAlive = "yes";
       };
       inherit (cfg) extraConfig;
-      matchBlocks = lib.mkMerge [
+      settings = lib.mkMerge [
         {
           "*" = {
-            forwardAgent = false;
-            compression = false;
-            serverAliveInterval = 15;
-            serverAliveCountMax = 3;
-            hashKnownHosts = false;
-            controlMaster = "auto";
-            controlPath = "~/.ssh/controlmasters/%r@%h:%p";
-            controlPersist = "10m";
+            ForwardAgent = false;
+            Compression = false;
+            ServerAliveInterval = 15;
+            ServerAliveCountMax = 3;
+            HashKnownHosts = false;
+            ControlMaster = "auto";
+            ControlPath = "~/.ssh/controlmasters/%r@%h:%p";
+            ControlPersist = "10m";
           };
           "*.local" = {
-            user = config.home.username;
-            inherit (cfg) port;
-            extraOptions = {
-              StrictHostKeyChecking = "no";
-              UserKnownHostsFile = "/dev/null";
-            };
+            User = config.home.username;
+            Port = cfg.port;
+            StrictHostKeyChecking = "no";
+            UserKnownHostsFile = "/dev/null";
           };
         }
         (lib.mapAttrs' (_name: host: {
-            name = lib.concatStringsSep " " host.hostNames;
-            value = {
-              user = host.user or null;
-              port = host.port or null;
-              identityFile = host.identityFile or null;
-              identitiesOnly = host.identitiesOnly or null;
-              extraOptions =
-                lib.optionalAttrs (host ? publicKey) {
-                  HostKeyAlias = lib.head host.hostNames;
-                }
-                // (host.extraOptions or {});
-            };
-          })
-          cfg.knownHosts)
-        cfg.matchBlocks
+          name = lib.concatStringsSep " " host.hostNames;
+          value =
+            lib.filterAttrs (_: v: v != null) {
+              User = host.user or null;
+              Port = host.port or null;
+              IdentityFile = host.identityFile or null;
+              IdentitiesOnly = host.identitiesOnly or null;
+            }
+            // lib.optionalAttrs (host ? publicKey) {
+              HostKeyAlias = lib.head host.hostNames;
+            }
+            // (host.extraOptions or { });
+        }) cfg.knownHosts)
+        cfg.extraSettings
       ];
     };
     home = {
       file = lib.mkMerge [
-        (lib.optionalAttrs (cfg.authorizedKeys != []) {
+        (lib.optionalAttrs (cfg.authorizedKeys != [ ]) {
           ".ssh/authorized_keys".text = lib.concatStringsSep "\n" cfg.authorizedKeys;
         })
       ];
-      activation.createSshControlmastersDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      activation.createSshControlmastersDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         mkdir -p ~/.ssh/controlmasters
         chmod 700 ~/.ssh/controlmasters
       '';
