@@ -7,10 +7,12 @@ Per-project development environments provided by Nix flakes. This directory cont
 ```
 dev-shells/
 ├── default/            # Fallback/generic shell
+├── astro-hono/         # Astro + Hono + Bun stack
 ├── nix/                # Nix development tools
 ├── node-22-lts/        # Node.js 22 LTS
 ├── node-24-lts/        # Node.js 24 LTS
 ├── node-25/            # Node.js 25 (Current)
+├── python/             # Python 3.13 + uv
 ├── react/              # React development
 └── ...
 ```
@@ -72,12 +74,14 @@ mkShell {
 
 ## Available Shells
 
-- **default**: Genetic tools.
-- **nix**: Tools for working with Nix code (nil, nixpkgs-fmt).
+- **default**: Generic tools.
+- **astro-hono**: Astro + Hono + Bun stack with pnpm workspaces and TypeScript.
+- **nix**: Tools for working with Nix code (just runner).
 - **node-22-lts**: Node.js 22 environment.
 - **node-24-lts**: Node.js 24 environment.
 - **node-25**: Node.js 25 environment.
-- **react**: Frontend development with Node, pnpm, yarn, and TypeScript.
+- **python**: Python 3.13 with uv package manager.
+- **react**: Frontend development with Node, pnpm, yarn, bun, and TypeScript.
 
 ## Key Files
 
