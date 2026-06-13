@@ -3,12 +3,10 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib) mkEnableOption mkOption types;
   cfg = config.aytordev.programs.terminal.tools.ssh;
-in
-{
+in {
   options.aytordev.programs.terminal.tools.ssh = {
     enable = mkEnableOption "SSH configuration";
     port = mkOption {
@@ -18,7 +16,7 @@ in
     };
     authorizedKeys = mkOption {
       type = types.listOf types.str;
-      default = [ ];
+      default = [];
       description = "List of authorized public keys added to ~/.ssh/authorized_keys";
     };
     knownHosts = mkOption {
@@ -57,7 +55,7 @@ in
           };
         }
       );
-      default = { };
+      default = {};
       description = "Known hosts configuration with per-host settings";
     };
     extraConfig = mkOption {
@@ -67,7 +65,7 @@ in
     };
     extraSettings = mkOption {
       type = types.attrsOf types.attrs;
-      default = { };
+      default = {};
       description = "Additional SSH settings blocks using upstream OpenSSH directive names";
     };
   };
@@ -104,29 +102,30 @@ in
           };
         }
         (lib.mapAttrs' (_name: host: {
-          name = lib.concatStringsSep " " host.hostNames;
-          value =
-            lib.filterAttrs (_: v: v != null) {
-              User = host.user or null;
-              Port = host.port or null;
-              IdentityFile = host.identityFile or null;
-              IdentitiesOnly = host.identitiesOnly or null;
-            }
-            // lib.optionalAttrs (host ? publicKey) {
-              HostKeyAlias = lib.head host.hostNames;
-            }
-            // (host.extraOptions or { });
-        }) cfg.knownHosts)
+            name = lib.concatStringsSep " " host.hostNames;
+            value =
+              lib.filterAttrs (_: v: v != null) {
+                User = host.user or null;
+                Port = host.port or null;
+                IdentityFile = host.identityFile or null;
+                IdentitiesOnly = host.identitiesOnly or null;
+              }
+              // lib.optionalAttrs (host ? publicKey) {
+                HostKeyAlias = lib.head host.hostNames;
+              }
+              // (host.extraOptions or {});
+          })
+          cfg.knownHosts)
         cfg.extraSettings
       ];
     };
     home = {
       file = lib.mkMerge [
-        (lib.optionalAttrs (cfg.authorizedKeys != [ ]) {
+        (lib.optionalAttrs (cfg.authorizedKeys != []) {
           ".ssh/authorized_keys".text = lib.concatStringsSep "\n" cfg.authorizedKeys;
         })
       ];
-      activation.createSshControlmastersDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      activation.createSshControlmastersDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
         mkdir -p ~/.ssh/controlmasters
         chmod 700 ~/.ssh/controlmasters
       '';
