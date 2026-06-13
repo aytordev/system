@@ -3,14 +3,15 @@ let
   # Change a model here and it propagates automatically to the orchestrator prompt.
   sddModels = {
     haiku = "anthropic/claude-haiku-4-5-20251001";
-    sonnet = "anthropic/claude-sonnet-4-5-20250929";
+    sonnet = "anthropic/claude-sonnet-4-6";
+    opus = "anthropic/claude-opus-4-7";
   };
 
   phaseModels = [
     {
       phase = "sdd-init";
-      model = sddModels.haiku;
-      rationale = "Quick context detection";
+      model = sddModels.sonnet;
+      rationale = "Stack detection + skill registry build (8-step workflow)";
     }
     {
       phase = "sdd-explore";
@@ -29,8 +30,8 @@ let
     }
     {
       phase = "sdd-design";
-      model = sddModels.sonnet;
-      rationale = "Architecture reasoning";
+      model = sddModels.opus;
+      rationale = "Architecture reasoning — judgment-critical, downstream phases depend on design quality";
     }
     {
       phase = "sdd-tasks";
@@ -57,16 +58,21 @@ let
   renderModelRow = entry: "| ${entry.phase} | `${entry.model}` | ${entry.rationale} |";
   modelRouterRows = builtins.concatStringsSep "\n" (builtins.map renderModelRow phaseModels);
 
-  orchestratorContent =
-    builtins.replaceStrings
-    ["@SDD_MODEL_ROUTER_ROWS@"]
-    [modelRouterRows]
-    (builtins.readFile ./sdd-orchestrator.md);
+  orchestratorContent = builtins.replaceStrings ["@SDD_MODEL_ROUTER_ROWS@"] [modelRouterRows] (
+    builtins.readFile ./sdd-orchestrator.md
+  );
 in {
   sdd-orchestrator = {
     name = "sdd-orchestrator";
     description = "SDD Orchestrator - delegates spec-driven development to sub-agents via Task tool";
-    tools = ["Read" "Write" "Edit" "Bash" "Grep" "Glob"];
+    tools = [
+      "Read"
+      "Write"
+      "Edit"
+      "Bash"
+      "Grep"
+      "Glob"
+    ];
     model = {
       claude = "sonnet";
       opencode = sddModels.sonnet;

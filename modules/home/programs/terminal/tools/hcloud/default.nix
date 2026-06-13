@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkIf
     mkEnableOption
     mkOption
@@ -13,8 +13,7 @@ let
     ;
   cfg = config.aytordev.programs.terminal.tools.hcloud;
   hasToken = cfg.auth.tokenPath != null;
-in
-{
+in {
   options.aytordev.programs.terminal.tools.hcloud = {
     enable = mkEnableOption "Hetzner Cloud CLI";
 
@@ -33,7 +32,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ pkgs.hcloud ];
+    home.packages = [pkgs.hcloud];
 
     programs = {
       zsh.initContent = mkIf hasToken ''
