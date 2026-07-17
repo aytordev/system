@@ -5,7 +5,7 @@
 }: let
   inherit (pkgs) lib;
   nodePackages = with pkgs; [
-    nodejs_25
+    nodejs_26
     yarn
     pnpm
   ];
@@ -14,7 +14,7 @@ in
     packages = nodePackages;
 
     shellHook = ''
-      echo -e "\n\033[1;32m🎯 Node.js 25 Shell\033[0m"
+      echo -e "\n\033[1;32m🎯 Node.js 26 Shell\033[0m"
       echo ""
       echo "📦 Available tools:"
       ${lib.concatMapStringsSep "\n" (
