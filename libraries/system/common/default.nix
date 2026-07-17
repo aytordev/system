@@ -14,6 +14,9 @@ in {
     config = {
       allowAliases = false;
       allowUnfree = true;
+      permittedInsecurePackages = [
+        "electron-39.8.10" # bitwarden-desktop dependency, pending nixpkgs update
+      ];
     };
   };
 

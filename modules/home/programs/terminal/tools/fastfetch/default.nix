@@ -10,10 +10,9 @@ in {
     enable = mkEnableOption "fastfetch";
   };
   config = mkIf config.aytordev.programs.terminal.tools.fastfetch.enable {
-    home.packages = with pkgs; [fastfetchMinimal];
     programs.fastfetch = {
       enable = true;
-      package = pkgs.fastfetchMinimal;
+      package = pkgs.fastfetch;
       settings = {
         "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json";
         logo = {
