@@ -42,7 +42,7 @@ gc:
 # Run tests
 [group('nix')]
 test:
-    nix eval .#evalTests --show-trace --print-build-logs --verbose
+    nix flake check --extra-experimental-features "nix-command flakes" --show-trace --print-build-logs
 
 ############################################################################
 # System Management
