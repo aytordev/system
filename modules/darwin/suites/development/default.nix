@@ -1,13 +1,12 @@
 {
   config,
   lib,
+  pkgs,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf;
   cfg = config.aytordev.suites.development;
-in
-{
+in {
   options.aytordev.suites.development = {
     enable = lib.mkEnableOption "common development configuration";
     dockerEnable = lib.mkEnableOption "docker desktop configuration";
@@ -20,16 +19,16 @@ in
     # aytordev.nix.nix-rosetta-builder.enable = true;
 
     homebrew = {
-      casks = [
-        "ghostty"
-        "pencil"
-      ]
-      ++ lib.optionals cfg.dockerEnable [
-        "docker-desktop"
-      ]
-      ++ lib.optionals cfg.podmanEnable [
-        "podman-desktop"
-      ];
+      casks =
+        [
+          "ghostty"
+        ]
+        ++ lib.optionals cfg.dockerEnable [
+          "docker-desktop"
+        ]
+        ++ lib.optionals cfg.podmanEnable [
+          "podman-desktop"
+        ];
 
       masApps = mkIf config.aytordev.tools.homebrew.masEnable {
         # TODO: Add Mac App Store apps
@@ -40,6 +39,8 @@ in
       ollama.enable = lib.mkDefault cfg.aiEnable;
       litellm.enable = lib.mkDefault cfg.aiEnable;
     };
+
+    environment.systemPackages = [pkgs.aytordev.pencil-dev];
 
     nix.settings = {
       keep-derivations = true;
