@@ -11,7 +11,7 @@ dev-shells/
 ├── nix/                # Nix development tools
 ├── node-22-lts/        # Node.js 22 LTS
 ├── node-24-lts/        # Node.js 24 LTS
-├── node-25/            # Node.js 25 (Current)
+├── node-26/            # Node.js 26 (Current)
 ├── python/             # Python 3.13 + uv
 ├── react/              # React development
 └── ...
@@ -79,7 +79,7 @@ mkShell {
 - **nix**: Tools for working with Nix code (just runner).
 - **node-22-lts**: Node.js 22 environment.
 - **node-24-lts**: Node.js 24 environment.
-- **node-25**: Node.js 25 environment.
+- **node-26**: Node.js 26 environment.
 - **python**: Python 3.13 with uv package manager.
 - **react**: Frontend development with Node, pnpm, yarn, bun, and TypeScript.
 
