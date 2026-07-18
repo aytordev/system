@@ -4,7 +4,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkOption types;
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    types
+    ;
   cfg = config.aytordev.programs.terminal.tools.fzf;
   defaultOptions = [
     "--layout=reverse"
@@ -78,6 +84,7 @@ in {
         enable = true;
         inherit (cfg) defaultCommand;
         defaultOptions = defaultOptions ++ cfg.extraOptions;
+        historyWidget.command = "";
       };
       zsh = {
         plugins = [

@@ -44,18 +44,21 @@
         for = "unix";
       }
     ];
-    extract = [
-      {
-        desc = "Extract with atool";
-        run = "${lib.getExe pkgs.atool} --extract --each --subdir --quiet -- \"$@\"";
-        block = true;
-      }
-      {
-        run = "${lib.getExe pkgs.unar} \"$1\"";
-        desc = "Extract here";
-        for = "unix";
-      }
-    ];
+    extract =
+      [
+        {
+          desc = "Extract with atool";
+          run = "${lib.getExe pkgs.atool} --extract --each --subdir --quiet -- \"$@\"";
+          block = true;
+        }
+      ]
+      ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [
+        {
+          run = "${lib.getExe pkgs.unar} \"$1\"";
+          desc = "Extract here";
+          for = "unix";
+        }
+      ];
     play = [
       {
         run = "${lib.getExe pkgs.mediainfo} \"$1\"; echo \"Press enter to exit\"; read _";

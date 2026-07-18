@@ -22,7 +22,7 @@ in {
       source = lib.getExe pkgs.ripgrep;
     };
 
-    programs.gemini-cli = {
+    programs.antigravity-cli = {
       enable = true;
 
       settings = {
