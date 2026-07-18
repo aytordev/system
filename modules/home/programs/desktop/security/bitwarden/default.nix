@@ -16,6 +16,17 @@ in {
       description = "The Bitwarden package to install.";
     };
 
+    installPackage = lib.mkOption {
+      type = lib.types.bool;
+      default = !pkgs.stdenv.hostPlatform.isDarwin;
+      defaultText = lib.literalExpression "!pkgs.stdenv.hostPlatform.isDarwin";
+      description = ''
+        Install the Bitwarden package via Home Manager.
+        On Darwin, the desktop app is managed as a Homebrew cask to avoid
+        nixpkgs Electron/native-linker build failures.
+      '';
+    };
+
     settings = lib.mkOption {
       type = lib.types.attrs;
       default = {};
@@ -88,7 +99,10 @@ in {
       };
 
       timeoutAction = lib.mkOption {
-        type = lib.types.enum ["lock" "logout"];
+        type = lib.types.enum [
+          "lock"
+          "logout"
+        ];
         default = "lock";
         description = ''
           Action to take when vault times out.
@@ -98,12 +112,13 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [cfg.package];
+    home.packages = lib.optional cfg.installPackage cfg.package;
 
     # Create Bitwarden config directory and settings file if settings are provided
     xdg.configFile = lib.mkIf (cfg.settings != {}) {
       "Bitwarden/data.json" = {
-        text = builtins.toJSON (cfg.settings
+        text = builtins.toJSON (
+          cfg.settings
           // {
             # Merge user settings with our module options
             inherit (cfg) enableBrowserIntegration;
@@ -114,12 +129,13 @@ in {
             biometricRequirePasswordOnStart = cfg.biometricUnlock.requirePasswordOnStart;
             vaultTimeout = cfg.vault.timeout;
             vaultTimeoutAction = cfg.vault.timeoutAction;
-          });
+          }
+        );
       };
     };
 
     # Setup launch agent for macOS to start at login if enabled
-    launchd.agents = lib.mkIf (pkgs.stdenv.isDarwin && cfg.enableSystemStartup) {
+    launchd.agents = lib.mkIf (pkgs.stdenv.isDarwin && cfg.enableSystemStartup && cfg.installPackage) {
       bitwarden = {
         enable = true;
         config = {

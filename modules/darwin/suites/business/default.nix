@@ -14,6 +14,7 @@ in {
   config = mkIf cfg.enable {
     homebrew = {
       casks = [
+        "bitwarden"
         "obsidian"
         "protonvpn"
       ];
