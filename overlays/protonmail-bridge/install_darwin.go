@@ -46,7 +46,7 @@ func NewInstaller(*versioner.Versioner) *InstallerDarwin {
 }
 
 // InstallUpdate is intentionally a no-op. See package comment.
-func (i *InstallerDarwin) InstallUpdate(_ *semver.Version, _ io.Reader) error {
+func (i *InstallerDarwin) InstallUpdate(_ *semver.Version, _ io.Reader, _ bool) error {
 	return nil
 }
 
