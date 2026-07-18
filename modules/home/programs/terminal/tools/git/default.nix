@@ -119,7 +119,10 @@ in {
               };
             };
             difftastic = {
-              git.diffToolMode = true;
+              git = {
+                enable = true;
+                mode = "both";
+              };
               options = {
                 background = "dark";
                 display = "inline";

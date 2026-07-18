@@ -23,6 +23,8 @@ in {
         pkgs.atool
         pkgs.exiftool
         pkgs.mediainfo
+      ]
+      ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [
         pkgs.unar
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
