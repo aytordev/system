@@ -31,7 +31,7 @@ fmt path=".":
 # Usage: just fmt-check [path]  # Check files or directories (default: .)
 [group('nix')]
 fmt-check path=".":
-    nix run .#formatter.aarch64-darwin -- --check "{{path}}"
+    nix run .#formatter.aarch64-darwin -- --ci "{{path}}"
 
 # Garbage collection
 [group('nix')]
