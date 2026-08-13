@@ -25,6 +25,7 @@ Create a Darwin system configuration.
       extendedLib
       inputs
       system
+      hostname
       matchingHomes
       ;
     isNixOS = false;

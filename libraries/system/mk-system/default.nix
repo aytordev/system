@@ -25,6 +25,7 @@ Create a NixOS system configuration.
       extendedLib
       inputs
       system
+      hostname
       matchingHomes
       ;
     isNixOS = true;
