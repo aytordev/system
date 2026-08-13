@@ -4,7 +4,14 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkOption types optionals mapAttrsToList;
+  inherit
+    (lib)
+    mkIf
+    mkOption
+    types
+    optionals
+    mapAttrsToList
+    ;
 
   cfg = config.aytordev.programs.terminal.tools.ollama;
   serviceCfg = cfg.service;
@@ -13,7 +20,7 @@ in {
   options.aytordev.programs.terminal.tools.ollama.service = {
     enable = mkOption {
       type = types.bool;
-      default = !pkgs.stdenv.isDarwin;
+      default = !pkgs.stdenv.hostPlatform.isDarwin;
       description = ''
         Enable the Ollama systemd user service (Linux only).
         On macOS, the service is managed by the darwin module via launchd.
@@ -28,7 +35,7 @@ in {
   };
 
   # systemd service only on Linux — macOS uses launchd via darwin module
-  config = mkIf (cfg.enable && serviceCfg.enable && !pkgs.stdenv.isDarwin) {
+  config = mkIf (cfg.enable && serviceCfg.enable && !pkgs.stdenv.hostPlatform.isDarwin) {
     systemd.user.services.ollama = {
       Unit = {
         Description = "Ollama - Local Large Language Model Runner";

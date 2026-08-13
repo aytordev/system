@@ -4,7 +4,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf mkOption types;
+  inherit
+    (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
 
   cfg = config.aytordev.programs.desktop.editors.antigravity;
 
@@ -26,7 +32,7 @@ in {
 
     package = mkOption {
       type = types.package;
-      default = pkgs.antigravity;
+      default = pkgs.antigravity-ide;
       description = "The Antigravity package to use.";
     };
 
@@ -78,7 +84,7 @@ in {
               for vsix in "${ext}/share/vscode/extensions/"*.vsix; do
                 if [ -f "$vsix" ]; then
                   echo "Installing extension from $vsix..."
-                  ${cfg.package}/bin/antigravity --install-extension "$vsix" || true
+                  ${lib.getExe cfg.package} --install-extension "$vsix" || true
                 fi
               done
             '')
@@ -86,8 +92,9 @@ in {
         '';
       };
 
-      file = mkIf pkgs.stdenv.isDarwin {
-        "Library/Application Support/Antigravity/User".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/antigravity/User";
+      file = mkIf pkgs.stdenv.hostPlatform.isDarwin {
+        "Library/Application Support/Antigravity/User".source =
+          config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/antigravity/User";
       };
     };
 

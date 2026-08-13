@@ -135,20 +135,22 @@ in {
     };
 
     # Setup launch agent for macOS to start at login if enabled
-    launchd.agents = lib.mkIf (pkgs.stdenv.isDarwin && cfg.enableSystemStartup && cfg.installPackage) {
-      bitwarden = {
-        enable = true;
-        config = {
-          ProgramArguments = [
-            "${cfg.package}/programs/Bitwarden.app/Contents/MacOS/Bitwarden"
-          ];
-          RunAtLoad = true;
-          KeepAlive = false;
-          ProcessType = "Interactive";
-          StandardOutPath = "/tmp/bitwarden.out.log";
-          StandardErrorPath = "/tmp/bitwarden.err.log";
+    launchd.agents =
+      lib.mkIf (pkgs.stdenv.hostPlatform.isDarwin && cfg.enableSystemStartup && cfg.installPackage)
+      {
+        bitwarden = {
+          enable = true;
+          config = {
+            ProgramArguments = [
+              "${cfg.package}/programs/Bitwarden.app/Contents/MacOS/Bitwarden"
+            ];
+            RunAtLoad = true;
+            KeepAlive = false;
+            ProcessType = "Interactive";
+            StandardOutPath = "/tmp/bitwarden.out.log";
+            StandardErrorPath = "/tmp/bitwarden.err.log";
+          };
         };
       };
-    };
   };
 }
