@@ -1,13 +1,13 @@
 {
   inputs,
   lib,
+  self,
   ...
 }: {
   imports = lib.optional (inputs ? git-hooks-nix) inputs.git-hooks-nix.flakeModule;
 
   perSystem = {
     pkgs,
-    self,
     system,
     ...
   }: let
@@ -15,8 +15,7 @@
     checksPath = ../../../checks;
 
     # Filter for directories that contain a default.nix
-    isCheckDir = name: type:
-      type == "directory" && builtins.pathExists (checksPath + "/${name}/default.nix");
+    isCheckDir = name: type: type == "directory" && builtins.pathExists (checksPath + "/${name}/default.nix");
 
     # Get list of valid check directories
     checkDirs = lib.filterAttrs isCheckDir (builtins.readDir checksPath);
@@ -31,6 +30,22 @@
           }
       )
       checkDirs;
+
+    darwinChecks = lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin (
+      lib.mapAttrs' (name: darwin: {
+        name = "darwin-${name}";
+        value = darwin.system;
+      })
+      self.darwinConfigurations
+    );
+
+    homeChecks =
+      lib.mapAttrs'
+      (name: home: {
+        name = "home-${lib.replaceStrings ["@"] ["-"] name}";
+        value = home.activationPackage;
+      })
+      (lib.filterAttrs (_: home: home.pkgs.stdenv.hostPlatform.system == system) self.homeConfigurations);
   in {
     pre-commit = lib.mkIf (inputs ? git-hooks-nix) {
       check.enable = false;
@@ -61,6 +76,6 @@
       };
     };
 
-    checks = customChecks;
+    checks = customChecks // darwinChecks // homeChecks;
   };
 }
