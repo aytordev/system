@@ -6,6 +6,8 @@
 }: let
   inherit (self.lib.file) parseHomeConfigurations;
 
+  common = import ../../libraries/system/common {inherit inputs;};
+  extendedLib = common.mkExtendedLib self inputs.nixpkgs;
   homesPath = ../../homes;
   allHomes = parseHomeConfigurations homesPath;
 
@@ -34,7 +36,23 @@ in {
 
   flake = {
     homeModules = {
-      default = ../../modules/home;
+      default = {
+        lib,
+        pkgs,
+        ...
+      }:
+        if !(lib ? aytordev)
+        then throw "homeModules.default requires lib extended with self.lib.overlay"
+        else {
+          imports = common.mkHomeModules {inherit extendedLib;};
+
+          _module.args = {
+            inherit inputs;
+            inherit (inputs) self;
+            system = pkgs.stdenv.hostPlatform.system;
+            flake-parts-lib = inputs.flake-parts.lib;
+          };
+        };
     };
 
     # Dynamically generated home configurations
