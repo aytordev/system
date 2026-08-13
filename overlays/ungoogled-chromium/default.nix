@@ -17,7 +17,7 @@ _final: prev: {
     version = "138.0.7204.183-1.1";
 
     src = prev.fetchurl (
-      if prev.stdenv.isAarch64
+      if prev.stdenv.hostPlatform.isAarch64
       then {
         url = "https://github.com/ungoogled-software/ungoogled-chromium-macos/releases/download/${version}/ungoogled-chromium_${version}_arm64-macos.dmg";
         sha256 = "sha256-vTdhq+NmlzXVqC6wqE1Es+XolZfIlcoeS6gPzwhajRI=";
@@ -50,7 +50,10 @@ _final: prev: {
       '';
       homepage = "https://github.com/ungoogled-software/ungoogled-chromium-macos";
       license = licenses.bsd3;
-      platforms = ["aarch64-darwin" "x86_64-darwin"];
+      platforms = [
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
       maintainers = [];
     };
   };
