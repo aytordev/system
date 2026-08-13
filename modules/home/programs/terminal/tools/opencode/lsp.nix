@@ -1,11 +1,14 @@
 # OpenCode LSP (Language Server Protocol) configuration module
 # Defines language servers for different programming languages
 {
+  config,
   lib,
   pkgs,
   ...
-}: {
-  config = {
+}: let
+  cfg = config.aytordev.programs.terminal.tools.opencode;
+in {
+  config = lib.mkIf cfg.enable {
     programs.opencode.settings.lsp = {
       nixd = {
         command = [(lib.getExe pkgs.nixd)];
