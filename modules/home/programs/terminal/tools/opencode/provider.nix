@@ -5,8 +5,9 @@
 }: let
   ollamaCfg = config.aytordev.programs.terminal.tools.ollama;
   litellmCfg = config.aytordev.programs.terminal.tools.litellm;
+  cfg = config.aytordev.programs.terminal.tools.opencode;
 in {
-  config = {
+  config = lib.mkIf cfg.enable {
     programs.opencode.settings.provider = {
       ollama = lib.mkIf ollamaCfg.enable {
         npm = "@ai-sdk/openai-compatible";

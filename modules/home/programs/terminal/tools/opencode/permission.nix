@@ -1,7 +1,13 @@
 # OpenCode permissions configuration module
 # Defines permissions for bash commands and tools
-_: {
-  config = {
+{
+  config,
+  lib,
+  ...
+}: let
+  cfg = config.aytordev.programs.terminal.tools.opencode;
+in {
+  config = lib.mkIf cfg.enable {
     programs.opencode.settings.permission = {
       edit = "ask";
       bash = {

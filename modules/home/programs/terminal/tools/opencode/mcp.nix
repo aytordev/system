@@ -1,11 +1,14 @@
 # OpenCode MCP (Model Context Protocol) servers configuration module
 # Defines MCP servers for extending OpenCode capabilities
 {
+  config,
   lib,
   pkgs,
   ...
-}: {
-  config = {
+}: let
+  cfg = config.aytordev.programs.terminal.tools.opencode;
+in {
+  config = lib.mkIf cfg.enable {
     # FIXME: seems to cause opencode to just hang
     programs.opencode.settings.mcp = {
       github = {

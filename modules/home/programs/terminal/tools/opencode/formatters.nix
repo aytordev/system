@@ -1,11 +1,14 @@
 # OpenCode formatters configuration module
 # Defines code formatters for different programming languages
 {
+  config,
   lib,
   pkgs,
   ...
-}: {
-  config = {
+}: let
+  cfg = config.aytordev.programs.terminal.tools.opencode;
+in {
+  config = lib.mkIf cfg.enable {
     programs.opencode.settings.formatter = {
       nixfmt = {
         command = [
