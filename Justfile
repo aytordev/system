@@ -89,9 +89,9 @@ darwin-build name mode="":
 [group('darwin')]
 darwin-switch name mode="":
     if [ "{{mode}}" = "debug" ]; then \
-        sudo -E ./result/sw/bin/darwin-rebuild switch --flake ".#{{name}}" --show-trace --verbose; \
+        sudo -H ./result/sw/bin/darwin-rebuild switch --flake ".#{{name}}" --show-trace --verbose; \
     else \
-        sudo -E ./result/sw/bin/darwin-rebuild switch --flake ".#{{name}}"; \
+        sudo -H ./result/sw/bin/darwin-rebuild switch --flake ".#{{name}}"; \
     fi
 
 # Rollback last Darwin generation
