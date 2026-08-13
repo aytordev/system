@@ -4,7 +4,14 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkOption mkEnableOption types optionals;
+  inherit
+    (lib)
+    mkIf
+    mkOption
+    mkEnableOption
+    types
+    optionals
+    ;
 
   cfg = config.aytordev.programs.terminal.tools.ollama;
 in {
@@ -25,7 +32,7 @@ in {
         "rocm"
       ];
       default =
-        if pkgs.stdenv.isDarwin
+        if pkgs.stdenv.hostPlatform.isDarwin
         then "metal"
         else "none";
       description = "Hardware acceleration backend to use";
@@ -76,7 +83,9 @@ in {
     in {
       home = {
         packages =
-          [cfg.package]
+          [
+            cfg.package
+          ]
           ++ optionals cfg.shellAliases [
             createStatusScript
             createRestartScript

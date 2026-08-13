@@ -14,12 +14,12 @@ in {
 
   config = {
     # On macOS, install the pre-built app directly
-    home.packages = mkIf (cfg.enable && pkgs.stdenv.isDarwin) [
+    home.packages = mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isDarwin) [
       pkgs.ungoogled-chromium-macos
     ];
 
     # On Linux, use Home Manager's chromium program
-    programs.chromium = mkIf (cfg.enable && !pkgs.stdenv.isDarwin) {
+    programs.chromium = mkIf (cfg.enable && !pkgs.stdenv.hostPlatform.isDarwin) {
       enable = true;
       package = pkgs.ungoogled-chromium;
 
