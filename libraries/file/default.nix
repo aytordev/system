@@ -17,6 +17,16 @@
     lib.filter (name: hasSuffix ".nix" name) (builtins.attrNames entries);
 
   mergeAttrs' = attrsList: lib.foldl' (acc: attrs: acc // attrs) {} attrsList;
+
+  mergeUniqueAttrs = kind:
+    lib.foldl' (
+      acc: attrs: let
+        duplicates = lib.intersectLists (builtins.attrNames acc) (builtins.attrNames attrs);
+      in
+        if duplicates == []
+        then acc // attrs
+        else throw "Duplicate ${kind}: ${lib.concatStringsSep ", " duplicates}"
+    ) {};
 in {
   /**
   Read a file and return its contents.
@@ -260,7 +270,7 @@ in {
         path = systemPath + "/${hostname}";
       });
   in
-    builtins.foldl' (acc: system: acc // generateSystemConfigs system) {} systemArchs;
+    mergeUniqueAttrs "system hostnames" (map generateSystemConfigs systemArchs);
 
   /**
   Filter systems for NixOS (Linux).
@@ -312,19 +322,18 @@ in {
       parseUserAtHost = userAtHost: let
         # Split "username@hostname" into parts
         parts = builtins.split "@" userAtHost;
-        username = builtins.head parts;
-        hostname = builtins.elemAt parts 2; # After split: [username, "@", hostname]
-      in {
-        inherit
-          system
-          username
-          hostname
-          userAtHost
-          ;
-        path = systemPath + "/${userAtHost}";
-      };
+        valid = builtins.length parts == 3 && builtins.head parts != "" && builtins.elemAt parts 2 != "";
+      in
+        if valid
+        then {
+          inherit system userAtHost;
+          username = builtins.head parts;
+          hostname = builtins.elemAt parts 2;
+          path = systemPath + "/${userAtHost}";
+        }
+        else throw "Invalid home configuration name '${userAtHost}'; expected <user>@<host>";
     in
       genAttrs userAtHosts parseUserAtHost;
   in
-    builtins.foldl' (acc: system: acc // generateHomeConfigs system) {} systemArchs;
+    mergeUniqueAttrs "home configuration names" (map generateHomeConfigs systemArchs);
 }
