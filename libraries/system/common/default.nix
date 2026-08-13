@@ -1,5 +1,13 @@
 {inputs}: let
   inherit (inputs.nixpkgs.lib) filterAttrs mapAttrs';
+
+  mkHomeModules = {extendedLib}:
+    [
+      {_module.args.lib = extendedLib;}
+      inputs.nix-index-database.homeModules.nix-index
+      inputs.sops-nix.homeManagerModules.sops
+    ]
+    ++ (extendedLib.importModulesRecursive ../../../modules/home);
 in {
   /**
   Create an extended library with the flake's overlay.
@@ -16,6 +24,11 @@ in {
       allowUnfree = true;
     };
   };
+
+  /**
+  Shared Home Manager modules used by standalone and integrated configurations.
+  */
+  inherit mkHomeModules;
 
   /**
   Get home configurations matching a specific system and hostname.
@@ -41,6 +54,7 @@ in {
     extendedLib,
     inputs,
     system,
+    hostname,
     matchingHomes,
     isNixOS ? true,
   }:
@@ -50,27 +64,12 @@ in {
         useGlobalPkgs = true;
         useUserPackages = true;
         extraSpecialArgs = {
-          inherit inputs system;
+          inherit inputs system hostname;
           inherit (inputs) self;
           lib = extendedLib;
           flake-parts-lib = inputs.flake-parts.lib;
         };
-        sharedModules =
-          [
-            {_module.args.lib = extendedLib;}
-          ]
-          ++ (
-            if isNixOS
-            then [
-              inputs.home-manager.flakeModules.home-manager
-            ]
-            else []
-          )
-          ++ [
-            inputs.nix-index-database.homeModules.nix-index
-            inputs.sops-nix.homeManagerModules.sops
-          ]
-          ++ (extendedLib.importModulesRecursive ../../../modules/home);
+        sharedModules = mkHomeModules {inherit extendedLib;};
         users =
           mapAttrs' (_name: homeConfig: {
             name = homeConfig.username;
