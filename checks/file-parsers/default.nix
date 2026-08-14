@@ -20,11 +20,11 @@
   tests = [
     (expect (
       builtins.attrNames validSystems == ["wang-lin"]
-    ) "valid system configuration was not discovered")
+    ) "system discovery included a non-configuration entry")
     (expect (validSystems.wang-lin.system == "aarch64-darwin") "system metadata was parsed incorrectly")
     (expect (
       builtins.attrNames validHomes == ["aytordev@wang-lin"]
-    ) "valid home configuration was not discovered")
+    ) "home discovery included a non-configuration entry")
     (expect (
       validHomes."aytordev@wang-lin".username == "aytordev"
     ) "home username was parsed incorrectly")

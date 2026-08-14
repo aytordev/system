@@ -27,6 +27,13 @@
         then acc // attrs
         else throw "Duplicate ${kind}: ${lib.concatStringsSep ", " duplicates}"
     ) {};
+
+  configurationDirectories = dirPath:
+    builtins.attrNames (
+      filterAttrs (
+        name: type: type == "directory" && builtins.pathExists (dirPath + "/${name}/default.nix")
+      ) (builtins.readDir dirPath)
+    );
 in {
   /**
   Read a file and return its contents.
@@ -263,7 +270,7 @@ in {
 
     generateSystemConfigs = system: let
       systemPath = systemsPath + "/${system}";
-      hosts = builtins.attrNames (builtins.readDir systemPath);
+      hosts = configurationDirectories systemPath;
     in
       genAttrs hosts (hostname: {
         inherit system hostname;
@@ -317,7 +324,7 @@ in {
 
     generateHomeConfigs = system: let
       systemPath = homesPath + "/${system}";
-      userAtHosts = builtins.attrNames (builtins.readDir systemPath);
+      userAtHosts = configurationDirectories systemPath;
 
       parseUserAtHost = userAtHost: let
         # Split "username@hostname" into parts
