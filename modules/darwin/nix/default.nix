@@ -10,12 +10,13 @@ in {
   imports = [(lib.getFile "modules/common/nix/default.nix")];
 
   config = lib.mkIf cfg.enable {
-    # TODO: This configuration should be in the shared module but environment.etc
-    # from shared modules imported via lib.getFile doesn't work properly in flake-parts.
-    # The shared module's other configurations (nix.registry, nix.nixPath, etc.) work fine,
-    # but environment.etc gets ignored. This is likely due to how lib.getFile imports
-    # don't participate in the module system's attribute merging.
-    # Fix: Find a way to properly import shared modules so environment.etc works.
+    aytordev.nix.extraTrustedUsers =
+      lib.optional (
+        config.system.primaryUser != null
+      )
+      config.system.primaryUser;
+
+    # Preserve flake inputs and the nix-darwin configuration under /etc.
     environment.etc =
       {
         # set channels (backwards compatibility)

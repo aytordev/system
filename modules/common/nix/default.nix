@@ -4,14 +4,21 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption;
-  inherit (config.system) primaryUser;
-  allowedUsers = [
-    "root"
-    "@wheel"
-    "nix-builder"
-    primaryUser
-  ];
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    types
+    ;
+  cfg = config.aytordev.nix;
+  allowedUsers =
+    [
+      "root"
+      "@wheel"
+      "nix-builder"
+    ]
+    ++ cfg.extraTrustedUsers;
   essentialPackages = with pkgs; [
     deploy-rs
     git
@@ -31,12 +38,20 @@
     log-lines = 50;
     use-xdg-base-directories = true;
     warn-dirty = false;
-    experimental-features = ["nix-command" "flakes"];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
-
-  cfg = config.aytordev.nix;
 in {
-  options.aytordev.nix.enable = mkEnableOption "Common Nix configuration";
+  options.aytordev.nix = {
+    enable = mkEnableOption "Common Nix configuration";
+    extraTrustedUsers = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "Additional users allowed and trusted by the Nix daemon";
+    };
+  };
 
   config = mkIf cfg.enable {
     environment.systemPackages = essentialPackages;
