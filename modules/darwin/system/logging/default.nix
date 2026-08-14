@@ -8,7 +8,7 @@
   cfg = config.aytordev.system.logging;
 in {
   imports = [
-    ./new-sys-log
+    ./newsyslog.nix
   ];
 
   options.aytordev.system.logging = {
