@@ -19,7 +19,6 @@ in {
     (aytordevLib.flake.lib.file)
     getFile
     getNixFiles
-    getDirectories
     importFiles
     importDir
     importSubdirs
@@ -43,12 +42,6 @@ in {
     force-attrs
     nested-default-attrs
     nested-force-attrs
-    ;
-
-  # Path utilities
-  inherit
-    (aytordevLib.flake.lib)
-    relativeToRoot
     ;
 
   # Add home-manager lib functions
