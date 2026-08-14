@@ -44,9 +44,14 @@ in {
       };
 
       # Only shell-agnostic aliases in home.shellAliases (applies to all shells including Nushell)
-      shellAliases = {
-        nixcfg = "nvim ~/aytordev/flake.nix";
-      };
+      shellAliases =
+        {
+          nixcfg = "nvim ~/aytordev/flake.nix";
+        }
+        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+          # Prevent the shell alias from overriding the macOS log command.
+          log = "command log";
+        };
     };
 
     home.packages = with pkgs;

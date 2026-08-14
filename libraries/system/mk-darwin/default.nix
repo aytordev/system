@@ -63,6 +63,13 @@ in
         # Auto-inject home configurations for this system+hostname
         homeManagerConfig
 
+        {
+          home-manager = {
+            backupFileExtension = "hm.old";
+            verbose = true;
+          };
+        }
+
         # Import all darwin modules recursively
       ]
       ++ (extendedLib.importModulesRecursive ../../../modules/darwin)
