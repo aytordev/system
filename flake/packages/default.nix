@@ -23,7 +23,6 @@
 in {
   flake.overlays = {
     default = aytordevPackagesOverlay;
-    aytordev = aytordevPackagesOverlay;
   };
 
   perSystem = {pkgs, ...}: let
