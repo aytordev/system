@@ -38,13 +38,6 @@ in {
     };
 
     aytordev = {
-      home.extraOptions = {
-        home.shellAliases = {
-          # Prevent shell log command from overriding macos log
-          log = "command log";
-        };
-      };
-
       nix = mkDefault enabled;
 
       programs.terminal.tools = {
