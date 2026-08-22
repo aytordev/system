@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   inherit (lib) mkEnableOption mkForce mkOption;
@@ -33,8 +32,7 @@
     settings = {
       alias = aliases;
       user = {
-        name = inputs.secrets.username;
-        email = inputs.secrets.useremail;
+        inherit (config.aytordev.user) name email;
       };
       branch.sort = "-committerdate";
       core.editor = "nano";
@@ -54,7 +52,7 @@
         then "osxkeychain"
         else "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
       safe.directory = [
-        "/Users/${inputs.secrets.username}/"
+        config.home.homeDirectory
         "/etc/nixos"
         "/etc/nix-darwin"
       ];

@@ -9,6 +9,8 @@ in {
     user = {
       enable = true;
       name = inputs.secrets.username;
+      email = inputs.secrets.useremail;
+      fullName = inputs.secrets.userfullname;
       home = "/Users/${inputs.secrets.username}";
     };
 

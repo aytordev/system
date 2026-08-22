@@ -5,7 +5,7 @@ Create a NixOS system configuration.
 {
   system,
   hostname,
-  username ? inputs.secrets.username,
+  username,
   modules ? [],
   matchingHomes ? null,
   nixosModules ? null,

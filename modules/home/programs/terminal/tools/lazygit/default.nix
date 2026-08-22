@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  inputs,
   pkgs,
   ...
 }: {
@@ -18,7 +17,7 @@
         customCommands = import ./custom-commands.nix;
         gui = {
           authorColors = {
-            "${inputs.secrets.userfullname}" = "#957fb8";
+            "${config.aytordev.user.fullName}" = "#957fb8";
             "dependabot[bot]" = "#c0a36e";
           };
           branchColors = {

@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  inputs,
   username ? null,
   ...
 }: let
@@ -45,20 +44,24 @@
         sudo systemctl restart nix-daemon.service
       fi
     '';
-    remove-empty = ''${getExe' pkgs.findutils "find"} . -type d -empty -delete'';
-    print-empty = ''${getExe' pkgs.findutils "find"} . -type d -empty -print'';
+    remove-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -delete";
+    print-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -print";
     usage = "${getExe' pkgs.coreutils "du"} -ah -d1 | sort -rn 2>/dev/null";
     psg = "${getExe pkgs.ps} aux | grep";
   };
 in {
   options.aytordev.user = {
     enable = mkOpt types.bool false "Whether to configure the user account.";
-    email = mkOpt types.str inputs.secrets.useremail "The email of the user.";
-    fullName = mkOpt types.str inputs.secrets.userfullname "The full name of the user.";
+    email = lib.mkOption {
+      type = types.str;
+      description = "The email of the user.";
+    };
+    fullName = lib.mkOption {
+      type = types.str;
+      description = "The full name of the user.";
+    };
     home = mkOpt (types.nullOr types.str) home-directory "The user's home directory.";
-    icon =
-      mkOpt (types.nullOr types.package) null
-      "The profile picture to use for the user.";
+    icon = mkOpt (types.nullOr types.package) null "The profile picture to use for the user.";
     name = mkOpt (types.nullOr types.str) username "The user account.";
   };
 
@@ -72,6 +75,14 @@ in {
         {
           assertion = cfg.home != null;
           message = "aytordev.user.home must be set";
+        }
+        {
+          assertion = cfg ? email;
+          message = "aytordev.user.email must be set";
+        }
+        {
+          assertion = cfg ? fullName;
+          message = "aytordev.user.fullName must be set";
         }
       ];
 
