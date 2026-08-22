@@ -8,7 +8,6 @@
   themeCfg = config.aytordev.theme;
   inherit (themeCfg) palette;
   xdgConfigHome = "${config.xdg.configHome}";
-  xdgCacheHome = "${config.xdg.cacheHome}";
   starshipConfigDir = "${xdgConfigHome}/starship";
   starshipConfigFile = "${starshipConfigDir}/config.toml";
 
@@ -316,51 +315,38 @@
       };
     }
     // languageModules;
-in {
-  options.aytordev.programs.terminal.tools.starship = {
-    enable = lib.mkEnableOption "Starship prompt";
-    package = lib.mkPackageOption pkgs "starship" {};
-
-    palette = lib.mkOption {
-      type = lib.types.str;
-      default = "kanagawa";
-      description = "Color palette to use for Starship prompt. Defaults to 'kanagawa' which adapts to the global theme variant.";
-    };
-
-    enableZshIntegration = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Whether to enable Starship integration with ZSH";
-    };
-
-    enableFishIntegration = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Whether to enable Starship integration with Fish shell";
-    };
-
-    enableBashIntegration = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Whether to enable Starship integration with Bash";
-    };
-
-    enableNushellIntegration = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Whether to enable Starship integration with Nushell";
-    };
-
-    settings = lib.mkOption {
-      type = lib.types.attrs;
-      default =
-        starshipConfig
-        // {
-          inherit (cfg) palette;
-        };
-      description = "Starship configuration options";
-    };
+  shellIntegration = import ./shell-integration.nix {
+    inherit
+      cfg
+      lib
+      starshipConfigDir
+      starshipConfigFile
+      ;
+    xdgCacheHome = "${config.xdg.cacheHome}";
   };
+in {
+  options.aytordev.programs.terminal.tools.starship =
+    {
+      enable = lib.mkEnableOption "Starship prompt";
+      package = lib.mkPackageOption pkgs "starship" {};
+
+      palette = lib.mkOption {
+        type = lib.types.str;
+        default = "kanagawa";
+        description = "Color palette to use for Starship prompt. Defaults to 'kanagawa' which adapts to the global theme variant.";
+      };
+
+      settings = lib.mkOption {
+        type = lib.types.attrs;
+        default =
+          starshipConfig
+          // {
+            inherit (cfg) palette;
+          };
+        description = "Starship configuration options";
+      };
+    }
+    // shellIntegration.options;
 
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
@@ -387,55 +373,7 @@ in {
           $DRY_RUN_CMD chmod 700 "${config.xdg.cacheHome}/starship-tmp"
         '';
       }
-
-      (lib.mkIf cfg.enableZshIntegration {
-        programs.zsh.initContent = ''
-          if [ -n "$commands[starship]" ]; then
-            export STARSHIP_CONFIG="${starshipConfigFile}"
-            export STARSHIP_CONFIG_DIR="${starshipConfigDir}"
-            export STARSHIP_CACHE="${xdgCacheHome}/starship"
-            for dir in "$STARSHIP_CACHE" "$STARSHIP_CONFIG_DIR/modules"; do
-              [ ! -d "$dir" ] && mkdir -p "$dir"
-            done
-            eval "$(${cfg.package}/bin/starship init zsh --print-full-init)"
-          fi
-        '';
-      })
-
-      (lib.mkIf cfg.enableFishIntegration {
-        programs.fish.interactiveShellInit = ''
-          if command -q starship
-            set -gx STARSHIP_CONFIG "${starshipConfigFile}"
-            set -gx STARSHIP_CONFIG_DIR "${starshipConfigDir}"
-            set -gx STARSHIP_CACHE "${xdgCacheHome}/starship"
-            for dir in $STARSHIP_CACHE "$STARSHIP_CONFIG_DIR/modules"
-              test -d "$dir"; or mkdir -p "$dir"
-            end
-            ${cfg.package}/bin/starship init fish | source
-          end
-        '';
-      })
-
-      (lib.mkIf cfg.enableNushellIntegration {
-        programs.nushell.extraConfig = ''
-          $env.STARSHIP_CONFIG = "${starshipConfigFile}"
-          $env.STARSHIP_CONFIG_DIR = "${starshipConfigDir}"
-          $env.STARSHIP_CACHE = "${xdgCacheHome}/starship"
-          $env.PROMPT_COMMAND = { || ${cfg.package}/bin/starship prompt --cmd-duration $env.CMD_DURATION_MS $'--status=($env.LAST_EXIT_CODE)' }
-          $env.PROMPT_COMMAND_RIGHT = { || ${cfg.package}/bin/starship prompt --right }
-          $env.STARSHIP_SHELL = "nu"
-          $env.PROMPT_INDICATOR = { || "" }
-          $env.PROMPT_INDICATOR_VI_INSERT = { || "" }
-          $env.PROMPT_INDICATOR_VI_NORMAL = { || "" }
-          $env.PROMPT_MULTILINE_INDICATOR = { || "" }
-        '';
-      })
-
-      (lib.mkIf cfg.enableBashIntegration {
-        xdg.configFile."bash/conf.d/99-starship.sh".text = ''
-          eval "$(starship init bash)"
-        '';
-      })
+      shellIntegration.config
     ]
   );
 }
