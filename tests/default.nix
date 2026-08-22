@@ -31,6 +31,7 @@
     (import ../modules/home/programs/terminal/tools/claude-code/hooks/pre-tool-audit.nix {})
     .PreToolUse;
   claudeAuditScript = (builtins.head (builtins.head claudeAuditCommand).hooks).command;
+  claudeNotificationHook = builtins.readFile ../modules/home/programs/terminal/tools/claude-code/hooks/notification.nix;
   archetypes = lib.evalModules {
     modules = [
       ../modules/darwin/archetypes/personal
@@ -123,6 +124,13 @@ in {
   testClaudeAuditUsesPrivatePermissions = {
     expr = lib.hasInfix "umask 077" claudeAuditScript && lib.hasInfix "chmod 600" claudeAuditScript;
     expected = true;
+  };
+
+  testClaudeNotificationUsesStoreTools = {
+    expr =
+      lib.hasInfix "command -v terminal-notifier" claudeNotificationHook
+      || lib.hasInfix "osascript" claudeNotificationHook;
+    expected = false;
   };
 
   testClaudeAuditLimitsRetention = {

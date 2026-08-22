@@ -92,24 +92,29 @@
     ${shellUtils.colors}
 
     echo -e "''${YELLOW}Restarting Ollama service...''${NC}"
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-      launchctl kickstart -k "gui/$(id -u)/org.nixos.ollama" 2>/dev/null \
-        || launchctl stop org.nixos.ollama 2>/dev/null
-      sleep 2
-      launchctl start org.nixos.ollama 2>/dev/null || true
-    else
-      systemctl --user restart ollama.service
-    fi
+    ${
+      if pkgs.stdenv.hostPlatform.isDarwin
+      then ''
+        /bin/launchctl kickstart -k "gui/$(id -u)/org.nix-community.home.ollama"
+      ''
+      else ''
+        ${lib.getExe pkgs.systemd} --user restart ollama.service
+      ''
+    }
     sleep 2
     echo -e "''${GREEN}Service restarted''${NC}"
   '';
 
   createLogsScript = pkgs.writeShellScriptBin "ollama-logs" ''
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-      tail -f "''${XDG_STATE_HOME:-$HOME/.local/state}/ollama/ollama.err.log"
-    else
-      journalctl --user -u ollama.service -f
-    fi
+    ${
+      if pkgs.stdenv.hostPlatform.isDarwin
+      then ''
+        tail -f "''${XDG_STATE_HOME:-$HOME/.local/state}/ollama/ollama.err.log"
+      ''
+      else ''
+        ${lib.getExe' pkgs.systemd "journalctl"} --user -u ollama.service -f
+      ''
+    }
   '';
 
   createStatusScript = pkgs.writeShellScriptBin "ollama-status" ''

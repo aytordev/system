@@ -29,7 +29,7 @@ in {
       settings = {
         theme = "dark";
 
-        hooks = lib.importDir ./hooks {inherit pkgs;};
+        hooks = lib.importDir ./hooks {inherit lib pkgs;};
 
         # Let default do its job
         # model = "claude-sonnet-4-5";
