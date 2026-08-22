@@ -61,6 +61,18 @@ in {
     expected = ["wang-lin"];
   };
 
+  testGetNixFilesOnlyReturnsFiles = {
+    expr = file.getNixFiles ./fixtures/nix-files;
+    expected = ["regular.nix"];
+  };
+
+  testImportDirPlainIgnoresNixDirectories = {
+    expr = file.importDirPlain ./fixtures/nix-files [];
+    expected = {
+      regular = true;
+    };
+  };
+
   testMkOptDefault = {
     expr = (module.mkOpt' lib.types.int 5).default;
     expected = 5;
