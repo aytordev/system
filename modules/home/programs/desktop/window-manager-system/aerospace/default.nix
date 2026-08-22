@@ -10,6 +10,7 @@ in {
   options = {
     aytordev.programs.desktop.window-manager-system.aerospace = {
       enable = lib.mkEnableOption "Aerospace window manager";
+      package = lib.mkPackageOption pkgs "aerospace" {};
     };
   };
 
@@ -18,13 +19,11 @@ in {
       restart-aerospace = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.aerospace'';
     };
 
-    home.packages = with pkgs; [
-      aerospace
-    ];
+    home.packages = [cfg.package];
 
     programs.aerospace = {
       enable = true;
-      package = pkgs.aerospace;
+      inherit (cfg) package;
       launchd.enable = true;
 
       settings = {

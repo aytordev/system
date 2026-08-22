@@ -35,7 +35,7 @@
 
     export TMPDIR="${bridgeTmpDir}"
     export HOME="${config.home.homeDirectory}"
-    exec ${pkgs.protonmail-bridge}/bin/protonmail-bridge \
+    exec ${cfg.package}/bin/protonmail-bridge \
       --noninteractive \
       --log-level ${cfg.logLevel} \
       ${lib.concatStringsSep " " grpcFlag}
@@ -43,6 +43,7 @@
 in {
   options.aytordev.services.protonmail-bridge = {
     enable = mkEnableOption "ProtonMail Bridge";
+    package = lib.mkPackageOption pkgs "protonmail-bridge" {};
 
     # Note: ProtonMail Bridge does not support automatic authentication via command-line arguments.
     # The bridge must be configured interactively first using:
@@ -79,7 +80,7 @@ in {
       }
     ];
 
-    home.packages = [pkgs.protonmail-bridge];
+    home.packages = [cfg.package];
 
     # Service configuration
     # IMPORTANT: ProtonMail Bridge must be configured interactively before this service will work.

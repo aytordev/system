@@ -9,12 +9,13 @@
 in {
   options.aytordev.programs.terminal.tools.bottom = {
     enable = lib.mkEnableOption "bottom";
+    package = lib.mkPackageOption pkgs "bottom" {};
   };
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [bottom];
+    home.packages = [cfg.package];
     programs.bottom = {
       enable = true;
-      package = pkgs.bottom;
+      inherit (cfg) package;
       settings = {
         flags.group_processes = true;
         row = [
@@ -40,7 +41,7 @@ in {
       };
     };
     xdg.configFile."bash/conf.d/bottom.sh".text = ''
-      alias htop="${pkgs.bottom}/bin/btm"
+      alias htop="${cfg.package}/bin/btm"
     '';
   };
 }

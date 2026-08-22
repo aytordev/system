@@ -319,6 +319,7 @@
 in {
   options.aytordev.programs.terminal.tools.starship = {
     enable = lib.mkEnableOption "Starship prompt";
+    package = lib.mkPackageOption pkgs "starship" {};
 
     palette = lib.mkOption {
       type = lib.types.str;
@@ -352,82 +353,89 @@ in {
 
     settings = lib.mkOption {
       type = lib.types.attrs;
-      default = starshipConfig // {inherit (cfg) palette;};
+      default =
+        starshipConfig
+        // {
+          inherit (cfg) palette;
+        };
       description = "Starship configuration options";
     };
   };
 
-  config = lib.mkIf cfg.enable (lib.mkMerge [
-    {
-      home.packages = [
-        (pkgs.writeShellScriptBin "starship" ''
-          export STARSHIP_CONFIG="${starshipConfigFile}"
-          export STARSHIP_CONFIG_DIR="${starshipConfigDir}"
-          unset STARSHIP_LOG
-          unset STARSHIP_CACHE
-          export TMPDIR="${config.xdg.cacheHome}/starship-tmp"
-          mkdir -p "$TMPDIR"
-          chmod 700 "$TMPDIR"
-          exec ${pkgs.starship}/bin/starship "$@"
-        '')
-      ];
+  config = lib.mkIf cfg.enable (
+    lib.mkMerge [
+      {
+        home.packages = [
+          (pkgs.writeShellScriptBin "starship" ''
+            export STARSHIP_CONFIG="${starshipConfigFile}"
+            export STARSHIP_CONFIG_DIR="${starshipConfigDir}"
+            unset STARSHIP_LOG
+            unset STARSHIP_CACHE
+            export TMPDIR="${config.xdg.cacheHome}/starship-tmp"
+            mkdir -p "$TMPDIR"
+            chmod 700 "$TMPDIR"
+            exec ${cfg.package}/bin/starship "$@"
+          '')
+        ];
 
-      xdg.configFile."starship/config.toml".source =
-        (pkgs.formats.toml {}).generate "starship-config" cfg.settings;
+        xdg.configFile."starship/config.toml".source =
+          (pkgs.formats.toml {}).generate "starship-config"
+          cfg.settings;
 
-      home.activation.createStarshipTmpDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        $DRY_RUN_CMD mkdir -p "${config.xdg.cacheHome}/starship-tmp"
-        $DRY_RUN_CMD chmod 700 "${config.xdg.cacheHome}/starship-tmp"
-      '';
-    }
+        home.activation.createStarshipTmpDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+          $DRY_RUN_CMD mkdir -p "${config.xdg.cacheHome}/starship-tmp"
+          $DRY_RUN_CMD chmod 700 "${config.xdg.cacheHome}/starship-tmp"
+        '';
+      }
 
-    (lib.mkIf cfg.enableZshIntegration {
-      programs.zsh.initContent = ''
-        if [ -n "$commands[starship]" ]; then
-          export STARSHIP_CONFIG="${starshipConfigFile}"
-          export STARSHIP_CONFIG_DIR="${starshipConfigDir}"
-          export STARSHIP_CACHE="${xdgCacheHome}/starship"
-          for dir in "$STARSHIP_CACHE" "$STARSHIP_CONFIG_DIR/modules"; do
-            [ ! -d "$dir" ] && mkdir -p "$dir"
-          done
-          eval "$(${pkgs.starship}/bin/starship init zsh --print-full-init)"
-        fi
-      '';
-    })
+      (lib.mkIf cfg.enableZshIntegration {
+        programs.zsh.initContent = ''
+          if [ -n "$commands[starship]" ]; then
+            export STARSHIP_CONFIG="${starshipConfigFile}"
+            export STARSHIP_CONFIG_DIR="${starshipConfigDir}"
+            export STARSHIP_CACHE="${xdgCacheHome}/starship"
+            for dir in "$STARSHIP_CACHE" "$STARSHIP_CONFIG_DIR/modules"; do
+              [ ! -d "$dir" ] && mkdir -p "$dir"
+            done
+            eval "$(${cfg.package}/bin/starship init zsh --print-full-init)"
+          fi
+        '';
+      })
 
-    (lib.mkIf cfg.enableFishIntegration {
-      programs.fish.interactiveShellInit = ''
-        if command -q starship
-          set -gx STARSHIP_CONFIG "${starshipConfigFile}"
-          set -gx STARSHIP_CONFIG_DIR "${starshipConfigDir}"
-          set -gx STARSHIP_CACHE "${xdgCacheHome}/starship"
-          for dir in $STARSHIP_CACHE "$STARSHIP_CONFIG_DIR/modules"
-            test -d "$dir"; or mkdir -p "$dir"
+      (lib.mkIf cfg.enableFishIntegration {
+        programs.fish.interactiveShellInit = ''
+          if command -q starship
+            set -gx STARSHIP_CONFIG "${starshipConfigFile}"
+            set -gx STARSHIP_CONFIG_DIR "${starshipConfigDir}"
+            set -gx STARSHIP_CACHE "${xdgCacheHome}/starship"
+            for dir in $STARSHIP_CACHE "$STARSHIP_CONFIG_DIR/modules"
+              test -d "$dir"; or mkdir -p "$dir"
+            end
+            ${cfg.package}/bin/starship init fish | source
           end
-          ${pkgs.starship}/bin/starship init fish | source
-        end
-      '';
-    })
+        '';
+      })
 
-    (lib.mkIf cfg.enableNushellIntegration {
-      programs.nushell.extraConfig = ''
-        $env.STARSHIP_CONFIG = "${starshipConfigFile}"
-        $env.STARSHIP_CONFIG_DIR = "${starshipConfigDir}"
-        $env.STARSHIP_CACHE = "${xdgCacheHome}/starship"
-        $env.PROMPT_COMMAND = { || ${pkgs.starship}/bin/starship prompt --cmd-duration $env.CMD_DURATION_MS $'--status=($env.LAST_EXIT_CODE)' }
-        $env.PROMPT_COMMAND_RIGHT = { || ${pkgs.starship}/bin/starship prompt --right }
-        $env.STARSHIP_SHELL = "nu"
-        $env.PROMPT_INDICATOR = { || "" }
-        $env.PROMPT_INDICATOR_VI_INSERT = { || "" }
-        $env.PROMPT_INDICATOR_VI_NORMAL = { || "" }
-        $env.PROMPT_MULTILINE_INDICATOR = { || "" }
-      '';
-    })
+      (lib.mkIf cfg.enableNushellIntegration {
+        programs.nushell.extraConfig = ''
+          $env.STARSHIP_CONFIG = "${starshipConfigFile}"
+          $env.STARSHIP_CONFIG_DIR = "${starshipConfigDir}"
+          $env.STARSHIP_CACHE = "${xdgCacheHome}/starship"
+          $env.PROMPT_COMMAND = { || ${cfg.package}/bin/starship prompt --cmd-duration $env.CMD_DURATION_MS $'--status=($env.LAST_EXIT_CODE)' }
+          $env.PROMPT_COMMAND_RIGHT = { || ${cfg.package}/bin/starship prompt --right }
+          $env.STARSHIP_SHELL = "nu"
+          $env.PROMPT_INDICATOR = { || "" }
+          $env.PROMPT_INDICATOR_VI_INSERT = { || "" }
+          $env.PROMPT_INDICATOR_VI_NORMAL = { || "" }
+          $env.PROMPT_MULTILINE_INDICATOR = { || "" }
+        '';
+      })
 
-    (lib.mkIf cfg.enableBashIntegration {
-      xdg.configFile."bash/conf.d/99-starship.sh".text = ''
-        eval "$(starship init bash)"
-      '';
-    })
-  ]);
+      (lib.mkIf cfg.enableBashIntegration {
+        xdg.configFile."bash/conf.d/99-starship.sh".text = ''
+          eval "$(starship init bash)"
+        '';
+      })
+    ]
+  );
 }

@@ -46,6 +46,12 @@
 in {
   options.aytordev.nix = {
     enable = mkEnableOption "Common Nix configuration";
+    package = lib.mkPackageOption pkgs "Nix" {
+      default = [
+        "nixVersions"
+        "latest"
+      ];
+    };
     extraTrustedUsers = mkOption {
       type = types.listOf types.str;
       default = [];
@@ -56,7 +62,7 @@ in {
   config = mkIf cfg.enable {
     environment.systemPackages = essentialPackages;
     nix = {
-      package = pkgs.nixVersions.latest;
+      inherit (cfg) package;
       checkConfig = true;
       distributedBuilds = true;
       gc = {

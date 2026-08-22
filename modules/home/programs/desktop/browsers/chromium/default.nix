@@ -10,18 +10,31 @@
 in {
   options.aytordev.programs.desktop.browsers.chromium = {
     enable = mkEnableOption "Whether or not to enable Chromium (ungoogled-chromium)";
+    package = lib.mkOption {
+      type = lib.types.package;
+      default =
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then pkgs.ungoogled-chromium-macos
+        else pkgs.ungoogled-chromium;
+      defaultText = lib.literalExpression ''
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then pkgs.ungoogled-chromium-macos
+        else pkgs.ungoogled-chromium
+      '';
+      description = "Chromium package to use";
+    };
   };
 
   config = {
     # On macOS, install the pre-built app directly
     home.packages = mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isDarwin) [
-      pkgs.ungoogled-chromium-macos
+      cfg.package
     ];
 
     # On Linux, use Home Manager's chromium program
     programs.chromium = mkIf (cfg.enable && !pkgs.stdenv.hostPlatform.isDarwin) {
       enable = true;
-      package = pkgs.ungoogled-chromium;
+      inherit (cfg) package;
 
       commandLineArgs = [
         # Performance

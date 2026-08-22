@@ -28,13 +28,13 @@
   defaultCommand = "${pkgs.fd}/bin/fd --type=f --hidden --exclude=.git";
   nuFzfBindings = ''
     def fzf-cd [] {
-      let path = (${pkgs.fd}/bin/fd --type d --hidden --exclude .git | ${pkgs.fzf}/bin/fzf --preview '${pkgs.fd}/bin/fd --type f --hidden --exclude .git --max-depth 3 --color=always {} | head -n 50' --preview-window=right:50%:wrap)
+      let path = (${pkgs.fd}/bin/fd --type d --hidden --exclude .git | ${cfg.package}/bin/fzf --preview '${pkgs.fd}/bin/fd --type f --hidden --exclude .git --max-depth 3 --color=always {} | head -n 50' --preview-window=right:50%:wrap)
       if $path != "" {
         cd $path
       }
     }
     def fzf-edit [] {
-      let file = (${pkgs.fzf}/bin/fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window=right:60%:wrap)
+      let file = (${cfg.package}/bin/fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window=right:60%:wrap)
       if $file != "" {
         nvim $file
       }
@@ -59,6 +59,7 @@
 in {
   options.aytordev.programs.terminal.tools.fzf = {
     enable = mkEnableOption "fuzzy finder";
+    package = lib.mkPackageOption pkgs "fzf" {};
     defaultCommand = mkOption {
       type = types.str;
       default = defaultCommand;
@@ -71,10 +72,10 @@ in {
     };
   };
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      fzf
-      fd
-      zsh-fzf-tab
+    home.packages = [
+      cfg.package
+      pkgs.fd
+      pkgs.zsh-fzf-tab
     ];
     home.activation.createFzfDataDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
       mkdir -p "${config.xdg.dataHome}/fzf"
@@ -82,6 +83,7 @@ in {
     programs = {
       fzf = {
         enable = true;
+        inherit (cfg) package;
         inherit (cfg) defaultCommand;
         defaultOptions = defaultOptions ++ cfg.extraOptions;
         historyWidget.command = "";
@@ -94,11 +96,11 @@ in {
           }
         ];
         initContent = ''
-          if [[ -f "${pkgs.fzf}/share/fzf/key-bindings.zsh" ]]; then
-            source "${pkgs.fzf}/share/fzf/key-bindings.zsh"
+          if [[ -f "${cfg.package}/share/fzf/key-bindings.zsh" ]]; then
+            source "${cfg.package}/share/fzf/key-bindings.zsh"
           fi
-          if [[ -f "${pkgs.fzf}/share/fzf/completion.zsh" ]]; then
-            source "${pkgs.fzf}/share/fzf/completion.zsh"
+          if [[ -f "${cfg.package}/share/fzf/completion.zsh" ]]; then
+            source "${cfg.package}/share/fzf/completion.zsh"
           fi
           export FZF_DEFAULT_COMMAND="${cfg.defaultCommand}"
           _fzf_compgen_path() {
