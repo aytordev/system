@@ -54,12 +54,14 @@ in {
       packages = [cfg.package];
 
       activation = {
-        antigravityConflictResolution = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
-          if [ -d "${config.home.homeDirectory}/Library/Application Support/Antigravity/User" ] && [ ! -L "${config.home.homeDirectory}/Library/Application Support/Antigravity/User" ]; then
-            echo "Backing up existing Antigravity User directory..."
-            mv "${config.home.homeDirectory}/Library/Application Support/Antigravity/User" "${config.home.homeDirectory}/Library/Application Support/Antigravity/User.bak"
-          fi
-        '';
+        antigravityConflictResolution = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin (
+          lib.hm.dag.entryBefore ["checkLinkTargets"] ''
+            if [ -d "${config.home.homeDirectory}/Library/Application Support/Antigravity/User" ] && [ ! -L "${config.home.homeDirectory}/Library/Application Support/Antigravity/User" ]; then
+              echo "Backing up existing Antigravity User directory..."
+              mv "${config.home.homeDirectory}/Library/Application Support/Antigravity/User" "${config.home.homeDirectory}/Library/Application Support/Antigravity/User.bak"
+            fi
+          ''
+        );
 
         installAntigravityExtensions = lib.hm.dag.entryAfter ["writeBoundary"] ''
           # Ensure extensions directory is writable (not a symlink from previous Nix installs)

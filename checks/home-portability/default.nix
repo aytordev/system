@@ -102,6 +102,7 @@
     (!(developmentOptions ? gameEnable))
     (!(developmentOptions ? goEnable))
     (!(developmentOptions ? sqlEnable))
+    ((developmentOverrideConfig.home.activation ? antigravityConflictResolution) == isDarwin)
   ];
 in
   assert builtins.all (test: test) tests;
