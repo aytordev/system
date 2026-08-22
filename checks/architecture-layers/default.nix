@@ -5,9 +5,32 @@
 }:
 pkgs.runCommand "architecture-layers-check"
 {
-  nativeBuildInputs = [pkgs.ripgrep];
+  nativeBuildInputs = [
+    pkgs.findutils
+    pkgs.nix
+    pkgs.ripgrep
+  ];
 }
 ''
+  export HOME="$(realpath .)"
+  unset NIX_STORE
+  export NIX_STORE_DIR=${builtins.storeDir}
+  export NIX_REMOTE="$HOME/storedata"
+
+  parse_tree() {
+      local path="$1"
+      local output="$2"
+      local file
+
+      : > "$output"
+      while IFS= read -r -d $'\0' file; do
+          if ! nix-instantiate --parse "$file" >> "$output"; then
+              echo "Architecture check failed to parse: $file" >&2
+              exit 1
+          fi
+      done < <(find "$path" -type f -name '*.nix' -print0)
+  }
+
   reject_matches() {
       local label="$1"
       local pattern="$2"
@@ -16,7 +39,7 @@ pkgs.runCommand "architecture-layers-check"
       local status
 
       set +e
-      output="$(rg --glob '*.nix' "$pattern" "$path" 2>&1)"
+      output="$(rg "$pattern" "$path" 2>&1)"
       status=$?
       set -e
 
@@ -33,25 +56,30 @@ pkgs.runCommand "architecture-layers-check"
       fi
   }
 
+  parse_tree ${inputs.self}/modules "$TMPDIR/modules.ast"
+  parse_tree ${inputs.self}/systems "$TMPDIR/systems.ast"
+  parse_tree ${inputs.self}/homes "$TMPDIR/homes.ast"
+  parse_tree ${inputs.self}/libraries/system "$TMPDIR/builders.ast"
+
   reject_matches \
       "reusable modules import concrete hosts or homes" \
-      '(\.\./)+(systems|homes)(/|")|lib\.getFile "(systems|homes)(/|")|inputs\.self.*"/(systems|homes)(/|")|inputs\.self\}/(systems|homes)(/|")' \
-      ${inputs.self}/modules
+      '/(systems|homes)(/|")' \
+      "$TMPDIR/modules.ast"
 
   reject_matches \
       "concrete hosts or homes import module implementations directly" \
-      '(\.\./)+modules(/|")|lib\.getFile "modules(/|")|inputs\.self.*"/modules(/|")|inputs\.self\}/modules(/|")' \
-      ${inputs.self}/systems
+      '/modules(/|")' \
+      "$TMPDIR/systems.ast"
 
   reject_matches \
       "concrete hosts or homes import module implementations directly" \
-      '(\.\./)+modules(/|")|lib\.getFile "modules(/|")|inputs\.self.*"/modules(/|")|inputs\.self\}/modules(/|")' \
-      ${inputs.self}/homes
+      '/modules(/|")' \
+      "$TMPDIR/homes.ast"
 
   reject_matches \
       "system builders contain aytordev policy" \
-      '(^|[;{])[[:space:]]*(config\.)?aytordev(\.|[[:space:]]*=)' \
-      ${inputs.self}/libraries/system
+      'aytordev[[:space:]]*=' \
+      "$TMPDIR/builders.ast"
 
   touch "$out"
 ''

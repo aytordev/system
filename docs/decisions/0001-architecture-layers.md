@@ -21,9 +21,9 @@ Configuration flows in one direction:
 - Platform suites may compose their matching shared suite from
   `modules/common/suites/`.
 
-`checks/architecture-layers` enforces the boundaries that can be checked
-statically. Review remains responsible for semantic violations that do not use
-an import or an `aytordev.*` assignment.
+`checks/architecture-layers` parses each Nix expression before scanning resolved
+paths and assignments. Review remains responsible for semantic violations that
+do not use an import or an `aytordev.*` assignment.
 
 ## Consequences
 
