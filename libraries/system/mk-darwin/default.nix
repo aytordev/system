@@ -10,6 +10,7 @@ Create a Darwin system configuration.
   matchingHomes ? null,
   darwinModules ? null,
   homeModules ? null,
+  hostModule ? ../../../systems/${system}/${hostname},
   extraSpecialArgs ? {},
   ...
 }: let
@@ -89,8 +90,6 @@ in
         # Import all darwin modules recursively
       ]
       ++ baseDarwinModules
-      ++ [
-        ../../../systems/${system}/${hostname}
-      ]
+      ++ inputs.nixpkgs.lib.optional (hostModule != null) hostModule
       ++ modules;
   }

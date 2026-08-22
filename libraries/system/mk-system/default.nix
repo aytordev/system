@@ -10,6 +10,7 @@ Create a NixOS system configuration.
   matchingHomes ? null,
   nixosModules ? null,
   homeModules ? null,
+  hostModule ? ../../../systems/${system}/${hostname},
   extraSpecialArgs ? {},
   ...
 }: let
@@ -81,8 +82,6 @@ in
         # Import all nixos modules recursively
       ]
       ++ baseNixOSModules
-      ++ [
-        ../../../systems/${system}/${hostname}
-      ]
+      ++ inputs.nixpkgs.lib.optional (hostModule != null) hostModule
       ++ modules;
   }

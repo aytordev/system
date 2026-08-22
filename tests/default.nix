@@ -159,11 +159,13 @@ in {
   testSystemBuilderInjectionArgs = {
     expr = map (name: builtins.hasAttr name (builtins.functionArgs self.lib.system.mkSystem)) [
       "extraSpecialArgs"
+      "hostModule"
       "matchingHomes"
       "nixosModules"
       "homeModules"
     ];
     expected = [
+      true
       true
       true
       true
@@ -174,11 +176,13 @@ in {
   testDarwinBuilderInjectionArgs = {
     expr = map (name: builtins.hasAttr name (builtins.functionArgs self.lib.system.mkDarwin)) [
       "extraSpecialArgs"
+      "hostModule"
       "matchingHomes"
       "darwinModules"
       "homeModules"
     ];
     expected = [
+      true
       true
       true
       true
