@@ -3,7 +3,6 @@
 #
 # Usage:
 #   aytordev.theme = {
-#     enable = true;
 #     name = "kanagawa";    # Theme to use
 #     variant = "wave";     # Theme-specific variant
 #   };
@@ -18,9 +17,7 @@
 }: let
   inherit
     (lib)
-    mkEnableOption
     mkOption
-    mkIf
     types
     ;
 
@@ -38,7 +35,8 @@
   cfg = config.aytordev.theme;
 
   activeTheme = themeProviders.${cfg.name};
-  activeVariant = activeTheme.variants.${cfg.variant};
+  activeVariant =
+    activeTheme.variants.${cfg.variant} or activeTheme.variants.${activeTheme.defaultVariant};
 
   # ─── Palette Contract Type ──────────────────────────────────────────────
   # Every theme must provide these 26 semantic colors.
@@ -93,8 +91,6 @@
   };
 in {
   options.aytordev.theme = {
-    enable = mkEnableOption "centralized theming";
-
     name = mkOption {
       type = types.enum (builtins.attrNames themeProviders);
       default = "kanagawa";
@@ -175,12 +171,10 @@ in {
     };
   };
 
-  config = mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = builtins.hasAttr cfg.variant activeTheme.variants;
-        message = "Theme '${cfg.name}' does not have variant '${cfg.variant}'. Available: ${toString (builtins.attrNames activeTheme.variants)}";
-      }
-    ];
-  };
+  config.assertions = [
+    {
+      assertion = builtins.hasAttr cfg.variant activeTheme.variants;
+      message = "Theme '${cfg.name}' does not have variant '${cfg.variant}'. Available: ${toString (builtins.attrNames activeTheme.variants)}";
+    }
+  ];
 }
