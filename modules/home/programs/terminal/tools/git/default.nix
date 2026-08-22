@@ -4,20 +4,11 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkForce mkOption;
+  inherit (lib) mkEnableOption mkOption;
   cfg = config.aytordev.programs.terminal.tools.git;
   aliases = import ./aliases.nix {inherit lib;};
   ignores = import ./git-ignore.nix;
   shell-aliases = import ./shell-aliases.nix {inherit config lib pkgs;};
-  gitPackages = with pkgs; [
-    git-absorb
-    git-filter-repo
-    git-lfs
-    gitflow
-    gitleaks
-    gitlint
-    tig
-  ];
   gitConfig =
     {
       enable = true;
@@ -67,6 +58,8 @@
       };
     };
 in {
+  imports = [./extras.nix];
+
   options.aytordev.programs.terminal.tools.git = {
     enable =
       mkEnableOption "Git configuration"
@@ -102,40 +95,7 @@ in {
               message = "aytordev.programs.terminal.tools.git.signing.key must be set when signing is enabled";
             }
           ];
-          home.packages = gitPackages;
-          programs = {
-            git = gitConfig;
-            delta = {
-              enable = true;
-              enableGitIntegration = true;
-              options = {
-                dark = true;
-                features = mkForce "decorations side-by-side navigate";
-                plus-style = "syntax #2B3328";
-                minus-style = "syntax #3C2C2E";
-                plus-emph-style = "syntax #76946a";
-                minus-emph-style = "syntax #c34043";
-                line-numbers = true;
-                navigate = true;
-                side-by-side = true;
-              };
-            };
-            difftastic = {
-              git = {
-                enable = true;
-                mode = "both";
-              };
-              options = {
-                background = "dark";
-                display = "inline";
-              };
-            };
-            mergiraf = {
-              enable = true;
-              enableGitIntegration = true;
-              enableJujutsuIntegration = true;
-            };
-          };
+          programs.git = gitConfig;
         }
         (lib.mkIf (shell-aliases.allAliases != {}) {
           home.file."${bashConfigDir}/git-aliases.sh" = {
