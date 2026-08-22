@@ -5,6 +5,16 @@
   ...
 }: let
   cfg = config.aytordev.programs.terminal.tools.bitwarden-cli;
+  hasSopsPaths =
+    cfg.settings.apiKey.clientIdPath != null && cfg.settings.apiKey.clientSecretPath != null;
+  clientIdPath =
+    if cfg.settings.apiKey.clientIdPath == null
+    then ""
+    else cfg.settings.apiKey.clientIdPath;
+  clientSecretPath =
+    if cfg.settings.apiKey.clientSecretPath == null
+    then ""
+    else cfg.settings.apiKey.clientSecretPath;
 in {
   options.aytordev.programs.terminal.tools.bitwarden-cli = {
     enable = lib.mkEnableOption "Bitwarden CLI for terminal-based password management";
@@ -22,17 +32,8 @@ in {
         default = null;
         example = "https://bitwarden.company.com";
         description = ''
-          Custom Bitwarden server URL. Leave null to use the official Bitwarden server.
-        '';
-      };
-
-      apiKeyFile = lib.mkOption {
-        type = lib.types.nullOr lib.types.path;
-        default = null;
-        example = "/run/secrets/bitwarden-api-key";
-        description = ''
-          Path to a file containing the Bitwarden API key for automated operations.
-          The file should contain CLIENT_ID and CLIENT_SECRET separated by a newline.
+          Custom Bitwarden-compatible server URL for rbw.
+          Configure the official CLI separately with `bw config server`.
         '';
       };
 
@@ -42,9 +43,7 @@ in {
           default = false;
           description = ''
             Use sops-nix to securely manage Bitwarden API keys.
-            When enabled, expects secrets at:
-            - bitwarden_api_client_id
-            - bitwarden_api_client_secret
+            Both clientIdPath and clientSecretPath are required when enabled.
           '';
         };
 
@@ -54,7 +53,6 @@ in {
           example = "/run/secrets/bitwarden_api_client_id";
           description = ''
             Path to the file containing the Bitwarden API client ID.
-            Automatically set when using sops-nix.
           '';
         };
 
@@ -64,29 +62,6 @@ in {
           example = "/run/secrets/bitwarden_api_client_secret";
           description = ''
             Path to the file containing the Bitwarden API client secret.
-            Automatically set when using sops-nix.
-          '';
-        };
-
-        clientId = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          example = "user.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
-          description = ''
-            Bitwarden API client ID (for non-sops configurations).
-            Get this from vault.bitwarden.com > Account Settings > Security > API Key.
-            Prefer using sops-nix for security.
-          '';
-        };
-
-        clientSecret = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          example = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-          description = ''
-            Bitwarden API client secret (for non-sops configurations).
-            Get this from vault.bitwarden.com > Account Settings > Security > API Key.
-            Prefer using sops-nix for security.
           '';
         };
       };
@@ -97,14 +72,6 @@ in {
         example = 1800;
         description = ''
           Session timeout in seconds. Default is 15 minutes (900 seconds).
-        '';
-      };
-
-      syncOnLogin = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = ''
-          Automatically sync vault on login.
         '';
       };
     };
@@ -221,6 +188,13 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = !cfg.settings.apiKey.useSops || hasSopsPaths;
+        message = "bitwarden-cli requires both SOPS API key paths when useSops is enabled";
+      }
+    ];
+
     home = {
       packages =
         lib.optionals (!cfg.rbw.enable) [cfg.package]
@@ -230,29 +204,18 @@ in {
         ];
 
       # Configure Bitwarden CLI settings
-      sessionVariables = lib.mkMerge [
-        (lib.mkIf (cfg.settings.server != null) {
-          BW_CLIENTSECRET = cfg.settings.server;
-        })
-        {
-          BW_SESSION_TIMEOUT = toString cfg.settings.sessionTimeout;
-        }
-      ];
+      sessionVariables.BW_SESSION_TIMEOUT = toString cfg.settings.sessionTimeout;
 
       # Create helper scripts
       file = {
-        ".local/bin/rbw-unlock-sops" = lib.mkIf cfg.settings.apiKey.useSops {
+        ".local/bin/rbw-unlock-sops" = lib.mkIf (cfg.settings.apiKey.useSops && hasSopsPaths) {
           executable = true;
           text = ''
             #!/usr/bin/env bash
             # Helper script to unlock rbw using sops-managed API keys
 
-            CLIENT_ID_PATH="${
-              cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"
-            }"
-            CLIENT_SECRET_PATH="${
-              cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"
-            }"
+            CLIENT_ID_PATH="${clientIdPath}"
+            CLIENT_SECRET_PATH="${clientSecretPath}"
 
             if [[ ! -f "$CLIENT_ID_PATH" ]] || [[ ! -f "$CLIENT_SECRET_PATH" ]]; then
               echo "Error: Bitwarden API keys not found in sops secrets"
@@ -327,18 +290,10 @@ in {
             # rbw helper functions
             rbw-login-apikey() {
               ${lib.optionalString cfg.settings.apiKey.useSops ''
-              if [[ -f "${
-                cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"
-              }" ]] && \
-                 [[ -f "${
-                cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"
-              }" ]]; then
-                export BW_CLIENTID=$(cat "${
-                cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"
-              }")
-                export BW_CLIENTSECRET=$(cat "${
-                cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"
-              }")
+              if [[ -f "${clientIdPath}" ]] && \
+                 [[ -f "${clientSecretPath}" ]]; then
+                export BW_CLIENTID=$(cat "${clientIdPath}")
+                export BW_CLIENTSECRET=$(cat "${clientSecretPath}")
                 rbw login
             ''}
               ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
@@ -451,18 +406,10 @@ in {
             # rbw helper functions
             function rbw-login-apikey
               ${lib.optionalString cfg.settings.apiKey.useSops ''
-              if test -f "${
-                cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"
-              }" -a \
-                      -f "${
-                cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"
-              }"
-                set -gx BW_CLIENTID (cat "${
-                cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"
-              }")
-                set -gx BW_CLIENTSECRET (cat "${
-                cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"
-              }")
+              if test -f "${clientIdPath}" -a \
+                      -f "${clientSecretPath}"
+                set -gx BW_CLIENTID (cat "${clientIdPath}")
+                set -gx BW_CLIENTSECRET (cat "${clientSecretPath}")
                 rbw login
             ''}
               ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
@@ -503,21 +450,6 @@ in {
               alias bwc="${cfg.aliases.bwc}"
             ''}
           '';
-        };
-
-      "rbw/apikey" =
-        lib.mkIf
-        (
-          !cfg.settings.apiKey.useSops
-          && cfg.settings.apiKey.clientId != null
-          && cfg.settings.apiKey.clientSecret != null
-        )
-        {
-          text = ''
-            BW_CLIENTID="${cfg.settings.apiKey.clientId}"
-            BW_CLIENTSECRET="${cfg.settings.apiKey.clientSecret}"
-          '';
-          mode = "0600";
         };
     };
 

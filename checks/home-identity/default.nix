@@ -30,9 +30,13 @@
             lazygit.enable = true;
             bitwarden-cli = {
               enable = true;
-              settings.apiKey = {
-                clientIdPath = "/run/secrets/consumer-client-id";
-                clientSecretPath = "/run/secrets/consumer-client-secret";
+              settings = {
+                server = "https://bitwarden.example.test";
+                apiKey = {
+                  useSops = true;
+                  clientIdPath = "/run/secrets/consumer-client-id";
+                  clientSecretPath = "/run/secrets/consumer-client-secret";
+                };
               };
             };
           };
@@ -42,6 +46,8 @@
     ];
   };
   inherit (home) config;
+  bitwardenConfig = config.aytordev.programs.terminal.tools.bitwarden-cli;
+  apiKeyScript = config.home.file.".local/bin/rbw-unlock-sops".text;
   tests = [
     (config.programs.git.settings.user.name == username)
     (config.programs.git.settings.user.email == email)
@@ -49,6 +55,14 @@
     (config.programs.jujutsu.settings.user.email == email)
     (builtins.hasAttr fullName config.programs.lazygit.settings.gui.authorColors)
     (config.programs.rbw.settings.email == email)
+    (config.programs.rbw.settings.base_url == "https://bitwarden.example.test")
+    (!(config.home.sessionVariables ? BW_CLIENTSECRET))
+    (!(bitwardenConfig.settings ? apiKeyFile))
+    (!(bitwardenConfig.settings ? syncOnLogin))
+    (!(bitwardenConfig.settings.apiKey ? clientId))
+    (!(bitwardenConfig.settings.apiKey ? clientSecret))
+    (lib.hasInfix "/run/secrets/consumer-client-id" apiKeyScript)
+    (lib.hasInfix "/run/secrets/consumer-client-secret" apiKeyScript)
     (lib.elem homeDirectory config.programs.git.settings.safe.directory)
   ];
 in
