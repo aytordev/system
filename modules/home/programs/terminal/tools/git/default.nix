@@ -21,7 +21,7 @@
   gitConfig =
     {
       enable = true;
-      package = pkgs.gitFull;
+      inherit (cfg) package;
       inherit ignores;
       maintenance.enable = true;
       hooks.pre-commit = pkgs.writeShellScript "git-pre-commit-conflict-check" ''
@@ -51,7 +51,7 @@
         credential.helper =
           if pkgs.stdenv.hostPlatform.isDarwin
           then "osxkeychain"
-          else "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
+          else "${cfg.package}/libexec/git-core/git-credential-libsecret";
         safe.directory = [
           config.home.homeDirectory
           "/etc/nixos"
@@ -76,6 +76,9 @@ in {
           This includes Git itself, common tools, and configuration.
         '';
       };
+    package = lib.mkPackageOption pkgs "Git" {
+      default = "gitFull";
+    };
     signing = {
       enable = mkEnableOption "SSH signing for Git commits and tags";
       key = mkOption {

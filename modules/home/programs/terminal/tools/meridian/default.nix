@@ -20,6 +20,7 @@ in {
       Meridian proxy for Claude Max subscription.
       After enabling, run: claude login
     '';
+    package = lib.mkPackageOption pkgs "meridian" {};
 
     proxy = {
       host = mkOption {
@@ -66,11 +67,11 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [pkgs.meridian];
+    home.packages = [cfg.package];
 
     programs.opencode.settings = mkIf opencodeEnabled {
       plugin = mkIf cfg.opencode.plugin [
-        "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
+        "${cfg.package}/lib/meridian/plugin/meridian.ts"
       ];
 
       model = cfg.opencode.defaultModel;

@@ -9,13 +9,14 @@
   cfg = config.aytordev.programs.terminal.tools.lsd;
 
   aliases = {
-    ls = "${lib.getExe pkgs.lsd} -al";
-    lt = "${lib.getExe pkgs.lsd} --tree";
-    llt = "${lib.getExe pkgs.lsd} -l --tree";
+    ls = "${lib.getExe cfg.package} -al";
+    lt = "${lib.getExe cfg.package} --tree";
+    llt = "${lib.getExe cfg.package} -l --tree";
   };
 in {
   options.aytordev.programs.terminal.tools.lsd = {
     enable = lib.mkEnableOption "lsd";
+    package = lib.mkPackageOption pkgs "lsd" {};
   };
 
   config = mkIf cfg.enable {
@@ -23,6 +24,7 @@ in {
 
     programs.lsd = {
       enable = true;
+      inherit (cfg) package;
 
       enableBashIntegration = false;
       enableZshIntegration = false;

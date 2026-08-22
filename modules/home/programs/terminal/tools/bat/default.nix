@@ -9,10 +9,12 @@
 in {
   options.aytordev.programs.terminal.tools.bat = {
     enable = lib.mkEnableOption "bat";
+    package = lib.mkPackageOption pkgs "bat" {};
   };
   config = mkIf cfg.enable {
     programs.bat = {
       enable = true;
+      inherit (cfg) package;
       config = {
         style = "auto,header-filesize";
       };
@@ -26,10 +28,10 @@ in {
       ];
     };
     home.shellAliases = {
-      cat = "${getExe pkgs.bat} --style=auto";
+      cat = "${getExe cfg.package} --style=auto";
     };
     xdg.configFile."bash/conf.d/bat.sh".text = ''
-      alias cat="${pkgs.bat}/bin/bat --style=auto"
+      alias cat="${cfg.package}/bin/bat --style=auto"
     '';
   };
 }
