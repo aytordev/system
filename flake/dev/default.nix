@@ -9,6 +9,7 @@ in {
   imports = [
     ./dev-shells
     ./checks
+    ./tests
     ./treefmt
     ./templates
   ];

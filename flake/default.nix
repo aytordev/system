@@ -8,6 +8,7 @@ in {
     ./configs
     ./home
     ./apps
+    ./tests
     inputs.flake-parts.flakeModules.partitions
   ];
 

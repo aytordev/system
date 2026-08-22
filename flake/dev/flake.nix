@@ -31,6 +31,12 @@
         flake-compat.follows = "";
       };
     };
+
+    nix-unit = {
+      url = "github:nix-community/nix-unit";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
   };
 
   # This flake is only used for its inputs
