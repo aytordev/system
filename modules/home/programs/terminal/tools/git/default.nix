@@ -18,51 +18,54 @@
     gitlint
     tig
   ];
-  gitConfig = {
-    enable = true;
-    package = pkgs.gitFull;
-    inherit ignores;
-    maintenance.enable = true;
-    hooks.pre-commit = pkgs.writeShellScript "git-pre-commit-conflict-check" ''
-      if git diff --cached | grep -qE '^\+(<{7}|>{7})'; then
-        printf 'Error: staged changes contain conflict markers\n' >&2
-        exit 1
-      fi
-    '';
-    settings = {
-      alias = aliases;
-      user = {
-        inherit (config.aytordev.user) name email;
+  gitConfig =
+    {
+      enable = true;
+      package = pkgs.gitFull;
+      inherit ignores;
+      maintenance.enable = true;
+      hooks.pre-commit = pkgs.writeShellScript "git-pre-commit-conflict-check" ''
+        if git diff --cached | grep -qE '^\+(<{7}|>{7})'; then
+          printf 'Error: staged changes contain conflict markers\n' >&2
+          exit 1
+        fi
+      '';
+      settings = {
+        alias = aliases;
+        user = {
+          inherit (config.aytordev.user) name email;
+        };
+        branch.sort = "-committerdate";
+        core.editor = "nano";
+        useHttpPath.enable = true;
+        fetch.prune = true;
+        init.defaultBranch = "main";
+        lfs.enable = true;
+        pull.rebase = true;
+        push = {
+          autoSetupRemote = true;
+          default = "current";
+        };
+        rerere.enabled = true;
+        rebase.autostash = true;
+        credential.helper =
+          if pkgs.stdenv.hostPlatform.isDarwin
+          then "osxkeychain"
+          else "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
+        safe.directory = [
+          config.home.homeDirectory
+          "/etc/nixos"
+          "/etc/nix-darwin"
+        ];
       };
-      branch.sort = "-committerdate";
-      core.editor = "nano";
-      useHttpPath.enable = true;
-      fetch.prune = true;
-      init.defaultBranch = "main";
-      lfs.enable = true;
-      pull.rebase = true;
-      push = {
-        autoSetupRemote = true;
-        default = "current";
+    }
+    // lib.optionalAttrs cfg.signing.enable {
+      signing = {
+        inherit (cfg.signing) key;
+        format = "ssh";
+        signByDefault = true;
       };
-      rerere.enabled = true;
-      rebase.autostash = true;
-      credential.helper =
-        if pkgs.stdenv.hostPlatform.isDarwin
-        then "osxkeychain"
-        else "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
-      safe.directory = [
-        config.home.homeDirectory
-        "/etc/nixos"
-        "/etc/nix-darwin"
-      ];
     };
-    signing = {
-      key = cfg.signingKey;
-      format = "ssh";
-      inherit (cfg) signByDefault;
-    };
-  };
 in {
   options.aytordev.programs.terminal.tools.git = {
     enable =
@@ -73,22 +76,14 @@ in {
           This includes Git itself, common tools, and configuration.
         '';
       };
-    signingKey = mkOption {
-      type = with lib.types; nullOr (either str path);
-      default = null;
-      description = ''
-        Path to the SSH private key used for signing Git commits and tags.
-        Set to `null` to disable signing.
-      '';
-      example = "~/.ssh/id_ed25519";
-    };
-    signByDefault = mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = ''
-        Whether to automatically sign all Git commits by default.
-        When enabled, you won't need to use the -S flag with git commit.
-      '';
+    signing = {
+      enable = mkEnableOption "SSH signing for Git commits and tags";
+      key = mkOption {
+        type = with lib.types; nullOr (either str path);
+        default = null;
+        description = "Path to the SSH private key used for signing Git commits and tags.";
+        example = "~/.ssh/id_ed25519";
+      };
     };
   };
   config = let
@@ -98,6 +93,12 @@ in {
     lib.mkIf cfg.enable (
       lib.mkMerge [
         {
+          assertions = [
+            {
+              assertion = !cfg.signing.enable || cfg.signing.key != null;
+              message = "aytordev.programs.terminal.tools.git.signing.key must be set when signing is enabled";
+            }
+          ];
           home.packages = gitPackages;
           programs = {
             git = gitConfig;

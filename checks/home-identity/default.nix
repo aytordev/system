@@ -59,6 +59,8 @@
     (config.programs.git.settings.user.email == email)
     (config.programs.jujutsu.settings.user.name == username)
     (config.programs.jujutsu.settings.user.email == email)
+    (config.programs.git.signing.signByDefault != true)
+    (!(config.programs.jujutsu.settings ? signing))
     (builtins.hasAttr fullName config.programs.lazygit.settings.gui.authorColors)
     (config.programs.rbw.settings.email == email)
     (config.programs.rbw.settings.base_url == "https://bitwarden.example.test")
