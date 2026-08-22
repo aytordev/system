@@ -23,6 +23,7 @@ in {
   ];
   options.aytordev.programs.terminal.tools.zellij = {
     enable = lib.mkEnableOption "zellij";
+    package = lib.mkPackageOption pkgs "zellij" {};
   };
   config = mkIf cfg.enable {
     programs = {
@@ -34,6 +35,7 @@ in {
       };
       zellij = {
         enable = true;
+        inherit (cfg) package;
         settings = {
           copy_command =
             if pkgs.stdenv.hostPlatform.isDarwin

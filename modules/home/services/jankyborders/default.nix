@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   inherit (lib) mkIf mkOption mkEnableOption;
@@ -14,10 +15,15 @@
 in {
   options.aytordev.services.jankyborders = {
     enable = mkEnableOption "JankyBorders window border highlighting";
+    package = lib.mkPackageOption pkgs "jankyborders" {};
 
     # Theme override (optional - uses global theme by default)
     themeOverride = mkOption {
-      type = nullOr (enum ["wave" "dragon" "lotus"]);
+      type = nullOr (enum [
+        "wave"
+        "dragon"
+        "lotus"
+      ]);
       default = null;
       description = ''
         Override the global Kanagawa theme variant for JankyBorders only.
@@ -32,7 +38,10 @@ in {
     };
 
     style = mkOption {
-      type = enum ["round" "square"];
+      type = enum [
+        "round"
+        "square"
+      ];
       default = "round";
       description = "Border corner style.";
     };
@@ -41,6 +50,7 @@ in {
   config = mkIf cfg.enable {
     services.jankyborders = {
       enable = true;
+      inherit (cfg) package;
 
       settings = {
         inherit (cfg) style;

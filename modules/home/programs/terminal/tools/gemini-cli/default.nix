@@ -12,6 +12,7 @@
 in {
   options.aytordev.programs.terminal.tools.gemini-cli = {
     enable = mkEnableOption "Gemini CLI configuration";
+    package = lib.mkPackageOption pkgs "antigravity-cli" {nullable = true;};
   };
 
   config = mkIf cfg.enable {
@@ -24,6 +25,7 @@ in {
 
     programs.antigravity-cli = {
       enable = true;
+      inherit (cfg) package;
 
       settings = {
         ui = {

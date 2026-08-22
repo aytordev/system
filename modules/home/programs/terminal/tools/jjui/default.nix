@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   inherit (lib) mkIf;
@@ -9,11 +10,13 @@
 in {
   options.aytordev.programs.terminal.tools.jjui = {
     enable = lib.mkEnableOption "jjui";
+    package = lib.mkPackageOption pkgs "jjui" {nullable = true;};
   };
 
   config = mkIf cfg.enable {
     programs.jjui = {
       enable = true;
+      inherit (cfg) package;
 
       settings = {
         limit = 0;

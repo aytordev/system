@@ -16,6 +16,11 @@
 in {
   options.aytordev.programs.terminal.tools.ssh = {
     enable = mkEnableOption "SSH configuration";
+    package = lib.mkPackageOption pkgs "openssh" {
+      nullable = true;
+      default = null;
+      extraDescription = "By default, the client provided by your system is used.";
+    };
     port = mkOption {
       type = types.port;
       default = 22;
@@ -98,6 +103,7 @@ in {
 
     programs.ssh = {
       enable = true;
+      inherit (cfg) package;
       enableDefaultConfig = false;
       extraOptionOverrides = {
         Ciphers = "chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr";
