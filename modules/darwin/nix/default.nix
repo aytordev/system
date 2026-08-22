@@ -1,4 +1,4 @@
-{
+moduleArgs @ {
   config,
   lib,
   self,
@@ -10,6 +10,13 @@ in {
   imports = [(lib.getFile "modules/common/nix/default.nix")];
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = !(moduleArgs ? secretsRoot);
+        message = "Reusable Darwin modules must not receive the private secrets root";
+      }
+    ];
+
     aytordev.nix.extraTrustedUsers =
       lib.optional (
         config.system.primaryUser != null

@@ -18,24 +18,30 @@
     hostname = "ci-home";
     extraSpecialArgs = {inherit identity;};
     modules = [
-      ({inputs, ...}: {
-        assertions = [
-          {
-            assertion = !(inputs ? secrets);
-            message = "Synthetic homes must not receive the private secrets input";
-          }
-        ];
-        aytordev = {
-          user = {
-            enable = true;
-            name = identity.username;
-            inherit (identity) email fullName;
-            home = homeDirectory;
+      (
+        moduleArgs @ {inputs, ...}: {
+          assertions = [
+            {
+              assertion = !(inputs ? secrets);
+              message = "Synthetic homes must not receive the private secrets input";
+            }
+            {
+              assertion = !(moduleArgs ? secretsRoot);
+              message = "Synthetic homes must not receive the private secrets root";
+            }
+          ];
+          aytordev = {
+            user = {
+              enable = true;
+              name = identity.username;
+              inherit (identity) email fullName;
+              home = homeDirectory;
+            };
+            suites.common.enable = true;
           };
-          suites.common.enable = true;
-        };
-        home.stateVersion = "25.11";
-      })
+          home.stateVersion = "25.11";
+        }
+      )
     ];
   };
 in
