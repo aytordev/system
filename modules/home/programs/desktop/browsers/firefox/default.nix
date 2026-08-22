@@ -16,6 +16,7 @@ in {
     programs.firefox = {
       enable = true;
       package = pkgs.firefox;
+      configPath = ".mozilla/firefox";
 
       profiles.default = {
         id = 0;

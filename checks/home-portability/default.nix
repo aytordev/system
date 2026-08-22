@@ -80,6 +80,7 @@
     (desktopConfig.aytordev.programs.desktop.browsers.chrome-dev.enable == isDarwin)
     (desktopConfig.aytordev.services.jankyborders.enable == isDarwin)
     ((desktopConfig.home.file ? "Pictures/screenshots/.keep") == isDarwin)
+    (desktopConfig.programs.firefox.configPath == ".mozilla/firefox")
     (
       desktopConfig.programs.firefox.profiles.default.settings."browser.download.dir"
       == "${homeDirectory}/Downloads"
