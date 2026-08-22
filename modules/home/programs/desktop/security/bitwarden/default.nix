@@ -5,6 +5,25 @@
   ...
 }: let
   cfg = config.aytordev.programs.desktop.security.bitwarden;
+  settingsFile = {
+    text = builtins.toJSON (
+      cfg.settings
+      // {
+        inherit (cfg) enableBrowserIntegration;
+        enableTray = cfg.enableTrayIcon;
+        enableMinimizeToTray = cfg.enableTrayIcon;
+        openAtLogin = cfg.enableSystemStartup;
+        biometricUnlock = cfg.biometricUnlock.enable;
+        biometricRequirePasswordOnStart = cfg.biometricUnlock.requirePasswordOnStart;
+        vaultTimeout = cfg.vault.timeout;
+        vaultTimeoutAction = cfg.vault.timeoutAction;
+      }
+    );
+  };
+  bitwardenExecutable =
+    if cfg.installPackage
+    then "${cfg.package}/programs/Bitwarden.app/Contents/MacOS/Bitwarden"
+    else "/Applications/Bitwarden.app/Contents/MacOS/Bitwarden";
 in {
   options.aytordev.programs.desktop.security.bitwarden = {
     enable = lib.mkEnableOption "Bitwarden password manager desktop application";
@@ -114,43 +133,26 @@ in {
   config = lib.mkIf cfg.enable {
     home.packages = lib.optional cfg.installPackage cfg.package;
 
-    # Create Bitwarden config directory and settings file if settings are provided
-    xdg.configFile = lib.mkIf (cfg.settings != {}) {
-      "Bitwarden/data.json" = {
-        text = builtins.toJSON (
-          cfg.settings
-          // {
-            # Merge user settings with our module options
-            inherit (cfg) enableBrowserIntegration;
-            enableTray = cfg.enableTrayIcon;
-            enableMinimizeToTray = cfg.enableTrayIcon;
-            openAtLogin = cfg.enableSystemStartup;
-            biometricUnlock = cfg.biometricUnlock.enable;
-            biometricRequirePasswordOnStart = cfg.biometricUnlock.requirePasswordOnStart;
-            vaultTimeout = cfg.vault.timeout;
-            vaultTimeoutAction = cfg.vault.timeoutAction;
-          }
-        );
-      };
+    home.file = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+      "Library/Application Support/Bitwarden/data.json" = settingsFile;
     };
 
-    # Setup launch agent for macOS to start at login if enabled
-    launchd.agents =
-      lib.mkIf (pkgs.stdenv.hostPlatform.isDarwin && cfg.enableSystemStartup && cfg.installPackage)
-      {
-        bitwarden = {
-          enable = true;
-          config = {
-            ProgramArguments = [
-              "${cfg.package}/programs/Bitwarden.app/Contents/MacOS/Bitwarden"
-            ];
-            RunAtLoad = true;
-            KeepAlive = false;
-            ProcessType = "Interactive";
-            StandardOutPath = "/tmp/bitwarden.out.log";
-            StandardErrorPath = "/tmp/bitwarden.err.log";
-          };
+    xdg.configFile = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+      "Bitwarden/data.json" = settingsFile;
+    };
+
+    launchd.agents = lib.mkIf (pkgs.stdenv.hostPlatform.isDarwin && cfg.enableSystemStartup) {
+      bitwarden = {
+        enable = true;
+        config = {
+          ProgramArguments = [bitwardenExecutable];
+          RunAtLoad = true;
+          KeepAlive = false;
+          ProcessType = "Interactive";
+          StandardOutPath = "/tmp/bitwarden.out.log";
+          StandardErrorPath = "/tmp/bitwarden.err.log";
         };
       };
+    };
   };
 }

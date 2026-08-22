@@ -10,6 +10,7 @@
   integratedHome = darwin.config.home-manager.users.${username};
   lsp = home.programs.opencode.settings.lsp;
   nixdOptions = lsp.nixd.initialization.options;
+  bitwardenSettings = builtins.fromJSON home.home.file."Library/Application Support/Bitwarden/data.json".text;
   activationText =
     lib.attrByPath [
       "system"
@@ -47,6 +48,10 @@
     (!lib.hasInfix "Creating screenshots directory" activationText)
     (!darwin.config.homebrew.onActivation.autoUpdate)
     (!darwin.config.homebrew.onActivation.upgrade)
+    bitwardenSettings.enableBrowserIntegration
+    bitwardenSettings.biometricUnlock
+    (bitwardenSettings.vaultTimeout == 30)
+    (bitwardenSettings.vaultTimeoutAction == "lock")
   ];
 in
   assert builtins.all (test: test) tests;
