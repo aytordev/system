@@ -4,12 +4,13 @@
   lib,
   ...
 }: let
-  inherit (self.lib.file) parseHomeConfigurations;
+  inherit (self.lib.file) parseHomeConfigurations importModulesRecursive;
 
   common = import ../../libraries/system/common {inherit inputs;};
   extendedLib = common.mkExtendedLib self inputs.nixpkgs;
   homesPath = ../../homes;
   allHomes = parseHomeConfigurations homesPath;
+  allHomeModules = importModulesRecursive ../../modules/home;
 
   generateHomeConfiguration = _name: args @ {
     system,
@@ -29,6 +30,7 @@
         username
         ;
       modules = [configPath];
+      homeModules = allHomeModules;
     };
   };
 in {
@@ -44,7 +46,10 @@ in {
         if !(lib ? aytordev)
         then throw "homeModules.default requires lib extended with self.lib.overlay"
         else {
-          imports = common.mkHomeModules {inherit extendedLib;};
+          imports = common.mkHomeModules {
+            inherit extendedLib;
+            homeModules = allHomeModules;
+          };
 
           _module.args = {
             inherit inputs;

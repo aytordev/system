@@ -7,27 +7,39 @@ Create a Darwin system configuration.
   hostname,
   username ? inputs.secrets.username,
   modules ? [],
+  matchingHomes ? null,
+  darwinModules ? null,
+  homeModules ? null,
   ...
 }: let
   flake = inputs.self or (throw "mkDarwin requires 'inputs.self' to be passed");
   common = import ../common {inherit inputs;};
 
   extendedLib = common.mkExtendedLib flake inputs.nixpkgs;
-  matchingHomes = common.mkHomeConfigs {
-    inherit
-      flake
-      system
-      hostname
-      ;
-  };
+  resolvedMatchingHomes =
+    if matchingHomes == null
+    then
+      common.mkHomeConfigs {
+        inherit
+          flake
+          system
+          hostname
+          ;
+      }
+    else matchingHomes;
+  baseDarwinModules =
+    if darwinModules == null
+    then extendedLib.importModulesRecursive ../../../modules/darwin
+    else darwinModules;
   homeManagerConfig = common.mkHomeManagerConfig {
     inherit
       extendedLib
       inputs
       system
       hostname
-      matchingHomes
+      homeModules
       ;
+    matchingHomes = resolvedMatchingHomes;
     isNixOS = false;
   };
 in
@@ -72,7 +84,7 @@ in
 
         # Import all darwin modules recursively
       ]
-      ++ (extendedLib.importModulesRecursive ../../../modules/darwin)
+      ++ baseDarwinModules
       ++ [
         ../../../systems/${system}/${hostname}
       ]

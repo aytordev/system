@@ -7,6 +7,7 @@ Create a Home Manager configuration.
   hostname,
   username ? inputs.secrets.username,
   modules ? [],
+  homeModules ? null,
   ...
 }: let
   flake = inputs.self or (throw "mkHome requires 'inputs.self' to be passed");
@@ -33,5 +34,5 @@ in
       flake-parts-lib = inputs.flake-parts.lib;
     };
 
-    modules = common.mkHomeModules {inherit extendedLib;} ++ modules;
+    modules = common.mkHomeModules {inherit extendedLib homeModules;} ++ modules;
   }

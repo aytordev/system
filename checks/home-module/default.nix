@@ -89,6 +89,32 @@
   discoveredOllamaModules = builtins.filter (
     modulePath: extendedLib.hasInfix "/ollama" (toString modulePath)
   ) (extendedLib.importModulesRecursive ../../modules/home);
+  injectedHome = inputs.self.lib.system.mkHome {
+    system = pkgs.stdenv.hostPlatform.system;
+    hostname = "injected-host";
+    username = "injected-user";
+    homeModules = [
+      ({lib, ...}: {
+        options.testMarker = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+        };
+        config.testMarker = true;
+      })
+    ];
+    modules = [
+      {
+        home = {
+          username = "injected-user";
+          homeDirectory =
+            if pkgs.stdenv.hostPlatform.isDarwin
+            then "/Users/injected-user"
+            else "/home/injected-user";
+          stateVersion = "25.11";
+        };
+      }
+    ];
+  };
   tests = [
     (claudeHome.config.programs.claude-code.settings.permissions.defaultMode == "acceptEdits")
     (builtins.length discoveredClaudeModules == 1)
@@ -107,6 +133,7 @@
     (builtins.elem "ollama-status" ollamaPackageNames)
     (builtins.length discoveredOllamaModules == 1)
     (extendedLib.hasSuffix "/ollama" (toString (builtins.head discoveredOllamaModules)))
+    injectedHome.config.testMarker
   ];
 in
   assert builtins.all (test: test) tests;

@@ -7,27 +7,39 @@ Create a NixOS system configuration.
   hostname,
   username ? inputs.secrets.username,
   modules ? [],
+  matchingHomes ? null,
+  nixosModules ? null,
+  homeModules ? null,
   ...
 }: let
   flake = inputs.self or (throw "mkSystem requires 'inputs.self' to be passed");
   common = import ../common {inherit inputs;};
 
   extendedLib = common.mkExtendedLib flake inputs.nixpkgs;
-  matchingHomes = common.mkHomeConfigs {
-    inherit
-      flake
-      system
-      hostname
-      ;
-  };
+  resolvedMatchingHomes =
+    if matchingHomes == null
+    then
+      common.mkHomeConfigs {
+        inherit
+          flake
+          system
+          hostname
+          ;
+      }
+    else matchingHomes;
+  baseNixOSModules =
+    if nixosModules == null
+    then extendedLib.importModulesRecursive ../../../modules/nixos
+    else nixosModules;
   homeManagerConfig = common.mkHomeManagerConfig {
     inherit
       extendedLib
       inputs
       system
       hostname
-      matchingHomes
+      homeModules
       ;
+    matchingHomes = resolvedMatchingHomes;
     isNixOS = true;
   };
 in
@@ -64,7 +76,7 @@ in
 
         # Import all nixos modules recursively
       ]
-      ++ (extendedLib.importModulesRecursive ../../../modules/nixos)
+      ++ baseNixOSModules
       ++ [
         ../../../systems/${system}/${hostname}
       ]

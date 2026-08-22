@@ -66,6 +66,37 @@ in {
     expected = 5;
   };
 
+  testSystemBuilderInjectionArgs = {
+    expr = map (name: builtins.hasAttr name (builtins.functionArgs self.lib.system.mkSystem)) [
+      "matchingHomes"
+      "nixosModules"
+      "homeModules"
+    ];
+    expected = [
+      true
+      true
+      true
+    ];
+  };
+
+  testDarwinBuilderInjectionArgs = {
+    expr = map (name: builtins.hasAttr name (builtins.functionArgs self.lib.system.mkDarwin)) [
+      "matchingHomes"
+      "darwinModules"
+      "homeModules"
+    ];
+    expected = [
+      true
+      true
+      true
+    ];
+  };
+
+  testHomeBuilderInjectionArgs = {
+    expr = builtins.hasAttr "homeModules" (builtins.functionArgs self.lib.system.mkHome);
+    expected = true;
+  };
+
   testEnablePreservesImports = {
     expr = (module.enable "primary" {imports = ["additional"];}).imports;
     expected = [
