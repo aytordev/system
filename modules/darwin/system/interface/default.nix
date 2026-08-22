@@ -8,15 +8,13 @@
     mkIf
     mkMerge
     mkEnableOption
-    mapAttrs'
-    nameValuePair
     ;
 
   cfg = config.aytordev.system.interface;
   userHome = config.users.users.${config.aytordev.user.name}.home;
-
-  mkHotCorners = corners: mapAttrs' (pos: action: nameValuePair "wvous-${pos}-corner" action) corners;
 in {
+  imports = [./dock.nix];
+
   options.aytordev.system.interface = {
     enable = mkEnableOption "macOS interface";
   };
@@ -32,36 +30,6 @@ in {
             SortColumn = "CPUUsage";
             SortDirection = 0;
           };
-        }
-        {
-          dock =
-            {
-              autohide = true;
-              autohide-delay = 0.20;
-              autohide-time-modifier = 1.0;
-              enable-spring-load-actions-on-all-items = false;
-              show-process-indicators = true;
-              show-recents = false;
-              showhidden = true;
-              slow-motion-allowed = false;
-              largesize = 16;
-              mineffect = "genie";
-              orientation = "left";
-              tilesize = 43;
-              persistent-apps = [
-                "/System/Applications/Apps.app"
-                "/Applications/Ghostty.app"
-              ];
-              persistent-others = [
-                "/System/Applications/System Settings.app"
-              ];
-            }
-            // mkHotCorners {
-              bl = 2;
-              br = 12;
-              tl = 14;
-              tr = 4;
-            };
         }
         {
           finder = {
