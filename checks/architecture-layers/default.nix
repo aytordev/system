@@ -63,17 +63,17 @@ pkgs.runCommand "architecture-layers-check"
 
   reject_matches \
       "reusable modules import concrete hosts or homes" \
-      '/(systems|homes)(/|")' \
+      '/(systems|homes)(/|")|getFile[[:space:]]+"(systems|homes)(/|")' \
       "$TMPDIR/modules.ast"
 
   reject_matches \
       "concrete hosts or homes import module implementations directly" \
-      '/modules(/|")' \
+      '/modules(/|")|getFile[[:space:]]+"modules(/|")' \
       "$TMPDIR/systems.ast"
 
   reject_matches \
       "concrete hosts or homes import module implementations directly" \
-      '/modules(/|")' \
+      '/modules(/|")|getFile[[:space:]]+"modules(/|")' \
       "$TMPDIR/homes.ast"
 
   reject_matches \
