@@ -29,7 +29,7 @@ in
         system
         ;
       osConfig = {};
-      inherit (flake) self;
+      inherit (inputs) self;
       lib = extendedLib;
       flake-parts-lib = inputs.flake-parts.lib;
     };
