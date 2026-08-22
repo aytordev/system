@@ -117,11 +117,15 @@ in {
             };
           };
 
-          # Host-specific git signing key
-          git.signingKey = "/Users/${username}/.ssh/ssh_key_github_ed25519";
-
-          # Custom jujutsu settings
-          jujutsu.signByDefault = true;
+          # Host-specific commit signing
+          git.signing = {
+            enable = true;
+            key = "/Users/${username}/.ssh/ssh_key_github_ed25519";
+          };
+          jujutsu.signing = {
+            enable = true;
+            key = "/Users/${username}/.ssh/ssh_key_github_ed25519";
+          };
 
           # Custom navi styling
           navi.settings.style = {
