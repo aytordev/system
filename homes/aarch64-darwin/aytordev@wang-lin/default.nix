@@ -28,13 +28,9 @@ in {
       desktop = enabled; # Browsers, raycast, aerospace
       development = {
         enable = true;
-        dockerEnable = false;
         podmanEnable = true;
-        gameEnable = false;
-        goEnable = false;
         kubernetesEnable = true;
         nixEnable = true;
-        sqlEnable = true;
         aiEnable = true;
       }; # Editors, dev tools
       business = enabled; # Thunderbird, bitwarden-cli

@@ -63,14 +63,9 @@
 in {
   options.aytordev.suites.development = {
     enable = lib.mkEnableOption "common development configuration";
-    azureEnable = lib.mkEnableOption "azure development configuration";
-    dockerEnable = lib.mkEnableOption "docker development configuration";
     podmanEnable = lib.mkEnableOption "podman development configuration";
-    gameEnable = lib.mkEnableOption "game development configuration";
-    goEnable = lib.mkEnableOption "go development configuration";
     kubernetesEnable = lib.mkEnableOption "kubernetes development configuration";
     nixEnable = lib.mkEnableOption "nix development configuration";
-    sqlEnable = lib.mkEnableOption "sql development configuration";
     aiEnable = lib.mkEnableOption "ai development configuration";
   };
 
@@ -152,7 +147,6 @@ in {
 
           tools = {
             act = mkDefault enabled;
-            # azure.enable = cfg.azureEnable;  # TODO: module doesn't exist
             # AI tools - use mkDefault so home config can override
             agentapi.enable = mkDefault cfg.aiEnable;
             aider.enable = mkDefault cfg.aiEnable;
@@ -165,7 +159,6 @@ in {
             ollama.enable = mkDefault false;
             opencode.enable = mkDefault cfg.aiEnable;
             git-crypt = mkDefault enabled;
-            # go.enable = cfg.goEnable;  # TODO: module doesn't exist
             gh = mkDefault enabled;
             hcloud = mkDefault enabled;
             rclone = mkDefault enabled;
