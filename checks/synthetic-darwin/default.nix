@@ -8,11 +8,15 @@
     email = "ci-darwin@example.test";
     fullName = "CI Darwin";
   };
-  homeModule = {inputs, ...}: {
+  homeModule = moduleArgs @ {inputs, ...}: {
     assertions = [
       {
         assertion = !(inputs ? secrets);
         message = "Synthetic integrated homes must not receive the private secrets input";
+      }
+      {
+        assertion = !(moduleArgs ? secretsRoot);
+        message = "Synthetic integrated homes must not receive the private secrets root";
       }
     ];
     aytordev.user = {
@@ -34,23 +38,29 @@
       path = homeModule;
     };
     modules = [
-      ({inputs, ...}: {
-        assertions = [
-          {
-            assertion = !(inputs ? secrets);
-            message = "Synthetic Darwin systems must not receive the private secrets input";
-          }
-        ];
-        aytordev.user = {
-          name = identity.username;
-          inherit (identity) email fullName;
-        };
-        networking.hostName = "ci-darwin";
-        system = {
-          primaryUser = identity.username;
-          stateVersion = 6;
-        };
-      })
+      (
+        moduleArgs @ {inputs, ...}: {
+          assertions = [
+            {
+              assertion = !(inputs ? secrets);
+              message = "Synthetic Darwin systems must not receive the private secrets input";
+            }
+            {
+              assertion = !(moduleArgs ? secretsRoot);
+              message = "Synthetic Darwin systems must not receive the private secrets root";
+            }
+          ];
+          aytordev.user = {
+            name = identity.username;
+            inherit (identity) email fullName;
+          };
+          networking.hostName = "ci-darwin";
+          system = {
+            primaryUser = identity.username;
+            stateVersion = 6;
+          };
+        }
+      )
     ];
   };
 in

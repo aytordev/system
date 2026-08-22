@@ -1,4 +1,4 @@
-{
+moduleArgs @ {
   config,
   lib,
   identity,
@@ -7,6 +7,13 @@
   inherit (lib.aytordev) enabled disabled;
   inherit (identity) username;
 in {
+  assertions = [
+    {
+      assertion = !(moduleArgs ? secretsRoot);
+      message = "Home configurations must not receive the private secrets root";
+    }
+  ];
+
   aytordev = {
     user = {
       enable = true;
