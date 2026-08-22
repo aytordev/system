@@ -82,6 +82,17 @@
         advancedScripts.enable = true;
         integrations.zed = false;
         modelPresets = ["general"];
+        service.enable = true;
+      };
+    }
+  ];
+  litellmHome = mkHome [
+    ../../modules/home/programs/terminal/tools/litellm
+    {
+      aytordev.programs.terminal.tools.litellm = {
+        enable = true;
+        service.enable = true;
+        environmentFiles.OPENAI_API_KEY = "/run/secrets/openai-api-key";
       };
     }
   ];
@@ -128,6 +139,17 @@
     )
     (ollamaHome.options.aytordev.programs.terminal.tools.ollama.integrations ? zed)
     (builtins.elem "ollama-chat" ollamaPackageNames)
+    (
+      if pkgs.stdenv.hostPlatform.isDarwin
+      then ollamaHome.config.launchd.agents ? ollama
+      else ollamaHome.config.systemd.user.services ? ollama
+    )
+    (
+      if pkgs.stdenv.hostPlatform.isDarwin
+      then litellmHome.config.launchd.agents ? litellm
+      else litellmHome.config.systemd.user.services ? litellm
+    )
+    (!(litellmHome.config.home.sessionVariables ? OPENAI_API_KEY))
     (builtins.elem "ollama-rag" ollamaPackageNames)
     (builtins.elem "ollama-validate" ollamaPackageNames)
     (builtins.elem "ollama-status" ollamaPackageNames)

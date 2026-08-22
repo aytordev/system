@@ -27,10 +27,6 @@ in {
       workstation = enabled;
     };
 
-    # AI services: disabled by default, start manually with `launchctl start <service>`
-    services.ollama.enable = lib.mkForce false;
-    services.litellm.enable = lib.mkForce false;
-
     security = {
       sops = {
         enable = true;
