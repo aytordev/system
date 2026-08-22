@@ -15,6 +15,16 @@ checks/
 
 The checks are automatically discovered by `flake/dev/checks/default.nix`. It scans this directory for subdirectories containing a `default.nix` file and imports them.
 
+## Verification Levels
+
+- `unit-*`: Pure contracts, parsers, and architecture policies.
+- `integration-*`: Synthetic Home Manager and system compositions.
+- `production-*`: Discovered real homes and systems.
+- `package-builds`: Every package supported by the current platform.
+
+The loader assigns prefixes. Check directories should describe behavior rather
+than repeat the level in their name.
+
 ## Creating a New Check
 
 1. Create a new directory for your check (e.g., `checks/security-audit/`).
