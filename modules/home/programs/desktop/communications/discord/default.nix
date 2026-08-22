@@ -4,7 +4,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit
+    (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
 
   cfg = config.aytordev.programs.desktop.communications.discord;
 
@@ -17,6 +23,16 @@
 in {
   options.aytordev.programs.desktop.communications.discord = {
     enable = mkEnableOption "Discord";
+    package = mkOption {
+      type = types.package;
+      default =
+        if cfg.canary.enable
+        then pkgs.aytordev.discord-canary
+        else if cfg.firefox.enable
+        then pkgs.aytordev.discord-firefox
+        else pkgs.discord;
+      description = "The Discord package to install.";
+    };
     canary.enable = mkEnableOption "Discord Canary";
     firefox.enable = mkEnableOption "the Firefox version of Discord";
     enableBetterDiscord =
@@ -32,15 +48,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      (
-        if cfg.canary.enable
-        then aytordev.discord-canary
-        else if cfg.firefox.enable
-        then aytordev.discord-firefox
-        else discord
-      )
-    ];
+    home.packages = [cfg.package];
 
     home.activation = mkIf (cfg.enableBetterDiscord && betterdiscordctlAvailable) {
       betterdiscordInstall = lib.hm.dag.entryAfter ["writeBoundary"] ''

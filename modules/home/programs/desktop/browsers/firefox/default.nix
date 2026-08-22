@@ -4,18 +4,19 @@
   config,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption mkIf mkPackageOption;
 
   cfg = config.aytordev.programs.desktop.browsers.firefox;
 in {
   options.aytordev.programs.desktop.browsers.firefox = {
     enable = mkEnableOption "Whether or not to enable Firefox";
+    package = mkPackageOption pkgs "firefox" {};
   };
 
   config = mkIf cfg.enable {
     programs.firefox = {
       enable = true;
-      package = pkgs.firefox;
+      inherit (cfg) package;
       configPath = ".mozilla/firefox";
 
       profiles.default = {

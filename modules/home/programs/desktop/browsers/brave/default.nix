@@ -4,18 +4,19 @@
   config,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption mkIf mkPackageOption;
 
   cfg = config.aytordev.programs.desktop.browsers.brave;
 in {
   options.aytordev.programs.desktop.browsers.brave = {
     enable = mkEnableOption "Whether or not to enable Brave";
+    package = mkPackageOption pkgs "brave" {};
   };
 
   config = mkIf cfg.enable {
     programs.brave = {
       enable = true;
-      package = pkgs.brave;
+      inherit (cfg) package;
 
       extensions = [
         "nngceckbapebfimnlniiiahkandclblb" # Bitwarden Password Manager

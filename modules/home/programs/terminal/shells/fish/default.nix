@@ -4,7 +4,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkMerge;
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkMerge
+    mkPackageOption
+    ;
   cfg = config.aytordev.programs.terminal.shells.fish;
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
@@ -12,11 +18,12 @@
 in {
   options.aytordev.programs.terminal.shells.fish = {
     enable = mkEnableOption "Fish shell with useful defaults";
+    package = mkPackageOption pkgs "fish" {};
   };
   config = mkIf cfg.enable (mkMerge [
     {
       home.packages = with pkgs; [
-        fish
+        cfg.package
         grc # Required by fishPlugins.grc
         fishPlugins.done
         fishPlugins.forgit
