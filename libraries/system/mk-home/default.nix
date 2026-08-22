@@ -5,7 +5,7 @@ Create a Home Manager configuration.
 {
   system,
   hostname,
-  username ? inputs.secrets.username,
+  username,
   modules ? [],
   homeModules ? null,
   ...

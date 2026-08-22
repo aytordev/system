@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   inherit (lib) types mkIf;
@@ -11,9 +10,18 @@
   cfg = config.aytordev.user;
 in {
   options.aytordev.user = {
-    name = mkOpt types.str inputs.secrets.username "The user account.";
-    email = mkOpt types.str inputs.secrets.useremail "The email of the user.";
-    fullName = mkOpt types.str inputs.secrets.userfullname "The full name of the user.";
+    name = lib.mkOption {
+      type = types.str;
+      description = "The user account.";
+    };
+    email = lib.mkOption {
+      type = types.str;
+      description = "The email of the user.";
+    };
+    fullName = lib.mkOption {
+      type = types.str;
+      description = "The full name of the user.";
+    };
     uid = mkOpt (types.nullOr types.int) 501 "The uid for the user account.";
   };
 

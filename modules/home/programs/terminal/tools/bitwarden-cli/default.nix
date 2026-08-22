@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   cfg = config.aytordev.programs.terminal.tools.bitwarden-cli;
@@ -552,7 +551,7 @@ in {
         enable = true;
         inherit (cfg.rbw) package;
         settings = {
-          email = inputs.secrets.useremail or "";
+          email = config.aytordev.user.email;
           base_url = cfg.settings.server;
           inherit (cfg.rbw) pinentry;
           sync_interval = 3600;

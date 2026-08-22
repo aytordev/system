@@ -97,6 +97,19 @@ in {
     expected = true;
   };
 
+  testBuilderUsernameRequired = {
+    expr = map (builder: (builtins.functionArgs builder).username) [
+      self.lib.system.mkSystem
+      self.lib.system.mkDarwin
+      self.lib.system.mkHome
+    ];
+    expected = [
+      false
+      false
+      false
+    ];
+  };
+
   testEnablePreservesImports = {
     expr = (module.enable "primary" {imports = ["additional"];}).imports;
     expected = [

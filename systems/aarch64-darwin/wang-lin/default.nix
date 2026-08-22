@@ -15,7 +15,12 @@ in {
   # All homes auto-injected from homes/aarch64-darwin/aytordev@wang-lin/
 
   aytordev = {
-    # User configuration is handled by modules/darwin/user
+    user = {
+      name = inputs.secrets.username;
+      email = inputs.secrets.useremail;
+      fullName = inputs.secrets.userfullname;
+    };
+
     archetypes = {
       personal = enabled;
       workstation = enabled;

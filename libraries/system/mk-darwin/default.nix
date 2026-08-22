@@ -5,7 +5,7 @@ Create a Darwin system configuration.
 {
   system,
   hostname,
-  username ? inputs.secrets.username,
+  username,
   modules ? [],
   matchingHomes ? null,
   darwinModules ? null,

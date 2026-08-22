@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   inherit
@@ -36,12 +35,12 @@ in {
     };
     userName = mkOption {
       type = types.str;
-      default = inputs.secrets.username;
+      default = config.aytordev.user.name;
       description = "The name to configure jujutsu with.";
     };
     userEmail = mkOption {
       type = types.str;
-      default = inputs.secrets.useremail;
+      default = config.aytordev.user.email;
       description = "The email to configure jujutsu with.";
     };
   };
