@@ -35,11 +35,6 @@ in {
       };
     };
 
-    aytordev.services = {
-      ollama.enable = lib.mkDefault cfg.aiEnable;
-      litellm.enable = lib.mkDefault cfg.aiEnable;
-    };
-
     environment.systemPackages = [pkgs.aytordev.pencil-dev];
 
     nix.settings = {
