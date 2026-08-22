@@ -85,8 +85,8 @@
       desktopConfig.programs.firefox.profiles.default.settings."browser.download.dir"
       == "${homeDirectory}/Downloads"
     )
-    (!businessConfig.aytordev.programs.terminal.tools.bitwarden-cli.settings.apiKey.useSops)
-    (!(businessConfig.home.file ? ".local/bin/rbw-unlock-sops"))
+    (!businessConfig.aytordev.programs.terminal.tools.bitwarden-cli.apiKey.enable)
+    (!(businessConfig.home.file ? ".local/bin/bitwarden-login-sops"))
     (desktopOverrideConfig.aytordev.theme.variant == "lotus")
     (!desktopOverrideConfig.aytordev.programs.desktop.browsers.brave.enable)
     (!developmentOverrideConfig.aytordev.programs.terminal.editors.neovim.enable)
