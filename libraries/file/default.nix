@@ -14,7 +14,9 @@
   getNixFiles' = dirPath: let
     entries = builtins.readDir dirPath;
   in
-    lib.filter (name: hasSuffix ".nix" name) (builtins.attrNames entries);
+    lib.filter (name: entries.${name} == "regular" && hasSuffix ".nix" name) (
+      builtins.attrNames entries
+    );
 
   mergeAttrs' = attrsList: lib.foldl' (acc: attrs: acc // attrs) {} attrsList;
 
