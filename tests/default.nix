@@ -27,6 +27,10 @@
         })
       ];
     }).config;
+  claudeAuditCommand =
+    (import ../modules/home/programs/terminal/tools/claude-code/hooks/pre-tool-audit.nix {})
+    .PreToolUse;
+  claudeAuditScript = (builtins.head (builtins.head claudeAuditCommand).hooks).command;
 in {
   testBoolToNumTrue = {
     expr = module.boolToNum true;
@@ -36,6 +40,21 @@ in {
   testCapitalizeWord = {
     expr = module.capitalize "hello";
     expected = "Hello";
+  };
+
+  testClaudeAuditExcludesToolInput = {
+    expr = lib.hasInfix ".tool_input" claudeAuditScript;
+    expected = false;
+  };
+
+  testClaudeAuditUsesPrivatePermissions = {
+    expr = lib.hasInfix "umask 077" claudeAuditScript && lib.hasInfix "chmod 600" claudeAuditScript;
+    expected = true;
+  };
+
+  testClaudeAuditLimitsRetention = {
+    expr = lib.hasInfix "tail -n 1000" claudeAuditScript;
+    expected = true;
   };
 
   testMergeAttrs = {
