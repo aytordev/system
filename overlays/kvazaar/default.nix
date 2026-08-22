@@ -2,7 +2,8 @@
 #
 # kvazaar 2.3.2 tests fail on macOS after the nixpkgs 2026-05 update,
 # blocking the ffmpeg-full build.
-_final: prev: {
+_final: prev:
+prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
   kvazaar = prev.kvazaar.overrideAttrs (_oldAttrs: {
     doCheck = false;
   });

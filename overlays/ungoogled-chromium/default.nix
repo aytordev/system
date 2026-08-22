@@ -1,4 +1,5 @@
-_final: prev: {
+_final: prev:
+prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
   # Overlay for ungoogled-chromium on macOS
   #
   # IMPORTANT:

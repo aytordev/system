@@ -1,4 +1,5 @@
-_final: prev: {
+_final: prev:
+prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
   # Overlay for Google Chrome Stable, always using the "latest" version.
   #
   # IMPORTANT:
@@ -31,7 +32,10 @@ _final: prev: {
     meta = with prev.lib; {
       description = "Google Chrome for macOS (latest)";
       homepage = "https://www.google.com/chrome/";
-      platforms = ["aarch64-darwin" "x86_64-darwin"];
+      platforms = [
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
       license = licenses.unfree;
     };
   };
