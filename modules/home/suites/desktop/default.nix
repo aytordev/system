@@ -24,7 +24,7 @@ in {
         desktop = {
           bars = {
             sketchybar = {
-              enable = true;
+              enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
               items = {
                 menus.enable = true;
                 themePicker.enable = true;
@@ -35,7 +35,7 @@ in {
           browsers = {
             brave = enabled;
             chrome = enabled;
-            chrome-dev = enabled;
+            chrome-dev.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
             chromium = enabled;
             firefox = enabled;
           };
@@ -49,7 +49,7 @@ in {
       };
 
       services = {
-        jankyborders = enabled;
+        jankyborders.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
       };
     };
 
