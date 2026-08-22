@@ -35,6 +35,8 @@
       ) (builtins.readDir dirPath)
     );
 in {
+  inherit configurationDirectories;
+
   /**
   Read a file and return its contents.
 

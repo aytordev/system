@@ -56,6 +56,11 @@ in {
     };
   };
 
+  testConfigurationDirectoriesRequireDefault = {
+    expr = file.configurationDirectories ../checks/file-parsers/fixtures/systems-valid/aarch64-darwin;
+    expected = ["wang-lin"];
+  };
+
   testMkOptDefault = {
     expr = (module.mkOpt' lib.types.int 5).default;
     expected = 5;
