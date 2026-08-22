@@ -7,7 +7,8 @@
 #
 # Fix: replace install_darwin.go with a no-op implementation. Nix manages
 # package versions via nixos-rebuild / nix-darwin rebuild.
-_final: prev: {
+_final: prev:
+prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
   protonmail-bridge = prev.protonmail-bridge.overrideAttrs (oldAttrs: {
     postPatch =
       (oldAttrs.postPatch or "")
