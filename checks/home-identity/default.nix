@@ -36,13 +36,11 @@
             lazygit.enable = true;
             bitwarden-cli = {
               enable = true;
-              settings = {
-                server = "https://bitwarden.example.test";
-                apiKey = {
-                  useSops = true;
-                  clientIdPath = "/run/secrets/consumer-client-id";
-                  clientSecretPath = "/run/secrets/consumer-client-secret";
-                };
+              server = "https://bitwarden.example.test";
+              apiKey = {
+                enable = true;
+                clientIdFile = "/run/secrets/consumer-client-id";
+                clientSecretFile = "/run/secrets/consumer-client-secret";
               };
             };
           };
@@ -51,9 +49,36 @@
       })
     ];
   };
+  officialHome = inputs.self.lib.system.mkHome {
+    inherit username;
+    system = pkgs.stdenv.hostPlatform.system;
+    hostname = "official-bitwarden-host";
+    modules = [
+      {
+        aytordev = {
+          user = {
+            enable = true;
+            inherit email fullName;
+            name = username;
+            home = homeDirectory;
+          };
+          programs.terminal = {
+            shells.zsh.enable = true;
+            tools.bitwarden-cli = {
+              enable = true;
+              client = "bw";
+              shellIntegration.enable = true;
+            };
+          };
+        };
+        home.stateVersion = "25.11";
+      }
+    ];
+  };
   inherit (home) config;
+  officialConfig = officialHome.config;
   bitwardenConfig = config.aytordev.programs.terminal.tools.bitwarden-cli;
-  apiKeyScript = config.home.file.".local/bin/rbw-unlock-sops".text;
+  apiKeyScript = config.home.file.".local/bin/bitwarden-login-sops".text;
   tests = [
     (config.programs.git.settings.user.name == username)
     (config.programs.git.settings.user.email == email)
@@ -65,10 +90,13 @@
     (config.programs.rbw.settings.email == email)
     (config.programs.rbw.settings.base_url == "https://bitwarden.example.test")
     (!(config.home.sessionVariables ? BW_CLIENTSECRET))
-    (!(bitwardenConfig.settings ? apiKeyFile))
-    (!(bitwardenConfig.settings ? syncOnLogin))
-    (!(bitwardenConfig.settings.apiKey ? clientId))
-    (!(bitwardenConfig.settings.apiKey ? clientSecret))
+    (bitwardenConfig.client == "rbw")
+    (config.programs.rbw.package == bitwardenConfig.package)
+    (!(config.home.file ? ".local/bin/bw-session"))
+    (officialConfig.aytordev.programs.terminal.tools.bitwarden-cli.package == pkgs.bitwarden-cli)
+    (!officialConfig.programs.rbw.enable)
+    (officialConfig.xdg.configFile ? "bitwarden-cli/session.bash")
+    (lib.hasInfix "bw completion --shell zsh" officialConfig.programs.zsh.initContent)
     (lib.hasInfix "/run/secrets/consumer-client-id" apiKeyScript)
     (lib.hasInfix "/run/secrets/consumer-client-secret" apiKeyScript)
     (lib.elem homeDirectory config.programs.git.settings.safe.directory)

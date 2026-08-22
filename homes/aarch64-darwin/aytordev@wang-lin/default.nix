@@ -81,16 +81,16 @@ in {
           bitwarden-cli = {
             shellIntegration = {
               enable = true;
-              enableZshIntegration = true;
-              enableBashIntegration = true;
-              enableFishIntegration = true;
+              zsh = true;
+              bash = true;
+              fish = true;
             };
             aliases = enabled;
-            rbw = enabled;
-            settings.apiKey = {
-              useSops = true;
-              clientIdPath = "/Users/${username}/.config/sops/bitwarden_api_client_id";
-              clientSecretPath = "/Users/${username}/.config/sops/bitwarden_api_client_secret";
+            client = "rbw";
+            apiKey = {
+              enable = true;
+              clientIdFile = "/Users/${username}/.config/sops/bitwarden_api_client_id";
+              clientSecretFile = "/Users/${username}/.config/sops/bitwarden_api_client_secret";
             };
           };
 
