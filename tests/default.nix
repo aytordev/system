@@ -31,6 +31,7 @@
     (import ../modules/home/programs/terminal/tools/claude-code/hooks/pre-tool-audit.nix {})
     .PreToolUse;
   claudeAuditScript = (builtins.head (builtins.head claudeAuditCommand).hooks).command;
+  runAsServiceModule = builtins.readFile ../modules/home/programs/terminal/tools/run-as-service/default.nix;
   warpModule = builtins.readFile ../modules/home/programs/terminal/emulators/warp/default.nix;
 in {
   testBoolToNumTrue = {
@@ -74,6 +75,16 @@ in {
       b = 2;
       c = 3;
     };
+  };
+
+  testRunAsServicePreservesArgumentBoundaries = {
+    expr = lib.hasInfix "bash -lc" runAsServiceModule;
+    expected = false;
+  };
+
+  testRunAsServiceEscapesEnvironmentValues = {
+    expr = lib.hasInfix "escapeShellArg" runAsServiceModule;
+    expected = true;
   };
 
   testWarpHasNoDestructiveMigration = {

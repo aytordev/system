@@ -11,12 +11,12 @@
   cfg = config.aytordev.programs.terminal.tools.run-as-service;
 
   sessionPath = optionalString (config.home.sessionPath != []) ''
-    export PATH=${lib.strings.concatStringsSep ":" config.home.sessionPath}:$PATH
+    export PATH=${lib.escapeShellArg (lib.concatStringsSep ":" config.home.sessionPath)}:"$PATH"
   '';
 
   sessionVariables = lib.strings.concatStringsSep "\n" (
     mapAttrsToList (key: value: ''
-      export ${key}="${toString value}"
+      export ${key}=${lib.escapeShellArg (toString value)}
     '')
     config.home.sessionVariables
   );
@@ -35,7 +35,7 @@
       --property=ExitType=cgroup \
       --user \
       --wait \
-      bash -lc "exec ${apply-hm-env} $@"
+      -- ${apply-hm-env} "$@"
   '';
 in {
   options.aytordev.programs.terminal.tools.run-as-service = {
