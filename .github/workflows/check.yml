@@ -31,4 +31,4 @@ jobs:
       - name: run flake check
         env:
           ARCH: ${{ matrix.arch }}
-        run: nix flake check
+        run: nix flake check --override-input secrets path:./checks/fixtures/secrets
