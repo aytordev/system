@@ -1,13 +1,20 @@
 {inputs}: let
   inherit (inputs.nixpkgs.lib) filterAttrs mapAttrs';
 
-  mkHomeModules = {extendedLib}:
+  mkHomeModules = {
+    extendedLib,
+    homeModules ? null,
+  }:
     [
       {_module.args.lib = extendedLib;}
       inputs.nix-index-database.homeModules.nix-index
       inputs.sops-nix.homeManagerModules.sops
     ]
-    ++ (extendedLib.importModulesRecursive ../../../modules/home);
+    ++ (
+      if homeModules == null
+      then extendedLib.importModulesRecursive ../../../modules/home
+      else homeModules
+    );
 in {
   /**
   Create an extended library with the flake's overlay.
@@ -56,6 +63,7 @@ in {
     system,
     hostname,
     matchingHomes,
+    homeModules ? null,
     isNixOS ? true,
   }:
     if matchingHomes != {}
@@ -69,7 +77,7 @@ in {
           lib = extendedLib;
           flake-parts-lib = inputs.flake-parts.lib;
         };
-        sharedModules = mkHomeModules {inherit extendedLib;};
+        sharedModules = mkHomeModules {inherit extendedLib homeModules;};
         users =
           mapAttrs' (_name: homeConfig: {
             name = homeConfig.username;
