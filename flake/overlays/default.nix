@@ -10,15 +10,12 @@
   dynamicOverlaysSet =
     if builtins.pathExists overlaysPath
     then let
-      entries = builtins.readDir overlaysPath;
-      overlayDirs = lib.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
+      overlayDirs = self.lib.file.configurationDirectories overlaysPath;
     in
       lib.genAttrs overlayDirs (
-        name: let
-          overlayPath = overlaysPath + "/${name}";
-        in
-          # Existing overlays are already final: prev: functions
-          import overlayPath
+        name:
+        # Existing overlays are already final: prev: functions
+          import (overlaysPath + "/${name}/default.nix")
       )
     else {};
 in {
