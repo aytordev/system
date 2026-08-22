@@ -4,6 +4,7 @@
 local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
+local shell = require("helpers.shell")
 local constants = require("nix_constants")
 
 local poll_interval = 2
@@ -100,8 +101,8 @@ local function rebuild_popup()
 		local entry_content = entry
 		item:subscribe("mouse.clicked", function()
 			clipboard:set({ popup = { drawing = false } })
-			-- Restore to clipboard using printf to handle special chars
-			sbar.exec("printf '%s' " .. string.format("%q", entry_content) .. " | pbcopy")
+			-- Clipboard content is untrusted, so quote it before crossing the shell boundary.
+			sbar.exec("printf '%s' " .. shell.quote(entry_content) .. " | pbcopy")
 		end)
 
 		popup_items[i] = item
