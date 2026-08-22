@@ -9,11 +9,12 @@
 in {
   options.aytordev.programs.terminal.tools.jq = {
     enable = mkEnableOption "jq";
+    package = lib.mkPackageOption pkgs "jq" {};
   };
   config = mkIf cfg.enable {
     programs.jq = {
       enable = true;
-      package = pkgs.jq;
+      inherit (cfg) package;
     };
   };
 }

@@ -15,6 +15,7 @@
 in {
   options.aytordev.programs.terminal.tools.rclone = {
     enable = mkEnableOption "rclone";
+    package = lib.mkPackageOption pkgs "rclone" {};
 
     remotes = mkOption {
       type = types.attrsOf types.anything;
@@ -40,7 +41,7 @@ in {
   config = mkIf cfg.enable {
     programs.rclone = {
       enable = true;
-      package = pkgs.rclone;
+      inherit (cfg) package;
       inherit (cfg) remotes;
     };
   };
