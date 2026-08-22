@@ -11,20 +11,29 @@ _: {
             Bash
             */
             ''
-              mkdir -p "$XDG_DATA_HOME/claude-code/audit"
+              umask 077
+
+              audit_dir="$XDG_DATA_HOME/claude-code/audit"
+              audit_log="$audit_dir/pre-tool.jsonl"
+              mkdir -p "$audit_dir"
+              chmod 700 "$audit_dir"
+              touch "$audit_log"
+              chmod 600 "$audit_log"
+
               input=$(cat)
-
-              # Extract fields for logging
               timestamp=$(date -Iseconds)
-              session_id=$(echo "$input" | jq -r '.session_id // "unknown"')
-              tool_name=$(echo "$input" | jq -r '.tool_name // "unknown"')
-              cwd=$(echo "$input" | jq -r '.cwd // "unknown"')
 
-              # Create compact JSON log entry
-              echo "$input" | jq -c \
+              printf '%s' "$input" | jq -c \
                 --arg ts "$timestamp" \
-                '{timestamp: $ts, session: .session_id, tool: .tool_name, cwd: .cwd, input: .tool_input}' \
-                >> "$XDG_DATA_HOME/claude-code/audit/pre-tool.jsonl"
+                '{timestamp: $ts, session: .session_id, tool: .tool_name, cwd: .cwd}' \
+                >> "$audit_log"
+
+              if [ "$(wc -l < "$audit_log")" -gt 1000 ]; then
+                temporary=$(mktemp "$audit_dir/.pre-tool.XXXXXX")
+                tail -n 1000 "$audit_log" > "$temporary"
+                chmod 600 "$temporary"
+                mv "$temporary" "$audit_log"
+              fi
 
               exit 0
             '';
