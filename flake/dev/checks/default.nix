@@ -22,26 +22,39 @@
 
     # Get list of valid check directories
     checkDirs = lib.filterAttrs isCheckDir (builtins.readDir checksPath);
+    unitCheckNames = [
+      "architecture-layers"
+      "file-parsers"
+      "input-policy"
+      "library-overlay"
+      "lua-shell-quoting"
+      "nix-unit"
+      "overlay-composition"
+    ];
 
     # Import each check
     customChecks =
-      lib.mapAttrs (
-        name: _:
-          import (checksPath + "/${name}") {
-            inherit
-              pkgs
-              system
-              lib
-              identity
-              ;
-            inputs = reusableInputs;
-          }
-      )
+      lib.mapAttrs' (name: _: {
+        name = "${
+          if lib.elem name unitCheckNames
+          then "unit"
+          else "integration"
+        }-${name}";
+        value = import (checksPath + "/${name}") {
+          inherit
+            pkgs
+            system
+            lib
+            identity
+            ;
+          inputs = reusableInputs;
+        };
+      })
       checkDirs;
 
     darwinChecks = lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin (
       lib.mapAttrs' (name: darwin: {
-        name = "darwin-${name}";
+        name = "production-darwin-${name}";
         value = darwin.system;
       })
       self.darwinConfigurations
@@ -50,10 +63,13 @@
     homeChecks =
       lib.mapAttrs'
       (name: home: {
-        name = "home-${lib.replaceStrings ["@"] ["-"] name}";
+        name = "production-home-${lib.replaceStrings ["@"] ["-"] name}";
         value = home.activationPackage;
       })
       (lib.filterAttrs (_: home: home.pkgs.stdenv.hostPlatform.system == system) self.homeConfigurations);
+    packageBuilds = pkgs.linkFarm "package-builds-${system}" (
+      lib.mapAttrsToList (name: path: {inherit name path;}) self.packages.${system}
+    );
   in {
     pre-commit = lib.mkIf (inputs ? git-hooks-nix) {
       check.enable = false;
@@ -84,6 +100,6 @@
       };
     };
 
-    checks = customChecks // darwinChecks // homeChecks;
+    checks = customChecks // darwinChecks // homeChecks // {package-builds = packageBuilds;};
   };
 }
