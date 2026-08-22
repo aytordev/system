@@ -3,6 +3,17 @@
 macOS-specific system configuration using nix-darwin. These modules configure
 macOS system preferences and services.
 
+## Module Contract V1
+
+- Darwin modules are platform adapters or privileged system capabilities.
+- User programs, LaunchAgents, and writes under `$HOME` belong in Home Manager.
+- Capabilities expose `enable` and `package` when they own a primary package.
+- Suites and archetypes compose with `lib.mkDefault`, never `lib.mkForce`.
+- Keep activation scripts idempotent and limited to state that requires system
+  privileges.
+
+See `docs/decisions/0008-module-contract-v1.md` for the complete contract.
+
 ## Module Categories
 
 ### Archetypes (`archetypes/`)
@@ -111,10 +122,7 @@ macOS-specific services and daemons.
 **Service patterns:**
 
 ```nix
-# LaunchAgents run as user
-aytordev.services.skhd.enable = true;
-
-# LaunchDaemons run as system
+# Privileged daemons remain system-owned.
 aytordev.services.tailscale.enable = true;
 ```
 
@@ -153,7 +161,7 @@ nix-darwin uses `system.defaults.*` for macOS preferences. Wrap these in
 
 ### Activation Scripts
 
-Use activation scripts for settings not covered by nix-darwin:
+Use activation scripts only for system settings not covered by nix-darwin:
 
 ```nix
 system.activationScripts.postActivation.text = ''
@@ -162,7 +170,8 @@ system.activationScripts.postActivation.text = ''
 '';
 ```
 
-**Caution:** Activation scripts run on every rebuild. Keep them idempotent.
+**Caution:** Activation scripts run on every rebuild. Keep them idempotent and
+never use them to create, chown, or mutate files under a user's home directory.
 
 ### SIP (System Integrity Protection)
 

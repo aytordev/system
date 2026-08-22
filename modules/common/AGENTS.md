@@ -2,6 +2,20 @@
 
 Cross-platform shared modules used by both NixOS and nix-darwin systems.
 
+## Module Contract V1
+
+- Classify each module as foundational, capability, platform adapter, suite,
+  archetype, or pure data before adding outputs.
+- Shared capabilities expose `aytordev.*.enable` and a replaceable `package`
+  when they own a primary package.
+- Keep shared behavior platform-neutral. Platform adapters belong under
+  `modules/darwin/` or `modules/nixos/`.
+- Suites compose with `lib.mkDefault`; they never use `lib.mkForce`.
+- Do not place host identity, secret values, or concrete home paths in reusable
+  modules.
+
+See `docs/decisions/0008-module-contract-v1.md` for the complete contract.
+
 ## Module Categories
 
 ### AI Tools (`ai-tools/`)
@@ -94,9 +108,8 @@ aytordev.programs.terminal.tools.claude-code.enable = true;
 **Reduce repetition:**
 
 ```nix
-# Good: Shared top-level option
-aytordev.user.theme = "catppuccin-mocha";
-# Then use: config.aytordev.user.theme throughout
+# Good: Shared pure data
+config.aytordev.theme.palette.accent.hex
 
-# Bad: Duplicating theme string in every module
+# Bad: Duplicating palette values in every module
 ```

@@ -16,6 +16,24 @@ configuration is:
 Only use system modules when you need root privileges or system-level
 configuration.
 
+## Module Contract V1
+
+- Capability modules own one program or user service. They expose `enable` and
+  `package`, then guard all outputs with `lib.mkIf`.
+- Suites compose capabilities with `lib.mkDefault`. Every suite flag must change
+  a real output; remove flags with no consumer.
+- Foundational modules publish identity or shared metadata only. Workflow
+  packages, aliases, and application choices belong in suites.
+- Pure-data modules have no activation side effects and do not need an `enable`
+  option. `aytordev.theme` is the reference pattern.
+- Platform-only outputs use explicit `pkgs.stdenv.hostPlatform.isDarwin` or
+  `isLinux` guards.
+- Large capabilities may use contained sibling files, but the directory's
+  `default.nix` remains the only discovered module and owns the option namespace.
+
+For the full contract and runtime rules, see
+`docs/decisions/0008-module-contract-v1.md`.
+
 ## Module Categories
 
 ### programs (`programs/`)
@@ -76,7 +94,7 @@ aytordev.programs.desktop.bars.waybar.enable = true;
 
 ### Services (`services/`)
 
-User services and daemons (systemd user units).
+User services and daemons (systemd user units or launchd agents).
 
 **Common services:**
 
@@ -93,7 +111,7 @@ User services and daemons (systemd user units).
 ```nix
 aytordev.services.{service}.enable = true;
 
-# Creates: systemd.user.services.{service}
+# Creates a platform-appropriate user unit.
 ```
 
 ### Suites (`suites/`)
@@ -121,34 +139,10 @@ aytordev.suites.development.enable = true;
 
 Theming and visual customization.
 
-**Modules:**
-
-- `catppuccin`: Catppuccin theme integration
-- `gtk`: GTK theme and icons
-- `qt`: Qt theme
-- `stylix`: System-wide theming via stylix
-
-**Theming hierarchy (priority order):**
-
-1. **Module-specific theme options** (highest priority)
-
-   ```nix
-   aytordev.programs.desktop.wms.hyprland.theme = "catppuccin-mocha";
-   ```
-
-2. **Catppuccin module** (mid priority)
-
-   ```nix
-   aytordev.theme.catppuccin.enable = true;
-   aytordev.theme.catppuccin.flavor = "mocha";
-   ```
-
-3. **Stylix** (lowest priority, fallback)
-   ```nix
-   aytordev.theme.stylix.enable = true;
-   ```
-
-**Always prefer module-specific theming over generic stylix.**
+The pure-data theme module publishes the active Kanagawa palette and application
+theme names. Select `aytordev.theme.variant`; there is no `theme.enable` switch.
+Capabilities consume the shared palette and may expose a module-specific
+override when an application needs one.
 
 ### System (`system/`)
 
@@ -162,7 +156,8 @@ User-level system configuration.
 
 ### User (`user/`)
 
-User metadata and preferences.
+User identity metadata only. Workflow preferences belong in suites or program
+capabilities.
 
 **Example:**
 
@@ -171,7 +166,6 @@ aytordev.user = {
   name = "username";
   email = "username@example.com";
   fullName = "Example User";
-  theme = "catppuccin-mocha";
 };
 ```
 
