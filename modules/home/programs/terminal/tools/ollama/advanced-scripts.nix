@@ -4,7 +4,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkOption types mkDefault;
+  inherit
+    (lib)
+    mkIf
+    mkOption
+    types
+    mkDefault
+    ;
   cfg = config.aytordev.programs.terminal.tools.ollama;
   advancedCfg = cfg.advancedScripts;
   inherit (config._module.args.ollamaUtils) constants shellUtils;
