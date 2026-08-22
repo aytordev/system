@@ -10,6 +10,7 @@ Create a NixOS system configuration.
   matchingHomes ? null,
   nixosModules ? null,
   homeModules ? null,
+  extraSpecialArgs ? {},
   ...
 }: let
   flake = inputs.self or (throw "mkSystem requires 'inputs.self' to be passed");
@@ -37,7 +38,9 @@ Create a NixOS system configuration.
       inputs
       system
       hostname
+      username
       homeModules
+      extraSpecialArgs
       ;
     matchingHomes = resolvedMatchingHomes;
     isNixOS = true;
@@ -52,6 +55,7 @@ in
         hostname
         username
         extendedLib
+        extraSpecialArgs
         ;
     };
 

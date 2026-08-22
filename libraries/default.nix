@@ -2,12 +2,18 @@
   inputs,
   self,
   ...
-}: {
+}: let
+  reusableInputs = builtins.removeAttrs inputs ["secrets"];
+in {
   flake.lib = {
     # keep-sorted start block=yes newline_separated=yes
-    file = import ./file {inherit inputs self;};
-    module = import ./module {inherit inputs;};
-    overlay = import ./overlay {inherit inputs;};
-    system = import ./system {inherit inputs;};
+    file = import ./file {
+      inputs = reusableInputs;
+      inherit self;
+    };
+    identity = import ./identity {};
+    module = import ./module {inputs = reusableInputs;};
+    overlay = import ./overlay {inputs = reusableInputs;};
+    system = import ./system {inputs = reusableInputs;};
   };
 }

@@ -33,8 +33,7 @@ in {
           lib.nameValuePair "nix/inputs/${name}" {
             source = input.outPath or input;
           }
-      )
-      inputs;
+      ) (builtins.removeAttrs inputs ["secrets"]);
 
     # Nix-Darwin config options
     # Check corresponding shared imported module

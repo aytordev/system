@@ -20,6 +20,11 @@
   allNixOSModules = importModulesRecursive ../../modules/nixos;
   allDarwinModules = importModulesRecursive ../../modules/darwin;
   allHomeModules = importModulesRecursive ../../modules/home;
+  identity = self.lib.identity.fromSecrets inputs.secrets;
+  privateModuleArgs = {
+    inherit identity;
+    secretsRoot = inputs.secrets;
+  };
   matchingHomes = system: hostname:
     lib.filterAttrs (
       _name: homeConfig: homeConfig.system == system && homeConfig.hostname == hostname
@@ -36,7 +41,8 @@ in {
         name = hostname;
         value = self.lib.system.mkSystem {
           inherit inputs system hostname;
-          inherit (inputs.secrets) username;
+          inherit (identity) username;
+          extraSpecialArgs = privateModuleArgs;
           nixosModules = allNixOSModules;
           homeModules = allHomeModules;
           matchingHomes = matchingHomes system hostname;
@@ -53,7 +59,8 @@ in {
         name = hostname;
         value = self.lib.system.mkDarwin {
           inherit inputs system hostname;
-          inherit (inputs.secrets) username;
+          inherit (identity) username;
+          extraSpecialArgs = privateModuleArgs;
           darwinModules = allDarwinModules;
           homeModules = allHomeModules;
           matchingHomes = matchingHomes system hostname;

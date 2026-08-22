@@ -2,7 +2,7 @@
   self,
   lib,
 }: let
-  inherit (self.lib) file module;
+  inherit (self.lib) file identity module;
   evaluateGeneratedModule = enable:
     (lib.evalModules {
       modules = [
@@ -98,6 +98,59 @@ in {
     };
   };
 
+  testIdentityFromSecrets = {
+    expr = identity.fromSecrets {
+      username = "test-user";
+      useremail = "test@example.test";
+      userfullname = "Test User";
+    };
+    expected = {
+      username = "test-user";
+      email = "test@example.test";
+      fullName = "Test User";
+    };
+  };
+
+  testIdentityRejectsInvalidSecrets = {
+    expr = map (secrets: (builtins.tryEval (identity.fromSecrets secrets)).success) [
+      {
+        useremail = "test@example.test";
+        userfullname = "Test User";
+      }
+      {
+        username = 1;
+        useremail = "test@example.test";
+        userfullname = "Test User";
+      }
+      {
+        username = "test-user";
+        useremail = "";
+        userfullname = "Test User";
+      }
+      {
+        username = "test-user";
+        useremail = "test@example.test";
+        userfullname = [];
+      }
+    ];
+    expected = [
+      false
+      false
+      false
+      false
+    ];
+  };
+
+  testIdentityUsernameMatches = {
+    expr = identity.assertUsername "test-user" "test-user";
+    expected = "test-user";
+  };
+
+  testIdentityUsernameMismatch = {
+    expr = (builtins.tryEval (identity.assertUsername "canonical-user" "directory-user")).success;
+    expected = false;
+  };
+
   testMkOptDefault = {
     expr = (module.mkOpt' lib.types.int 5).default;
     expected = 5;
@@ -105,6 +158,7 @@ in {
 
   testSystemBuilderInjectionArgs = {
     expr = map (name: builtins.hasAttr name (builtins.functionArgs self.lib.system.mkSystem)) [
+      "extraSpecialArgs"
       "matchingHomes"
       "nixosModules"
       "homeModules"
@@ -113,11 +167,13 @@ in {
       true
       true
       true
+      true
     ];
   };
 
   testDarwinBuilderInjectionArgs = {
     expr = map (name: builtins.hasAttr name (builtins.functionArgs self.lib.system.mkDarwin)) [
+      "extraSpecialArgs"
       "matchingHomes"
       "darwinModules"
       "homeModules"
@@ -126,12 +182,19 @@ in {
       true
       true
       true
+      true
     ];
   };
 
   testHomeBuilderInjectionArgs = {
-    expr = builtins.hasAttr "homeModules" (builtins.functionArgs self.lib.system.mkHome);
-    expected = true;
+    expr = map (name: builtins.hasAttr name (builtins.functionArgs self.lib.system.mkHome)) [
+      "extraSpecialArgs"
+      "homeModules"
+    ];
+    expected = [
+      true
+      true
+    ];
   };
 
   testBuilderUsernameRequired = {

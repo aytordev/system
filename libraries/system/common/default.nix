@@ -62,8 +62,10 @@ in {
     inputs,
     system,
     hostname,
+    username,
     matchingHomes,
     homeModules ? null,
+    extraSpecialArgs ? {},
     isNixOS ? true,
   }:
     if matchingHomes != {}
@@ -71,36 +73,42 @@ in {
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        extraSpecialArgs = {
-          inherit inputs system hostname;
-          inherit (inputs) self;
-          lib = extendedLib;
-          flake-parts-lib = inputs.flake-parts.lib;
-        };
+        extraSpecialArgs =
+          {
+            inherit inputs system hostname;
+            inherit (inputs) self;
+            lib = extendedLib;
+            flake-parts-lib = inputs.flake-parts.lib;
+          }
+          // extraSpecialArgs;
         sharedModules = mkHomeModules {inherit extendedLib homeModules;};
         users =
-          mapAttrs' (_name: homeConfig: {
-            name = homeConfig.username;
-            value =
-              {
-                imports = [homeConfig.path];
-                home = {
-                  inherit (homeConfig) username;
-                  homeDirectory = inputs.nixpkgs.lib.mkDefault (
-                    if isNixOS
-                    then "/home/${homeConfig.username}"
-                    else "/Users/${homeConfig.username}"
-                  );
-                };
-              }
-              // (
-                if isNixOS
-                then {
-                  _module.args.username = homeConfig.username;
+          mapAttrs' (
+            _name: homeConfig: let
+              validatedUsername = inputs.self.lib.identity.assertUsername username homeConfig.username;
+            in {
+              name = validatedUsername;
+              value =
+                {
+                  imports = [homeConfig.path];
+                  home = {
+                    username = validatedUsername;
+                    homeDirectory = inputs.nixpkgs.lib.mkDefault (
+                      if isNixOS
+                      then "/home/${validatedUsername}"
+                      else "/Users/${validatedUsername}"
+                    );
+                  };
                 }
-                else {}
-              );
-          })
+                // (
+                  if isNixOS
+                  then {
+                    _module.args.username = validatedUsername;
+                  }
+                  else {}
+                );
+            }
+          )
           matchingHomes;
       };
     }
@@ -114,12 +122,15 @@ in {
     hostname,
     username,
     extendedLib,
-  }: {
-    inherit inputs hostname username;
-    inherit (inputs) self;
-    lib = extendedLib;
-    flake-parts-lib = inputs.flake-parts.lib;
-    format = "system";
-    host = hostname;
-  };
+    extraSpecialArgs ? {},
+  }:
+    {
+      inherit inputs hostname username;
+      inherit (inputs) self;
+      lib = extendedLib;
+      flake-parts-lib = inputs.flake-parts.lib;
+      format = "system";
+      host = hostname;
+    }
+    // extraSpecialArgs;
 }

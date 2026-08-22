@@ -10,6 +10,7 @@ Create a Darwin system configuration.
   matchingHomes ? null,
   darwinModules ? null,
   homeModules ? null,
+  extraSpecialArgs ? {},
   ...
 }: let
   flake = inputs.self or (throw "mkDarwin requires 'inputs.self' to be passed");
@@ -37,7 +38,9 @@ Create a Darwin system configuration.
       inputs
       system
       hostname
+      username
       homeModules
+      extraSpecialArgs
       ;
     matchingHomes = resolvedMatchingHomes;
     isNixOS = false;
@@ -52,6 +55,7 @@ in
         hostname
         username
         extendedLib
+        extraSpecialArgs
         ;
     };
 

@@ -80,6 +80,21 @@ Here's an overview of what my Nix configuration offers:
   [sops-nix](https://github.com/Mic92/sops-nix) for secure and encrypted
   handling of sensitive information.
 
+### Private Profile Contract
+
+The private `secrets` flake is the single source of truth for personal identity
+and encrypted SOPS documents. Its identity outputs are intentionally plain
+metadata:
+
+- `username`
+- `useremail`
+- `userfullname`
+
+The root flake validates these fields once and passes a normalized `identity`
+argument to concrete host and home configurations. Reusable modules do not
+receive the private input. CI substitutes a non-sensitive test double documented
+in [`checks/fixtures/secrets`](checks/fixtures/secrets/README.md).
+
 ## Customization
 
 My Nix configuration is built using
