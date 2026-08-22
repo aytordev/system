@@ -81,6 +81,7 @@
       else builtins.elem "dragon-drop" packageNames && lib.hasInfix "bin/dragon-drop" dragBinding.run
     )
     (desktopConfig.aytordev.programs.desktop.bars.sketchybar.enable == isDarwin)
+    (!(desktopConfig.aytordev.theme ? enable))
     (desktopConfig.aytordev.programs.desktop.browsers.chrome-dev.enable == isDarwin)
     (desktopConfig.aytordev.services.jankyborders.enable == isDarwin)
     ((desktopConfig.home.file ? "Pictures/screenshots/.keep") == isDarwin)

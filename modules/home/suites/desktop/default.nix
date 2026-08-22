@@ -15,7 +15,6 @@ in {
   config = mkIf cfg.enable {
     aytordev = {
       theme = {
-        enable = mkDefault true;
         variant = mkDefault "wave";
       };
 
