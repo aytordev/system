@@ -1,10 +1,10 @@
 {
   inputs,
   lib,
+  self,
   ...
 }: let
-  overlaysConfig = import ../overlays/default.nix {inherit inputs lib;};
-  allOverlays = lib.attrValues (overlaysConfig.flake.overlays or {});
+  allOverlays = lib.attrValues self.overlays;
 in {
   imports = [
     ./dev-shells
