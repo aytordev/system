@@ -18,6 +18,7 @@ Create a NixOS system configuration.
   common = import ../common {inherit inputs;};
 
   extendedLib = common.mkExtendedLib flake inputs.nixpkgs;
+  nixosModulesPath = ../../../modules/nixos;
   resolvedMatchingHomes =
     if matchingHomes == null
     then
@@ -31,7 +32,10 @@ Create a NixOS system configuration.
     else matchingHomes;
   baseNixOSModules =
     if nixosModules == null
-    then extendedLib.importModulesRecursive ../../../modules/nixos
+    then
+      if builtins.pathExists nixosModulesPath
+      then extendedLib.importModulesRecursive nixosModulesPath
+      else []
     else nixosModules;
   homeManagerConfig = common.mkHomeManagerConfig {
     inherit
