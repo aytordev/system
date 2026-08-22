@@ -29,6 +29,10 @@
       "library-overlay"
       "lua-shell-quoting"
       "nix-unit"
+    ];
+    productionCheckNames = [
+      "home-integration"
+      "home-ssh"
       "overlay-composition"
     ];
 
@@ -38,6 +42,8 @@
         name = "${
           if lib.elem name unitCheckNames
           then "unit"
+          else if lib.elem name productionCheckNames
+          then "production"
           else "integration"
         }-${name}";
         value = import (checksPath + "/${name}") {

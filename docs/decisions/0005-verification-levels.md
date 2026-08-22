@@ -10,7 +10,7 @@ Flake checks use four visible levels:
 | --- | --- |
 | `unit-*` | Pure functions, parsers, policies, and small contracts |
 | `integration-*` | Synthetic module and builder compositions |
-| `production-*` | Evaluation and build of discovered real homes and systems |
+| `production-*` | Real homes, systems, and cross-cutting production assertions |
 | `package-builds` | Build every package supported by the current platform |
 
 Formatting remains the standard `treefmt` check. CI runs the complete check set

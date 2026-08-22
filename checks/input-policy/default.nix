@@ -8,17 +8,14 @@
   nixpkgsInputs = builtins.filter (name: builtins.match "nixpkgs.*" name != null) (
     builtins.attrNames rootInputs
   );
-  canonicalFollowers = [
-    "aytordev-nvim"
-    "home-manager"
-    "mcp-servers-nix"
-    "meridian"
-    "nix-darwin"
-    "nix-index-database"
-    "nix-rosetta-builder"
-    "nvf"
-    "sops-nix"
-  ];
+  independentNixpkgsInputs = ["secrets"];
+  usesNixpkgs = name: let
+    inputNode = rootInputs.${name};
+  in
+    (lock.nodes.${inputNode}.inputs or {}) ? nixpkgs;
+  canonicalFollowers = builtins.filter (
+    name: usesNixpkgs name && !builtins.elem name independentNixpkgsInputs
+  ) (builtins.attrNames rootInputs);
   followsCanonical = name: let
     inputNode = rootInputs.${name};
   in
@@ -33,6 +30,11 @@
       if builtins.all followsCanonical canonicalFollowers
       then true
       else throw "root inputs must follow the canonical nixpkgs input"
+    )
+    (
+      if builtins.all usesNixpkgs independentNixpkgsInputs
+      then true
+      else throw "declared independent inputs must provide their own nixpkgs"
     )
   ];
 in
