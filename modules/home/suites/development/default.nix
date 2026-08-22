@@ -145,8 +145,8 @@ in {
         terminal = {
           editors = {
             neovim = {
-              enable = true;
-              default = true;
+              enable = mkDefault true;
+              default = mkDefault true;
             };
           };
 

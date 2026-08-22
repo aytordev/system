@@ -9,7 +9,10 @@
     if pkgs.stdenv.hostPlatform.isDarwin
     then "/Users/${username}"
     else "/home/${username}";
-  mkPortableHome = suite:
+  mkPortableHome = {
+    suite,
+    extraModule ? {},
+  }:
     inputs.self.lib.system.mkHome {
       inherit username;
       system = pkgs.stdenv.hostPlatform.system;
@@ -24,18 +27,35 @@
               fullName = "Portability User";
               home = homeDirectory;
             };
-            suites.${suite}.enable = true;
           };
           home.stateVersion = "25.11";
         }
+        {aytordev.suites.${suite}.enable = true;}
+        extraModule
       ];
     };
-  commonHome = mkPortableHome "common";
-  desktopHome = mkPortableHome "desktop";
-  businessHome = mkPortableHome "business";
+  commonHome = mkPortableHome {suite = "common";};
+  desktopHome = mkPortableHome {suite = "desktop";};
+  businessHome = mkPortableHome {suite = "business";};
+  desktopOverrideHome = mkPortableHome {
+    suite = "desktop";
+    extraModule.aytordev = {
+      theme.variant = "lotus";
+      programs.desktop.browsers.brave.enable = false;
+    };
+  };
+  developmentOverrideHome = mkPortableHome {
+    suite = "development";
+    extraModule.aytordev.programs.terminal.editors.neovim = {
+      enable = false;
+      default = false;
+    };
+  };
   inherit (commonHome) config;
   desktopConfig = desktopHome.config;
   businessConfig = businessHome.config;
+  desktopOverrideConfig = desktopOverrideHome.config;
+  developmentOverrideConfig = developmentOverrideHome.config;
   packageNames = map lib.getName config.home.packages;
   dragBinding =
     lib.findFirst (
@@ -66,6 +86,10 @@
     )
     (!businessConfig.aytordev.programs.terminal.tools.bitwarden-cli.settings.apiKey.useSops)
     (!(businessConfig.home.file ? ".local/bin/rbw-unlock-sops"))
+    (desktopOverrideConfig.aytordev.theme.variant == "lotus")
+    (!desktopOverrideConfig.aytordev.programs.desktop.browsers.brave.enable)
+    (!developmentOverrideConfig.aytordev.programs.terminal.editors.neovim.enable)
+    (!developmentOverrideConfig.aytordev.programs.terminal.editors.neovim.default)
   ];
 in
   assert builtins.all (test: test) tests;
