@@ -199,7 +199,7 @@ in {
     };
 
     programs = {
-      home-manager = enabled;
+      home-manager.enable = mkDefault true;
       # FIXME: breaks zsh aliases
       # pay-respects = mkDefault enabled;
       bash.shellAliases = bashAliases;
