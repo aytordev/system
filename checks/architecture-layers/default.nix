@@ -81,5 +81,25 @@ pkgs.runCommand "architecture-layers-check"
       'aytordev[[:space:]]*=' \
       "$TMPDIR/builders.ast"
 
+  reject_matches \
+      "Home suites force downstream policy" \
+      'mkForce' \
+      ${inputs.self}/modules/home/suites
+
+  reject_matches \
+      "Darwin suites force downstream policy" \
+      'mkForce' \
+      ${inputs.self}/modules/darwin/suites
+
+  reject_matches \
+      "Darwin archetypes force downstream policy" \
+      'mkForce' \
+      ${inputs.self}/modules/darwin/archetypes
+
+  reject_matches \
+      "Darwin modules own user LaunchAgents" \
+      'launchd\.user\.agents' \
+      ${inputs.self}/modules/darwin
+
   touch "$out"
 ''

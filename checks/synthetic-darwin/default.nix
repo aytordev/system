@@ -39,7 +39,11 @@
     };
     modules = [
       (
-        moduleArgs @ {inputs, ...}: {
+        moduleArgs @ {
+          inputs,
+          options,
+          ...
+        }: {
           assertions = [
             {
               assertion = !(inputs ? secrets);
@@ -48,6 +52,14 @@
             {
               assertion = !(moduleArgs ? secretsRoot);
               message = "Synthetic Darwin systems must not receive the private secrets root";
+            }
+            {
+              assertion = options.aytordev.nix ? package;
+              message = "The shared Nix capability must expose a package option";
+            }
+            {
+              assertion = options.aytordev.services.openssh ? package;
+              message = "The Darwin OpenSSH capability must expose a package option";
             }
           ];
           aytordev.user = {
