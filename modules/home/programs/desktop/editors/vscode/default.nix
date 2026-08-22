@@ -4,19 +4,20 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption mkIf mkPackageOption;
 
   themeCfg = config.aytordev.theme;
   cfg = config.aytordev.programs.desktop.editors.vscode;
 in {
   options.aytordev.programs.desktop.editors.vscode = {
     enable = mkEnableOption "Whether or not to enable vscode";
+    package = mkPackageOption pkgs "vscode" {};
   };
 
   config = mkIf cfg.enable {
     programs.vscode = {
       enable = true;
-      package = pkgs.vscode;
+      inherit (cfg) package;
 
       profiles = let
         kanagawa-theme = pkgs.vscode-utils.buildVscodeMarketplaceExtension {
@@ -42,7 +43,8 @@ in {
           "breadcrumbs.enabled" = true;
 
           # Debug
-          "debug.console.fontFamily" = lib.mkForce "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
+          "debug.console.fontFamily" =
+            lib.mkForce "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
           "debug.openDebug" = "neverOpen";
           "debug.showInStatusBar" = "never";
           "debug.toolBarLocation" = "hidden";
@@ -62,7 +64,8 @@ in {
           "editor.occurrencesHighlight" = "off";
           "editor.overviewRulerBorder" = false;
           "editor.folding" = false;
-          "editor.inlayHints.fontFamily" = lib.mkForce "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
+          "editor.inlayHints.fontFamily" =
+            lib.mkForce "MonaspiceNe Nerd Font Mono, MonaspiceNe Nerd Font Propo, Monaspace Neon, monospace";
           "editor.inlineSuggest.enabled" = true;
           "editor.snippetSuggestions" = "top";
           "editor.lightbulb.enabled" = "off";

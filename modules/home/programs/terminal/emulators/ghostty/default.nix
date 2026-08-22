@@ -4,7 +4,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkOption types;
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    types
+    ;
 
   # Get the path to the themes directory relative to this file
   themesDir = ./themes;
@@ -113,6 +119,15 @@ in {
   options.aytordev.programs.terminal.emulators.ghostty = {
     enable = mkEnableOption "ghostty terminal emulator";
 
+    package = mkOption {
+      type = types.nullOr types.package;
+      default =
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then null
+        else pkgs.ghostty;
+      description = "The Ghostty package to use, or null to use the system installation.";
+    };
+
     theme = mkOption {
       type = types.nullOr (types.enum availableThemes);
       default =
@@ -129,33 +144,35 @@ in {
     };
   };
 
-  config = mkIf cfg.enable (let
-    # Combine all settings including theme if specified
-    finalSettings =
-      baseSettings
-      // (
-        if cfg.enableThemes && cfg.theme != null
-        then {
-          "theme" = "${config.xdg.configHome}/ghostty/themes/${cfg.theme}.conf";
-        }
-        else {}
-      );
-  in {
-    # Add theme symlinks to XDG config if themes are enabled
-    xdg.configFile = (lib.mkIf cfg.enableThemes themeSymlinks) // shaderSymlinks;
+  config = mkIf cfg.enable (
+    let
+      # Combine all settings including theme if specified
+      finalSettings =
+        baseSettings
+        // (
+          if cfg.enableThemes && cfg.theme != null
+          then {
+            "theme" = "${config.xdg.configHome}/ghostty/themes/${cfg.theme}.conf";
+          }
+          else {}
+        );
+    in {
+      # Add theme symlinks to XDG config if themes are enabled
+      xdg.configFile = (lib.mkIf cfg.enableThemes themeSymlinks) // shaderSymlinks;
 
-    programs.ghostty = {
-      enable = true;
-      package = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin null;
+      programs.ghostty = {
+        enable = true;
+        inherit (cfg) package;
 
-      installBatSyntax = pkgs.stdenv.hostPlatform.isLinux;
-      installVimSyntax = pkgs.stdenv.hostPlatform.isLinux;
+        installBatSyntax = pkgs.stdenv.hostPlatform.isLinux;
+        installVimSyntax = pkgs.stdenv.hostPlatform.isLinux;
 
-      enableBashIntegration = true;
-      enableFishIntegration = true;
-      enableZshIntegration = true;
+        enableBashIntegration = true;
+        enableFishIntegration = true;
+        enableZshIntegration = true;
 
-      settings = finalSettings;
-    };
-  });
+        settings = finalSettings;
+      };
+    }
+  );
 }

@@ -4,19 +4,20 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption mkIf mkPackageOption;
   themeCfg = config.aytordev.theme;
 
   cfg = config.aytordev.programs.desktop.editors.zed;
 in {
   options.aytordev.programs.desktop.editors.zed = {
     enable = mkEnableOption "Whether or not to enable zed-editor";
+    package = mkPackageOption pkgs "zed-editor" {};
   };
 
   config = mkIf cfg.enable {
     programs.zed-editor = {
       enable = true;
-      package = pkgs.zed-editor;
+      inherit (cfg) package;
 
       # Extensions - https://github.com/zed-industries/extensions/tree/main/extensions
       extensions = [
@@ -110,7 +111,12 @@ in {
         lsp = {
           "tailwindcss-language-server" = {
             "settings" = {
-              "classAttributes" = ["class" "className" "ngClass" "styles"];
+              "classAttributes" = [
+                "class"
+                "className"
+                "ngClass"
+                "styles"
+              ];
             };
           };
         };
@@ -126,9 +132,20 @@ in {
             };
           };
           "Python" = {
-            "format_on_save" = {"language_server" = {"name" = "ruff";};};
-            "formatter" = {"language_server" = {"name" = "ruff";};};
-            "language_servers" = ["pyright" "ruff"];
+            "format_on_save" = {
+              "language_server" = {
+                "name" = "ruff";
+              };
+            };
+            "formatter" = {
+              "language_server" = {
+                "name" = "ruff";
+              };
+            };
+            "language_servers" = [
+              "pyright"
+              "ruff"
+            ];
           };
         };
         # Use zed commit editor
@@ -140,8 +157,15 @@ in {
         };
         # File syntax highlighting
         file_types = {
-          "Dockerfile" = ["Dockerfile" "Dockerfile.*"];
-          "JSON" = ["json" "jsonc" "*.code-snippets"];
+          "Dockerfile" = [
+            "Dockerfile"
+            "Dockerfile.*"
+          ];
+          "JSON" = [
+            "json"
+            "jsonc"
+            "*.code-snippets"
+          ];
         };
         # File scan exclusions, hide on the file explorer and search
         file_scan_exclusions = [
@@ -396,15 +420,24 @@ in {
         {
           "context" = "EmptyPane || SharedScreen || vim_mode == normal";
           "bindings" = {
-            "space r t" = ["editor::SpawnNearestTask" {"reveal" = "no_focus";}];
+            "space r t" = [
+              "editor::SpawnNearestTask"
+              {"reveal" = "no_focus";}
+            ];
           };
         }
         # Sneak motion, refer https://github.com/zed-industries/zed/pull/22793/files#diff-90c0cb07588e2f309c31f0bb17096728b8f4e0bad71f3152d4d81ca867321c68
         {
           "context" = "vim_mode == normal || vim_mode == visual";
           "bindings" = {
-            "s" = ["vim::PushSneak" {}];
-            "S" = ["vim::PushSneakBackward" {}];
+            "s" = [
+              "vim::PushSneak"
+              {}
+            ];
+            "S" = [
+              "vim::PushSneakBackward"
+              {}
+            ];
           };
         }
         # Subword motion is not working really nice with `ciw`, disable for now
