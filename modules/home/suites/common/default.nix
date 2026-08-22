@@ -5,14 +5,19 @@
   osConfig ? {},
   ...
 }: let
-  inherit (lib) mkIf mkDefault;
+  inherit
+    (lib)
+    getExe
+    getExe'
+    mkDefault
+    mkIf
+    ;
   inherit (lib.aytordev) enabled disabled;
 
   cfg = config.aytordev.suites.common;
   isWSL = osConfig.aytordev.archetypes.wsl.enable or false;
   nhFlake = config.aytordev.programs.terminal.tools.nh.flake;
 
-  # Bash-specific aliases (uses bash syntax like $(), f(){}, $VAR)
   bashAliases = {
     # Closure size checking aliases
     ncs-sys = ''f(){ nix build ".#nixosConfigurations.$1.config.system.build.toplevel" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#nixosConfigurations.$1.config.system.build.toplevel.outPath") | tail -1; }; f'';
@@ -26,6 +31,24 @@
         else "xdg-open"
       } store.svg"
     }";
+    gc-check = "nix-store --gc --print-roots | egrep -v \"^(/nix/var|/run/\\w+-system|\\{memory|/proc)\"";
+    nixnuke = ''
+      sudo pkill -9 -f "nix-(daemon|store|build)" 2>/dev/null
+      for pid in $(ps -axo pid,user | ${getExe pkgs.gnugrep} -E '[_]?nixbld[0-9]+' | ${getExe pkgs.gawk} '{print $1}'); do
+        sudo kill -9 "$pid" 2>/dev/null
+      done
+      if [ "$(uname)" = "Darwin" ]; then
+        sudo launchctl kickstart -k system/org.nixos.nix-daemon
+      else
+        sudo systemctl restart nix-daemon.service
+      fi
+    '';
+    remove-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -delete";
+    print-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -print";
+    usage = "${getExe' pkgs.coreutils "du"} -ah -d1 | sort -rn 2>/dev/null";
+    psg = "${getExe pkgs.ps} aux | grep";
+    hmvar-reload = ''__HM_ZSH_SESS_VARS_SOURCED=0 source "/etc/profiles/per-user/${config.aytordev.user.name}/etc/profile.d/hm-session-vars.sh"'';
+    clear = "clear; ${getExe config.programs.fastfetch.package}";
   };
 in {
   options.aytordev.suites.common = {
@@ -35,9 +58,22 @@ in {
   config = mkIf cfg.enable {
     home = {
       # Silence login messages in shells
-      file = {
-        ".hushlogin".text = "";
-      };
+      file =
+        {
+          ".hushlogin".text = "";
+          "Desktop/.keep".text = "";
+          "Documents/.keep".text = "";
+          "Downloads/.keep".text = "";
+          "Music/.keep".text = "";
+          "Pictures/.keep".text = "";
+          "Videos/.keep".text = "";
+        }
+        // lib.optionalAttrs (config.aytordev.user.icon != null) {
+          ".face".source = config.aytordev.user.icon;
+          ".face.icon".source = config.aytordev.user.icon;
+          "Pictures/${config.aytordev.user.icon.fileName or (baseNameOf config.aytordev.user.icon)}".source =
+            config.aytordev.user.icon;
+        };
 
       sessionVariables = {
         LESSHISTFILE = "${config.xdg.cacheHome}/less.history";
@@ -46,9 +82,38 @@ in {
 
       # Only shell-agnostic aliases in home.shellAliases (applies to all shells including Nushell)
       shellAliases =
-        lib.optionalAttrs (nhFlake != null) {
-          nixcfg = "nvim ${nhFlake}/flake.nix";
+        {
+          cleanup = "sudo nix-collect-garbage --delete-older-than 3d; nix-collect-garbage -d";
+          bloat = "nix path-info -Sh /run/current-system";
+          curgen = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
+          repair = "nix-store --verify --check-contents --repair";
+          flake = "nix flake";
+          nix = "nix -vL";
+          gsed = getExe pkgs.gnused;
+          rcp = "${getExe pkgs.rsync} -rahP --mkpath --modify-window=1";
+          rmv = "${getExe pkgs.rsync} -rahP --mkpath --modify-window=1 --remove-sent-files";
+          tarnow = "${getExe pkgs.gnutar} -acf ";
+          untar = "${getExe pkgs.gnutar} -zxvf ";
+          wget = "${getExe pkgs.wget} -c ";
+          dfh = "${getExe' pkgs.coreutils "df"} -h";
+          duh = "${getExe' pkgs.coreutils "du"} -h";
+          home = "cd ~";
+          ".." = "cd ..";
+          "..." = "cd ../..";
+          "...." = "cd ../../..";
+          "....." = "cd ../../../..";
+          "......" = "cd ../../../../..";
+          dir = "${getExe' pkgs.coreutils "dir"} --color=auto";
+          egrep = "${getExe' pkgs.gnugrep "egrep"} --color=auto";
+          fgrep = "${getExe' pkgs.gnugrep "fgrep"} --color=auto";
+          vdir = "${getExe' pkgs.coreutils "vdir"} --color=auto";
+          clr = "clear";
+          pls = "sudo";
+          myip = "${getExe pkgs.curl} ifconfig.me";
+          genpass = "${getExe pkgs.openssl} rand -base64 20";
+          sha = "shasum -a 256";
         }
+        // lib.optionalAttrs (nhFlake != null) {nixcfg = "nvim ${nhFlake}/flake.nix";}
         // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
           # Prevent the shell alias from overriding the macOS log command.
           log = "command log";
@@ -134,6 +199,7 @@ in {
     };
 
     programs = {
+      home-manager = enabled;
       # FIXME: breaks zsh aliases
       # pay-respects = mkDefault enabled;
       bash.shellAliases = bashAliases;
