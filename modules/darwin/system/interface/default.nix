@@ -3,9 +3,17 @@
   lib,
   ...
 }: let
-  inherit (lib) mkIf mkMerge mkEnableOption mapAttrs' nameValuePair;
+  inherit
+    (lib)
+    mkIf
+    mkMerge
+    mkEnableOption
+    mapAttrs'
+    nameValuePair
+    ;
 
   cfg = config.aytordev.system.interface;
+  userHome = config.users.users.${config.aytordev.user.name}.home;
 
   mkHotCorners = corners: mapAttrs' (pos: action: nameValuePair "wvous-${pos}-corner" action) corners;
 in {
@@ -14,15 +22,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    system.activationScripts.extraActivation.text = ''
-      echo "Creating screenshots directory..."
-      mkdir -p "$HOME/Pictures/screenshots"
-      touch "$HOME/Pictures/screenshots/.keep"
-      chown "$USER" "$HOME/Pictures/screenshots"
-      chown "$USER" "$HOME/Pictures/screenshots/.keep"
-      /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-    '';
-
     system = {
       defaults = mkMerge [
         {
@@ -115,7 +114,7 @@ in {
           screencapture = {
             show-thumbnail = false;
             type = "png";
-            location = "~/Pictures/screenshots/";
+            location = "${userHome}/Pictures/screenshots/";
             disable-shadow = true;
           };
           screensaver.askForPassword = true;

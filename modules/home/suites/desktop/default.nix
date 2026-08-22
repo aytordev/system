@@ -57,6 +57,10 @@ in {
       # TODO: Add more packages
     ];
 
+    home.file = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+      "Pictures/screenshots/.keep".text = "";
+    };
+
     targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       copyApps.enable = true;
       linkApps.enable = false;
