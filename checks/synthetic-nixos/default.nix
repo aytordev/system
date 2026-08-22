@@ -32,7 +32,6 @@
     hostname = "ci-nixos";
     inherit (identity) username;
     hostModule = null;
-    nixosModules = [];
     extraSpecialArgs = {inherit identity;};
     matchingHomes.ci = {
       inherit (identity) username;
