@@ -2,7 +2,17 @@
 # All configurable options for the modular sketchybar status bar.
 {lib}: let
   inherit (lib) mkEnableOption mkOption;
-  inherit (lib.types) package listOf str int float enum nullOr bool;
+  inherit
+    (lib.types)
+    package
+    listOf
+    str
+    int
+    float
+    enum
+    nullOr
+    bool
+    ;
 in {
   enable = mkEnableOption "Sketchybar status bar";
 
@@ -19,7 +29,11 @@ in {
 
   # Theme override (optional - uses global theme by default)
   themeOverride = mkOption {
-    type = nullOr (enum ["wave" "dragon" "lotus"]);
+    type = nullOr (enum [
+      "wave"
+      "dragon"
+      "lotus"
+    ]);
     default = null;
     description = ''
       Override the global Kanagawa theme variant for Sketchybar only.
@@ -48,7 +62,10 @@ in {
 
   # Icon style
   iconsStyle = mkOption {
-    type = enum ["sf_symbols" "nerdfont"];
+    type = enum [
+      "sf_symbols"
+      "nerdfont"
+    ];
     default = "nerdfont";
     description = "Icon set to use (SF Symbols or Nerd Font icons).";
   };
@@ -76,7 +93,11 @@ in {
       description = "Whether the bar stays visible when switching spaces.";
     };
     topmost = mkOption {
-      type = enum ["off" "window" "layer"];
+      type = enum [
+        "off"
+        "window"
+        "layer"
+      ];
       default = "off";
       description = "Bar topmost mode.";
     };
@@ -101,7 +122,7 @@ in {
       description = "Border width for the bar.";
     };
     color = mkOption {
-      type = str;
+      type = lib.types.addCheck str (value: builtins.match "0x[0-9A-Fa-f]{8}" value != null);
       default = "0x00000000";
       description = "Background color of the bar (ARGB hex literal, e.g. 0xAARRGGBB).";
     };
@@ -174,7 +195,14 @@ in {
       };
       whitelist = mkOption {
         type = listOf str;
-        default = ["Spotify" "Music" "Plexamp" "Safari" "Firefox" "Google Chrome"];
+        default = [
+          "Spotify"
+          "Music"
+          "Plexamp"
+          "Safari"
+          "Firefox"
+          "Google Chrome"
+        ];
         description = "Applications to show media playback info for.";
       };
     };
