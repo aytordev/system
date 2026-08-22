@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   inputs,
   ...
@@ -133,6 +134,8 @@ in {
               min_width = 45;
             };
           };
+
+          nh.flake = "${config.home.homeDirectory}/Developer/system";
 
           # Ollama — M3 Ultra optimized (service managed by darwin launchd module)
           ollama = {

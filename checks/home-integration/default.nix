@@ -30,6 +30,8 @@
     (lib.hasInfix "homeConfigurations.\"${username}@wang-lin\"" nixdOptions.home-manager.expr)
     (!(lib.hasInfix "/home/aytordev" nixdOptions.home-manager.expr))
     (builtins.elem "/etc/profiles/per-user/${username}/share/lua/5.1" lsp.emmylua-ls.initialization.Lua.workspace.library)
+    (home.programs.nh.flake == "${home.home.homeDirectory}/Developer/system")
+    (home.home.shellAliases.nixcfg == "nvim ${home.programs.nh.flake}/flake.nix")
   ];
 in
   assert builtins.all (test: test) tests;

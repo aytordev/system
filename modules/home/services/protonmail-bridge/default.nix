@@ -4,7 +4,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkOption types;
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    types
+    ;
   cfg = config.aytordev.services.protonmail-bridge;
 
   # Bridge self-updater bug (root cause fixed by overlay):
@@ -46,7 +52,14 @@ in {
     # After initial setup, the service can run with --noninteractive
 
     logLevel = mkOption {
-      type = types.enum ["panic" "fatal" "error" "warn" "info" "debug"];
+      type = types.enum [
+        "panic"
+        "fatal"
+        "error"
+        "warn"
+        "info"
+        "debug"
+      ];
       default = "info";
       description = "Set the log level for ProtonMail Bridge";
     };
@@ -59,6 +72,13 @@ in {
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = pkgs.stdenv.hostPlatform.isDarwin;
+        message = "aytordev.services.protonmail-bridge is supported only on Darwin";
+      }
+    ];
+
     home.packages = [pkgs.protonmail-bridge];
 
     # Service configuration
@@ -67,8 +87,14 @@ in {
     launchd.agents.protonmail-bridge = {
       enable = true;
       config = {
-        ProgramArguments = ["/bin/sh" "-c" "exec ${startScript}"];
-        KeepAlive = {SuccessfulExit = false;};
+        ProgramArguments = [
+          "/bin/sh"
+          "-c"
+          "exec ${startScript}"
+        ];
+        KeepAlive = {
+          SuccessfulExit = false;
+        };
         RunAtLoad = true;
         ProcessType = "Background";
         # Throttle restarts to avoid rapid crash loops saturating disk

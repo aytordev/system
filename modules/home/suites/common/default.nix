@@ -10,6 +10,7 @@
 
   cfg = config.aytordev.suites.common;
   isWSL = osConfig.aytordev.archetypes.wsl.enable or false;
+  nhFlake = config.aytordev.programs.terminal.tools.nh.flake;
 
   # Bash-specific aliases (uses bash syntax like $(), f(){}, $VAR)
   bashAliases = {
@@ -45,8 +46,8 @@ in {
 
       # Only shell-agnostic aliases in home.shellAliases (applies to all shells including Nushell)
       shellAliases =
-        {
-          nixcfg = "nvim ~/aytordev/flake.nix";
+        lib.optionalAttrs (nhFlake != null) {
+          nixcfg = "nvim ${nhFlake}/flake.nix";
         }
         // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
           # Prevent the shell alias from overriding the macOS log command.
@@ -126,7 +127,7 @@ in {
       };
 
       services = {
-        protonmail-bridge = mkDefault enabled;
+        protonmail-bridge.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
       };
 
       system.input.enable = lib.mkDefault pkgs.stdenv.hostPlatform.isDarwin;

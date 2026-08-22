@@ -2,14 +2,13 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   cfg = config.aytordev.programs.terminal.tools.nh;
   inherit (lib) mkIf;
   defaultConfig = {
     clean.enable = true;
-    flake = "/Users/${inputs.secrets.username}";
+    flake = null;
   };
   nhPackage = pkgs.nh;
   nixreAlias = "nh ${
@@ -38,9 +37,9 @@ in {
       };
     };
     flake = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.nullOr lib.types.str;
       default = defaultConfig.flake;
-      description = "Path to the flake to use with nh";
+      description = "Path to the mutable flake checkout used by nh";
     };
   };
   config = mkIf cfg.enable {

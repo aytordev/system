@@ -27,7 +27,7 @@ in {
       ]
       ++ lib.optional pkgs.stdenv.hostPlatform.isLinux {
         on = ["<C-v>"];
-        run = "shell 'dragon -x -i -T \"$1\"'";
+        run = "shell '${lib.getExe pkgs.dragon-drop} -x -i -T \"$1\"'";
         desc = "Drag and drop files";
       }
       ++ lib.optionals (lib.hasAttr "smart-enter" enabledPlugins) [

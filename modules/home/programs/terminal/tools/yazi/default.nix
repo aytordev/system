@@ -28,7 +28,7 @@ in {
         pkgs.unar
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-        pkgs.xdragon
+        pkgs.dragon-drop
       ];
     programs.yazi = {
       enable = true;
