@@ -11,33 +11,7 @@
 
   # ── Helpers ────────────────────────────────────────────────────────────
 
-  # Convert Nix attrs to Lua table syntax
-  toLuaTable = attrs: let
-    toLuaValue = v:
-      if builtins.isString v
-      then "\"${v}\""
-      else if builtins.isBool v
-      then
-        (
-          if v
-          then "true"
-          else "false"
-        )
-      else if builtins.isAttrs v
-      then toLuaTable v
-      else if builtins.isList v
-      then toLuaList v
-      else builtins.toString v;
-    fields = lib.mapAttrsToList (k: v: "${k} = ${toLuaValue v}") attrs;
-  in "{\n${builtins.concatStringsSep ",\n" fields}\n}";
-
-  # Convert Nix list to Lua array syntax
-  toLuaList = list: let
-    toLuaValue = v:
-      if builtins.isString v
-      then "\"${v}\""
-      else builtins.toString v;
-  in "{${builtins.concatStringsSep ", " (map toLuaValue list)}}";
+  toLua = import ./to-lua.nix {inherit lib;};
 
   # ── Color Mapping ──────────────────────────────────────────────────────
 
@@ -96,23 +70,21 @@
   # ── Layout Generation ────────────────────────────────────────────────
 
   # Separator: invisible item creating a gap between bracket groups
-  mkSeparator = name: pos: ''sbar.add("item", "${name}", {position = "${pos}", icon = {drawing = false}, label = {drawing = false}})'';
+  mkSeparator = name: pos: ''sbar.add("item", ${toLua name}, {position = ${toLua pos}, icon = {drawing = false}, label = {drawing = false}})'';
 
   # Bracket using range syntax: wraps all items visually between first and last
-  mkRangeBracket = name: first: last: ''sbar.add("bracket", "${name}", {"${first}", "${last}"}, {background = {drawing = false}})'';
+  mkRangeBracket = name: first: last: ''sbar.add("bracket", ${toLua name}, {${toLua first}, ${toLua last}}, {background = {drawing = false}})'';
 
   # Bracket with explicit item list
   mkListBracket = name: items: let
-    itemsStr = builtins.concatStringsSep ", " (map (i: "\"${i}\"") items);
-  in ''sbar.add("bracket", "${name}", {${itemsStr}}, {background = {drawing = false}})'';
+    itemsStr = builtins.concatStringsSep ", " (map toLua items);
+  in ''sbar.add("bracket", ${toLua name}, {${itemsStr}}, {background = {drawing = false}})'';
 
   # ── Section flags ──
   hasMenus = cfg.items.menus.enable;
   hasSpaces = cfg.items.workspaces.enable || cfg.items.frontApp.enable;
   hasResources =
-    cfg.items.widgets.cpu.enable
-    || cfg.items.widgets.ram.enable
-    || cfg.items.widgets.network.enable;
+    cfg.items.widgets.cpu.enable || cfg.items.widgets.ram.enable || cfg.items.widgets.network.enable;
 
   # ── Resource bracket items ──
   resourceItems =
@@ -140,7 +112,10 @@
   leftItemOrder =
     lib.optionals hasMenus ["menu_trigger"]
     ++ lib.optionals hasMenus ["cosmic_sep"]
-    ++ lib.optionals cfg.items.workspaces.enable ["aerospace.mode" "/space\\\\..*/"]
+    ++ lib.optionals cfg.items.workspaces.enable [
+      "aerospace.mode"
+      "/space\\\\..*/"
+    ]
     ++ lib.optionals cfg.items.frontApp.enable ["front_app"]
     ++ lib.optionals (hasSpaces && hasResources) ["separator.resources"]
     ++ lib.optionals cfg.items.widgets.cpu.enable ["widgets.cpu"]
@@ -243,10 +218,10 @@
           ''sbar.exec("sketchybar --reorder ${reorderStr}")''
         ]
         ++ lib.optionals hasSpaces [
-          ''sbar.add("bracket", "spaces.bracket", {"${spacesFirst}", "${spacesLast}"}, {background = {drawing = false}})''
+          ''sbar.add("bracket", "spaces.bracket", {${toLua spacesFirst}, ${toLua spacesLast}}, {background = {drawing = false}})''
         ]
         ++ [
-          ''end)''
+          "end)"
         ]
       else [];
 
@@ -254,7 +229,13 @@
       allLines
       ++ (
         if (bracketLines != [] || deferredLines != [])
-        then ["" ''local colors = require("colors")''] ++ bracketLines ++ deferredLines
+        then
+          [
+            ""
+            ''local colors = require("colors")''
+          ]
+          ++ bracketLines
+          ++ deferredLines
         else []
       );
   in ''
@@ -291,7 +272,15 @@
   # ── Packages ───────────────────────────────────────────────────────────
 
   # Base packages always needed
-  inherit (pkgs) coreutils curl gh gh-notify gnugrep gnused;
+  inherit
+    (pkgs)
+    coreutils
+    curl
+    gh
+    gh-notify
+    gnugrep
+    gnused
+    ;
   basePackages = [
     coreutils
     curl
@@ -304,7 +293,10 @@
   # Conditional packages based on enabled items
   conditionalPackages =
     lib.optionals cfg.items.workspaces.enable [pkgs.aerospace]
-    ++ lib.optionals cfg.items.widgets.volume.enable [pkgs.blueutil pkgs.switchaudio-osx]
+    ++ lib.optionals cfg.items.widgets.volume.enable [
+      pkgs.blueutil
+      pkgs.switchaudio-osx
+    ]
     ++ lib.optionals cfg.items.menus.enable [pkgs.jankyborders];
 
   allPackages = basePackages ++ conditionalPackages ++ cfg.extraPackages;
@@ -330,21 +322,21 @@
   nixConstantsLua = let
     itemsSection =
       if itemsConfig != {}
-      then ",\nitems = ${toLuaTable itemsConfig}"
+      then ",\nitems = ${toLua itemsConfig}"
       else "";
   in ''
     -- Auto-generated by Nix. Do not edit manually.
     return {
-      colors = ${toLuaTable sketchybarColors},
-      themes = ${toLuaTable allThemeVariants},
-      active_variant = "${themeCfg.variant}",
+      colors = ${toLua sketchybarColors},
+      themes = ${toLua allThemeVariants},
+      active_variant = ${toLua themeCfg.variant},
       fonts = {
-        text = "${cfg.fonts.text}",
-        icon = "${cfg.fonts.icon}",
+        text = ${toLua cfg.fonts.text},
+        icon = ${toLua cfg.fonts.icon},
         size = ${toString cfg.fonts.size}
       },
       settings = {
-        icons_style = "${cfg.iconsStyle}"
+        icons_style = ${toLua cfg.iconsStyle}
       },
       bar = {
         height = ${toString cfg.bar.height},
@@ -359,7 +351,7 @@
       then "true"
       else "false"
     },
-        topmost = "${cfg.bar.topmost}",
+        topmost = ${toLua cfg.bar.topmost},
         padding_left = ${toString cfg.bar.paddingLeft},
         padding_right = ${toString cfg.bar.paddingRight},
         corner_radius = ${toString cfg.bar.cornerRadius},
@@ -419,5 +411,11 @@
     "sketchybar/helpers/icon_map.lua".source = "${pkgs.aytordev.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
   };
 in {
-  inherit allPackages shellAliases brewIntegration mainConfig configFiles;
+  inherit
+    allPackages
+    shellAliases
+    brewIntegration
+    mainConfig
+    configFiles
+    ;
 }
