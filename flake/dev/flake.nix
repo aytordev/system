@@ -12,11 +12,9 @@
         nix-rosetta-builder.follows = "";
         home-manager.follows = "";
         nix-darwin.follows = "";
-        nixpkgs-stable.follows = "";
       };
     };
     nixpkgs.follows = "root/nixpkgs";
-    nixpkgs-unstable.follows = "root/nixpkgs-unstable";
 
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
