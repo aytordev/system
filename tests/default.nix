@@ -31,6 +31,7 @@
     (import ../modules/home/programs/terminal/tools/claude-code/hooks/pre-tool-audit.nix {})
     .PreToolUse;
   claudeAuditScript = (builtins.head (builtins.head claudeAuditCommand).hooks).command;
+  warpModule = builtins.readFile ../modules/home/programs/terminal/emulators/warp/default.nix;
 in {
   testBoolToNumTrue = {
     expr = module.boolToNum true;
@@ -73,6 +74,11 @@ in {
       b = 2;
       c = 3;
     };
+  };
+
+  testWarpHasNoDestructiveMigration = {
+    expr = lib.hasInfix "rm -rf" warpModule;
+    expected = false;
   };
 
   testConfigurationDirectoriesRequireDefault = {
