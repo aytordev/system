@@ -74,10 +74,39 @@
   discoveredClaudeModules = builtins.filter (
     modulePath: extendedLib.hasInfix "/claude-code" (toString modulePath)
   ) (extendedLib.importModulesRecursive ../../modules/home);
+  ollamaHome = mkHome [
+    ../../modules/home/programs/terminal/tools/ollama
+    {
+      aytordev.programs.terminal.tools.ollama = {
+        enable = true;
+        advancedScripts.enable = true;
+        integrations.zed = false;
+        modelPresets = ["general"];
+      };
+    }
+  ];
+  ollamaPackageNames = map extendedLib.getName ollamaHome.config.home.packages;
+  discoveredOllamaModules = builtins.filter (
+    modulePath: extendedLib.hasInfix "/ollama" (toString modulePath)
+  ) (extendedLib.importModulesRecursive ../../modules/home);
   tests = [
     (claudeHome.config.programs.claude-code.settings.permissions.defaultMode == "acceptEdits")
     (builtins.length discoveredClaudeModules == 1)
     (extendedLib.hasSuffix "/claude-code" (toString (builtins.head discoveredClaudeModules)))
+    (
+      ollamaHome.config.aytordev.programs.terminal.tools.ollama.models
+      == [
+        "llama3.2"
+        "mistral"
+      ]
+    )
+    (ollamaHome.options.aytordev.programs.terminal.tools.ollama.integrations ? zed)
+    (builtins.elem "ollama-chat" ollamaPackageNames)
+    (builtins.elem "ollama-rag" ollamaPackageNames)
+    (builtins.elem "ollama-validate" ollamaPackageNames)
+    (builtins.elem "ollama-status" ollamaPackageNames)
+    (builtins.length discoveredOllamaModules == 1)
+    (extendedLib.hasSuffix "/ollama" (toString (builtins.head discoveredOllamaModules)))
   ];
 in
   assert builtins.all (test: test) tests;

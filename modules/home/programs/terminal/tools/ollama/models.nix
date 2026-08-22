@@ -3,7 +3,15 @@
   lib,
   ...
 }: let
-  inherit (lib) mkIf mkOption mkDefault types flatten attrNames;
+  inherit
+    (lib)
+    mkIf
+    mkOption
+    mkDefault
+    types
+    flatten
+    attrNames
+    ;
 
   cfg = config.aytordev.programs.terminal.tools.ollama;
 

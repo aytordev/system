@@ -3,7 +3,15 @@
   lib,
   ...
 }: let
-  inherit (lib) mkIf mkOption types mkDefault elem head;
+  inherit
+    (lib)
+    mkIf
+    mkOption
+    types
+    mkDefault
+    elem
+    head
+    ;
   cfg = config.aytordev.programs.terminal.tools.ollama;
   integrationsCfg = cfg.integrations;
 in {

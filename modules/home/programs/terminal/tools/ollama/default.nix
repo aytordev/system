@@ -15,6 +15,16 @@
 
   cfg = config.aytordev.programs.terminal.tools.ollama;
 in {
+  imports = [
+    ./advanced-scripts.nix
+    ./integrations.nix
+    ./models.nix
+    ./scripts.nix
+    ./service.nix
+    ./utils.nix
+    ./validate.nix
+  ];
+
   options.aytordev.programs.terminal.tools.ollama = {
     enable = mkEnableOption "Ollama - Run large language models locally";
 

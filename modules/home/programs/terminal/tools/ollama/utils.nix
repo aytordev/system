@@ -144,7 +144,12 @@ in {
   config = {
     _module.args.ollamaUtils = {
       inherit constants shellUtils modelOperations;
-      inherit createModelPullScript createStatusScript createRestartScript createLogsScript;
+      inherit
+        createModelPullScript
+        createStatusScript
+        createRestartScript
+        createLogsScript
+        ;
     };
   };
 }
