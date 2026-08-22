@@ -18,7 +18,7 @@ in {
         extensions = [".nix"];
       };
 
-      # FIXME: csharpier broken due to Swift build failure in nixpkgs-unstable
+      # FIXME: csharpier broken due to Swift build failure in nixpkgs
       # csharpier = {
       #   command = [
       #     (lib.getExe pkgs.csharpier)

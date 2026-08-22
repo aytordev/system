@@ -135,7 +135,7 @@ in {
         extensions = [".rs"];
       };
 
-      # FIXME: roslyn-ls broken due to Swift build failure in nixpkgs-unstable
+      # FIXME: roslyn-ls broken due to Swift build failure in nixpkgs
       # csharp = {
       #   command = [(lib.getExe pkgs.roslyn-ls)];
       #   extensions = [

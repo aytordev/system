@@ -90,4 +90,4 @@ mkShell {
 
 ## Platform-Specific Notes
 
-- **Darwin (macOS)**: Pre-commit hooks are currently disabled in dev shells on Darwin due to broken Swift dependencies in nixpkgs-unstable (required by dotnet-sdk, which pre-commit uses for tests).
+- **Darwin (macOS)**: Pre-commit hooks are currently disabled in dev shells on Darwin due to broken Swift dependencies in nixpkgs (required by dotnet-sdk, which pre-commit uses for tests).
