@@ -50,7 +50,7 @@ in {
       };
 
       services = {
-        openssh = mkDefault enabled;
+        openssh.enable = mkDefault false;
       };
 
       system = {

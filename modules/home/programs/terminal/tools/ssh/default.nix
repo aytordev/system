@@ -18,7 +18,7 @@ in {
     enable = mkEnableOption "SSH configuration";
     port = mkOption {
       type = types.port;
-      default = 2222;
+      default = 22;
       description = "Default SSH port for local development hosts (*.local)";
     };
     authorizedKeys = mkOption {
