@@ -4,11 +4,27 @@
   config,
   lib,
   pkgs,
+  self,
   ...
 }: let
   cfg = config.aytordev.programs.terminal.tools.opencode;
+  userName = config.aytordev.user.name;
+  hostName = config.aytordev.host.name;
+  flakePath = toString self.outPath;
+  homeConfiguration = "${userName}@${hostName}";
 in {
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = userName != null;
+        message = "OpenCode LSP requires aytordev.user.name";
+      }
+      {
+        assertion = hostName != null;
+        message = "OpenCode LSP requires aytordev.host.name";
+      }
+    ];
+
     programs.opencode.settings.lsp = {
       nixd = {
         command = [(lib.getExe pkgs.nixd)];
@@ -17,14 +33,17 @@ in {
           formatting = {
             command = [(lib.getExe pkgs.nixfmt)];
           };
-          options = {
-            nixos = {
-              expr = "(builtins.getFlake \"/home/aytordev/aytordev\").nixosConfigurations.aytordev.options";
+          options =
+            {
+              home-manager = {
+                expr = "(builtins.getFlake \"${flakePath}\").homeConfigurations.\"${homeConfiguration}\".options";
+              };
+            }
+            // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+              darwin = {
+                expr = "(builtins.getFlake \"${flakePath}\").darwinConfigurations.\"${hostName}\".options";
+              };
             };
-            home-manager = {
-              expr = "(builtins.getFlake \"/home/aytordev/aytordev\").homeConfigurations.\"aytordev@aytordev\".options";
-            };
-          };
         };
       };
 
@@ -43,7 +62,7 @@ in {
             workspace = {
               library = [
                 "/nix/store/*/share/lua/5.1"
-                "/etc/profiles/per-user/aytordev/share/lua/5.1"
+                "/etc/profiles/per-user/${config.home.username}/share/lua/5.1"
               ];
             };
           };
