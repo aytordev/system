@@ -13,8 +13,9 @@
     ;
 
   cfg = config.aytordev.programs.terminal.tools.meridian;
-  opencodeEnabled = config.aytordev.programs.terminal.tools.opencode.enable;
 in {
+  imports = [./opencode.nix];
+
   options.aytordev.programs.terminal.tools.meridian = {
     enable = mkEnableOption ''
       Meridian proxy for Claude Max subscription.
@@ -68,29 +69,5 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = [cfg.package];
-
-    programs.opencode.settings = mkIf opencodeEnabled {
-      plugin = mkIf cfg.opencode.plugin [
-        "${cfg.package}/lib/meridian/plugin/meridian.ts"
-      ];
-
-      model = cfg.opencode.defaultModel;
-
-      provider.anthropic.options = {
-        baseURL = "http://${cfg.proxy.host}:${toString cfg.proxy.port}";
-        apiKey = "dummy";
-      };
-    };
-
-    xdg.configFile."meridian/plugins.json" = mkIf cfg.opencode.scrubPlugin.enable {
-      text = builtins.toJSON {
-        plugins = [
-          {
-            path = "${pkgs.aytordev.meridian-plugin-opencode-scrub}/lib/dist/index.js";
-            enabled = true;
-          }
-        ];
-      };
-    };
   };
 }
