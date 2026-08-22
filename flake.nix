@@ -37,12 +37,9 @@
     nixpkgs-stable = {
       url = "github:nixos/nixpkgs/nixos-25.05";
     };
-    nixpkgs-darwin = {
-      url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    };
     nix-darwin = {
       url = "github:lnl7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
       url = "github:nix-community/home-manager";

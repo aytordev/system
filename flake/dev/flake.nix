@@ -12,7 +12,6 @@
         nix-rosetta-builder.follows = "";
         home-manager.follows = "";
         nix-darwin.follows = "";
-        nixpkgs-darwin.follows = "";
         nixpkgs-stable.follows = "";
       };
     };
