@@ -136,6 +136,8 @@ This flake-parts based approach provides excellent modularity and makes it easy
 to maintain and extend the configuration while keeping related functionality
 organized.
 
+Architecture decisions are recorded in [`docs/decisions`](docs/decisions).
+
 # Exported packages
 
 Run packages directly with:
