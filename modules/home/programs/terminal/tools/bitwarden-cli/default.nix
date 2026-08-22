@@ -39,7 +39,7 @@ in {
       apiKey = {
         useSops = lib.mkOption {
           type = lib.types.bool;
-          default = true;
+          default = false;
           description = ''
             Use sops-nix to securely manage Bitwarden API keys.
             When enabled, expects secrets at:

@@ -32,8 +32,10 @@
     };
   commonHome = mkPortableHome "common";
   desktopHome = mkPortableHome "desktop";
+  businessHome = mkPortableHome "business";
   inherit (commonHome) config;
   desktopConfig = desktopHome.config;
+  businessConfig = businessHome.config;
   packageNames = map lib.getName config.home.packages;
   dragBinding =
     lib.findFirst (
@@ -45,6 +47,7 @@
   tests = [
     (builtins.seq commonHome.activationPackage true)
     (builtins.seq desktopHome.activationPackage true)
+    (builtins.seq businessHome.activationPackage true)
     (config.aytordev.services.protonmail-bridge.enable == isDarwin)
     (config.aytordev.programs.terminal.tools.nh.flake == null)
     (!(builtins.hasAttr "nixcfg" config.home.shellAliases))
@@ -60,6 +63,8 @@
       desktopConfig.programs.firefox.profiles.default.settings."browser.download.dir"
       == "${homeDirectory}/Downloads"
     )
+    (!businessConfig.aytordev.programs.terminal.tools.bitwarden-cli.settings.apiKey.useSops)
+    (!(businessConfig.home.file ? ".local/bin/rbw-unlock-sops"))
   ];
 in
   assert builtins.all (test: test) tests;
