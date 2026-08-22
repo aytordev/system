@@ -10,7 +10,9 @@
   integratedHome = darwin.config.home-manager.users.${username};
   lsp = home.programs.opencode.settings.lsp;
   nixdOptions = lsp.nixd.initialization.options;
-  bitwardenSettings = builtins.fromJSON home.home.file."Library/Application Support/Bitwarden/data.json".text;
+  bitwardenSettings =
+    builtins.fromJSON
+    home.home.file."Library/Application Support/Bitwarden/data.json".text;
   activationText =
     lib.attrByPath [
       "system"
@@ -52,6 +54,7 @@
     bitwardenSettings.biometricUnlock
     (bitwardenSettings.vaultTimeout == 30)
     (bitwardenSettings.vaultTimeoutAction == "lock")
+    (!(builtins.any (lib.hasInfix "sketchybar") home.programs.aerospace.settings.after-startup-command))
   ];
 in
   assert builtins.all (test: test) tests;

@@ -33,7 +33,7 @@ in {
 
         accordion-padding = 30;
         after-login-command = [];
-        after-startup-command = ["exec-and-forget ${sketchybar}"];
+        after-startup-command = [];
         automatically-unhide-macos-hidden-apps = true;
         default-root-container-layout = "tiles";
         default-root-container-orientation = "auto";
@@ -48,7 +48,14 @@ in {
         # S = Social      (話 - conversation)
         # O = Other       (雑 - miscellaneous)
 
-        persistent-workspaces = ["B" "C" "D" "W" "S" "O"];
+        persistent-workspaces = [
+          "B"
+          "C"
+          "D"
+          "W"
+          "S"
+          "O"
+        ];
 
         exec-on-workspace-change = [
           "/bin/bash"
@@ -130,29 +137,62 @@ in {
             j = "resize height +50";
             k = "resize height -50";
             l = "resize width +50";
-            b = ["balance-sizes" "mode main"];
+            b = [
+              "balance-sizes"
+              "mode main"
+            ];
             equal = "resize smart +50";
             minus = "resize smart -50";
             esc = "mode main";
           };
 
           service.binding = {
-            alt-shift-h = ["join-with left" "mode main"];
-            alt-shift-j = ["join-with down" "mode main"];
-            alt-shift-k = ["join-with up" "mode main"];
-            alt-shift-l = ["join-with right" "mode main"];
-            backspace = ["close-all-windows-but-current" "mode main"];
-            esc = ["reload-config" "mode main"];
-            f = ["layout floating tiling" "mode main"];
-            r = ["flatten-workspace-tree" "mode main"];
+            alt-shift-h = [
+              "join-with left"
+              "mode main"
+            ];
+            alt-shift-j = [
+              "join-with down"
+              "mode main"
+            ];
+            alt-shift-k = [
+              "join-with up"
+              "mode main"
+            ];
+            alt-shift-l = [
+              "join-with right"
+              "mode main"
+            ];
+            backspace = [
+              "close-all-windows-but-current"
+              "mode main"
+            ];
+            esc = [
+              "reload-config"
+              "mode main"
+            ];
+            f = [
+              "layout floating tiling"
+              "mode main"
+            ];
+            r = [
+              "flatten-workspace-tree"
+              "mode main"
+            ];
             up = "volume up";
             down = "volume down";
-            shift-down = ["volume set 0" "mode main"];
+            shift-down = [
+              "volume set 0"
+              "mode main"
+            ];
           };
         };
 
         # Callbacks
-        on-focus-changed = ["move-mouse window-lazy-center" "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"];
+        on-focus-changed = [
+          "move-mouse window-lazy-center"
+          "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"
+        ];
         on-focused-monitor-changed = ["move-mouse monitor-lazy-center"];
         on-mode-changed = ["exec-and-forget ${sketchybar} --trigger aerospace_mode_change"];
 

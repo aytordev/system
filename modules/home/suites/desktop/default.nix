@@ -5,7 +5,6 @@
   ...
 }: let
   inherit (lib) mkDefault mkIf;
-  inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.suites.desktop;
 in {
@@ -16,8 +15,8 @@ in {
   config = mkIf cfg.enable {
     aytordev = {
       theme = {
-        enable = true;
-        variant = "wave";
+        enable = mkDefault true;
+        variant = mkDefault "wave";
       };
 
       programs = {
@@ -33,11 +32,11 @@ in {
             };
           };
           browsers = {
-            brave = enabled;
-            chrome = enabled;
+            brave.enable = mkDefault true;
+            chrome.enable = mkDefault true;
             chrome-dev.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
-            chromium = enabled;
-            firefox = enabled;
+            chromium.enable = mkDefault true;
+            firefox.enable = mkDefault true;
           };
           launchers = {
             raycast.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
