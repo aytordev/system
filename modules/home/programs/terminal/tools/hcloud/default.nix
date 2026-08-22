@@ -16,6 +16,7 @@
 in {
   options.aytordev.programs.terminal.tools.hcloud = {
     enable = mkEnableOption "Hetzner Cloud CLI";
+    package = lib.mkPackageOption pkgs "hcloud" {};
 
     auth = {
       tokenPath = mkOption {
@@ -32,7 +33,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [pkgs.hcloud];
+    home.packages = [cfg.package];
 
     programs = {
       zsh.initContent = mkIf hasToken ''

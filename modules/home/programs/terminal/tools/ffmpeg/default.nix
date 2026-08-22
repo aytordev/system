@@ -9,8 +9,9 @@
 in {
   options.aytordev.programs.terminal.tools.ffmpeg = {
     enable = mkEnableOption "ffmpeg";
+    package = lib.mkPackageOption pkgs "ffmpeg" {};
   };
   config = mkIf cfg.enable {
-    home.packages = [pkgs.ffmpeg];
+    home.packages = [cfg.package];
   };
 }

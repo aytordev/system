@@ -9,13 +9,15 @@
 in {
   options.aytordev.programs.terminal.tools.carapace = {
     enable = mkEnableOption "carapace - multi-shell command argument completer";
+    package = lib.mkPackageOption pkgs "carapace" {};
   };
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      carapace
+    home.packages = [
+      cfg.package
     ];
     programs.carapace = {
       enable = true;
+      inherit (cfg) package;
       enableBashIntegration = true;
       enableFishIntegration = true;
       enableZshIntegration = true;

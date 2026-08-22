@@ -9,12 +9,13 @@
 in {
   options.aytordev.programs.terminal.tools.btop = {
     enable = mkEnableOption "btop - A resource monitor that shows usage and stats for processor, memory, disks, network and processes";
+    package = lib.mkPackageOption pkgs "btop" {};
   };
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [btop];
+    home.packages = [cfg.package];
     programs.btop = {
       enable = true;
-      package = pkgs.btop;
+      inherit (cfg) package;
       settings = {
         theme_background = true;
         truecolor = true;

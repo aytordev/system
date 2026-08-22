@@ -10,10 +10,11 @@
 in {
   options.aytordev.programs.terminal.tools.act = {
     enable = lib.mkEnableOption "act";
+    package = lib.mkPackageOption pkgs "act" {};
   };
 
   config = mkIf cfg.enable {
-    home.packages = [pkgs.act];
+    home.packages = [cfg.package];
 
     home.file = lib.mkIf (pkgs.stdenv.hostPlatform.isDarwin && pkgs.stdenv.hostPlatform.isAarch64) {
       ".actrc".text =

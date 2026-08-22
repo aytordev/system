@@ -10,7 +10,6 @@
     clean.enable = true;
     flake = null;
   };
-  nhPackage = pkgs.nh;
   nixreAlias = "nh ${
     if pkgs.stdenv.hostPlatform.isLinux
     then "os"
@@ -29,6 +28,7 @@
 in {
   options.aytordev.programs.terminal.tools.nh = {
     enable = lib.mkEnableOption "nh";
+    package = lib.mkPackageOption pkgs "nh" {};
     clean = {
       enable = lib.mkOption {
         type = lib.types.bool;
@@ -45,7 +45,7 @@ in {
   config = mkIf cfg.enable {
     programs.nh = {
       enable = true;
-      package = nhPackage;
+      inherit (cfg) package;
       clean.enable = cfg.clean.enable;
       inherit (cfg) flake;
     };

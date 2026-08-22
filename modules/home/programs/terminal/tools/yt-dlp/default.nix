@@ -9,8 +9,9 @@
 in {
   options.aytordev.programs.terminal.tools.yt-dlp = {
     enable = mkEnableOption "yt-dlp";
+    package = lib.mkPackageOption pkgs "yt-dlp" {};
   };
   config = mkIf cfg.enable {
-    home.packages = [pkgs.yt-dlp];
+    home.packages = [cfg.package];
   };
 }
