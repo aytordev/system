@@ -9,27 +9,31 @@
     if pkgs.stdenv.hostPlatform.isDarwin
     then "/Users/${username}"
     else "/home/${username}";
-  commonHome = inputs.self.lib.system.mkHome {
-    inherit username;
-    system = pkgs.stdenv.hostPlatform.system;
-    hostname = "portability-host";
-    modules = [
-      {
-        aytordev = {
-          user = {
-            enable = true;
-            name = username;
-            email = "portability@example.test";
-            fullName = "Portability User";
-            home = homeDirectory;
+  mkPortableHome = suite:
+    inputs.self.lib.system.mkHome {
+      inherit username;
+      system = pkgs.stdenv.hostPlatform.system;
+      hostname = "portability-host";
+      modules = [
+        {
+          aytordev = {
+            user = {
+              enable = true;
+              name = username;
+              email = "portability@example.test";
+              fullName = "Portability User";
+              home = homeDirectory;
+            };
+            suites.${suite}.enable = true;
           };
-          suites.common.enable = true;
-        };
-        home.stateVersion = "25.11";
-      }
-    ];
-  };
+          home.stateVersion = "25.11";
+        }
+      ];
+    };
+  commonHome = mkPortableHome "common";
+  desktopHome = mkPortableHome "desktop";
   inherit (commonHome) config;
+  desktopConfig = desktopHome.config;
   packageNames = map lib.getName config.home.packages;
   dragBinding =
     lib.findFirst (
@@ -40,6 +44,7 @@
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   tests = [
     (builtins.seq commonHome.activationPackage true)
+    (builtins.seq desktopHome.activationPackage true)
     (config.aytordev.services.protonmail-bridge.enable == isDarwin)
     (config.aytordev.programs.terminal.tools.nh.flake == null)
     (!(builtins.hasAttr "nixcfg" config.home.shellAliases))
@@ -47,6 +52,13 @@
       if isDarwin
       then dragBinding == null
       else builtins.elem "dragon-drop" packageNames && lib.hasInfix "bin/dragon-drop" dragBinding.run
+    )
+    (desktopConfig.aytordev.programs.desktop.bars.sketchybar.enable == isDarwin)
+    (desktopConfig.aytordev.programs.desktop.browsers.chrome-dev.enable == isDarwin)
+    (desktopConfig.aytordev.services.jankyborders.enable == isDarwin)
+    (
+      desktopConfig.programs.firefox.profiles.default.settings."browser.download.dir"
+      == "${homeDirectory}/Downloads"
     )
   ];
 in
