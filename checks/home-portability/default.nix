@@ -67,6 +67,9 @@
   tests = [
     (config.programs.bash.package == pkgs.bashInteractive)
     (builtins.seq commonHome.activationPackage true)
+    (config.home.file ? "Desktop/.keep")
+    (config.home.shellAliases ? cleanup)
+    config.programs.home-manager.enable
     (builtins.seq desktopHome.activationPackage true)
     (builtins.seq businessHome.activationPackage true)
     (config.aytordev.services.protonmail-bridge.enable == isDarwin)

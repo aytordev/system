@@ -100,6 +100,8 @@
     (lib.hasInfix "/run/secrets/consumer-client-id" apiKeyScript)
     (lib.hasInfix "/run/secrets/consumer-client-secret" apiKeyScript)
     (lib.elem homeDirectory config.programs.git.settings.safe.directory)
+    (!(config.home.file ? "Desktop/.keep"))
+    (!(config.home.shellAliases ? cleanup))
   ];
 in
   assert builtins.all (test: test) tests;
