@@ -24,9 +24,9 @@ in {
             sketchybar = {
               enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
               items = {
-                menus.enable = true;
-                themePicker.enable = true;
-                pomodoro.enable = true;
+                menus.enable = mkDefault true;
+                themePicker.enable = mkDefault true;
+                pomodoro.enable = mkDefault true;
               };
             };
           };
@@ -60,8 +60,8 @@ in {
     };
 
     targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-      copyApps.enable = true;
-      linkApps.enable = false;
+      copyApps.enable = mkDefault true;
+      linkApps.enable = mkDefault false;
     };
   };
 }
