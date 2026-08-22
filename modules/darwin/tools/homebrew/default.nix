@@ -9,6 +9,11 @@ in {
   options.aytordev.tools.homebrew = {
     enable = mkEnableOption "Homebrew package manager";
     masEnable = lib.mkEnableOption "Mac App Store downloads";
+    idempotentActivation = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Install declared entries without updating or upgrading existing Homebrew packages.";
+    };
   };
   config = mkIf cfg.enable {
     environment.variables = {
@@ -24,9 +29,9 @@ in {
       };
       greedyCasks = true;
       onActivation = {
-        autoUpdate = true;
+        autoUpdate = !cfg.idempotentActivation;
         cleanup = "uninstall";
-        upgrade = true;
+        upgrade = !cfg.idempotentActivation;
       };
       taps = [
       ];

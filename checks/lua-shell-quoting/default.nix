@@ -1,5 +1,5 @@
-{ pkgs, ... }:
-pkgs.runCommand "lua-shell-quoting-tests" { nativeBuildInputs = [ pkgs.lua ]; } ''
+{pkgs, ...}:
+pkgs.runCommand "lua-shell-quoting-tests" {nativeBuildInputs = [pkgs.lua];} ''
   payload="it's \$(${pkgs.coreutils}/bin/touch \"\$PWD/injected\")"
   quoted="$(PAYLOAD="$payload" lua -e '
     local shell = dofile("${../../modules/home/programs/desktop/bars/sketchybar/config/helpers/shell.lua}")

@@ -59,6 +59,7 @@
     (desktopConfig.aytordev.programs.desktop.bars.sketchybar.enable == isDarwin)
     (desktopConfig.aytordev.programs.desktop.browsers.chrome-dev.enable == isDarwin)
     (desktopConfig.aytordev.services.jankyborders.enable == isDarwin)
+    ((desktopConfig.home.file ? "Pictures/screenshots/.keep") == isDarwin)
     (
       desktopConfig.programs.firefox.profiles.default.settings."browser.download.dir"
       == "${homeDirectory}/Downloads"
