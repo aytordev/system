@@ -11,7 +11,11 @@ Additional stable or unstable roots are allowed only when a concrete package
 requires a different revision. Such an exception must include a comment, a
 consumer, and a removal condition.
 
-`checks/input-policy` validates the root lock and the direct followers.
+The private `secrets` flake is an explicit exception: it is independently
+locked, and this repository consumes its outputs rather than its package set.
+
+`checks/input-policy` discovers direct nixpkgs consumers from the root lock and
+validates both canonical followers and declared exceptions.
 
 ## Consequences
 
