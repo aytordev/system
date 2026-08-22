@@ -1,18 +1,18 @@
 {
   config,
   lib,
-  inputs,
+  identity,
   ...
 }: let
   inherit (lib.aytordev) enabled disabled;
+  inherit (identity) username;
 in {
   aytordev = {
     user = {
       enable = true;
-      name = inputs.secrets.username;
-      email = inputs.secrets.useremail;
-      fullName = inputs.secrets.userfullname;
-      home = "/Users/${inputs.secrets.username}";
+      name = username;
+      inherit (identity) email fullName;
+      home = "/Users/${username}";
     };
 
     # Enable suites for common functionality
@@ -82,8 +82,8 @@ in {
             rbw = enabled;
             settings.apiKey = {
               useSops = true;
-              clientIdPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_id";
-              clientSecretPath = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_secret";
+              clientIdPath = "/Users/${username}/.config/sops/bitwarden_api_client_id";
+              clientSecretPath = "/Users/${username}/.config/sops/bitwarden_api_client_secret";
             };
           };
 
@@ -94,10 +94,10 @@ in {
           };
 
           # Host-specific gh authentication via sops
-          gh.auth.tokenPath = "/Users/${inputs.secrets.username}/.config/sops/github_cli_personal_access_token";
+          gh.auth.tokenPath = "/Users/${username}/.config/sops/github_cli_personal_access_token";
 
           # Host-specific hcloud authentication via sops
-          hcloud.auth.tokenPath = "/Users/${inputs.secrets.username}/.config/sops/hcloud_token";
+          hcloud.auth.tokenPath = "/Users/${username}/.config/sops/hcloud_token";
 
           # Portfolio Backblaze B2 backup remote — secrets injected from sops at activation
           rclone.remotes.portfolio-b2 = {
@@ -105,13 +105,13 @@ in {
               type = "b2";
             };
             secrets = {
-              account = "/Users/${inputs.secrets.username}/.config/sops/b2_key_id";
-              key = "/Users/${inputs.secrets.username}/.config/sops/b2_app_key";
+              account = "/Users/${username}/.config/sops/b2_key_id";
+              key = "/Users/${username}/.config/sops/b2_app_key";
             };
           };
 
           # Host-specific git signing key
-          git.signingKey = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
+          git.signingKey = "/Users/${username}/.ssh/ssh_key_github_ed25519";
 
           # Custom jujutsu settings
           jujutsu.signByDefault = true;
@@ -148,7 +148,7 @@ in {
           ssh.hosts.github = {
             hostNames = ["github.com"];
             user = "git";
-            identityFile = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
+            identityFile = "/Users/${username}/.ssh/ssh_key_github_ed25519";
             identitiesOnly = true;
             port = 22;
           };
@@ -157,7 +157,7 @@ in {
           ssh.hosts.hetzner-portfolio = {
             hostNames = ["hetzner-portfolio-vps"]; # TODO PR6.T3: replace with actual VPS IP
             user = "deploy";
-            identityFile = "/Users/${inputs.secrets.username}/.ssh/portfolio_hetzner_ed25519";
+            identityFile = "/Users/${username}/.ssh/portfolio_hetzner_ed25519";
             identitiesOnly = true;
             port = 22;
           };

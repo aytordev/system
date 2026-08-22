@@ -1,11 +1,12 @@
 {
   inputs,
+  identity,
   lib,
   pkgs,
   ...
 }: let
   extendedLib = inputs.nixpkgs.lib.extend inputs.self.lib.overlay;
-  username = inputs.secrets.username;
+  inherit (identity) username;
   home = inputs.self.homeConfigurations."${username}@wang-lin".config;
   darwin = inputs.self.darwinConfigurations.wang-lin;
   integratedHome = darwin.config.home-manager.users.${username};

@@ -6,7 +6,9 @@
 }: let
   inherit (self.lib.file) parseHomeConfigurations importModulesRecursive;
 
-  common = import ../../libraries/system/common {inherit inputs;};
+  reusableInputs = builtins.removeAttrs inputs ["secrets"];
+  identity = self.lib.identity.fromSecrets inputs.secrets;
+  common = import ../../libraries/system/common {inputs = reusableInputs;};
   extendedLib = common.mkExtendedLib self inputs.nixpkgs;
   homesPath = ../../homes;
   allHomes = parseHomeConfigurations homesPath;
@@ -20,6 +22,7 @@
     ...
   }: let
     configPath = args.path;
+    validatedUsername = self.lib.identity.assertUsername identity.username username;
   in {
     name = userAtHost; # Use the full "username@hostname" as key
     value = self.lib.system.mkHome {
@@ -27,8 +30,9 @@
         inputs
         system
         hostname
-        username
         ;
+      username = validatedUsername;
+      extraSpecialArgs = {inherit identity;};
       modules = [configPath];
       homeModules = allHomeModules;
     };
@@ -52,10 +56,10 @@ in {
           };
 
           _module.args = {
-            inherit inputs;
-            inherit (inputs) self;
+            inputs = reusableInputs;
+            inherit (reusableInputs) self;
             system = pkgs.stdenv.hostPlatform.system;
-            flake-parts-lib = inputs.flake-parts.lib;
+            flake-parts-lib = reusableInputs.flake-parts.lib;
           };
         };
     };

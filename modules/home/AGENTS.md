@@ -170,6 +170,7 @@ User metadata and preferences.
 aytordev.user = {
   name = "username";
   email = "username@example.com";
+  fullName = "Example User";
   theme = "catppuccin-mocha";
 };
 ```

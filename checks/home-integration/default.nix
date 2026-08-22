@@ -1,10 +1,11 @@
 {
   inputs,
+  identity,
   lib,
   pkgs,
   ...
 }: let
-  username = inputs.secrets.username;
+  inherit (identity) username;
   home = inputs.self.homeConfigurations."${username}@wang-lin".config;
   darwin = inputs.self.darwinConfigurations.wang-lin;
   integratedHome = darwin.config.home-manager.users.${username};
@@ -50,6 +51,10 @@
     (!lib.hasInfix "Creating screenshots directory" activationText)
     (!darwin.config.homebrew.onActivation.autoUpdate)
     (!darwin.config.homebrew.onActivation.upgrade)
+    (!(builtins.hasAttr "nix/inputs/secrets" darwin.config.environment.etc))
+    (home.aytordev.user.name == identity.username)
+    (home.aytordev.user.email == identity.email)
+    (home.aytordev.user.fullName == identity.fullName)
     bitwardenSettings.enableBrowserIntegration
     bitwardenSettings.biometricUnlock
     (bitwardenSettings.vaultTimeout == 30)

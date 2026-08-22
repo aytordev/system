@@ -16,7 +16,13 @@
     system = pkgs.stdenv.hostPlatform.system;
     hostname = "consumer-host";
     modules = [
-      {
+      ({inputs, ...}: {
+        assertions = [
+          {
+            assertion = !(inputs ? secrets);
+            message = "Reusable Home Manager modules must not receive the private secrets input";
+          }
+        ];
         aytordev = {
           user = {
             enable = true;
@@ -42,7 +48,7 @@
           };
         };
         home.stateVersion = "25.11";
-      }
+      })
     ];
   };
   inherit (home) config;

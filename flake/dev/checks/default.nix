@@ -11,6 +11,9 @@
     system,
     ...
   }: let
+    checkInputs = self.inputs;
+    identity = self.lib.identity.fromSecrets checkInputs.secrets;
+    reusableInputs = builtins.removeAttrs checkInputs ["secrets"];
     # Path to the checks directory
     checksPath = ../../../checks;
 
@@ -25,8 +28,13 @@
       lib.mapAttrs (
         name: _:
           import (checksPath + "/${name}") {
-            inherit pkgs system lib;
-            inherit (self) inputs;
+            inherit
+              pkgs
+              system
+              lib
+              identity
+              ;
+            inputs = reusableInputs;
           }
       )
       checkDirs;
