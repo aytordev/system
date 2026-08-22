@@ -11,11 +11,13 @@
 in {
   options.aytordev.programs.terminal.tools.tmux = {
     enable = lib.mkEnableOption "tmux";
+    package = lib.mkPackageOption pkgs "tmux" {nullable = true;};
   };
 
   config = mkIf cfg.enable {
     programs.tmux = {
       enable = true;
+      inherit (cfg) package;
       baseIndex = 1;
       keyMode = "vi";
       mouse = true;

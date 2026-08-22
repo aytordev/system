@@ -16,6 +16,7 @@
 in {
   options.aytordev.programs.terminal.tools.gh = {
     enable = mkEnableOption "GitHub CLI tool";
+    package = lib.mkPackageOption pkgs "gh" {};
 
     auth = {
       tokenPath = mkOption {
@@ -48,6 +49,7 @@ in {
     programs = {
       gh = {
         enable = true;
+        inherit (cfg) package;
         extensions = with pkgs; [
           gh-eco
           gh-cal

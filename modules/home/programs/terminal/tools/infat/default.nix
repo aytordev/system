@@ -36,11 +36,13 @@
 in {
   options.aytordev.programs.terminal.tools.infat = {
     enable = lib.mkEnableOption "infat";
+    package = lib.mkPackageOption pkgs "infat" {nullable = true;};
   };
 
   config = mkIf cfg.enable {
     programs.infat = {
       enable = true;
+      inherit (cfg) package;
       autoActivate = true;
 
       settings = {

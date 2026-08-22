@@ -15,6 +15,7 @@ in {
 
   options.aytordev.programs.terminal.tools.claude-code = {
     enable = mkEnableOption "Claude Code configuration";
+    package = lib.mkPackageOption pkgs "claude-code" {nullable = true;};
   };
 
   config = mkIf cfg.enable {
@@ -23,6 +24,7 @@ in {
 
     programs.claude-code = {
       enable = true;
+      inherit (cfg) package;
 
       enableMcpIntegration = mkIf mcpModuleEnabled true;
 
