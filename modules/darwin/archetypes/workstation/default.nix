@@ -3,8 +3,6 @@
   lib,
   ...
 }: let
-  inherit (lib.aytordev) enabled;
-
   cfg = config.aytordev.archetypes.workstation;
 in {
   options.aytordev.archetypes.workstation = {
@@ -12,19 +10,17 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    aytordev = {
-      suites = {
-        business = enabled;
-        common = enabled;
-        desktop = enabled;
-        development = {
-          enable = true;
-          dockerEnable = false;
-          podmanEnable = true;
-          aiEnable = false;
-        };
-        networking = enabled;
+    aytordev.suites = {
+      business.enable = lib.mkDefault true;
+      common.enable = lib.mkDefault true;
+      desktop.enable = lib.mkDefault true;
+      development = {
+        enable = lib.mkDefault true;
+        dockerEnable = lib.mkDefault false;
+        podmanEnable = lib.mkDefault true;
+        aiEnable = lib.mkDefault false;
       };
+      networking.enable = lib.mkDefault true;
     };
   };
 }

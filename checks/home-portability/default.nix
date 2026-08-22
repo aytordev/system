@@ -56,6 +56,7 @@
   businessConfig = businessHome.config;
   desktopOverrideConfig = desktopOverrideHome.config;
   developmentOverrideConfig = developmentOverrideHome.config;
+  developmentOptions = developmentOverrideHome.options.aytordev.suites.development;
   packageNames = map lib.getName config.home.packages;
   dragBinding =
     lib.findFirst (
@@ -96,6 +97,11 @@
     (!desktopOverrideConfig.aytordev.programs.desktop.browsers.brave.enable)
     (!developmentOverrideConfig.aytordev.programs.terminal.editors.neovim.enable)
     (!developmentOverrideConfig.aytordev.programs.terminal.editors.neovim.default)
+    (!(developmentOptions ? azureEnable))
+    (!(developmentOptions ? dockerEnable))
+    (!(developmentOptions ? gameEnable))
+    (!(developmentOptions ? goEnable))
+    (!(developmentOptions ? sqlEnable))
   ];
 in
   assert builtins.all (test: test) tests;

@@ -3,8 +3,6 @@
   lib,
   ...
 }: let
-  inherit (lib.aytordev) enabled;
-
   cfg = config.aytordev.archetypes.personal;
 in {
   options.aytordev.archetypes.personal = {
@@ -12,12 +10,10 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    aytordev = {
-      suites = {
-        common = enabled;
-        desktop = enabled;
-        music = enabled;
-      };
+    aytordev.suites = {
+      common.enable = lib.mkDefault true;
+      desktop.enable = lib.mkDefault true;
+      music.enable = lib.mkDefault true;
     };
   };
 }

@@ -31,12 +31,83 @@
     (import ../modules/home/programs/terminal/tools/claude-code/hooks/pre-tool-audit.nix {})
     .PreToolUse;
   claudeAuditScript = (builtins.head (builtins.head claudeAuditCommand).hooks).command;
+  archetypes = lib.evalModules {
+    modules = [
+      ../modules/darwin/archetypes/personal
+      ../modules/darwin/archetypes/workstation
+      {
+        options.aytordev.suites = {
+          business.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+          };
+          common.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+          };
+          desktop.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+          };
+          music.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+          };
+          networking.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+          };
+          development = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+            };
+            dockerEnable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+            };
+            podmanEnable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+            };
+            aiEnable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+            };
+          };
+        };
+      }
+      {
+        aytordev = {
+          archetypes.personal.enable = true;
+          archetypes.workstation.enable = true;
+          suites = {
+            common.enable = false;
+            music.enable = false;
+            development.podmanEnable = false;
+          };
+        };
+      }
+    ];
+  };
   runAsServiceModule = builtins.readFile ../modules/home/programs/terminal/tools/run-as-service/default.nix;
   warpModule = builtins.readFile ../modules/home/programs/terminal/emulators/warp/default.nix;
 in {
   testBoolToNumTrue = {
     expr = module.boolToNum true;
     expected = 1;
+  };
+
+  testArchetypesAllowHostOverrides = {
+    expr = {
+      inherit (archetypes.config.aytordev.suites) common music;
+      inherit (archetypes.config.aytordev.suites.development) podmanEnable;
+    };
+    expected = {
+      common.enable = false;
+      music.enable = false;
+      podmanEnable = false;
+    };
   };
 
   testCapitalizeWord = {
