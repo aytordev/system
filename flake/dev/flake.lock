@@ -465,7 +465,6 @@
         "nix-index-database": "nix-index-database",
         "nix-rosetta-builder": [],
         "nixpkgs": "nixpkgs",
-        "nixpkgs-darwin": [],
         "nixpkgs-stable": [],
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nvf": "nvf",
