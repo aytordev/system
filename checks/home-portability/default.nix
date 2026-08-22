@@ -65,6 +65,7 @@
     config.programs.yazi.keymap.mgr.prepend_keymap;
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   tests = [
+    (config.programs.bash.package == pkgs.bashInteractive)
     (builtins.seq commonHome.activationPackage true)
     (builtins.seq desktopHome.activationPackage true)
     (builtins.seq businessHome.activationPackage true)
