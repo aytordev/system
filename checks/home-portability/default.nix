@@ -93,6 +93,8 @@ let
     )
     (desktopConfig.aytordev.programs.desktop.bars.sketchybar.enable == isDarwin)
     (!(desktopConfig.aytordev.theme ? enable))
+    (!(desktopConfig.aytordev.programs.desktop.bars.sketchybar ? themeOverride))
+    (!(desktopConfig.aytordev.services.jankyborders ? themeOverride))
     (desktopConfig.aytordev.programs.desktop.browsers.chrome-dev.enable == isDarwin)
     (desktopConfig.aytordev.services.jankyborders.enable == isDarwin)
     ((desktopConfig.home.file ? "Pictures/screenshots/.keep") == isDarwin)

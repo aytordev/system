@@ -10,7 +10,6 @@
     int
     float
     enum
-    nullOr
     bool
     ;
 in {
@@ -25,20 +24,6 @@ in {
     type = listOf package;
     default = [];
     description = "Extra packages needed for Sketchybar plugins and functionality.";
-  };
-
-  # Theme override (optional - uses global theme by default)
-  themeOverride = mkOption {
-    type = nullOr (enum [
-      "wave"
-      "dragon"
-      "lotus"
-    ]);
-    default = null;
-    description = ''
-      Override the global Kanagawa theme variant for Sketchybar only.
-      If null (default), uses the global theme from aytordev.theme.variant.
-    '';
   };
 
   # Font configuration
