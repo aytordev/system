@@ -32,12 +32,7 @@ in
     };
 
     # User-specific overrides
-    environments.home-network = enabled;
-
-    programs.graphical.wms.hyprland = {
-      enable = true;
-      prependConfig = "monitor=DP-1,5120x1440@120,0x0,1";
-    };
+    programs.desktop.bars.sketchybar.enable = true;
 
     suites = {
       common = enabled;
@@ -45,10 +40,10 @@ in
       development.enable = true;
     };
 
-    theme.catppuccin = enabled;
+    theme.variant = "wave"; # kanagawa theme variant
   };
 
-  home.stateVersion = "24.11";
+  home.stateVersion = "25.11";
 }
 ```
 
@@ -67,19 +62,12 @@ in
 **Example - User-specific overrides:**
 
 ```nix
-aytordev.programs.graphical = {
-  # User's monitor setup
-  wms.hyprland.prependConfig = ''
-    monitor=DP-3, 3840x2160@60, 1420x0, 2
-    monitor=DP-1, 5120x1440@120, 0x1080, 1
-    workspace = 1, monitor:DP-3, default:true
-  '';
+aytordev.programs.desktop = {
+  # User's window manager integration
+  window-manager-system.aerospace.enable = true;
 
   # User's bar configuration
-  bars.waybar = {
-    fullSizeOutputs = [ "DP-1" ];
-    condensedOutputs = [ "DP-3" ];
-  };
+  bars.sketchybar.enable = true;
 
   # User's browser settings
   browsers.firefox = {
@@ -119,7 +107,7 @@ aytordev.programs.graphical = {
     };
     suites.common = enabled;
   };
-  home.stateVersion = "24.11";
+  home.stateVersion = "25.11";
 }
 ```
 
@@ -135,10 +123,7 @@ aytordev.programs.graphical = {
 
     environments.home-network = enabled;
 
-    programs.graphical.wms.hyprland = {
-      enable = true;
-      prependConfig = "monitor=DP-1,5120x1440@120,0x0,1";
-    };
+    programs.desktop.bars.sketchybar.enable = true;
 
     services.sops = {
       enable = true;
@@ -151,16 +136,17 @@ aytordev.programs.graphical = {
       development = {
         enable = true;
         aiEnable = true;
-        dockerEnable = true;
+        nixEnable = true;
+        podmanEnable = true;
       };
-      games = enabled;
+      business = enabled;
       social = enabled;
     };
 
-    theme.catppuccin = enabled;
+    theme.variant = "wave"; # kanagawa theme variant
   };
 
-  home.stateVersion = "24.11";
+  home.stateVersion = "25.11";
 }
 ```
 
@@ -169,7 +155,7 @@ aytordev.programs.graphical = {
 ```nix
 aytordev.programs.terminal = {
   # Disable tools not needed by this user
-  emulators.kitty.enable = false;
+  emulators.ghostty.enable = false;
   tools.jujutsu.enable = false;
 };
 ```
@@ -180,10 +166,10 @@ Suites enable groups of related programs. Common suites:
 
 - `common` - Essential CLI tools
 - `desktop` - Desktop programs
-- `development` - Dev tools (with aiEnable, dockerEnable, nixEnable, etc.)
-- `games` - Gaming platforms
+- `development` - Dev tools (with aiEnable, nixEnable, podmanEnable, etc.)
+- `business` - Business programs
+- `networking` - Network and VPN tooling
 - `social` - Communication apps
-- `music` / `video` / `photo` - Media tools
 
 ```nix
 aytordev.suites = {
@@ -191,7 +177,8 @@ aytordev.suites = {
   development = {
     enable = true;
     aiEnable = true;
-    dockerEnable = true;
+    nixEnable = true;
+    podmanEnable = true;
   };
 };
 ```
@@ -217,7 +204,7 @@ aytordev.suites = {
 Set once during initial setup, never change:
 
 ```nix
-home.stateVersion = "24.11";
+home.stateVersion = "25.11";
 ```
 
 ## Testing
@@ -225,15 +212,13 @@ home.stateVersion = "24.11";
 Home-manager is integrated as a module in system configuration.
 
 ```bash
-# Apply changes (NixOS)
-nh os switch
+# Build without switching (macOS)
+nix build .#homeConfigurations.aytordev@wang-lin.activationPackage
 
-# Test build without activation (NixOS)
-nh os build
+# Run system checks (validates all hosts + homes)
+nix flake check
 
-# Apply changes (Darwin)
-nh darwin switch
-
-# Test build (Darwin)
-nh darwin build
+# Apply changes (macOS)
+just darwin-switch wang-lin
+```
 ```

@@ -16,9 +16,8 @@ Templates are exposed via flake outputs and used with `nix flake init`.
 
 ## Available Templates
 
-Run `nix flake show .#templates` to see all available templates.
-
-Common templates: rust, python, node, go, c, cpp, dotnetf, angular
+Currently only `node` is defined. Run `nix flake show .#templates` to see the
+full current list.
 
 ## Using Templates
 
@@ -27,10 +26,10 @@ Common templates: rust, python, node, go, c, cpp, dotnetf, angular
 nix flake show github:aytordev/system#templates
 
 # Initialize new project from template
-nix flake init -t github:aytordev/system#rust
+nix flake init -t github:aytordev/system#node
 
 # Or from local repo
-nix flake init -t .#rust
+nix flake init -t .#node
 ```
 
 After initialization:
@@ -103,24 +102,21 @@ stdenv.mkDerivation {
 {
   callPackage,
   mkShell,
-  # Dev tools
-  language-server,
-  formatter,
   ...
 }:
 mkShell {
   inputsFrom = [ (callPackage ./default.nix { }) ];
 
   packages = [
-    language-server
-    formatter
+    # language-server
+    # formatter
   ];
 }
 ```
 
 ### 5. Add to Flake Templates
 
-Templates are auto-discovered by flake-parts from `templates/` directory.
+Templates are auto-discovered by flake-parts from the `templates/` directory.
 
 ### 6. Test Template
 
@@ -138,29 +134,16 @@ nix develop
 
 ## Template Pattern
 
-Multi-system support:
+Multi-system support uses `genAttrs` over the supported systems:
 
 ```nix
 let
-  systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
+  systems = [ "x86_64-linux" "aarch64-darwin" ];
   forEachSystem = nixpkgs.lib.genAttrs systems;
 in
 {
   packages = forEachSystem (system: {
     default = /* ... */;
   });
-}
-```
-
-Development shell:
-
-```nix
-mkShell {
-  packages = [
-    # Language tooling
-    language-server
-    formatter
-    linter
-  ];
 }
 ```

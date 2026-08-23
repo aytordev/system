@@ -5,13 +5,13 @@ Reusable Nix functions extending nixpkgs.lib for aytordev-specific patterns.
 ## Library Structure
 
 ```
-lib/
-├── base64/         # Base64 encoding/decoding
+libraries/
+├── default.nix     # Exports flake.lib
 ├── file/           # File system operations
+├── identity/       # Identity normalization from secrets
 ├── module/         # Module creation utilities
-├── system/         # System/host builders
-├── theme/          # Theme utilities
-└── overlay.nix     # Overlay helpers
+├── overlay/        # Overlay helpers
+└── system/         # System/host builders
 ```
 
 ## Core Principles
@@ -47,25 +47,27 @@ This keeps lib functions self-contained and makes dependencies explicit.
 Export via `flake.lib.{category}`:
 
 ```nix
-# lib/default.nix
+# libraries/default.nix
 {
   flake.lib = {
-    base64 = import ./base64 { inherit inputs; };
-    file = import ./file { inherit inputs; self = ../..; };
-    module = import ./module { inherit inputs; };
-    system = import ./system { inherit inputs; };
-    theme = import ./theme { inherit inputs; };
+    file = import ./file { inputs = reusableInputs; inherit self; };
+    identity = import ./identity {};
+    module = import ./module { inputs = reusableInputs; };
+    overlay = import ./overlay { inputs = reusableInputs; };
+    system = import ./system { inputs = reusableInputs; };
   };
 }
 ```
 
+The `secrets` input is removed before reaching reusable lib code. Only the
+normalized `identity` result is passed down.
+
 ## Library Categories
 
-- **base64**: Base64 encoding/decoding utilities
 - **file**: File operations (getFile, importDir, scanDir, etc.)
+- **identity**: Normalizes secret metadata into full/email/username
 - **module**: Module helpers (enabled, mkOpt, mkBoolOpt, mkModule)
-- **system**: System builders (mkSystem, mkDarwin, mkHome)
-- **theme**: Theme utilities (getTheme, mkColorScheme, applyTheme)
+- **system**: System builders (mkDarwin, mkHome)
 - **overlay**: Overlay creation helpers
 
 Function details are documented in the source code.
@@ -79,7 +81,7 @@ Determine which category fits your function:
 - File operations → `file/`
 - Module utilities → `module/`
 - System builders → `system/`
-- Theme operations → `theme/`
+- Identity/metadata → `identity/`
 - New category → Create new directory
 
 ### 2. Write Pure Function
@@ -115,7 +117,7 @@ Add clear documentation with:
 ### 4. Export in default.nix
 
 ```nix
-# lib/default.nix
+# libraries/default.nix
 {
   flake.lib = {
     # Existing categories...
@@ -130,7 +132,7 @@ Add clear documentation with:
 # Test in nix repl
 nix repl
 > :lf .
-> lib.aytordev.myCategory.myFunction "a" "b"
+> lib.myCategory.myFunction "a" "b"
 "ab"
 ```
 
@@ -143,7 +145,7 @@ nix repl
 - Pattern is common throughout codebase
 - Function has no side effects
 
-**Don't add to lib when:**
+**Don't add when:**
 
 - Used only once
 - Module-specific logic
@@ -155,42 +157,17 @@ nix repl
 ### Option Creation
 
 ```nix
-mkOpt = type: default: description:
-  lib.mkOption {
-    inherit type default description;
-  };
+mkOpt = {...}: lib.mkOption {...};
 ```
 
 ### Safe Import
 
 ```nix
-safeImport = path: default:
-  if builtins.pathExists path
-  then import path
-  else default;
+safeImport = fileName: ...
 ```
 
 ### Directory Import
 
 ```nix
-importDir = path: args:
-  let
-    entries = builtins.readDir path;
-    nixFiles = lib.filterAttrs (n: v: v == "regular" && lib.hasSuffix ".nix" n) entries;
-  in
-  lib.mapAttrs (name: _: import (path + "/${name}") args) nixFiles;
-```
-
-## Testing
-
-```bash
-# Test in nix repl
-nix repl
-> :lf .
-> lib.aytordev.file.getFile "modules"
-/nix/store/.../modules
-
-# Test via build
-nix eval .#lib.aytordev.file.scanDir ./lib
-[ "base64" "file" "module" "system" "theme" ]
+importDir = path: args: ...;
 ```
