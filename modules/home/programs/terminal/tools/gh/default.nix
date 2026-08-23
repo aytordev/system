@@ -18,8 +18,28 @@
     then cfg.auth.tokenPath
     else "";
   tokenPathShell = lib.escapeShellArg tokenPath;
-  tokenPathNu = builtins.toJSON tokenPath;
   executable = lib.getExe cfg.package;
+  wrappedExecutable = pkgs.writeShellScript "gh-with-runtime-token" ''
+    set -euo pipefail
+    if [[ ! -r ${tokenPathShell} ]]; then
+      printf 'GitHub CLI token file is not readable: %s\n' ${tokenPathShell} >&2
+      exit 1
+    fi
+    GH_TOKEN="$(<${tokenPathShell})" exec ${executable} "$@"
+  '';
+  wrappedPackage = pkgs.symlinkJoin {
+    name = "gh-with-runtime-token";
+    paths = [cfg.package];
+    meta.mainProgram = "gh";
+    postBuild = ''
+      rm -f "$out/bin/gh"
+      ln -s ${wrappedExecutable} "$out/bin/gh"
+    '';
+  };
+  effectivePackage =
+    if hasToken
+    then wrappedPackage
+    else cfg.package;
 in {
   options.aytordev.programs.terminal.tools.gh = {
     enable = mkEnableOption "GitHub CLI tool";
@@ -56,7 +76,7 @@ in {
     programs = {
       gh = {
         enable = true;
-        inherit (cfg) package;
+        package = effectivePackage;
         extensions = with pkgs; [
           gh-eco
           gh-cal
@@ -72,48 +92,6 @@ in {
           version = "1";
         };
       };
-
-      zsh.initContent = mkIf hasToken ''
-        gh() {
-          if [[ -r ${tokenPathShell} ]]; then
-            GH_TOKEN="$(<${tokenPathShell})" ${executable} "$@"
-          else
-            ${executable} "$@"
-          fi
-        }
-      '';
-
-      bash.initExtra = mkIf hasToken ''
-        gh() {
-          if [[ -r ${tokenPathShell} ]]; then
-            GH_TOKEN="$(<${tokenPathShell})" ${executable} "$@"
-          else
-            ${executable} "$@"
-          fi
-        }
-      '';
-
-      fish.interactiveShellInit = mkIf hasToken ''
-        function gh
-          if test -r ${tokenPathShell}
-            env GH_TOKEN=(string trim < ${tokenPathShell}) ${executable} $argv
-          else
-            ${executable} $argv
-          end
-        end
-      '';
-
-      nushell.extraConfig = mkIf hasToken ''
-        def --wrapped gh [...args] {
-          if (${tokenPathNu} | path exists) {
-            with-env { GH_TOKEN: (open --raw ${tokenPathNu} | str trim) } {
-              ^${executable} ...$args
-            }
-          } else {
-            ^${executable} ...$args
-          }
-        }
-      '';
     };
   };
 }
