@@ -78,4 +78,17 @@ Agents load AGENTS.md files recursively. Each subdirectory has focused context:
   workflow.
 - Working in `checks/`? Load verification levels and loader logic.
 
+## Documentation Granularity
+
+`AGENTS.md` files are loaded recursively on every task, so each one adds context
+cost. Add them only where a directory carries rules that are **not obvious from
+the code or its parent**:
+
+- `AGENTS.md` — agent protocols (how to work here correctly).
+- `README.md` — human-facing documentation and component state.
+
+Do not add a file per tool/dir just to mirror the tree. Prefer one focused
+`AGENTS.md` per meaningful subtree (e.g. `programs/terminal`, `.github/`,
+`docs/`). Component-level notes belong inside that subtree's single file.
+
 **See subdirectory AGENTS.md files for domain-specific guidance.**
