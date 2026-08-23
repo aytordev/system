@@ -9,6 +9,77 @@
   hasApiKeyFiles = cfg.apiKey.clientIdFile != null && cfg.apiKey.clientSecretFile != null;
   clientIdFile = lib.escapeShellArg (toString cfg.apiKey.clientIdFile);
   clientSecretFile = lib.escapeShellArg (toString cfg.apiKey.clientSecretFile);
+  apiKeyPinentryMarker = "aytordev-bitwarden-api-key";
+  apiKeyPinentry = pkgs.writeShellApplication {
+    name = "rbw-api-key-pinentry";
+    text = ''
+      if [[ "''${PINENTRY_USER_DATA:-}" != ${lib.escapeShellArg apiKeyPinentryMarker} ]]; then
+        exec ${lib.getExe cfg.pinentry} "$@"
+      fi
+
+      client_id_file=${clientIdFile}
+      client_secret_file=${clientSecretFile}
+      prompt=""
+      state="title"
+      printf 'OK Pleased to meet you\n'
+
+      while IFS= read -r command; do
+        case "$state:$command" in
+          "title:SETTITLE rbw")
+            state="prompt"
+            printf 'OK\n'
+            ;;
+          prompt:SETPROMPT\ *)
+            prompt="''${command#SETPROMPT }"
+            case "$prompt" in
+              "API key client__id" | "API key client__secret") ;;
+              *)
+                printf 'ERR 83886179 Unexpected%%20rbw%%20prompt\n'
+                exit 1
+                ;;
+            esac
+            state="description"
+            printf 'OK\n'
+            ;;
+          description:SETDESC\ *)
+            state="ready"
+            printf 'OK\n'
+            ;;
+          ready:SETERROR\ *) printf 'OK\n' ;;
+          ready:GETPIN)
+            case "$prompt" in
+              "API key client__id") secret_file="$client_id_file" ;;
+              "API key client__secret") secret_file="$client_secret_file" ;;
+            esac
+
+            if [[ ! -r "$secret_file" ]]; then
+              printf 'ERR 83886179 Bitwarden%%20API%%20key%%20file%%20is%%20not%%20readable\n'
+              exit 1
+            fi
+
+            secret="$(<"$secret_file")"
+            secret="''${secret//%/%25}"
+            secret="''${secret//$'\r'/%0D}"
+            secret="''${secret//$'\n'/%0A}"
+            printf 'D %s\nOK\n' "$secret"
+            state="done"
+            ;;
+          done:BYE)
+            printf 'OK\n'
+            exit 0
+            ;;
+          *)
+            printf 'ERR 83886179 Unexpected%%20pinentry%%20command\n'
+            exit 1
+            ;;
+        esac
+      done
+    '';
+  };
+  rbwPinentry =
+    if isRbw && cfg.apiKey.enable && hasApiKeyFiles
+    then apiKeyPinentry
+    else cfg.pinentry;
   clientCommand =
     if isRbw
     then "rbw"
@@ -145,9 +216,20 @@ in {
             exit 1
           fi
 
-          export BW_CLIENTID="$(<"$client_id_file")"
-          export BW_CLIENTSECRET="$(<"$client_secret_file")"
-          exec ${lib.getExe cfg.package} login${lib.optionalString (!isRbw) " --apikey"}
+          ${
+            if isRbw
+            then ''
+              export PINENTRY_USER_DATA=${lib.escapeShellArg apiKeyPinentryMarker}
+              ${lib.getExe cfg.package} register
+              unset PINENTRY_USER_DATA
+              exec ${lib.getExe cfg.package} login
+            ''
+            else ''
+              export BW_CLIENTID="$(<"$client_id_file")"
+              export BW_CLIENTSECRET="$(<"$client_secret_file")"
+              exec ${lib.getExe cfg.package} login --apikey
+            ''
+          }
         '';
       };
     };
@@ -158,7 +240,7 @@ in {
       settings = {
         email = config.aytordev.user.email;
         base_url = cfg.server;
-        inherit (cfg) pinentry;
+        pinentry = rbwPinentry;
         sync_interval = 3600;
       };
     };
