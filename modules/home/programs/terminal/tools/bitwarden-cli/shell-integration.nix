@@ -5,32 +5,74 @@
 }: let
   cfg = config.aytordev.programs.terminal.tools.bitwarden-cli;
   enabled = cfg.enable && cfg.client == "bw" && cfg.shellIntegration.enable;
+  executable = lib.getExe cfg.package;
 in {
   config = lib.mkIf enabled {
     xdg.configFile = {
       "bitwarden-cli/session.bash" = lib.mkIf (cfg.shellIntegration.bash || cfg.shellIntegration.zsh) {
         text = ''
+          _bw_session_dir="''${XDG_RUNTIME_DIR:-''${TMPDIR:-/tmp}/bitwarden-$UID}"
+          _bw_session_file="$_bw_session_dir/session"
+
+          bw() {
+            if [[ -r "$_bw_session_file" ]]; then
+              BW_SESSION="$(<"$_bw_session_file")" ${executable} "$@"
+            else
+              ${executable} "$@"
+            fi
+          }
+
           bw-unlock() {
-            local session
-            session="$(bw unlock --raw)" || return
-            export BW_SESSION="$session"
+            umask 077
+            mkdir -p "$_bw_session_dir"
+            local session_tmp="$_bw_session_file.tmp"
+            ${executable} unlock --raw > "$session_tmp" || return
+            mv "$session_tmp" "$_bw_session_file"
           }
 
           bw-lock() {
-            bw lock && unset BW_SESSION
+            local status=0
+            bw lock || status=$?
+            rm -f "$_bw_session_file"
+            return "$status"
           }
         '';
       };
 
       "bitwarden-cli/session.fish" = lib.mkIf cfg.shellIntegration.fish {
         text = ''
+          set -g __bw_session_dir "$XDG_RUNTIME_DIR"
+          if test -z "$__bw_session_dir"
+            if set -q TMPDIR
+              set -g __bw_session_dir "$TMPDIR/bitwarden-$UID"
+            else
+              set -g __bw_session_dir "/tmp/bitwarden-$UID"
+            end
+          end
+          set -g __bw_session_file "$__bw_session_dir/session"
+
+          function bw
+            if test -r "$__bw_session_file"
+              env BW_SESSION=(string trim < "$__bw_session_file") ${executable} $argv
+            else
+              ${executable} $argv
+            end
+          end
+
           function bw-unlock
-            set -l session (bw unlock --raw); or return
-            set -gx BW_SESSION $session
+            command mkdir -p "$__bw_session_dir"
+            command chmod 700 "$__bw_session_dir"
+            set -l session_tmp "$__bw_session_file.tmp"
+            ${executable} unlock --raw > "$session_tmp"; or return
+            command chmod 600 "$session_tmp"
+            command mv "$session_tmp" "$__bw_session_file"
           end
 
           function bw-lock
-            bw lock; and set -e BW_SESSION
+            bw lock
+            set -l status $status
+            command rm -f "$__bw_session_file"
+            return $status
           end
         '';
       };
@@ -39,15 +81,15 @@ in {
     programs = {
       zsh.initContent = lib.mkIf cfg.shellIntegration.zsh ''
         source "$XDG_CONFIG_HOME/bitwarden-cli/session.bash"
-        (( $+commands[bw] )) && eval "$(bw completion --shell zsh)"
+        eval "$(${executable} completion --shell zsh)"
       '';
       bash.initExtra = lib.mkIf cfg.shellIntegration.bash ''
         source "$XDG_CONFIG_HOME/bitwarden-cli/session.bash"
-        command -v bw >/dev/null && eval "$(bw completion --shell bash)"
+        eval "$(${executable} completion --shell bash)"
       '';
       fish.interactiveShellInit = lib.mkIf cfg.shellIntegration.fish ''
         source "$XDG_CONFIG_HOME/bitwarden-cli/session.fish"
-        command -q bw; and bw completion --shell fish | source
+        ${executable} completion --shell fish | source
       '';
     };
   };
