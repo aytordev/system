@@ -28,6 +28,20 @@
       --host ${lib.escapeShellArg cfg.host} \
       --port ${toString cfg.port}
   '';
+  rotateLogs = pkgs.writeShellScript "litellm-log-rotate" ''
+    set -euo pipefail
+    for log in ${
+      lib.escapeShellArgs [
+        "${logDir}/litellm.out.log"
+        "${logDir}/litellm.err.log"
+      ]
+    }; do
+      if [[ -f "$log" ]] && [[ "$(/usr/bin/stat -f %z "$log")" -gt 5242880 ]]; then
+        /bin/cp "$log" "$log.1"
+        : > "$log"
+      fi
+    done
+  '';
 in {
   options.aytordev.programs.terminal.tools.litellm.service = {
     enable = lib.mkEnableOption "the LiteLLM proxy as a user service";
@@ -58,29 +72,37 @@ in {
       };
       Service = {
         ExecStart = startScript;
-        Environment = lib.mapAttrsToList (name: value: "${name}=${value}") cfg.environmentVariables;
         Restart = "on-failure";
         RestartSec = 5;
       };
       Install.WantedBy = lib.mkIf serviceCfg.autoStart ["default.target"];
     };
 
-    launchd.agents.litellm = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-      enable = true;
-      config = {
-        ProgramArguments = [startScript];
-        KeepAlive = {
-          SuccessfulExit = false;
-        };
-        RunAtLoad = serviceCfg.autoStart;
-        ProcessType = "Background";
-        StandardOutPath = "${logDir}/litellm.out.log";
-        StandardErrorPath = "${logDir}/litellm.err.log";
-        EnvironmentVariables =
+    launchd.agents = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+      litellm = {
+        enable = true;
+        config =
           {
-            LITELLM_TELEMETRY = "False";
+            ProgramArguments = ["${startScript}"];
+            RunAtLoad = serviceCfg.autoStart;
+            ProcessType = "Background";
+            StandardOutPath = "${logDir}/litellm.out.log";
+            StandardErrorPath = "${logDir}/litellm.err.log";
+            EnvironmentVariables.LITELLM_TELEMETRY = "False";
           }
-          // cfg.environmentVariables;
+          // lib.optionalAttrs serviceCfg.autoStart {
+            KeepAlive = {
+              SuccessfulExit = false;
+            };
+          };
+      };
+      litellm-log-rotation = {
+        enable = true;
+        config = {
+          ProgramArguments = ["${rotateLogs}"];
+          StartInterval = 3600;
+          ProcessType = "Background";
+        };
       };
     };
   };

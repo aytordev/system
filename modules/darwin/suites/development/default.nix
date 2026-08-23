@@ -11,7 +11,6 @@ in {
     enable = lib.mkEnableOption "common development configuration";
     dockerEnable = lib.mkEnableOption "docker desktop configuration";
     podmanEnable = lib.mkEnableOption "podman desktop configuration";
-    aiEnable = lib.mkEnableOption "ai development configuration";
   };
 
   config = mkIf cfg.enable {

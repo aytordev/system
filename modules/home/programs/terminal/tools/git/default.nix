@@ -75,7 +75,7 @@ in {
     signing = {
       enable = mkEnableOption "SSH signing for Git commits and tags";
       key = mkOption {
-        type = with lib.types; nullOr (either str path);
+        type = lib.types.nullOr lib.types.str;
         default = null;
         description = "Path to the SSH private key used for signing Git commits and tags.";
         example = "~/.ssh/id_ed25519";

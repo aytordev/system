@@ -30,6 +30,7 @@ in {
       ];
       programs.nushell = {
         enable = true;
+        inherit (cfg) package;
         envFile = {
           text = ''
             $env.XDG_CONFIG_HOME = "${xdgConfigHome}"

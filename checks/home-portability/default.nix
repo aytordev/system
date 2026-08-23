@@ -68,6 +68,9 @@
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   tests = [
     (config.programs.bash.package == pkgs.bashInteractive)
+    (config.programs.fish.package == config.aytordev.programs.terminal.shells.fish.package)
+    (config.programs.nushell.package == config.aytordev.programs.terminal.shells.nushell.package)
+    (config.programs.zsh.package == config.aytordev.programs.terminal.shells.zsh.package)
     (builtins.seq commonHome.activationPackage true)
     (config.home.file ? "Desktop/.keep")
     (config.home.shellAliases ? cleanup)

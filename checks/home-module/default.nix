@@ -97,6 +97,9 @@
     }
   ];
   ollamaPackageNames = map extendedLib.getName ollamaHome.config.home.packages;
+  ollamaServiceConfig = ollamaHome.config.aytordev.programs.terminal.tools.ollama.service;
+  ollamaLaunchdConfig = ollamaHome.config.launchd.agents.ollama.config;
+  litellmLaunchdConfig = litellmHome.config.launchd.agents.litellm.config;
   discoveredOllamaModules = builtins.filter (
     modulePath: extendedLib.hasInfix "/ollama" (toString modulePath)
   ) (extendedLib.importModulesRecursive ../../modules/home);
@@ -141,14 +144,28 @@
     (builtins.elem "ollama-chat" ollamaPackageNames)
     (
       if pkgs.stdenv.hostPlatform.isDarwin
-      then ollamaHome.config.launchd.agents ? ollama
-      else ollamaHome.config.systemd.user.services ? ollama
+      then
+        ollamaHome.config.launchd.agents ? ollama
+        && builtins.isString (builtins.head ollamaLaunchdConfig.ProgramArguments)
+        && !ollamaLaunchdConfig.RunAtLoad
+        && ollamaLaunchdConfig.KeepAlive == null
+        && ollamaHome.config.launchd.agents ? ollama-log-rotation
+      else
+        ollamaHome.config.systemd.user.services.ollama.Service.Type
+        == "exec"
+        && ollamaServiceConfig.autoStart
     )
     (
       if pkgs.stdenv.hostPlatform.isDarwin
-      then litellmHome.config.launchd.agents ? litellm
+      then
+        litellmHome.config.launchd.agents ? litellm
+        && builtins.isString (builtins.head litellmLaunchdConfig.ProgramArguments)
+        && !litellmLaunchdConfig.RunAtLoad
+        && litellmLaunchdConfig.KeepAlive == null
+        && litellmHome.config.launchd.agents ? litellm-log-rotation
       else litellmHome.config.systemd.user.services ? litellm
     )
+    (!(litellmHome.options.aytordev.programs.terminal.tools.litellm ? environmentVariables))
     (!(litellmHome.config.home.sessionVariables ? OPENAI_API_KEY))
     (builtins.elem "ollama-rag" ollamaPackageNames)
     (builtins.elem "ollama-validate" ollamaPackageNames)
@@ -158,5 +175,13 @@
     injectedHome.config.testMarker
   ];
 in
-  assert builtins.all (test: test) tests;
+  assert builtins.all (test: test) (
+    extendedLib.imap0 (
+      index: test:
+        if test
+        then true
+        else builtins.trace "home-module test ${toString index} failed" false
+    )
+    tests
+  );
     home.activationPackage
