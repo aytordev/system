@@ -100,6 +100,12 @@
   zshInitFile = pkgs.writeText "credential-wrappers.zsh" zshInit;
   officialBitwardenBash = officialConfig.xdg.configFile."bitwarden-cli/session.bash".text;
   officialBitwardenFish = officialConfig.xdg.configFile."bitwarden-cli/session.fish".text;
+  hcloudWrappedPackage =
+    lib.findFirst (
+      package: lib.hasPrefix "hcloud-with-runtime-token" (lib.getName package)
+    )
+    null
+    officialConfig.home.packages;
   bitwardenConfig = config.aytordev.programs.terminal.tools.bitwarden-cli;
   apiKeyScript = config.home.file.".local/bin/bitwarden-login-sops".text;
   tests = [
@@ -128,6 +134,8 @@
     (!(lib.hasInfix "$env.HCLOUD_TOKEN" nushellInit))
     (!(lib.hasInfix "export BW_SESSION" officialBitwardenBash))
     (!(lib.hasInfix "set -gx BW_SESSION" officialBitwardenFish))
+    (lib.hasPrefix "gh-with-runtime-token" (lib.getName officialConfig.programs.gh.package))
+    (hcloudWrappedPackage != null)
     (lib.hasInfix "/run/secrets/consumer-client-id" apiKeyScript)
     (lib.hasInfix "/run/secrets/consumer-client-secret" apiKeyScript)
     (lib.elem homeDirectory config.programs.git.settings.safe.directory)
@@ -150,5 +158,13 @@ in
       fish --no-execute ${fishInitFile}
       nu --no-config-file --commands 'source ${nushellInitFile}'
       zsh -n ${zshInitFile}
+      if ${lib.getExe officialConfig.programs.gh.package} --version; then
+        echo "GitHub CLI wrapper did not fail closed" >&2
+        exit 1
+      fi
+      if ${lib.getExe hcloudWrappedPackage} version; then
+        echo "Hetzner Cloud wrapper did not fail closed" >&2
+        exit 1
+      fi
       touch "$out"
     ''

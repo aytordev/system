@@ -18,8 +18,28 @@
     then cfg.auth.tokenPath
     else "";
   tokenPathShell = lib.escapeShellArg tokenPath;
-  tokenPathNu = builtins.toJSON tokenPath;
   executable = lib.getExe cfg.package;
+  wrappedExecutable = pkgs.writeShellScript "hcloud-with-runtime-token" ''
+    set -euo pipefail
+    if [[ ! -r ${tokenPathShell} ]]; then
+      printf 'Hetzner Cloud token file is not readable: %s\n' ${tokenPathShell} >&2
+      exit 1
+    fi
+    HCLOUD_TOKEN="$(<${tokenPathShell})" exec ${executable} "$@"
+  '';
+  wrappedPackage = pkgs.symlinkJoin {
+    name = "hcloud-with-runtime-token";
+    paths = [cfg.package];
+    meta.mainProgram = "hcloud";
+    postBuild = ''
+      rm -f "$out/bin/hcloud"
+      ln -s ${wrappedExecutable} "$out/bin/hcloud"
+    '';
+  };
+  effectivePackage =
+    if hasToken
+    then wrappedPackage
+    else cfg.package;
 in {
   options.aytordev.programs.terminal.tools.hcloud = {
     enable = mkEnableOption "Hetzner Cloud CLI";
@@ -40,50 +60,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [cfg.package];
-
-    programs = {
-      zsh.initContent = mkIf hasToken ''
-        hcloud() {
-          if [[ -r ${tokenPathShell} ]]; then
-            HCLOUD_TOKEN="$(<${tokenPathShell})" ${executable} "$@"
-          else
-            ${executable} "$@"
-          fi
-        }
-      '';
-
-      bash.initExtra = mkIf hasToken ''
-        hcloud() {
-          if [[ -r ${tokenPathShell} ]]; then
-            HCLOUD_TOKEN="$(<${tokenPathShell})" ${executable} "$@"
-          else
-            ${executable} "$@"
-          fi
-        }
-      '';
-
-      fish.interactiveShellInit = mkIf hasToken ''
-        function hcloud
-          if test -r ${tokenPathShell}
-            env HCLOUD_TOKEN=(string trim < ${tokenPathShell}) ${executable} $argv
-          else
-            ${executable} $argv
-          end
-        end
-      '';
-
-      nushell.extraConfig = mkIf hasToken ''
-        def --wrapped hcloud [...args] {
-          if (${tokenPathNu} | path exists) {
-            with-env { HCLOUD_TOKEN: (open --raw ${tokenPathNu} | str trim) } {
-              ^${executable} ...$args
-            }
-          } else {
-            ^${executable} ...$args
-          }
-        }
-      '';
-    };
+    home.packages = [effectivePackage];
   };
 }
