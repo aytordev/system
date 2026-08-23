@@ -100,6 +100,18 @@
   ollamaServiceConfig = ollamaHome.config.aytordev.programs.terminal.tools.ollama.service;
   ollamaLaunchdConfig = ollamaHome.config.launchd.agents.ollama.config;
   litellmLaunchdConfig = litellmHome.config.launchd.agents.litellm.config;
+  cudaPackageMatches =
+    if pkgs.stdenv.hostPlatform.isLinux
+    then let
+      cudaHome = mkHome [
+        ../../modules/home/programs/terminal/tools/ollama
+        {
+          aytordev.programs.terminal.tools.ollama.acceleration = "cuda";
+        }
+      ];
+    in
+      cudaHome.config.aytordev.programs.terminal.tools.ollama.package == pkgs.ollama-cuda
+    else true;
   discoveredOllamaModules = builtins.filter (
     modulePath: extendedLib.hasInfix "/ollama" (toString modulePath)
   ) (extendedLib.importModulesRecursive ../../modules/home);
@@ -167,6 +179,7 @@
     )
     (!(litellmHome.options.aytordev.programs.terminal.tools.litellm ? environmentVariables))
     (!(litellmHome.config.home.sessionVariables ? OPENAI_API_KEY))
+    cudaPackageMatches
     (builtins.elem "ollama-rag" ollamaPackageNames)
     (builtins.elem "ollama-validate" ollamaPackageNames)
     (builtins.elem "ollama-status" ollamaPackageNames)

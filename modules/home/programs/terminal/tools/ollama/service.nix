@@ -10,10 +10,6 @@
   accelerationEnvironment =
     if cfg.acceleration == "none"
     then {OLLAMA_LLM_LIBRARY = "cpu";}
-    else if cfg.acceleration == "cuda"
-    then {OLLAMA_CUDA = "1";}
-    else if cfg.acceleration == "rocm"
-    then {OLLAMA_ROCM = "1";}
     else {};
   baseEnvironment =
     {
@@ -24,7 +20,6 @@
     // cfg.environmentVariables;
   darwinEnvironment =
     {
-      OLLAMA_ORIGINS = "*";
       OLLAMA_CONTEXT_LENGTH = "32768";
       OLLAMA_FLASH_ATTENTION = "1";
       OLLAMA_KV_CACHE_TYPE = "q8_0";

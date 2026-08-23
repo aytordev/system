@@ -30,8 +30,16 @@ in {
 
     package = mkOption {
       type = types.package;
-      default = pkgs.ollama;
-      description = "The Ollama package to use";
+      default =
+        if cfg.acceleration == "cuda"
+        then pkgs.ollama-cuda
+        else if cfg.acceleration == "rocm"
+        then pkgs.ollama-rocm
+        else pkgs.ollama;
+      defaultText = lib.literalExpression ''
+        pkgs.ollama-cuda for CUDA, pkgs.ollama-rocm for ROCm, otherwise pkgs.ollama
+      '';
+      description = "The Ollama package to use.";
     };
 
     acceleration = mkOption {
