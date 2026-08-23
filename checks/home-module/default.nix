@@ -100,6 +100,7 @@
   ollamaServiceConfig = ollamaHome.config.aytordev.programs.terminal.tools.ollama.service;
   ollamaLaunchdConfig = ollamaHome.config.launchd.agents.ollama.config;
   litellmLaunchdConfig = litellmHome.config.launchd.agents.litellm.config;
+  litellmPackageNames = map extendedLib.getName litellmHome.config.home.packages;
   cudaPackageMatches =
     if pkgs.stdenv.hostPlatform.isLinux
     then let
@@ -165,6 +166,7 @@
       else
         ollamaHome.config.systemd.user.services.ollama.Service.Type
         == "exec"
+        && ollamaHome.config.systemd.user.services.ollama.Service.TimeoutStartSec == "infinity"
         && ollamaServiceConfig.autoStart
     )
     (
@@ -179,6 +181,7 @@
     )
     (!(litellmHome.options.aytordev.programs.terminal.tools.litellm ? environmentVariables))
     (!(litellmHome.config.home.sessionVariables ? OPENAI_API_KEY))
+    (builtins.elem "litellm-start" litellmPackageNames)
     cudaPackageMatches
     (builtins.elem "ollama-rag" ollamaPackageNames)
     (builtins.elem "ollama-validate" ollamaPackageNames)

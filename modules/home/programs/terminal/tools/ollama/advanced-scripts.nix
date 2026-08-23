@@ -81,9 +81,13 @@ in {
 
         case "$1" in
           generate)
+            payload="$(${pkgs.jq}/bin/jq -n \
+              --arg model "$2" \
+              --arg prompt "$3" \
+              '{model: $model, prompt: $prompt, stream: false}')"
             curl -s -X POST "$BASE_URL/api/generate" \
               -H "Content-Type: application/json" \
-              -d "{\"model\": \"$2\", \"prompt\": \"$3\", \"stream\": false}" \
+              -d "$payload" \
               | ${pkgs.jq}/bin/jq -r '.response'
             ;;
           health)
