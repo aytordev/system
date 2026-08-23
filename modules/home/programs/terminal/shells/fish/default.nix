@@ -34,6 +34,7 @@ in {
       ];
       programs.fish = {
         enable = true;
+        inherit (cfg) package;
         functions = {
           __ensure_xdg_dirs = ''
             set -l xdg_config "$XDG_CONFIG_HOME/fish"

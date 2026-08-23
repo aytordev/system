@@ -98,7 +98,7 @@
         /bin/launchctl kickstart -k "gui/$(id -u)/org.nix-community.home.ollama"
       ''
       else ''
-        ${lib.getExe pkgs.systemd} --user restart ollama.service
+        ${lib.getExe' pkgs.systemd "systemctl"} --user restart ollama.service
       ''
     }
     sleep 2

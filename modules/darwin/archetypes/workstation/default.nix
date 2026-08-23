@@ -18,7 +18,6 @@ in {
         enable = lib.mkDefault true;
         dockerEnable = lib.mkDefault false;
         podmanEnable = lib.mkDefault true;
-        aiEnable = lib.mkDefault false;
       };
       networking.enable = lib.mkDefault true;
     };

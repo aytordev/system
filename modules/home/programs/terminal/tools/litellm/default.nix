@@ -106,12 +106,6 @@ in {
       description = "Additional litellm_settings merged into the proxy config";
     };
 
-    environmentVariables = mkOption {
-      type = types.attrsOf types.str;
-      default = {};
-      description = "Non-secret environment variables for the LiteLLM service";
-    };
-
     environmentFiles = mkOption {
       type = types.attrsOf types.str;
       default = {};

@@ -56,6 +56,7 @@ in {
 
       programs.zsh = {
         enable = true;
+        inherit (cfg) package;
         dotDir = "${config.xdg.configHome}/zsh";
         enableCompletion = true;
         enableVteIntegration = true;
