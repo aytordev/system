@@ -67,7 +67,20 @@
             tools.bitwarden-cli = {
               enable = true;
               client = "bw";
-              shellIntegration.enable = true;
+              shellIntegration = {
+                enable = true;
+                bash = true;
+                fish = true;
+                zsh = true;
+              };
+            };
+            tools.gh = {
+              enable = true;
+              auth.tokenPath = "/run/secrets/github-token";
+            };
+            tools.hcloud = {
+              enable = true;
+              auth.tokenPath = "/run/secrets/hcloud-token";
             };
           };
         };
@@ -77,6 +90,16 @@
   };
   inherit (home) config;
   officialConfig = officialHome.config;
+  bashInit = officialConfig.programs.bash.initExtra;
+  fishInit = officialConfig.programs.fish.interactiveShellInit;
+  nushellInit = officialConfig.programs.nushell.extraConfig;
+  zshInit = officialConfig.programs.zsh.initContent;
+  bashInitFile = pkgs.writeText "credential-wrappers.bash" bashInit;
+  fishInitFile = pkgs.writeText "credential-wrappers.fish" fishInit;
+  nushellInitFile = pkgs.writeText "credential-wrappers.nu" nushellInit;
+  zshInitFile = pkgs.writeText "credential-wrappers.zsh" zshInit;
+  officialBitwardenBash = officialConfig.xdg.configFile."bitwarden-cli/session.bash".text;
+  officialBitwardenFish = officialConfig.xdg.configFile."bitwarden-cli/session.fish".text;
   bitwardenConfig = config.aytordev.programs.terminal.tools.bitwarden-cli;
   apiKeyScript = config.home.file.".local/bin/bitwarden-login-sops".text;
   tests = [
@@ -97,6 +120,14 @@
     (!officialConfig.programs.rbw.enable)
     (officialConfig.xdg.configFile ? "bitwarden-cli/session.bash")
     (lib.hasInfix "bw completion --shell zsh" officialConfig.programs.zsh.initContent)
+    (!(lib.hasInfix "export GH_TOKEN" zshInit))
+    (!(lib.hasInfix "export HCLOUD_TOKEN" zshInit))
+    (!(lib.hasInfix "set -gx GH_TOKEN" fishInit))
+    (!(lib.hasInfix "set -gx HCLOUD_TOKEN" fishInit))
+    (!(lib.hasInfix "$env.GH_TOKEN" nushellInit))
+    (!(lib.hasInfix "$env.HCLOUD_TOKEN" nushellInit))
+    (!(lib.hasInfix "export BW_SESSION" officialBitwardenBash))
+    (!(lib.hasInfix "set -gx BW_SESSION" officialBitwardenFish))
     (lib.hasInfix "/run/secrets/consumer-client-id" apiKeyScript)
     (lib.hasInfix "/run/secrets/consumer-client-secret" apiKeyScript)
     (lib.elem homeDirectory config.programs.git.settings.safe.directory)
@@ -105,6 +136,19 @@
   ];
 in
   assert builtins.all (test: test) tests;
-    pkgs.runCommand "home-identity-tests" {} ''
+    pkgs.runCommand "home-identity-tests"
+    {
+      nativeBuildInputs = [
+        pkgs.bash
+        pkgs.fish
+        pkgs.nushell
+        pkgs.zsh
+      ];
+    }
+    ''
+      bash -n ${bashInitFile}
+      fish --no-execute ${fishInitFile}
+      nu --no-config-file --commands 'source ${nushellInitFile}'
+      zsh -n ${zshInitFile}
       touch "$out"
     ''

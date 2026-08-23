@@ -13,6 +13,13 @@
     ;
   cfg = config.aytordev.programs.terminal.tools.gh;
   hasToken = cfg.auth.tokenPath != null;
+  tokenPath =
+    if hasToken
+    then cfg.auth.tokenPath
+    else "";
+  tokenPathShell = lib.escapeShellArg tokenPath;
+  tokenPathNu = builtins.toJSON tokenPath;
+  executable = lib.getExe cfg.package;
 in {
   options.aytordev.programs.terminal.tools.gh = {
     enable = mkEnableOption "GitHub CLI tool";
@@ -25,7 +32,7 @@ in {
         example = "/Users/username/.config/sops/github_token";
         description = ''
           Path to a file containing the GitHub personal access token.
-          When set, GH_TOKEN is exported at shell startup for automatic authentication.
+          The token is injected only into GitHub CLI processes.
           Designed to work with sops-nix managed secrets.
         '';
       };
@@ -67,26 +74,44 @@ in {
       };
 
       zsh.initContent = mkIf hasToken ''
-        if [[ -f "${cfg.auth.tokenPath}" ]]; then
-          export GH_TOKEN="$(command cat "${cfg.auth.tokenPath}")"
-        fi
+        gh() {
+          if [[ -r ${tokenPathShell} ]]; then
+            GH_TOKEN="$(<${tokenPathShell})" ${executable} "$@"
+          else
+            ${executable} "$@"
+          fi
+        }
       '';
 
       bash.initExtra = mkIf hasToken ''
-        if [[ -f "${cfg.auth.tokenPath}" ]]; then
-          export GH_TOKEN="$(command cat "${cfg.auth.tokenPath}")"
-        fi
+        gh() {
+          if [[ -r ${tokenPathShell} ]]; then
+            GH_TOKEN="$(<${tokenPathShell})" ${executable} "$@"
+          else
+            ${executable} "$@"
+          fi
+        }
       '';
 
       fish.interactiveShellInit = mkIf hasToken ''
-        if test -f "${cfg.auth.tokenPath}"
-          set -gx GH_TOKEN (command cat "${cfg.auth.tokenPath}")
+        function gh
+          if test -r ${tokenPathShell}
+            env GH_TOKEN=(string trim < ${tokenPathShell}) ${executable} $argv
+          else
+            ${executable} $argv
+          end
         end
       '';
 
-      nushell.extraEnv = mkIf hasToken ''
-        if ("${cfg.auth.tokenPath}" | path exists) {
-          $env.GH_TOKEN = (open "${cfg.auth.tokenPath}" | str trim)
+      nushell.extraConfig = mkIf hasToken ''
+        def --wrapped gh [...args] {
+          if (${tokenPathNu} | path exists) {
+            with-env { GH_TOKEN: (open --raw ${tokenPathNu} | str trim) } {
+              ^${executable} ...$args
+            }
+          } else {
+            ^${executable} ...$args
+          }
         }
       '';
     };
