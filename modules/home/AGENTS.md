@@ -68,43 +68,31 @@ GUI programs and desktop programs.
 
 **Key categories:**
 
-- **Browsers:** firefox, chromium, brave
-- **Communication:** discord, slack, telegram
-- **Media:** mpv, vlc, spotify
-- **Development:** vscode, jetbrains
-- **Window Managers:** hyprland, sway, i3
-- **Bars:** waybar, eww, ags
-- **Launchers:** rofi, wofi, anyrun
-- **Notifications:** swaync, mako, dunst
+- **Browsers:** firefox, chrome, chrome-dev
+- **Communication:** thunderbird, discord, slack
+- **Editors:** vscode, antigravity, zed, neovim
+- **Launchers:** alfred, raycast
+- **Security:** bitwarden
+- **Bar/clipboard/window tooling:** sketchybar, mac-mouse-fix, alt-tab (macOS)
 
-**Wayland-specific:**
-
-- `hyprland`: Main Wayland compositor config
-- `waybar`: Status bar with module configs
-- `swaync`: Notification center
-- `hyprlock`: Screen locker
-- `hypridle`: Idle management
+**macOS desktop:** on `aarch64-darwin`, desktop programs are macOS GUI apps
+rather than Linux compositor components.
 
 **Pattern:**
 
 ```nix
-aytordev.programs.desktop.wms.hyprland.enable = true;
-aytordev.programs.desktop.bars.waybar.enable = true;
+aytordev.programs.desktop.browsers.firefox.enable = true;
+aytordev.programs.desktop.editors.vscode.enable = true;
 ```
 
 ### Services (`services/`)
 
-User services and daemons (systemd user units or launchd agents).
+User services and daemons (launchd agents or systemd user units).
 
-**Common services:**
+**Available services:**
 
-- `keyring`: Secret management
-- `ssh-agent`: SSH key management
-- `syncthing`: File synchronization
-- `mpd`: Music server
-- `hypridle`: Idle daemon for Hyprland
-- `hyprpaper`: Wallpaper daemon
-- `easyeffects`: Audio effects pipeline
+- `jankyborders`: macOS window border highlighting
+- `protonmail-bridge`: Proton Mail bridge daemon
 
 **Pattern:**
 
@@ -121,11 +109,10 @@ Bundled configurations for workflows.
 **Available:**
 
 - `common`: Essential user tools (git, shell, editor)
-- `desktop`: Full desktop environment
+- `desktop`: Desktop programs and services
 - `development`: Development workflow
-- `wlroots`: Wayland desktop components
-- `art`, `music`, `photo`, `video`: Creative workflows
-- `games`: Gaming setup
+- `networking`: VPN and network tooling
+- `business`: Business programs
 - `social`: Communication apps
 
 **Pattern:**
@@ -151,7 +138,6 @@ User-level system configuration.
 **Modules:**
 
 - `xdg`: XDG base directory specification
-- `env`: User environment variables
 - `input`: Keyboard/mouse user preferences (complement to system-level)
 
 ### User (`user/`)
@@ -183,8 +169,8 @@ aytordev.{category}.{subcategory}.{program}.{option}
 
 ```nix
 aytordev.programs.terminal.shells.zsh.enable = true;
-aytordev.programs.desktop.wms.hyprland.settings = { };
-aytordev.services.syncthing.folders = { };
+aytordev.programs.desktop.bars.sketchybar.enable = true;
+aytordev.services.jankyborders.enable = true;
 ```
 
 ### Enable Patterns
@@ -207,8 +193,8 @@ aytordev.suites.development.enable = true;
 **3. Conditional enable:**
 
 ```nix
-aytordev.programs.desktop.bars.waybar.enable =
-  lib.mkIf config.aytordev.programs.desktop.wms.hyprland.enable true;
+aytordev.programs.desktop.bars.sketchybar.enable =
+  lib.mkIf config.aytordev.programs.desktop.window-manager-system.aerospace.enable true;
 ```
 
 ### XDG Configuration Files
@@ -257,47 +243,28 @@ programs.zoxide.enableBashIntegration = true;
 
 ## Application-Specific Patterns
 
-### Hyprland Configuration
+### Window Management (aerospace)
 
-Hyprland config uses structured Nix:
+macOS uses a tiling window manager:
 
 ```nix
-aytordev.programs.desktop.wms.hyprland = {
-  enable = true;
-  settings = {
-    general = {
-      gaps_in = 5;
-      gaps_out = 10;
-    };
-    bind = [
-      "SUPER, Return, exec, kitty"
-      "SUPER, Q, killactive"
-    ];
-  };
-};
+aytordev.programs.desktop.window-manager-system.aerospace.enable = true;
 ```
 
-### Waybar Modules
+### Status Bar (sketchybar)
 
-Waybar uses a module system. Each module is configured separately:
+Sketchybar is configured through Home Manager:
 
 ```nix
-aytordev.programs.desktop.bars.waybar = {
-  enable = true;
-  modules = {
-    clock.enable = true;
-    cpu.enable = true;
-    # Each module has its own options
-  };
-};
+aytordev.programs.desktop.bars.sketchybar.enable = true;
 ```
 
 ### Terminal Emulators
 
-Terminal emulators (kitty, alacritty, foot) should:
+Terminal emulators (ghostty, etc.) should:
 
-- Use theme from `aytordev.user.theme`
-- Configure fonts from `aytordev.system.fonts`
+- Use theme from `aytordev.theme.appTheme`
+- Configure fonts from the shared palette
 - Enable shell integration where available
 
 ## Testing Home Changes
@@ -319,8 +286,8 @@ home-manager switch
    `lib.mkMerge` or priorities.
 2. **Service ordering:** User services may start before system services are
    ready. Use `After=` directives.
-3. **Theme inconsistency:** Ensure all themed apps use same theme source
-   (`aytordev.user.theme`).
+3. **Theme inconsistency:** Ensure all themed apps use the same theme source
+   (`config.aytordev.theme`).
 4. **Shell rc files:** Don't mix manual and managed shell configs - choose one
    approach.
 5. **Dotfile links:** Home Manager creates symlinks to /nix/store - don't expect

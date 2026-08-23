@@ -7,18 +7,16 @@ belong in `modules/`.
 
 ```
 systems/
-├── x86_64-linux/
-│   └── {hostname}/
-│       ├── default.nix        # Main host configuration
-│       ├── hardware.nix        # Hardware detection & drivers
-│       ├── network.nix         # Network configuration (optional)
-│       ├── disks.nix           # Disk layout (optional)
-│       └── specializations.nix # Boot specializations (optional)
-├── aarch64-linux/
 ├── aarch64-darwin/
-├── x86_64-iso/               # ISO images
-└── x86_64-install-iso/       # Installation ISOs
+│   └── {hostname}/
+│       └── default.nix        # Main host configuration
+└── x86_64-linux/              # No Linux host configured yet
+    └── {hostname}/            # Future NixOS hosts would live here
 ```
+
+The only active host is `aarch64-darwin/wang-lin`. NixOS hosts can be added by
+creating `systems/x86_64-linux/{hostname}/default.nix`; the flake already targets
+`x86_64-linux`.
 
 ## Basic Structure
 
@@ -56,7 +54,7 @@ in
   };
 
   system.stateVersion = "24.11";  # NixOS
-  # system.stateVersion = 5;      # Darwin
+  # system.stateVersion = 6;      # Darwin
 }
 ```
 
@@ -225,6 +223,12 @@ For alternate boot configurations:
 
 ## Platform Differences
 
+> The NixOS examples below are aspirational reference material for a future
+> Linux host. The flake already targets `x86_64-linux`, but no concrete NixOS
+> system is configured yet. Actual aytordev module paths differ from these
+> generic nix-darwin/NixOS options; always check `modules/` for the real
+> namespace.
+
 ### NixOS
 
 ```nix
@@ -244,7 +248,7 @@ For alternate boot configurations:
 ```nix
 {
   system = {
-    stateVersion = 5;
+    stateVersion = 6;
     primaryUser = "username";
   };
 
@@ -282,7 +286,7 @@ Set once during initial setup, **never change**:
 
 ```nix
 system.stateVersion = "24.11";  # NixOS
-system.stateVersion = 5;        # Darwin
+system.stateVersion = 6;        # Darwin
 ```
 
 ## Testing

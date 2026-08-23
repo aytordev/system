@@ -34,7 +34,7 @@ mkShell {
   ];
 
   shellHook = ''
-    echo "🔨 My custom shell"
+    echo "My custom shell"
   '';
 }
 ```
@@ -67,7 +67,7 @@ mkShell {
   ];
 
   shellHook = ''
-    echo "🐍 Python Data Science Shell"
+    echo "Python Data Science Shell"
   '';
 }
 ```

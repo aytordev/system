@@ -6,12 +6,14 @@ This directory contains the core implementation of the system flake. It is struc
 
 ```
 flake/
-├── configs/            # Parameterized configurations
-├── dev/                # Development partition (separate lockfile)
-├── home/               # Home Manager module integration
-├── packages/           # System packages loader
-├── overlays/           # Overlays loader
-└── default.nix         # Entry point imported by root flake.nix
+├── apps/              # Flake apps loader
+├── configs/           # Parameterized configurations
+├── dev/               # Development partition (separate lockfile)
+├── home/              # Home Manager module integration
+├── overlays/          # Overlays loader
+├── packages/          # System packages loader
+├── tests/             # Library/unit test wiring
+└── default.nix        # Entry point imported by root flake.nix
 ```
 
 ## How It Works
@@ -19,4 +21,4 @@ flake/
 The root `flake.nix` imports `flake/default.nix`, which aggregates these modules. This "partitions" logic allows separating concerns:
 
 - **dev**: Development environments (`devShells`, `checks`) are isolated in the `dev` directory with their own `flake.lock`. This prevents development dependencies (like language servers or formatters) from polluting the main system closure.
-- **home/packages/overlays**: Logic to load and expose the system configuration components.
+- **home/packages/overlays/apps**: Logic to load and expose the system configuration components.

@@ -9,7 +9,7 @@ Cross-platform shared modules used by both NixOS and nix-darwin systems.
 - Shared capabilities expose `aytordev.*.enable` and a replaceable `package`
   when they own a primary package.
 - Keep shared behavior platform-neutral. Platform adapters belong under
-  `modules/darwin/` or `modules/nixos/`.
+  `modules/darwin/` (or a future `modules/nixos/`).
 - Suites compose with `lib.mkDefault`; they never use `lib.mkForce`.
 - Do not place host identity, secret values, or concrete home paths in reusable
   modules.
@@ -34,7 +34,7 @@ Code agents, slash commands, and skills for this repository.
 
 - Follow existing pattern in `agents/` or `commands/`
 - Export via `default.nix`
-- Document in root `AGENTS.md` specialized agents section
+- Document in `ai-tools/AGENTS.md`
 
 ### Nix Utilities (`nix/`)
 
@@ -54,8 +54,8 @@ Application configurations shared across platforms.
 
 - Generic configs that work on both NixOS and macOS
 - Terminal tools, shells, editors
-- Platform-specific overrides in `modules/nixos/programs/` or
-  `modules/darwin/programs/`
+- Platform-specific overrides in `modules/darwin/programs/` (or a future
+  `modules/nixos/programs/`)
 
 ### Suites (`suites/`)
 
@@ -63,8 +63,7 @@ Configuration bundles that enable multiple related modules.
 
 **Examples:**
 
-- `common`: Base system tools and utilities
-- Development environments (if they exist)
+- `common`: Base system tools and utilities shared by both platforms
 
 **Pattern:**
 
@@ -81,19 +80,20 @@ System-level shared configuration (fonts, localization, etc.).
 
 **Patterns:**
 
-- Font definitions used by stylix and programs
-- Cross-platform system settings
+- Shared fonts and system settings consumed across programs
+- Cross-platform defaults that platforms can override
 
 ## Theming
 
-**Prefer module-specific theme customizations over stylix defaults.**
+**Prefer module-specific theme customizations over default application themes.**
 
 When adding themed elements:
 
-1. Check if module has aytordev theme options
-2. Use conditional paths based on theme:
-   `if theme == "catppuccin-mocha" then ...`
-3. Fallback to stylix only when no module-specific option exists
+1. Check the pure-data theme module (`modules/home/theme`) for the palette and
+   variant helpers first.
+2. Use conditional paths based on the active theme variant:
+   `if config.aytordev.theme.variant == "wave" then ...`
+3. Fallback to an application default only when no aytordev theme option exists.
 
 ## Option Design
 
