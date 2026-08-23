@@ -49,10 +49,11 @@
 
     wait_for_service
 
-    for model in ${lib.concatStringsSep " " cfg.models}; do
-      echo -e "''${BLUE}Loading: $model''${NC}"
-      echo "" | ${cfg.package}/bin/ollama run "$model" >/dev/null 2>&1 &
-    done
+    ${lib.concatMapStringsSep "\n" (model: ''
+        printf '%bLoading: %s%b\n' "''${BLUE}" ${lib.escapeShellArg model} "''${NC}"
+        echo "" | ${cfg.package}/bin/ollama run ${lib.escapeShellArg model} >/dev/null 2>&1 &
+      '')
+      cfg.models}
     wait
 
     echo -e "''${GREEN}All models loaded into VRAM''${NC}"

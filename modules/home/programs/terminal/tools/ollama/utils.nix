@@ -32,7 +32,7 @@
       wait_for_service() {
         local max_attempts=30
         local attempt=0
-        while ! ${pkgs.curl}/bin/curl -s ${constants.baseUrl}/api/tags >/dev/null 2>&1; do
+        while ! ${pkgs.curl}/bin/curl -s ${lib.escapeShellArg "${constants.baseUrl}/api/tags"} >/dev/null 2>&1; do
           attempt=$((attempt + 1))
           if [ $attempt -ge $max_attempts ]; then
             handle_error "Ollama service not responding after $max_attempts attempts"
@@ -45,16 +45,18 @@
   };
 
   modelOperations = {
-    pullModel = model: ''
-      echo -e "''${BLUE}Pulling model: ${model}''${NC}"
-      if ! ${cfg.package}/bin/ollama list | grep -q "^${model}"; then
-        if ${cfg.package}/bin/ollama pull ${model}; then
-          echo -e "''${GREEN}Pulled ${model}''${NC}"
+    pullModel = model: let
+      modelArg = lib.escapeShellArg model;
+    in ''
+      printf '%bPulling model: %s%b\n' "''${BLUE}" ${modelArg} "''${NC}"
+      if ! ${cfg.package}/bin/ollama list | ${pkgs.gawk}/bin/awk -v model=${modelArg} 'NR > 1 && $1 == model { found=1 } END { exit !found }'; then
+        if ${cfg.package}/bin/ollama pull ${modelArg}; then
+          printf '%bPulled %s%b\n' "''${GREEN}" ${modelArg} "''${NC}"
         else
-          echo -e "''${YELLOW}Failed to pull ${model}, skipping''${NC}"
+          printf '%bFailed to pull %s, skipping%b\n' "''${YELLOW}" ${modelArg} "''${NC}"
         fi
       else
-        echo -e "''${YELLOW}Model ${model} already exists''${NC}"
+        printf '%bModel %s already exists%b\n' "''${YELLOW}" ${modelArg} "''${NC}"
       fi
     '';
 
@@ -122,7 +124,7 @@
 
     echo -e "''${CYAN}Ollama Service Status:''${NC}"
 
-    if ${pkgs.curl}/bin/curl -s http://${cfg.host}:${toString cfg.port}/api/tags > /dev/null 2>&1; then
+    if ${pkgs.curl}/bin/curl -s ${lib.escapeShellArg "${constants.baseUrl}/api/tags"} > /dev/null 2>&1; then
       echo -e "''${GREEN}Ollama is running and API is responding''${NC}"
       echo ""
       ${modelOperations.showRunning}

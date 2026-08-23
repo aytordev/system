@@ -57,7 +57,7 @@ in {
         fi
 
         # Check API connectivity
-        if curl -s http://${cfg.host}:${toString cfg.port}/api/tags > /dev/null 2>&1; then
+        if curl -s ${lib.escapeShellArg "http://${cfg.host}:${toString cfg.port}/api/tags"} > /dev/null 2>&1; then
           echo -e "''${GREEN}✅ API is responding''${NC}"
         else
           echo -e "''${YELLOW}⚠️  API is not responding (service may not be running)''${NC}"
@@ -108,7 +108,7 @@ in {
 
         echo ""
         echo -e "''${BLUE}📋 Configuration Summary:''${NC}"
-        echo "Models: ${toString cfg.models}"
+        printf 'Models: %s\n' ${lib.escapeShellArg (toString cfg.models)}
         echo "Model Presets: ${toString cfg.modelPresets}"
         echo "Shell Aliases: ${
           if cfg.shellAliases

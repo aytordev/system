@@ -77,7 +77,7 @@ in {
         set -e
 
         ${shellUtils.colors}
-        BASE_URL="${constants.baseUrl}"
+        BASE_URL=${lib.escapeShellArg constants.baseUrl}
 
         case "$1" in
           generate)
