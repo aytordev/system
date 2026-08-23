@@ -7,6 +7,10 @@
   username = "consumer-user";
   email = "consumer@example.test";
   fullName = "Consumer User";
+  apiClientId = "user.test-client-id";
+  apiClientSecret = "test-client-secret";
+  apiClientIdFile = pkgs.writeText "bitwarden-client-id" apiClientId;
+  apiClientSecretFile = pkgs.writeText "bitwarden-client-secret" apiClientSecret;
   homeDirectory =
     if pkgs.stdenv.hostPlatform.isDarwin
     then "/Users/${username}"
@@ -39,8 +43,8 @@
               server = "https://bitwarden.example.test";
               apiKey = {
                 enable = true;
-                clientIdFile = "/run/secrets/consumer-client-id";
-                clientSecretFile = "/run/secrets/consumer-client-secret";
+                clientIdFile = toString apiClientIdFile;
+                clientSecretFile = toString apiClientSecretFile;
               };
             };
           };
@@ -108,6 +112,7 @@
     officialConfig.home.packages;
   bitwardenConfig = config.aytordev.programs.terminal.tools.bitwarden-cli;
   apiKeyScript = config.home.file.".local/bin/bitwarden-login-sops".text;
+  rbwPinentry = config.programs.rbw.settings.pinentry;
   tests = [
     (config.programs.git.settings.user.name == username)
     (config.programs.git.settings.user.email == email)
@@ -134,10 +139,18 @@
     (!(lib.hasInfix "$env.HCLOUD_TOKEN" nushellInit))
     (!(lib.hasInfix "export BW_SESSION" officialBitwardenBash))
     (!(lib.hasInfix "set -gx BW_SESSION" officialBitwardenFish))
+    (lib.hasInfix "/tmp/bitwarden-" officialBitwardenBash)
+    (lib.hasInfix "/tmp/bitwarden-" officialBitwardenFish)
+    (lib.hasInfix "-c %a" officialBitwardenBash)
+    (lib.hasInfix "-c %a" officialBitwardenFish)
+    (!(lib.hasInfix "TMPDIR" officialBitwardenBash))
+    (!(lib.hasInfix "TMPDIR" officialBitwardenFish))
     (lib.hasPrefix "gh-with-runtime-token" (lib.getName officialConfig.programs.gh.package))
     (hcloudWrappedPackage != null)
-    (lib.hasInfix "/run/secrets/consumer-client-id" apiKeyScript)
-    (lib.hasInfix "/run/secrets/consumer-client-secret" apiKeyScript)
+    (lib.hasInfix "rbw-api-key-pinentry" rbwPinentry)
+    (lib.hasInfix "PINENTRY_USER_DATA=aytordev-bitwarden-api-key" apiKeyScript)
+    (!(lib.hasInfix "BW_CLIENTID" apiKeyScript))
+    (lib.hasInfix "register" apiKeyScript)
     (lib.elem homeDirectory config.programs.git.settings.safe.directory)
     (!(config.home.file ? "Desktop/.keep"))
     (!(config.home.shellAliases ? cleanup))
@@ -164,6 +177,40 @@ in
       fi
       if ${lib.getExe hcloudWrappedPackage} version; then
         echo "Hetzner Cloud wrapper did not fail closed" >&2
+        exit 1
+      fi
+      client_id_output="$(
+        printf 'SETTITLE rbw\nSETPROMPT API key client__id\nSETDESC Test\nGETPIN\n' \
+          | PINENTRY_USER_DATA=aytordev-bitwarden-api-key ${rbwPinentry}
+      )"
+      client_secret_output="$(
+        printf 'SETTITLE rbw\nSETPROMPT API key client__secret\nSETDESC Test\nGETPIN\n' \
+          | PINENTRY_USER_DATA=aytordev-bitwarden-api-key ${rbwPinentry}
+      )"
+      case "$client_id_output" in
+        *"D ${apiClientId}"*) ;;
+        *)
+          echo "rbw pinentry did not return the API client ID" >&2
+          exit 1
+          ;;
+      esac
+      case "$client_id_output" in
+        "OK Pleased to meet you"*) ;;
+        *)
+          echo "rbw pinentry did not emit an Assuan greeting" >&2
+          exit 1
+          ;;
+      esac
+      case "$client_secret_output" in
+        *"D ${apiClientSecret}"*) ;;
+        *)
+          echo "rbw pinentry did not return the API client secret" >&2
+          exit 1
+          ;;
+      esac
+      if printf 'UNEXPECTED\n' \
+        | PINENTRY_USER_DATA=aytordev-bitwarden-api-key ${rbwPinentry} >/dev/null; then
+        echo "rbw pinentry accepted an unexpected command" >&2
         exit 1
       fi
       touch "$out"
