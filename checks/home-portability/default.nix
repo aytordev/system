@@ -3,16 +3,16 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   username = "portability-user";
   homeDirectory =
-    if pkgs.stdenv.hostPlatform.isDarwin
-    then "/Users/${username}"
-    else "/home/${username}";
-  mkPortableHome = {
-    suite,
-    extraModule ? {},
-  }:
+    if pkgs.stdenv.hostPlatform.isDarwin then "/Users/${username}" else "/home/${username}";
+  mkPortableHome =
+    {
+      suite,
+      extraModule ? { },
+    }:
     inputs.self.lib.system.mkHome {
       inherit username;
       system = pkgs.stdenv.hostPlatform.system;
@@ -30,13 +30,17 @@
           };
           home.stateVersion = "25.11";
         }
-        {aytordev.suites.${suite}.enable = true;}
+        { aytordev.suites.${suite}.enable = true; }
         extraModule
       ];
     };
-  commonHome = mkPortableHome {suite = "common";};
-  desktopHome = mkPortableHome {suite = "desktop";};
-  businessHome = mkPortableHome {suite = "business";};
+  commonHome = mkPortableHome { suite = "common"; };
+  commonNoFastfetchHome = mkPortableHome {
+    suite = "common";
+    extraModule.aytordev.programs.terminal.tools.fastfetch.enable = false;
+  };
+  desktopHome = mkPortableHome { suite = "desktop"; };
+  businessHome = mkPortableHome { suite = "business"; };
   desktopOverrideHome = mkPortableHome {
     suite = "desktop";
     extraModule.aytordev = {
@@ -53,18 +57,16 @@
     };
   };
   inherit (commonHome) config;
+  commonNoFastfetchConfig = commonNoFastfetchHome.config;
   desktopConfig = desktopHome.config;
   businessConfig = businessHome.config;
   desktopOverrideConfig = desktopOverrideHome.config;
   developmentOverrideConfig = developmentOverrideHome.config;
   developmentOptions = developmentOverrideHome.options.aytordev.suites.development;
   packageNames = map lib.getName config.home.packages;
-  dragBinding =
-    lib.findFirst (
-      binding: binding.on == ["<C-v>"]
-    )
-    null
-    config.programs.yazi.keymap.mgr.prepend_keymap;
+  dragBinding = lib.findFirst (
+    binding: binding.on == [ "<C-v>" ]
+  ) null config.programs.yazi.keymap.mgr.prepend_keymap;
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   tests = [
     (config.programs.bash.package == pkgs.bashInteractive)
@@ -75,15 +77,19 @@
     (config.home.file ? "Desktop/.keep")
     (config.home.shellAliases ? cleanup)
     config.programs.home-manager.enable
+    (!(commonNoFastfetchConfig.programs.bash.shellAliases ? clear))
+    (lib.hasInfix "__HM_SESS_VARS_SOURCED" config.programs.bash.shellAliases.hmvar-reload)
+    (lib.hasInfix config.home.profileDirectory config.programs.bash.shellAliases.hmvar-reload)
     (builtins.seq desktopHome.activationPackage true)
     (builtins.seq businessHome.activationPackage true)
     (config.aytordev.services.protonmail-bridge.enable == isDarwin)
     (config.aytordev.programs.terminal.tools.nh.flake == null)
     (!(builtins.hasAttr "nixcfg" config.home.shellAliases))
     (
-      if isDarwin
-      then dragBinding == null
-      else builtins.elem "dragon-drop" packageNames && lib.hasInfix "bin/dragon-drop" dragBinding.run
+      if isDarwin then
+        dragBinding == null
+      else
+        builtins.elem "dragon-drop" packageNames && lib.hasInfix "bin/dragon-drop" dragBinding.run
     )
     (desktopConfig.aytordev.programs.desktop.bars.sketchybar.enable == isDarwin)
     (!(desktopConfig.aytordev.theme ? enable))
@@ -110,7 +116,7 @@
     ((developmentOverrideConfig.home.activation ? antigravityConflictResolution) == isDarwin)
   ];
 in
-  assert builtins.all (test: test) tests;
-    pkgs.runCommand "home-portability-tests" {} ''
-      touch "$out"
-    ''
+assert builtins.all (test: test) tests;
+pkgs.runCommand "home-portability-tests" { } ''
+  touch "$out"
+''

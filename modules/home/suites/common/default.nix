@@ -17,39 +17,43 @@
   cfg = config.aytordev.suites.common;
   isWSL = osConfig.aytordev.archetypes.wsl.enable or false;
   nhFlake = config.aytordev.programs.terminal.tools.nh.flake;
+  fastfetchCfg = config.aytordev.programs.terminal.tools.fastfetch;
 
-  bashAliases = {
-    # Closure size checking aliases
-    ncs-sys = ''f(){ nix build ".#nixosConfigurations.$1.config.system.build.toplevel" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#nixosConfigurations.$1.config.system.build.toplevel.outPath") | tail -1; }; f'';
-    ncs-darwin = ''f(){ nix build ".#darwinConfigurations.$1.config.system.build.toplevel" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#darwinConfigurations.$1.config.system.build.toplevel.outPath") | tail -1; }; f'';
-    ncs-home = ''f(){ nix build ".#homeConfigurations.$1.activationPackage" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#homeConfigurations.$1.activationPackage.outPath") | tail -1; }; f'';
-    ndu = "nix-du -s=200MB | dot -Tsvg > store.svg ${
-      lib.optionalString (!isWSL)
-      "; ${
-        if pkgs.stdenv.hostPlatform.isDarwin
-        then "open"
-        else "xdg-open"
-      } store.svg"
-    }";
-    gc-check = "nix-store --gc --print-roots | egrep -v \"^(/nix/var|/run/\\w+-system|\\{memory|/proc)\"";
-    nixnuke = ''
-      sudo pkill -9 -f "nix-(daemon|store|build)" 2>/dev/null
-      for pid in $(ps -axo pid,user | ${getExe pkgs.gnugrep} -E '[_]?nixbld[0-9]+' | ${getExe pkgs.gawk} '{print $1}'); do
-        sudo kill -9 "$pid" 2>/dev/null
-      done
-      if [ "$(uname)" = "Darwin" ]; then
-        sudo launchctl kickstart -k system/org.nixos.nix-daemon
-      else
-        sudo systemctl restart nix-daemon.service
-      fi
-    '';
-    remove-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -delete";
-    print-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -print";
-    usage = "${getExe' pkgs.coreutils "du"} -ah -d1 | sort -rn 2>/dev/null";
-    psg = "${getExe pkgs.ps} aux | grep";
-    hmvar-reload = ''__HM_ZSH_SESS_VARS_SOURCED=0 source "/etc/profiles/per-user/${config.aytordev.user.name}/etc/profile.d/hm-session-vars.sh"'';
-    clear = "clear; ${getExe config.programs.fastfetch.package}";
-  };
+  bashAliases =
+    {
+      # Closure size checking aliases
+      ncs-sys = ''f(){ nix build ".#nixosConfigurations.$1.config.system.build.toplevel" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#nixosConfigurations.$1.config.system.build.toplevel.outPath") | tail -1; }; f'';
+      ncs-darwin = ''f(){ nix build ".#darwinConfigurations.$1.config.system.build.toplevel" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#darwinConfigurations.$1.config.system.build.toplevel.outPath") | tail -1; }; f'';
+      ncs-home = ''f(){ nix build ".#homeConfigurations.$1.activationPackage" --no-link; nix path-info --recursive --closure-size --human-readable $(nix eval --raw ".#homeConfigurations.$1.activationPackage.outPath") | tail -1; }; f'';
+      ndu = "nix-du -s=200MB | dot -Tsvg > store.svg ${
+        lib.optionalString (!isWSL)
+        "; ${
+          if pkgs.stdenv.hostPlatform.isDarwin
+          then "open"
+          else "xdg-open"
+        } store.svg"
+      }";
+      gc-check = "nix-store --gc --print-roots | egrep -v \"^(/nix/var|/run/\\w+-system|\\{memory|/proc)\"";
+      nixnuke = ''
+        sudo pkill -9 -f "nix-(daemon|store|build)" 2>/dev/null
+        for pid in $(ps -axo pid,user | ${getExe pkgs.gnugrep} -E '[_]?nixbld[0-9]+' | ${getExe pkgs.gawk} '{print $1}'); do
+          sudo kill -9 "$pid" 2>/dev/null
+        done
+        if [ "$(uname)" = "Darwin" ]; then
+          sudo launchctl kickstart -k system/org.nixos.nix-daemon
+        else
+          sudo systemctl restart nix-daemon.service
+        fi
+      '';
+      remove-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -delete";
+      print-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -print";
+      usage = "${getExe' pkgs.coreutils "du"} -ah -d1 | sort -rn 2>/dev/null";
+      psg = "${getExe pkgs.ps} aux | grep";
+      hmvar-reload = ''unset __HM_SESS_VARS_SOURCED; source "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"'';
+    }
+    // lib.optionalAttrs fastfetchCfg.enable {
+      clear = "clear; ${getExe fastfetchCfg.package}";
+    };
 in {
   options.aytordev.suites.common = {
     enable = lib.mkEnableOption "common configuration";

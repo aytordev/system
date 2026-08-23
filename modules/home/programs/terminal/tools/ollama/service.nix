@@ -89,6 +89,7 @@ in {
           };
           Service = {
             Type = "exec";
+            TimeoutStartSec = lib.mkIf (cfg.models != []) "infinity";
             ExecStart = "${lib.getExe cfg.package} serve";
             ExecStartPost = lib.mkIf (cfg.models != []) "${lib.getExe createModelPullScript}";
             Environment = ["HOME=%h"] ++ environmentList;

@@ -8,26 +8,14 @@
   serviceCfg = cfg.service;
   configFile = "${config.xdg.configHome}/litellm/config.yaml";
   logDir = "${config.xdg.stateHome}/litellm";
-  environmentNames = builtins.attrNames cfg.environmentFiles;
-  validEnvironmentName = name: builtins.match "[A-Za-z_][A-Za-z0-9_]*" name != null;
-  secretExports = lib.concatStringsSep "\n" (
-    lib.mapAttrsToList (name: file: ''
-      if [[ ! -r ${lib.escapeShellArg file} ]]; then
-        printf 'LiteLLM secret file is not readable: %s\n' ${lib.escapeShellArg file} >&2
-        exit 1
-      fi
-      export ${name}="$(<${lib.escapeShellArg file})"
-    '')
-    cfg.environmentFiles
-  );
-  startScript = pkgs.writeShellScript "litellm-service" ''
-    set -euo pipefail
-    ${secretExports}
-    exec ${lib.getExe cfg.package} \
-      --config ${lib.escapeShellArg configFile} \
-      --host ${lib.escapeShellArg cfg.host} \
-      --port ${toString cfg.port}
-  '';
+  startPackage = import ./start.nix {
+    inherit
+      cfg
+      configFile
+      lib
+      pkgs
+      ;
+  };
   rotateLogs = pkgs.writeShellScript "litellm-log-rotate" ''
     set -euo pipefail
     for log in ${
@@ -53,13 +41,6 @@ in {
   };
 
   config = lib.mkIf (cfg.enable && serviceCfg.enable) {
-    assertions = [
-      {
-        assertion = builtins.all validEnvironmentName environmentNames;
-        message = "LiteLLM environment file names must be valid environment variable names";
-      }
-    ];
-
     home.activation.createLiteLLMStateDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
       $DRY_RUN_CMD mkdir -p ${lib.escapeShellArg logDir}
     '';
@@ -71,7 +52,7 @@ in {
         Wants = ["network-online.target"];
       };
       Service = {
-        ExecStart = startScript;
+        ExecStart = lib.getExe startPackage;
         Restart = "on-failure";
         RestartSec = 5;
       };
@@ -83,7 +64,7 @@ in {
         enable = true;
         config =
           {
-            ProgramArguments = ["${startScript}"];
+            ProgramArguments = ["${lib.getExe startPackage}"];
             RunAtLoad = serviceCfg.autoStart;
             ProcessType = "Background";
             StandardOutPath = "${logDir}/litellm.out.log";

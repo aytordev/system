@@ -25,7 +25,7 @@
       printf 'GitHub CLI token file is not readable: %s\n' ${tokenPathShell} >&2
       exit 1
     fi
-    GH_TOKEN="$(<${tokenPathShell})" exec ${executable} "$@"
+    ${cfg.auth.tokenVariable}="$(<${tokenPathShell})" exec ${executable} "$@"
   '';
   wrappedPackage = pkgs.symlinkJoin {
     name = "gh-with-runtime-token";
@@ -56,6 +56,14 @@ in {
           Designed to work with sops-nix managed secrets.
         '';
       };
+      tokenVariable = mkOption {
+        type = types.enum [
+          "GH_TOKEN"
+          "GH_ENTERPRISE_TOKEN"
+        ];
+        default = "GH_TOKEN";
+        description = "Environment variable used for GitHub CLI authentication.";
+      };
     };
 
     gitCredentialHelper = {
@@ -65,7 +73,10 @@ in {
           "https://github.com"
           "https://gist.github.com"
         ];
-        description = "List of hosts for which gh should be used as a credential helper";
+        description = ''
+          Hosts for which gh is used as a credential helper. Set
+          auth.tokenVariable to GH_ENTERPRISE_TOKEN for enterprise hosts.
+        '';
         example = ''
           [ "github.com" "enterprise.github.com" ]
         '';

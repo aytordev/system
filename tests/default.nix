@@ -35,6 +35,7 @@
   ollamaServiceModule = builtins.readFile ../modules/home/programs/terminal/tools/ollama/service.nix;
   ollamaScriptsModule = builtins.readFile ../modules/home/programs/terminal/tools/ollama/scripts.nix;
   ollamaUtilsModule = builtins.readFile ../modules/home/programs/terminal/tools/ollama/utils.nix;
+  litellmStartModule = builtins.readFile ../modules/home/programs/terminal/tools/litellm/start.nix;
   archetypes = lib.evalModules {
     modules = [
       ../modules/darwin/archetypes/personal
@@ -148,6 +149,11 @@ in {
     expected = true;
   };
 
+  testLiteLLMStartForwardsArguments = {
+    expr = lib.hasInfix ''"$@"'' litellmStartModule;
+    expected = true;
+  };
+
   testClaudeAuditLimitsRetention = {
     expr = lib.hasInfix "tail -n 1000" claudeAuditScript;
     expected = true;
@@ -176,8 +182,8 @@ in {
     expected = false;
   };
 
-  testRunAsServiceEscapesEnvironmentValues = {
-    expr = lib.hasInfix "escapeShellArg" runAsServiceModule;
+  testRunAsServiceUsesHomeManagerEnvironment = {
+    expr = lib.hasInfix "sessionVariablesPackage" runAsServiceModule;
     expected = true;
   };
 

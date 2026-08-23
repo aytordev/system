@@ -15,6 +15,17 @@
   cfg = config.aytordev.programs.terminal.tools.litellm;
 
   configDir = "${config.xdg.configHome}/litellm";
+  configFile = "${configDir}/config.yaml";
+  environmentNames = builtins.attrNames cfg.environmentFiles;
+  validEnvironmentName = name: builtins.match "[A-Za-z_][A-Za-z0-9_]*" name != null;
+  startPackage = import ./start.nix {
+    inherit
+      cfg
+      configFile
+      lib
+      pkgs
+      ;
+  };
 
   proxyConfig = {
     model_list =
@@ -121,8 +132,18 @@ in {
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = builtins.all validEnvironmentName environmentNames;
+        message = "LiteLLM environment file names must be valid environment variable names";
+      }
+    ];
+
     home = {
-      packages = [cfg.package];
+      packages = [
+        cfg.package
+        startPackage
+      ];
 
       sessionVariables = {
         LITELLM_CONFIG = "${configDir}/config.yaml";
@@ -131,7 +152,6 @@ in {
       };
 
       shellAliases = mkIf cfg.shellAliases {
-        litellm-start = "litellm --config ${configDir}/config.yaml --host ${cfg.host} --port ${toString cfg.port}";
         litellm-models = "curl -s http://${cfg.host}:${toString cfg.port}/v1/models | python3 -m json.tool";
         litellm-health = "curl -s http://${cfg.host}:${toString cfg.port}/health";
       };
