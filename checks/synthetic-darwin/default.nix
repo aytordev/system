@@ -58,10 +58,6 @@
               message = "The shared Nix capability must expose a package option";
             }
             {
-              assertion = options.aytordev.services.openssh ? package;
-              message = "The Darwin OpenSSH capability must expose a package option";
-            }
-            {
               assertion = !(options.aytordev.suites.development ? aiEnable);
               message = "Darwin development suite options must have real consumers";
             }

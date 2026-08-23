@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
   inherit
@@ -15,7 +14,6 @@
 in {
   options.aytordev.services.openssh = {
     enable = mkEnableOption "OpenSSH service";
-    package = lib.mkPackageOption pkgs "openssh" {};
     authorizedKeys = mkOption {
       type = types.listOf types.str;
       default = [];
@@ -45,7 +43,6 @@ in {
       }
     ];
 
-    environment.systemPackages = [cfg.package];
     services.openssh = {
       enable = true;
       extraConfig = ''
