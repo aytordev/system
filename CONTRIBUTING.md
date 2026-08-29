@@ -1,6 +1,6 @@
 # Contributing to aytordev/system
 
-The repository is a personal, single-branch, Nix-based system configuration.
+The repository is a personal, single-author Nix-based system configuration.
 These guidelines apply to both human and AI-assisted contributions.
 
 ## Ground Rules

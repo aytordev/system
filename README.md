@@ -16,10 +16,12 @@ Personal Nix configuration built with [flake-parts](https://github.com/hercules-
 
 1. [Getting Started](#getting-started)
 2. [Features](#features)
-3. [Customization](#customization)
-4. [Exported Packages](#exported-packages)
-5. [Verification](#verification)
-6. [Resources](#resources)
+3. [Private Profile Contract](#private-profile-contract)
+4. [Customization](#customization)
+5. [Exported Packages](#exported-packages)
+6. [Verification](#verification)
+7. [Contributing and Agent Guidance](#contributing-and-agent-guidance)
+8. [Resources](#resources)
 
 ## Getting Started
 

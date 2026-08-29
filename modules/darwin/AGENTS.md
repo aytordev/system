@@ -152,10 +152,16 @@ config = lib.mkIf cfg.enable {
     autohide = true;
     tilesize = 43;
     orientation = "left";
-    persistent-apps = [ "/Applications/Ghostty.app" ];
+    persistent-apps = [
+      "/System/Applications/Apps.app"
+      "/Applications/Ghostty.app"
+    ];
   };
 };
 ```
+
+> `cfg` here is `config.aytordev.system.interface` (the module owns the whole
+> `interface` namespace); there is no per-app `dock.autohide` option.
 
 ### Activation Scripts
 
@@ -192,8 +198,7 @@ tree would hold Linux-only system adapters; none is configured yet.
 
 **Example: Git config**
 
-- Base config: `modules/common/programs/terminal/git/`
-- macOS keychain: `modules/darwin/programs/terminal/git/`
+- Git lives in Home Manager: `modules/home/programs/terminal/tools/git`
 
 ### Path Differences
 
