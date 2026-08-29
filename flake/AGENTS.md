@@ -12,7 +12,6 @@ flake/
 ├── home/              # Home Manager module integration
 ├── overlays/          # Overlays loader
 ├── packages/          # System packages loader
-├── tests/             # Library/unit test wiring
 └── default.nix        # Entry point imported by root flake.nix
 ```
 

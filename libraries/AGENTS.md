@@ -132,9 +132,12 @@ Add clear documentation with:
 # Test in nix repl
 nix repl
 > :lf .
-> lib.myCategory.myFunction "a" "b"
-"ab"
+> lib.file.getFile "modules"
+/nix/store/.../modules
 ```
+
+Libs are exposed under `flake.lib` (e.g. `lib.file.*`, `lib.system.*`,
+`lib.module.*`); the overlay also surfaces module helpers as `pkgs.aytordev.*`.
 
 ## When to Add Library Functions
 

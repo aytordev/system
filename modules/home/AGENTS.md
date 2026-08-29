@@ -46,13 +46,11 @@ CLI tools and terminal programs.
 
 **Key categories:**
 
-- **Shells:** bash, zsh, fish, nushell
+- **Shells:** bash, zsh, fish, nu-shell
 - **Multiplexers:** tmux, zellij
-- **Editors:** neovim, helix, emacs
-- **Tools:** git, gh, lazygit, fzf, ripgrep, bat, eza, zoxide
-- **Development:** direnv, devenv, language servers
-- **File managers:** yazi, ranger, lf
-- **Monitoring:** btop, htop, bottom
+- **Editors:** neovim
+- **Tools:** git, gh, lazygit, lazydocker, fzf, ripgrep, bat, eza, zoxide, jujutsu, k9s, etc.
+- **Emulators:** ghostty, warp
 
 **Pattern:**
 
@@ -68,12 +66,12 @@ GUI programs and desktop programs.
 
 **Key categories:**
 
-- **Browsers:** firefox, chrome, chrome-dev
-- **Communication:** thunderbird, discord, slack
-- **Editors:** vscode, antigravity, zed, neovim
-- **Launchers:** alfred, raycast
+- **Browsers:** brave, chrome, chrome-dev, chromium, firefox
+- **Communication:** thunderbird, discord, vesktop
+- **Editors:** antigravity, vscode, zed, neovim
+- **Launchers:** raycast
 - **Security:** bitwarden
-- **Bar/clipboard/window tooling:** sketchybar, mac-mouse-fix, alt-tab (macOS)
+- **Bars / window management:** sketchybar, aerospace (macOS)
 
 **macOS desktop:** on `aarch64-darwin`, desktop programs are macOS GUI apps
 rather than Linux compositor components.

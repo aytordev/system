@@ -18,6 +18,12 @@ The only active host is `aarch64-darwin/wang-lin`. NixOS hosts can be added by
 creating `systems/x86_64-linux/{hostname}/default.nix`; the flake already targets
 `x86_64-linux`.
 
+> **Note:** The NixOS examples below (Basic Structure, Archetypes, Common
+> Files, Platform Differences) are aspirational reference material for a future
+> Linux host. No concrete NixOS system is configured yet, and the aytordev
+> module paths shown differ from the actual `modules/` namespace. Always check
+> the real modules before copying an example.
+
 ## Basic Structure
 
 ### default.nix
@@ -222,12 +228,6 @@ For alternate boot configurations:
 ```
 
 ## Platform Differences
-
-> The NixOS examples below are aspirational reference material for a future
-> Linux host. The flake already targets `x86_64-linux`, but no concrete NixOS
-> system is configured yet. Actual aytordev module paths differ from these
-> generic nix-darwin/NixOS options; always check `modules/` for the real
-> namespace.
 
 ### NixOS
 

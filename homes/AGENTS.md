@@ -71,8 +71,7 @@ aytordev.programs.desktop = {
 
   # User's browser settings
   browsers.firefox = {
-    gpuAcceleration = true;
-    settings."media.av1.enabled" = false;
+    enable = true;
   };
 };
 ```
@@ -121,14 +120,7 @@ aytordev.programs.desktop = {
       name = "username";
     };
 
-    environments.home-network = enabled;
-
     programs.desktop.bars.sketchybar.enable = true;
-
-    services.sops = {
-      enable = true;
-      defaultSopsFile = lib.getFile "secrets/${hostname}/${username}/default.yaml";
-    };
 
     suites = {
       common = enabled;
@@ -220,5 +212,4 @@ nix flake check
 
 # Apply changes (macOS)
 just darwin-switch wang-lin
-```
 ```
