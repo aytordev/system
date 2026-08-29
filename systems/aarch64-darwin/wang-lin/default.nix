@@ -59,6 +59,12 @@ in {
             mode = "0600";
             owner = username;
           };
+          nan_builders_api_key = {
+            key = "nan_builders_api_key";
+            path = "/Users/${username}/.config/sops/nan_builders_api_key";
+            mode = "0600";
+            owner = username;
+          };
           hetzner_ssh_private_key = {
             sopsFile = "${sopsFolder}/portfolio.yaml";
             key = "hetzner_ssh_private_key";
