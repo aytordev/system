@@ -78,7 +78,7 @@ system.defaults.NSGlobalDomain.AppleShowAllExtensions = true;
 system.defaults.dock.autohide = true;
 
 # Wrap in aytordev options for consistency
-aytordev.system.interface.dock.autohide = true;
+aytordev.system.interface.enable = true;
 ```
 
 ### Tools (`tools/`)
