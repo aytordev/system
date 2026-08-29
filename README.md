@@ -139,7 +139,8 @@ nix flake check --all-systems --no-build   # evaluation on both platforms
 
 CI runs `nix flake check` on `x86_64-linux` and `aarch64-darwin` with the
 `secrets` input substituted by the fixture. Check levels are described in
-[`checks/AGENTS.md`](checks/AGENTS.md).
+[`checks/AGENTS.md`](checks/AGENTS.md). See [`docs/ci-cd.md`](docs/ci-cd.md)
+for the full CI/CD design and troubleshooting.
 
 ## Contributing and Agent Guidance
 
