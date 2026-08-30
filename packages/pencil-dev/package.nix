@@ -11,7 +11,7 @@ stdenvNoCC.mkDerivation {
 
   src = fetchurl {
     url = "https://www.pencil.dev/download/Pencil-mac-arm64.dmg";
-    hash = "sha256-VppyV3l8Pc4dpWxv3m9+JYnvjAwhx2NCrBZkGgQPig0=";
+    hash = "sha256-YhYGgnzZtZbBBqCHkABkE/dAcQbMLo/sS4RcHg+JtdA=";
   };
 
   nativeBuildInputs = [undmg];
