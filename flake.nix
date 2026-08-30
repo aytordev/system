@@ -70,9 +70,5 @@
       inputs.flake-parts.follows = "flake-parts";
       inputs.nvf.follows = "nvf";
     };
-    meridian = {
-      url = "github:rynfar/meridian";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 }

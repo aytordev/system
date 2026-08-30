@@ -155,7 +155,6 @@ in {
             gemini-cli.enable = mkDefault cfg.aiEnable;
             litellm.enable = mkDefault false;
             mcp.enable = mkDefault cfg.aiEnable;
-            meridian.enable = mkDefault cfg.aiEnable;
             ollama.enable = mkDefault false;
             opencode.enable = mkDefault cfg.aiEnable;
             git-crypt = mkDefault enabled;

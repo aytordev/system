@@ -76,7 +76,6 @@
     "programs.terminal.tools.lazygit"
     "programs.terminal.tools.litellm"
     "programs.terminal.tools.lsd"
-    "programs.terminal.tools.meridian"
     "programs.terminal.tools.navi"
     "programs.terminal.tools.nh"
     "programs.terminal.tools.nix-search-tv"
