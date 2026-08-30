@@ -101,6 +101,20 @@
           entry = "${lib.getExe pkgs.bash} -c 'for file in \"$@\"; do ${lib.getExe pkgs.statix} check \"$file\"; done' --";
           language = "system";
         };
+        conflict-markers = {
+          enable = true;
+          name = "Conflict markers";
+          description = "Reject staged git conflict markers";
+          entry = builtins.toString (
+            pkgs.writeShellScript "conflict-markers" ''
+              set -euo pipefail
+              if ${pkgs.git}/bin/git diff --cached | ${pkgs.gnugrep}/bin/grep -qE '^\+(<{7}|>{7})'; then
+                printf 'Error: staged changes contain conflict markers\n' >&2
+                exit 1
+              fi
+            ''
+          );
+        };
         treefmt.enable = true;
         typos.enable = true;
       };
