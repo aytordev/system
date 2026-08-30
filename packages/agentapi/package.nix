@@ -3,8 +3,7 @@
   stdenvNoCC,
   fetchurl,
   ...
-}:
-let
+}: let
   version = "0.11.8";
 
   sources = {
@@ -26,35 +25,35 @@ let
     };
   };
 in
-stdenvNoCC.mkDerivation {
-  pname = "agentapi";
-  inherit version;
+  stdenvNoCC.mkDerivation {
+    pname = "agentapi";
+    inherit version;
 
-  src =
-    sources.${stdenvNoCC.hostPlatform.system}
+    src =
+      sources.${stdenvNoCC.hostPlatform.system}
       or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
 
-  dontUnpack = true;
-  dontBuild = true;
+    dontUnpack = true;
+    dontBuild = true;
 
-  installPhase = ''
-    runHook preInstall
-    mkdir -p $out/bin
-    cp $src $out/bin/agentapi
-    chmod +x $out/bin/agentapi
-    runHook postInstall
-  '';
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/bin
+      cp $src $out/bin/agentapi
+      chmod +x $out/bin/agentapi
+      runHook postInstall
+    '';
 
-  meta = with lib; {
-    description = "HTTP API wrapper for AI coding agents (Claude Code, Aider, Gemini, etc.)";
-    homepage = "https://github.com/coder/agentapi";
-    license = licenses.asl20;
-    platforms = [
-      "x86_64-linux"
-      "aarch64-linux"
-      "x86_64-darwin"
-      "aarch64-darwin"
-    ];
-    mainProgram = "agentapi";
-  };
-}
+    meta = with lib; {
+      description = "HTTP API wrapper for AI coding agents (Claude Code, Aider, Gemini, etc.)";
+      homepage = "https://github.com/coder/agentapi";
+      license = licenses.asl20;
+      platforms = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+      mainProgram = "agentapi";
+    };
+  }
