@@ -10,7 +10,7 @@
   ignores = import ./git-ignore.nix;
   shell-aliases = import ./shell-aliases.nix {inherit config lib pkgs;};
   gitConfig =
-     {
+    {
       enable = true;
       inherit (cfg) package;
       inherit ignores;
