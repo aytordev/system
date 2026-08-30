@@ -17,8 +17,9 @@ Welcome to my personal Nix configuration repository. This repository contains my
 1. [Getting Started](#getting-started)
 2. [Features](#features)
 3. [Customization](#customization)
-4. [Exported Packages](#exported-packages)
-5. [Resources](#resources)
+4. [Justfile Task Automation](#justfile-task-automation)
+5. [Exported Packages](#exported-packages)
+6. [Resources](#resources)
 
 ## Getting Started
 
@@ -54,6 +55,9 @@ nh os switch .
 
 # With direnv
 flake switch
+
+# With just (task runner, see Justfile section below)
+just switch <hostname>      # or: just darwin-switch <hostname> on macOS
 ```
 
 ## Features
@@ -120,6 +124,33 @@ and modular approach to managing your Nix environment. Here's how it works:
 This flake-parts based approach provides excellent modularity and makes it easy
 to maintain and extend the configuration while keeping related functionality
 organized.
+
+## Justfile Task Automation
+
+The repository includes a [`Justfile`](Justfile) as a self-contained task runner
+for common Nix system operations. Commands are organized into groups:
+
+```
+just up            # Update main flake and flake/dev lockfiles
+just upp <input>   # Update a single flake input
+just fmt [path]    # Format Nix files (default: .)
+just fmt-check     # Check formatting without modifying files
+just gc            # Garbage collect old Nix store generations
+just test          # Run flake checks
+just system-info   # Show OS, Nix, and Just versions
+
+just switch <host>      # Rebuild a NixOS host (Linux)
+just darwin-build <h>   # Build a Darwin system
+just darwin-switch <h>  # Switch a Darwin configuration
+just darwin-rollback    # Rollback last Darwin generation
+
+just install-hooks  # Install pre-commit hooks (git-hooks-nix)
+just shell          # Enter a temporary nix shell
+just clean          # Prune git unreachable objects
+just amend          # Amend last commit without editing message
+```
+
+Run `just --list` or `just` to see the full list of available commands.
 
 # Exported packages
 
