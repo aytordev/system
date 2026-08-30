@@ -1,0 +1,13 @@
+[book]
+title = "aytordev option docs"
+authors = ["aytordev"]
+language = "en"
+description = "Generated documentation for the `aytordev.*` option namespace."
+
+[build]
+create-missing = false
+
+[output.html]
+smart-punctuation = false
+git-repository-url = "https://github.com/aytordev/system"
+edit-url-template = "https://github.com/aytordev/system/edit/main/{path}#L{line}"

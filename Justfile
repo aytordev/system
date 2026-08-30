@@ -44,6 +44,18 @@ gc:
 test:
     nix flake check --extra-experimental-features "nix-command flakes" --show-trace --print-build-logs
 
+# Regenerate option-docs golden files used by the docs-generation check
+[group('nix')]
+docs-golden:
+    nix build .#packages.aarch64-darwin.docs-options --extra-experimental-features "nix-command flakes"
+    cp result/darwin/index/options.txt checks/docs-generation/golden/darwin.txt
+    cp result/home/index/options.txt checks/docs-generation/golden/home.txt
+
+# Open the generated option-docs mdbook in the browser
+[group('nix')]
+docs:
+    nix run .#docs-html --extra-experimental-features "nix-command flakes"
+
 ############################################################################
 # System Management
 ############################################################################
