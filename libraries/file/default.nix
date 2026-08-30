@@ -14,10 +14,31 @@
   getNixFiles' = dirPath: let
     entries = builtins.readDir dirPath;
   in
-    lib.filter (name: hasSuffix ".nix" name) (builtins.attrNames entries);
+    lib.filter (name: entries.${name} == "regular" && hasSuffix ".nix" name) (
+      builtins.attrNames entries
+    );
 
   mergeAttrs' = attrsList: lib.foldl' (acc: attrs: acc // attrs) {} attrsList;
+
+  mergeUniqueAttrs = kind:
+    lib.foldl' (
+      acc: attrs: let
+        duplicates = lib.intersectLists (builtins.attrNames acc) (builtins.attrNames attrs);
+      in
+        if duplicates == []
+        then acc // attrs
+        else throw "Duplicate ${kind}: ${lib.concatStringsSep ", " duplicates}"
+    ) {};
+
+  configurationDirectories = dirPath:
+    builtins.attrNames (
+      filterAttrs (
+        name: type: type == "directory" && builtins.pathExists (dirPath + "/${name}/default.nix")
+      ) (builtins.readDir dirPath)
+    );
 in {
+  inherit configurationDirectories;
+
   /**
   Read a file and return its contents.
 
@@ -253,14 +274,14 @@ in {
 
     generateSystemConfigs = system: let
       systemPath = systemsPath + "/${system}";
-      hosts = builtins.attrNames (builtins.readDir systemPath);
+      hosts = configurationDirectories systemPath;
     in
       genAttrs hosts (hostname: {
         inherit system hostname;
         path = systemPath + "/${hostname}";
       });
   in
-    builtins.foldl' (acc: system: acc // generateSystemConfigs system) {} systemArchs;
+    mergeUniqueAttrs "system hostnames" (map generateSystemConfigs systemArchs);
 
   /**
   Filter systems for NixOS (Linux).
@@ -307,24 +328,23 @@ in {
 
     generateHomeConfigs = system: let
       systemPath = homesPath + "/${system}";
-      userAtHosts = builtins.attrNames (builtins.readDir systemPath);
+      userAtHosts = configurationDirectories systemPath;
 
       parseUserAtHost = userAtHost: let
         # Split "username@hostname" into parts
         parts = builtins.split "@" userAtHost;
-        username = builtins.head parts;
-        hostname = builtins.elemAt parts 2; # After split: [username, "@", hostname]
-      in {
-        inherit
-          system
-          username
-          hostname
-          userAtHost
-          ;
-        path = systemPath + "/${userAtHost}";
-      };
+        valid = builtins.length parts == 3 && builtins.head parts != "" && builtins.elemAt parts 2 != "";
+      in
+        if valid
+        then {
+          inherit system userAtHost;
+          username = builtins.head parts;
+          hostname = builtins.elemAt parts 2;
+          path = systemPath + "/${userAtHost}";
+        }
+        else throw "Invalid home configuration name '${userAtHost}'; expected <user>@<host>";
     in
       genAttrs userAtHosts parseUserAtHost;
   in
-    builtins.foldl' (acc: system: acc // generateHomeConfigs system) {} systemArchs;
+    mergeUniqueAttrs "home configuration names" (map generateHomeConfigs systemArchs);
 }

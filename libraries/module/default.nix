@@ -22,11 +22,11 @@ in rec {
 
   : 2\. Function argument
   */
-  enable = module: config:
-    {
-      imports = [module];
-    }
-    // config;
+  enable = module: moduleConfig:
+    moduleConfig
+    // {
+      imports = [module] ++ (moduleConfig.imports or []);
+    };
 
   /**
   Conditionally enable modules based on system.
@@ -73,20 +73,27 @@ in rec {
     description ? "",
     options ? {},
     config ? {},
-  }: {lib, ...}: {
-    options.aytordev.${name} = lib.mkOption {
-      type = lib.types.submodule {
-        options =
-          {
-            enable = lib.mkEnableOption description;
-          }
-          // options;
+  }: let
+    moduleConfig = config;
+  in
+    {
+      config,
+      lib,
+      ...
+    }: {
+      options.aytordev.${name} = lib.mkOption {
+        type = lib.types.submodule {
+          options =
+            {
+              enable = lib.mkEnableOption description;
+            }
+            // options;
+        };
+        default = {};
       };
-      default = {};
-    };
 
-    config = lib.mkIf config.aytordev.${name}.enable config;
-  };
+      config = lib.mkIf config.aytordev.${name}.enable moduleConfig;
+    };
 
   # Migrated aytordev utilities
   # Option creation helpers

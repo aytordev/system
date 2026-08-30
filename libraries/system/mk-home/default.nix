@@ -5,8 +5,10 @@ Create a Home Manager configuration.
 {
   system,
   hostname,
-  username ? inputs.secrets.username,
+  username,
   modules ? [],
+  homeModules ? null,
+  extraSpecialArgs ? {},
   ...
 }: let
   flake = inputs.self or (throw "mkHome requires 'inputs.self' to be passed");
@@ -20,27 +22,20 @@ in
       inherit ((common.mkNixpkgsConfig flake)) config overlays;
     };
 
-    extraSpecialArgs = {
-      inherit
-        inputs
-        hostname
-        username
-        system
-        ;
-      inherit (flake) self;
-      lib = extendedLib;
-      flake-parts-lib = inputs.flake-parts.lib;
-    };
+    extraSpecialArgs =
+      {
+        inherit
+          inputs
+          hostname
+          username
+          system
+          ;
+        osConfig = {};
+        inherit (inputs) self;
+        lib = extendedLib;
+        flake-parts-lib = inputs.flake-parts.lib;
+      }
+      // extraSpecialArgs;
 
-    modules =
-      [
-        {_module.args.lib = extendedLib;}
-
-        inputs.nix-index-database.homeModules.nix-index
-        inputs.sops-nix.homeManagerModules.sops
-
-        # Import all home modules recursively
-      ]
-      ++ (extendedLib.importModulesRecursive ../../../modules/home)
-      ++ modules;
+    modules = common.mkHomeModules {inherit extendedLib homeModules;} ++ modules;
   }

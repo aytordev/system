@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   SubagentStop = [
     {
       matcher = "*";
@@ -73,13 +77,13 @@
               ${
                 if pkgs.stdenv.hostPlatform.isDarwin
                 then ''
-                  if command -v terminal-notifier &>/dev/null; then
-                    terminal-notifier -title "Claude Code" -message "$notify_msg" -sender "com.anthropic.claudecode" -sound default
-                  else
-                    osascript -e "display notification \"$notify_msg\" with title \"Claude Code\""
-                  fi
+                  ${lib.getExe pkgs.terminal-notifier} \
+                    -title "Claude Code" \
+                    -message "$notify_msg" \
+                    -sender "com.anthropic.claudecode" \
+                    -sound default
                 ''
-                else ''notify-send -a "Claude Code" -i "$HOME/.local/share/icons/claude.ico" "Claude Code" "$notify_msg"''
+                else ''${lib.getExe' pkgs.libnotify "notify-send"} -a "Claude Code" "Claude Code" "$notify_msg"''
               }
             '';
           timeout = 10;

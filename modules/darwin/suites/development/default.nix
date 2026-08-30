@@ -11,7 +11,6 @@ in {
     enable = lib.mkEnableOption "common development configuration";
     dockerEnable = lib.mkEnableOption "docker desktop configuration";
     podmanEnable = lib.mkEnableOption "podman desktop configuration";
-    aiEnable = lib.mkEnableOption "ai development configuration";
   };
 
   config = mkIf cfg.enable {
@@ -33,11 +32,6 @@ in {
       masApps = mkIf config.aytordev.tools.homebrew.masEnable {
         # TODO: Add Mac App Store apps
       };
-    };
-
-    aytordev.services = {
-      ollama.enable = lib.mkDefault cfg.aiEnable;
-      litellm.enable = lib.mkDefault cfg.aiEnable;
     };
 
     environment.systemPackages = [pkgs.aytordev.pencil-dev];

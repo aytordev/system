@@ -4,10 +4,15 @@
   lib,
   ...
 }: let
-  inherit (self.lib.file) parseHomeConfigurations;
+  inherit (self.lib.file) parseHomeConfigurations importModulesRecursive;
 
+  reusableInputs = builtins.removeAttrs inputs ["secrets"];
+  identity = self.lib.identity.fromSecrets inputs.secrets;
+  common = import ../../libraries/system/common {inputs = reusableInputs;};
+  extendedLib = common.mkExtendedLib self inputs.nixpkgs;
   homesPath = ../../homes;
   allHomes = parseHomeConfigurations homesPath;
+  allHomeModules = importModulesRecursive ../../modules/home;
 
   generateHomeConfiguration = _name: args @ {
     system,
@@ -17,6 +22,7 @@
     ...
   }: let
     configPath = args.path;
+    validatedUsername = self.lib.identity.assertUsername identity.username username;
   in {
     name = userAtHost; # Use the full "username@hostname" as key
     value = self.lib.system.mkHome {
@@ -24,9 +30,11 @@
         inputs
         system
         hostname
-        username
         ;
+      username = validatedUsername;
+      extraSpecialArgs = {inherit identity;};
       modules = [configPath];
+      homeModules = allHomeModules;
     };
   };
 in {
@@ -34,7 +42,26 @@ in {
 
   flake = {
     homeModules = {
-      default = ../../modules/home;
+      default = {
+        lib,
+        pkgs,
+        ...
+      }:
+        if !(lib ? aytordev)
+        then throw "homeModules.default requires lib extended with self.lib.overlay"
+        else {
+          imports = common.mkHomeModules {
+            inherit extendedLib;
+            homeModules = allHomeModules;
+          };
+
+          _module.args = {
+            inputs = reusableInputs;
+            inherit (reusableInputs) self;
+            system = pkgs.stdenv.hostPlatform.system;
+            flake-parts-lib = reusableInputs.flake-parts.lib;
+          };
+        };
     };
 
     # Dynamically generated home configurations

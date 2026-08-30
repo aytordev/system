@@ -10,6 +10,7 @@
 in {
   options.aytordev.programs.terminal.tools.comma = {
     enable = lib.mkEnableOption "comma";
+    package = lib.mkPackageOption pkgs "nix-index" {};
   };
 
   config = mkIf cfg.enable {
@@ -18,7 +19,7 @@ in {
 
       nix-index = {
         enable = true;
-        package = pkgs.nix-index;
+        inherit (cfg) package;
 
         enableBashIntegration = true;
         enableFishIntegration = true;

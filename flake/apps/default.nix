@@ -5,9 +5,6 @@
         description = "Core Nix ecosystem";
         inputs = [
           "nixpkgs"
-          "nixpkgs-unstable"
-          "nixpkgs-stable"
-          "nixpkgs-darwin"
           "flake-parts"
         ];
       };

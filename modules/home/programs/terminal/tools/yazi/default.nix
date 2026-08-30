@@ -10,6 +10,7 @@
 in {
   options.aytordev.programs.terminal.tools.yazi = {
     enable = lib.mkEnableOption "yazi";
+    package = lib.mkPackageOption pkgs "yazi" {nullable = true;};
   };
   config = mkIf cfg.enable {
     home.packages = let
@@ -28,10 +29,11 @@ in {
         pkgs.unar
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-        pkgs.xdragon
+        pkgs.dragon-drop
       ];
     programs.yazi = {
       enable = true;
+      inherit (cfg) package;
       shellWrapperName = "y";
       enableBashIntegration = true;
       enableFishIntegration = true;

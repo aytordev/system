@@ -10,16 +10,17 @@
 in {
   options.aytordev.programs.desktop.communications.thunderbird = {
     enable = mkEnableOption "Thunderbird email client";
+    package = lib.mkPackageOption pkgs "Thunderbird" {
+      default = "thunderbird-latest";
+    };
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      thunderbird-latest
-    ];
+    home.packages = [cfg.package];
 
     programs.thunderbird = {
       enable = true;
-      package = pkgs.thunderbird-latest;
+      inherit (cfg) package;
       profiles = {};
       settings = {
         # Search Settings -> Config Editor to grab these.

@@ -1,5 +1,12 @@
 name: Formatting Check
-on: [push, pull_request, workflow_dispatch]
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: fmt-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   checks:
     name: Check expressions
@@ -7,4 +14,4 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
-      - run: nix build .#checks.x86_64-linux.treefmt
+      - run: nix build .#checks.x86_64-linux.treefmt --override-input secrets path:./checks/fixtures/secrets --accept-flake-config

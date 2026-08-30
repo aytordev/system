@@ -10,6 +10,7 @@ in {
   options = {
     aytordev.programs.desktop.window-manager-system.aerospace = {
       enable = lib.mkEnableOption "Aerospace window manager";
+      package = lib.mkPackageOption pkgs "aerospace" {};
     };
   };
 
@@ -18,13 +19,11 @@ in {
       restart-aerospace = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.aerospace'';
     };
 
-    home.packages = with pkgs; [
-      aerospace
-    ];
+    home.packages = [cfg.package];
 
     programs.aerospace = {
       enable = true;
-      package = pkgs.aerospace;
+      inherit (cfg) package;
       launchd.enable = true;
 
       settings = {
@@ -33,7 +32,7 @@ in {
 
         accordion-padding = 30;
         after-login-command = [];
-        after-startup-command = ["exec-and-forget ${sketchybar}"];
+        after-startup-command = [];
         automatically-unhide-macos-hidden-apps = true;
         default-root-container-layout = "tiles";
         default-root-container-orientation = "auto";
@@ -48,7 +47,14 @@ in {
         # S = Social      (話 - conversation)
         # O = Other       (雑 - miscellaneous)
 
-        persistent-workspaces = ["B" "C" "D" "W" "S" "O"];
+        persistent-workspaces = [
+          "B"
+          "C"
+          "D"
+          "W"
+          "S"
+          "O"
+        ];
 
         exec-on-workspace-change = [
           "/bin/bash"
@@ -130,29 +136,62 @@ in {
             j = "resize height +50";
             k = "resize height -50";
             l = "resize width +50";
-            b = ["balance-sizes" "mode main"];
+            b = [
+              "balance-sizes"
+              "mode main"
+            ];
             equal = "resize smart +50";
             minus = "resize smart -50";
             esc = "mode main";
           };
 
           service.binding = {
-            alt-shift-h = ["join-with left" "mode main"];
-            alt-shift-j = ["join-with down" "mode main"];
-            alt-shift-k = ["join-with up" "mode main"];
-            alt-shift-l = ["join-with right" "mode main"];
-            backspace = ["close-all-windows-but-current" "mode main"];
-            esc = ["reload-config" "mode main"];
-            f = ["layout floating tiling" "mode main"];
-            r = ["flatten-workspace-tree" "mode main"];
+            alt-shift-h = [
+              "join-with left"
+              "mode main"
+            ];
+            alt-shift-j = [
+              "join-with down"
+              "mode main"
+            ];
+            alt-shift-k = [
+              "join-with up"
+              "mode main"
+            ];
+            alt-shift-l = [
+              "join-with right"
+              "mode main"
+            ];
+            backspace = [
+              "close-all-windows-but-current"
+              "mode main"
+            ];
+            esc = [
+              "reload-config"
+              "mode main"
+            ];
+            f = [
+              "layout floating tiling"
+              "mode main"
+            ];
+            r = [
+              "flatten-workspace-tree"
+              "mode main"
+            ];
             up = "volume up";
             down = "volume down";
-            shift-down = ["volume set 0" "mode main"];
+            shift-down = [
+              "volume set 0"
+              "mode main"
+            ];
           };
         };
 
         # Callbacks
-        on-focus-changed = ["move-mouse window-lazy-center" "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"];
+        on-focus-changed = [
+          "move-mouse window-lazy-center"
+          "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"
+        ];
         on-focused-monitor-changed = ["move-mouse monitor-lazy-center"];
         on-mode-changed = ["exec-and-forget ${sketchybar} --trigger aerospace_mode_change"];
 
@@ -167,104 +206,7 @@ in {
         };
 
         # Application-Specific Rules - Floating apps
-        on-window-detected = [
-          {
-            "if".app-id = "com.apple.finder";
-            run = "layout floating";
-          }
-          {
-            "if".app-id = "com.apple.systempreferences";
-            run = "layout floating";
-          }
-          {
-            "if".app-id = "com.apple.calculator";
-            run = "layout floating";
-          }
-          {
-            "if".app-id = "org.videolan.vlc";
-            run = "layout floating";
-          }
-          # ══════════════════════════════════════════════════════════════════
-          # App-to-workspace assignments
-          # ══════════════════════════════════════════════════════════════════
-          # To find an app's ID, run in terminal:
-          #   aerospace list-apps
-          # Or:
-          #   mdls -name kMDItemCFBundleIdentifier -r /Applications/AppName.app
-          #
-          # Template:
-          # {
-          #   "if".app-id = "com.example.app";
-          #   run = "move-node-to-workspace B";
-          #   check-further-callbacks = false;
-          # }
-          # ══════════════════════════════════════════════════════════════════
-
-          # ─── Workspace B (Browsers / 網) ─────────────────────────────────
-          {
-            "if".app-id = "com.google.Chrome";
-            run = "move-node-to-workspace B";
-            check-further-callbacks = false;
-          }
-          {
-            "if".app-id = "com.google.Chrome.canary";
-            run = "move-node-to-workspace B";
-            check-further-callbacks = false;
-          }
-          {
-            "if".app-id = "org.chromium.Chromium";
-            run = "move-node-to-workspace B";
-            check-further-callbacks = false;
-          }
-          {
-            "if".app-id = "org.mozilla.firefox";
-            run = "move-node-to-workspace B";
-            check-further-callbacks = false;
-          }
-          {
-            "if".app-id = "com.brave.Browser";
-            run = "move-node-to-workspace B";
-            check-further-callbacks = false;
-          }
-          {
-            "if".app-id = "com.apple.Safari";
-            run = "move-node-to-workspace B";
-            check-further-callbacks = false;
-          }
-
-          # ─── Workspace C (Coding / 編) ──────────────────────────────────
-          {
-            "if".app-id = "com.google.antigravity";
-            run = "move-node-to-workspace C";
-            check-further-callbacks = false;
-          }
-          {
-            "if".app-id = "dev.zed.Zed";
-            run = "move-node-to-workspace C";
-            check-further-callbacks = false;
-          }
-          # {
-          #   "if".app-id = "com.microsoft.VSCode";
-          #   run = "move-node-to-workspace C";
-          #   check-further-callbacks = false;
-          # }
-
-          # ─── Workspace D (Development / 端) ─────────────────────────────
-          {
-            "if".app-id = "com.mitchellh.ghostty";
-            run = "move-node-to-workspace D";
-            check-further-callbacks = false;
-          }
-
-          # ─── Workspace W (Work / 業) ────────────────────────────────────
-          # Examples: Slack, Teams, Outlook
-
-          # ─── Workspace S (Social / 話) ──────────────────────────────────
-          # Examples: Signal, Telegram, Discord, Messages
-
-          # ─── Workspace O (Other / 雑) ───────────────────────────────────
-          # Examples: Mail, Obsidian, Notes, Calendar, Notion
-        ];
+        on-window-detected = import ./window-rules.nix;
 
         start-at-login = true;
       };

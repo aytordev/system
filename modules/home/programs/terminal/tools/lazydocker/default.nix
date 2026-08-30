@@ -6,10 +6,11 @@
 }: {
   options.aytordev.programs.terminal.tools.lazydocker = {
     enable = lib.mkEnableOption "lazydocker";
+    package = lib.mkPackageOption pkgs "lazydocker" {};
   };
   config = lib.mkIf config.aytordev.programs.terminal.tools.lazydocker.enable {
-    home.packages = with pkgs; [
-      lazydocker
+    home.packages = [
+      config.aytordev.programs.terminal.tools.lazydocker.package
     ];
     home.shellAliases = {
       dcd = "docker-compose down";

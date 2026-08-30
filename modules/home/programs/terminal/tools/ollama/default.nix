@@ -15,13 +15,31 @@
 
   cfg = config.aytordev.programs.terminal.tools.ollama;
 in {
+  imports = [
+    ./advanced-scripts.nix
+    ./integrations.nix
+    ./models.nix
+    ./scripts.nix
+    ./service.nix
+    ./utils.nix
+    ./validate.nix
+  ];
+
   options.aytordev.programs.terminal.tools.ollama = {
     enable = mkEnableOption "Ollama - Run large language models locally";
 
     package = mkOption {
       type = types.package;
-      default = pkgs.ollama;
-      description = "The Ollama package to use";
+      default =
+        if cfg.acceleration == "cuda"
+        then pkgs.ollama-cuda
+        else if cfg.acceleration == "rocm"
+        then pkgs.ollama-rocm
+        else pkgs.ollama;
+      defaultText = lib.literalExpression ''
+        pkgs.ollama-cuda for CUDA, pkgs.ollama-rocm for ROCm, otherwise pkgs.ollama
+      '';
+      description = "The Ollama package to use.";
     };
 
     acceleration = mkOption {

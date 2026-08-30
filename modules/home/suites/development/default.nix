@@ -63,14 +63,9 @@
 in {
   options.aytordev.suites.development = {
     enable = lib.mkEnableOption "common development configuration";
-    azureEnable = lib.mkEnableOption "azure development configuration";
-    dockerEnable = lib.mkEnableOption "docker development configuration";
     podmanEnable = lib.mkEnableOption "podman development configuration";
-    gameEnable = lib.mkEnableOption "game development configuration";
-    goEnable = lib.mkEnableOption "go development configuration";
     kubernetesEnable = lib.mkEnableOption "kubernetes development configuration";
     nixEnable = lib.mkEnableOption "nix development configuration";
-    sqlEnable = lib.mkEnableOption "sql development configuration";
     aiEnable = lib.mkEnableOption "ai development configuration";
   };
 
@@ -145,14 +140,13 @@ in {
         terminal = {
           editors = {
             neovim = {
-              enable = true;
-              default = true;
+              enable = mkDefault true;
+              default = mkDefault true;
             };
           };
 
           tools = {
             act = mkDefault enabled;
-            # azure.enable = cfg.azureEnable;  # TODO: module doesn't exist
             # AI tools - use mkDefault so home config can override
             agentapi.enable = mkDefault cfg.aiEnable;
             aider.enable = mkDefault cfg.aiEnable;
@@ -161,11 +155,9 @@ in {
             gemini-cli.enable = mkDefault cfg.aiEnable;
             litellm.enable = mkDefault false;
             mcp.enable = mkDefault cfg.aiEnable;
-            meridian.enable = mkDefault cfg.aiEnable;
             ollama.enable = mkDefault false;
             opencode.enable = mkDefault cfg.aiEnable;
             git-crypt = mkDefault enabled;
-            # go.enable = cfg.goEnable;  # TODO: module doesn't exist
             gh = mkDefault enabled;
             hcloud = mkDefault enabled;
             rclone = mkDefault enabled;

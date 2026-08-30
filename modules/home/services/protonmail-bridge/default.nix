@@ -4,7 +4,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkOption types;
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    types
+    ;
   cfg = config.aytordev.services.protonmail-bridge;
 
   # Bridge self-updater bug (root cause fixed by overlay):
@@ -29,7 +35,7 @@
 
     export TMPDIR="${bridgeTmpDir}"
     export HOME="${config.home.homeDirectory}"
-    exec ${pkgs.protonmail-bridge}/bin/protonmail-bridge \
+    exec ${cfg.package}/bin/protonmail-bridge \
       --noninteractive \
       --log-level ${cfg.logLevel} \
       ${lib.concatStringsSep " " grpcFlag}
@@ -37,6 +43,7 @@
 in {
   options.aytordev.services.protonmail-bridge = {
     enable = mkEnableOption "ProtonMail Bridge";
+    package = lib.mkPackageOption pkgs "protonmail-bridge" {};
 
     # Note: ProtonMail Bridge does not support automatic authentication via command-line arguments.
     # The bridge must be configured interactively first using:
@@ -46,7 +53,14 @@ in {
     # After initial setup, the service can run with --noninteractive
 
     logLevel = mkOption {
-      type = types.enum ["panic" "fatal" "error" "warn" "info" "debug"];
+      type = types.enum [
+        "panic"
+        "fatal"
+        "error"
+        "warn"
+        "info"
+        "debug"
+      ];
       default = "info";
       description = "Set the log level for ProtonMail Bridge";
     };
@@ -59,7 +73,14 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [pkgs.protonmail-bridge];
+    assertions = [
+      {
+        assertion = pkgs.stdenv.hostPlatform.isDarwin;
+        message = "aytordev.services.protonmail-bridge is supported only on Darwin";
+      }
+    ];
+
+    home.packages = [cfg.package];
 
     # Service configuration
     # IMPORTANT: ProtonMail Bridge must be configured interactively before this service will work.
@@ -67,8 +88,14 @@ in {
     launchd.agents.protonmail-bridge = {
       enable = true;
       config = {
-        ProgramArguments = ["/bin/sh" "-c" "exec ${startScript}"];
-        KeepAlive = {SuccessfulExit = false;};
+        ProgramArguments = [
+          "/bin/sh"
+          "-c"
+          "exec ${startScript}"
+        ];
+        KeepAlive = {
+          SuccessfulExit = false;
+        };
         RunAtLoad = true;
         ProcessType = "Background";
         # Throttle restarts to avoid rapid crash loops saturating disk

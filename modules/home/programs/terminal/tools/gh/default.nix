@@ -13,9 +13,37 @@
     ;
   cfg = config.aytordev.programs.terminal.tools.gh;
   hasToken = cfg.auth.tokenPath != null;
+  tokenPath =
+    if hasToken
+    then cfg.auth.tokenPath
+    else "";
+  tokenPathShell = lib.escapeShellArg tokenPath;
+  executable = lib.getExe cfg.package;
+  wrappedExecutable = pkgs.writeShellScript "gh-with-runtime-token" ''
+    set -euo pipefail
+    if [[ ! -r ${tokenPathShell} ]]; then
+      printf 'GitHub CLI token file is not readable: %s\n' ${tokenPathShell} >&2
+      exit 1
+    fi
+    ${cfg.auth.tokenVariable}="$(<${tokenPathShell})" exec ${executable} "$@"
+  '';
+  wrappedPackage = pkgs.symlinkJoin {
+    name = "gh-with-runtime-token";
+    paths = [cfg.package];
+    meta.mainProgram = "gh";
+    postBuild = ''
+      rm -f "$out/bin/gh"
+      ln -s ${wrappedExecutable} "$out/bin/gh"
+    '';
+  };
+  effectivePackage =
+    if hasToken
+    then wrappedPackage
+    else cfg.package;
 in {
   options.aytordev.programs.terminal.tools.gh = {
     enable = mkEnableOption "GitHub CLI tool";
+    package = lib.mkPackageOption pkgs "gh" {};
 
     auth = {
       tokenPath = mkOption {
@@ -24,9 +52,17 @@ in {
         example = "/Users/username/.config/sops/github_token";
         description = ''
           Path to a file containing the GitHub personal access token.
-          When set, GH_TOKEN is exported at shell startup for automatic authentication.
+          The token is injected only into GitHub CLI processes.
           Designed to work with sops-nix managed secrets.
         '';
+      };
+      tokenVariable = mkOption {
+        type = types.enum [
+          "GH_TOKEN"
+          "GH_ENTERPRISE_TOKEN"
+        ];
+        default = "GH_TOKEN";
+        description = "Environment variable used for GitHub CLI authentication.";
       };
     };
 
@@ -37,7 +73,10 @@ in {
           "https://github.com"
           "https://gist.github.com"
         ];
-        description = "List of hosts for which gh should be used as a credential helper";
+        description = ''
+          Hosts for which gh is used as a credential helper. Set
+          auth.tokenVariable to GH_ENTERPRISE_TOKEN for enterprise hosts.
+        '';
         example = ''
           [ "github.com" "enterprise.github.com" ]
         '';
@@ -48,6 +87,7 @@ in {
     programs = {
       gh = {
         enable = true;
+        package = effectivePackage;
         extensions = with pkgs; [
           gh-eco
           gh-cal
@@ -63,30 +103,6 @@ in {
           version = "1";
         };
       };
-
-      zsh.initContent = mkIf hasToken ''
-        if [[ -f "${cfg.auth.tokenPath}" ]]; then
-          export GH_TOKEN="$(command cat "${cfg.auth.tokenPath}")"
-        fi
-      '';
-
-      bash.initExtra = mkIf hasToken ''
-        if [[ -f "${cfg.auth.tokenPath}" ]]; then
-          export GH_TOKEN="$(command cat "${cfg.auth.tokenPath}")"
-        fi
-      '';
-
-      fish.interactiveShellInit = mkIf hasToken ''
-        if test -f "${cfg.auth.tokenPath}"
-          set -gx GH_TOKEN (command cat "${cfg.auth.tokenPath}")
-        end
-      '';
-
-      nushell.extraEnv = mkIf hasToken ''
-        if ("${cfg.auth.tokenPath}" | path exists) {
-          $env.GH_TOKEN = (open "${cfg.auth.tokenPath}" | str trim)
-        }
-      '';
     };
   };
 }

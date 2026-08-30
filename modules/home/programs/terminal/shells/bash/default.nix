@@ -1,24 +1,41 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit
+    (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
   cfg = config.aytordev.programs.terminal.shells.bash;
 in {
   options.aytordev.programs.terminal.shells.bash = {
     enable = mkEnableOption "Bash shell with useful defaults for Bash 5.3+";
+    package = mkOption {
+      type = types.package;
+      default = pkgs.bashInteractive;
+      defaultText = lib.literalExpression "pkgs.bashInteractive";
+      description = "Bash package to configure and install.";
+    };
   };
 
   config = mkIf cfg.enable {
     programs.bash = {
       enable = true;
+      inherit (cfg) package;
       enableCompletion = false; # Disable to prevent bind/complete errors
 
       # Bash 5.3+ enhanced history settings
       historySize = 10000;
       historyFileSize = 100000;
-      historyControl = ["ignoredups" "erasedups"];
+      historyControl = [
+        "ignoredups"
+        "erasedups"
+      ];
       historyFile = "${config.xdg.dataHome}/bash/history";
 
       # Shell options - verified for Bash 5.3
@@ -86,7 +103,6 @@ in {
       };
     };
 
-    # XDG directories with proper permissions (declarative via xdg.configFile)
     # XDG directories with proper permissions (declarative via xdg.configFile)
     xdg = {
       configFile."bash/conf.d/.keep".text = "# Custom bash configurations go here\n";

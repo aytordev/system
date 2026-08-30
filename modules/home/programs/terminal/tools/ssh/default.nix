@@ -6,12 +6,26 @@
 }: let
   inherit (lib) mkEnableOption mkOption types;
   cfg = config.aytordev.programs.terminal.tools.ssh;
+  defaultKnownHosts = import ./known-hosts.nix;
+  knownHostsText = lib.concatStringsSep "\n" (
+    lib.mapAttrsToList (
+      _name: host: "${lib.concatStringsSep "," host.hostNames} ${host.publicKey}"
+    )
+    cfg.knownHosts
+  );
 in {
+  imports = [./authorized-keys.nix];
+
   options.aytordev.programs.terminal.tools.ssh = {
     enable = mkEnableOption "SSH configuration";
+    package = lib.mkPackageOption pkgs "openssh" {
+      nullable = true;
+      default = null;
+      extraDescription = "By default, the client provided by your system is used.";
+    };
     port = mkOption {
       type = types.port;
-      default = 2222;
+      default = 22;
       description = "Default SSH port for local development hosts (*.local)";
     };
     authorizedKeys = mkOption {
@@ -19,23 +33,18 @@ in {
       default = [];
       description = "List of authorized public keys added to ~/.ssh/authorized_keys";
     };
-    knownHosts = mkOption {
+    hosts = mkOption {
       type = types.attrsOf (
         types.submodule {
           options = {
             hostNames = mkOption {
               type = types.listOf types.str;
-              description = "List of host names for this known host entry";
+              description = "Host patterns for this connection profile";
             };
             user = mkOption {
               type = types.nullOr types.str;
               default = null;
               description = "Username to use when connecting to this host";
-            };
-            publicKey = mkOption {
-              type = types.nullOr types.str;
-              default = null;
-              description = "Public key for the host (for verification)";
             };
             port = mkOption {
               type = types.nullOr types.port;
@@ -56,7 +65,25 @@ in {
         }
       );
       default = {};
-      description = "Known hosts configuration with per-host settings";
+      description = "Per-host SSH connection settings";
+    };
+    knownHosts = mkOption {
+      type = types.attrsOf (
+        types.submodule {
+          options = {
+            hostNames = mkOption {
+              type = types.listOf types.str;
+              description = "Host names covered by this key";
+            };
+            publicKey = mkOption {
+              type = types.str;
+              description = "Public host key used for verification";
+            };
+          };
+        }
+      );
+      default = {};
+      description = "Trusted SSH host keys";
     };
     extraConfig = mkOption {
       type = types.lines;
@@ -70,8 +97,15 @@ in {
     };
   };
   config = lib.mkIf cfg.enable {
+    aytordev.programs.terminal.tools.ssh.knownHosts =
+      lib.mapAttrs (
+        _name: lib.mkDefault
+      )
+      defaultKnownHosts;
+
     programs.ssh = {
       enable = true;
+      inherit (cfg) package;
       enableDefaultConfig = false;
       extraOptionOverrides = {
         Ciphers = "chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr";
@@ -93,12 +127,12 @@ in {
             ControlMaster = "auto";
             ControlPath = "~/.ssh/controlmasters/%r@%h:%p";
             ControlPersist = "10m";
+            UserKnownHostsFile = "~/.ssh/known_hosts ~/.ssh/known_hosts.d/aytordev";
           };
           "*.local" = {
             User = config.home.username;
             Port = cfg.port;
-            StrictHostKeyChecking = "no";
-            UserKnownHostsFile = "/dev/null";
+            StrictHostKeyChecking = "accept-new";
           };
         }
         (lib.mapAttrs' (_name: host: {
@@ -110,35 +144,17 @@ in {
                 IdentityFile = host.identityFile or null;
                 IdentitiesOnly = host.identitiesOnly or null;
               }
-              // lib.optionalAttrs (host ? publicKey) {
+              // {
                 HostKeyAlias = lib.head host.hostNames;
               }
               // (host.extraOptions or {});
           })
-          cfg.knownHosts)
+          cfg.hosts)
         cfg.extraSettings
       ];
     };
-    home = {
-      file = lib.mkMerge [
-        (lib.optionalAttrs (cfg.authorizedKeys != []) {
-          ".ssh/authorized_keys".text = lib.concatStringsSep "\n" cfg.authorizedKeys;
-        })
-      ];
-      activation.createSshControlmastersDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        mkdir -p ~/.ssh/controlmasters
-        chmod 700 ~/.ssh/controlmasters
-      '';
-      packages = [
-        (pkgs.writeShellScriptBin "ssh-fix-perms" ''
-          find "$HOME/.ssh" -type f -not -name "*.pub" -exec chmod 600 {} +
-          find "$HOME/.ssh" -type d -exec chmod 700 {} +
-          find "$HOME/.ssh" -name "*.pub" -exec chmod 644 {} + 2>/dev/null
-        '')
-      ];
-      shellAliases = {
-        ssh-fix-perms = "${config.home.profileDirectory}/bin/ssh-fix-perms";
-      };
+    home.file = lib.optionalAttrs (cfg.knownHosts != {}) {
+      ".ssh/known_hosts.d/aytordev".text = "${knownHostsText}\n";
     };
   };
 }

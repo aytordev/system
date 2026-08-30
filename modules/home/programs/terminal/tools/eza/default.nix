@@ -9,12 +9,13 @@
 in {
   options.aytordev.programs.terminal.tools.eza = {
     enable = mkEnableOption "eza";
+    package = lib.mkPackageOption pkgs "eza" {};
   };
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [eza];
+    home.packages = [cfg.package];
     programs.eza = {
       enable = true;
-      package = pkgs.eza;
+      inherit (cfg) package;
       enableZshIntegration = true;
       enableFishIntegration = true;
       enableBashIntegration = true;
@@ -28,8 +29,8 @@ in {
       icons = "auto";
     };
     home.shellAliases = {
-      la = "${getExe pkgs.eza} -lah --tree";
-      tree = "${getExe pkgs.eza} --tree --icons=always";
+      la = "${getExe cfg.package} -lah --tree";
+      tree = "${getExe cfg.package} --tree --icons=always";
     };
     xdg.configFile."bash/conf.d/eza.sh" = {
       text = ''

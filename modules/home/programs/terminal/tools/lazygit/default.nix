@@ -1,24 +1,25 @@
 {
   config,
   lib,
-  inputs,
   pkgs,
   ...
 }: {
   options.aytordev.programs.terminal.tools.lazygit = {
     enable = lib.mkEnableOption "lazygit";
+    package = lib.mkPackageOption pkgs "lazygit" {};
   };
   config = lib.mkIf config.aytordev.programs.terminal.tools.lazygit.enable {
-    home.packages = with pkgs; [
-      lazygit
+    home.packages = [
+      config.aytordev.programs.terminal.tools.lazygit.package
     ];
     programs.lazygit = {
       enable = true;
+      package = config.aytordev.programs.terminal.tools.lazygit.package;
       settings = {
         customCommands = import ./custom-commands.nix;
         gui = {
           authorColors = {
-            "${inputs.secrets.userfullname}" = "#957fb8";
+            "${config.aytordev.user.fullName}" = "#957fb8";
             "dependabot[bot]" = "#c0a36e";
           };
           branchColors = {

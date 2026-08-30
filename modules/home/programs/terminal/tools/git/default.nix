@@ -2,70 +2,64 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkForce mkOption;
+  inherit (lib) mkEnableOption mkOption;
   cfg = config.aytordev.programs.terminal.tools.git;
   aliases = import ./aliases.nix {inherit lib;};
   ignores = import ./git-ignore.nix;
   shell-aliases = import ./shell-aliases.nix {inherit config lib pkgs;};
-  gitPackages = with pkgs; [
-    git-absorb
-    git-filter-repo
-    git-lfs
-    gitflow
-    gitleaks
-    gitlint
-    tig
-  ];
-  gitConfig = {
-    enable = true;
-    package = pkgs.gitFull;
-    inherit ignores;
-    maintenance.enable = true;
-    hooks.pre-commit = pkgs.writeShellScript "git-pre-commit-conflict-check" ''
-      if git diff --cached | grep -qE '^\+(<{7}|>{7})'; then
-        printf 'Error: staged changes contain conflict markers\n' >&2
-        exit 1
-      fi
-    '';
-    settings = {
-      alias = aliases;
-      user = {
-        name = inputs.secrets.username;
-        email = inputs.secrets.useremail;
+  gitConfig =
+    {
+      enable = true;
+      inherit (cfg) package;
+      inherit ignores;
+      maintenance.enable = true;
+      hooks.pre-commit = pkgs.writeShellScript "git-pre-commit-conflict-check" ''
+        if git diff --cached | grep -qE '^\+(<{7}|>{7})'; then
+          printf 'Error: staged changes contain conflict markers\n' >&2
+          exit 1
+        fi
+      '';
+      settings = {
+        alias = aliases;
+        user = {
+          inherit (config.aytordev.user) name email;
+        };
+        branch.sort = "-committerdate";
+        core.editor = "nano";
+        useHttpPath.enable = true;
+        fetch.prune = true;
+        init.defaultBranch = "main";
+        lfs.enable = true;
+        pull.rebase = true;
+        push = {
+          autoSetupRemote = true;
+          default = "current";
+        };
+        rerere.enabled = true;
+        rebase.autostash = true;
+        credential.helper =
+          if pkgs.stdenv.hostPlatform.isDarwin
+          then "osxkeychain"
+          else "${cfg.package}/libexec/git-core/git-credential-libsecret";
+        safe.directory = [
+          config.home.homeDirectory
+          "/etc/nixos"
+          "/etc/nix-darwin"
+        ];
       };
-      branch.sort = "-committerdate";
-      core.editor = "nano";
-      useHttpPath.enable = true;
-      fetch.prune = true;
-      init.defaultBranch = "main";
-      lfs.enable = true;
-      pull.rebase = true;
-      push = {
-        autoSetupRemote = true;
-        default = "current";
+    }
+    // lib.optionalAttrs cfg.signing.enable {
+      signing = {
+        inherit (cfg.signing) key;
+        format = "ssh";
+        signByDefault = true;
       };
-      rerere.enabled = true;
-      rebase.autostash = true;
-      credential.helper =
-        if pkgs.stdenv.hostPlatform.isDarwin
-        then "osxkeychain"
-        else "${pkgs.gitFull}/libexec/git-core/git-credential-libsecret";
-      safe.directory = [
-        "/Users/${inputs.secrets.username}/"
-        "/etc/nixos"
-        "/etc/nix-darwin"
-      ];
     };
-    signing = {
-      key = cfg.signingKey;
-      format = "ssh";
-      inherit (cfg) signByDefault;
-    };
-  };
 in {
+  imports = [./extras.nix];
+
   options.aytordev.programs.terminal.tools.git = {
     enable =
       mkEnableOption "Git configuration"
@@ -75,22 +69,17 @@ in {
           This includes Git itself, common tools, and configuration.
         '';
       };
-    signingKey = mkOption {
-      type = with lib.types; nullOr (either str path);
-      default = null;
-      description = ''
-        Path to the SSH private key used for signing Git commits and tags.
-        Set to `null` to disable signing.
-      '';
-      example = "~/.ssh/id_ed25519";
+    package = lib.mkPackageOption pkgs "Git" {
+      default = "gitFull";
     };
-    signByDefault = mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = ''
-        Whether to automatically sign all Git commits by default.
-        When enabled, you won't need to use the -S flag with git commit.
-      '';
+    signing = {
+      enable = mkEnableOption "SSH signing for Git commits and tags";
+      key = mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "Path to the SSH private key used for signing Git commits and tags.";
+        example = "~/.ssh/id_ed25519";
+      };
     };
   };
   config = let
@@ -100,40 +89,13 @@ in {
     lib.mkIf cfg.enable (
       lib.mkMerge [
         {
-          home.packages = gitPackages;
-          programs = {
-            git = gitConfig;
-            delta = {
-              enable = true;
-              enableGitIntegration = true;
-              options = {
-                dark = true;
-                features = mkForce "decorations side-by-side navigate";
-                plus-style = "syntax #2B3328";
-                minus-style = "syntax #3C2C2E";
-                plus-emph-style = "syntax #76946a";
-                minus-emph-style = "syntax #c34043";
-                line-numbers = true;
-                navigate = true;
-                side-by-side = true;
-              };
-            };
-            difftastic = {
-              git = {
-                enable = true;
-                mode = "both";
-              };
-              options = {
-                background = "dark";
-                display = "inline";
-              };
-            };
-            mergiraf = {
-              enable = true;
-              enableGitIntegration = true;
-              enableJujutsuIntegration = true;
-            };
-          };
+          assertions = [
+            {
+              assertion = !cfg.signing.enable || cfg.signing.key != null;
+              message = "aytordev.programs.terminal.tools.git.signing.key must be set when signing is enabled";
+            }
+          ];
+          programs.git = gitConfig;
         }
         (lib.mkIf (shell-aliases.allAliases != {}) {
           home.file."${bashConfigDir}/git-aliases.sh" = {

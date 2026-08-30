@@ -4,7 +4,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkMerge;
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkMerge
+    mkPackageOption
+    ;
   cfg = config.aytordev.programs.terminal.shells.zsh;
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
@@ -12,12 +18,13 @@
 in {
   options.aytordev.programs.terminal.shells.zsh = {
     enable = mkEnableOption "Z shell with useful defaults";
+    package = mkPackageOption pkgs "zsh" {};
   };
   config = mkIf cfg.enable (mkMerge [
     {
       home = {
         packages = with pkgs; [
-          zsh
+          cfg.package
           zsh-completions
           nix-zsh-completions
           zsh-autosuggestions
@@ -49,6 +56,7 @@ in {
 
       programs.zsh = {
         enable = true;
+        inherit (cfg) package;
         dotDir = "${config.xdg.configHome}/zsh";
         enableCompletion = true;
         enableVteIntegration = true;
@@ -85,7 +93,7 @@ in {
           expireDuplicatesFirst = true;
           extended = true;
         };
-        completionInit = '''';
+        completionInit = "";
         initContent = ''
           fpath=(
             ${pkgs.zsh-completions}/share/zsh/site-functions

@@ -1,8 +1,15 @@
 name: Check
-on: [push, pull_request, workflow_dispatch]
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: check-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   checks:
-    name: Check expressions on ${{ matrix.arch }}
+    name: Check ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -25,10 +32,6 @@ jobs:
         with:
           name: anyrun
           extraPullNames: nix-community
-          # authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      # - name: clear hostedtoolcache
-      #   run: rm -rf /opt/hostedtoolcache
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - name: run flake check
-        env:
-          ARCH: ${{ matrix.arch }}
-        run: nix flake check
+        run: nix flake check --override-input secrets path:./checks/fixtures/secrets --accept-flake-config

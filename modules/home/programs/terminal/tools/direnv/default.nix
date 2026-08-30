@@ -4,11 +4,19 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkMerge mkOption types;
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkMerge
+    mkOption
+    types
+    ;
   cfg = config.aytordev.programs.terminal.tools.direnv;
 in {
   options.aytordev.programs.terminal.tools.direnv = {
     enable = mkEnableOption "direnv - A shell extension that manages your environment";
+    package = lib.mkPackageOption pkgs "direnv" {};
     nix-direnv = mkOption {
       type = types.bool;
       default = true;
@@ -22,8 +30,8 @@ in {
   };
   config = mkIf cfg.enable (mkMerge [
     {
-      home.packages = with pkgs; [
-        direnv
+      home.packages = [
+        cfg.package
       ];
     }
     (mkIf cfg.nix-direnv {
@@ -39,7 +47,7 @@ in {
       programs.direnv = {
         enable = true;
         nix-direnv.enable = cfg.nix-direnv;
-        inherit (cfg) silent;
+        inherit (cfg) package silent;
         config = mkIf cfg.nix-direnv {
           whitelist = {
             prefix = [

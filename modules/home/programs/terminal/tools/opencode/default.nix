@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   inherit
@@ -32,8 +33,17 @@
     )
     agentConfigs;
 in {
+  imports = [
+    ./formatters.nix
+    ./lsp.nix
+    ./mcp.nix
+    ./permission.nix
+    ./provider.nix
+  ];
+
   options.aytordev.programs.terminal.tools.opencode = {
     enable = mkEnableOption "OpenCode configuration";
+    package = lib.mkPackageOption pkgs "opencode" {nullable = true;};
 
     model = {
       model = mkOption {
@@ -59,6 +69,7 @@ in {
     };
     programs.opencode = {
       enable = true;
+      inherit (cfg) package;
 
       settings = {
         model = lib.mkDefault cfg.model.model;

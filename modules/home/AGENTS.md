@@ -16,6 +16,24 @@ configuration is:
 Only use system modules when you need root privileges or system-level
 configuration.
 
+## Module Contract V1
+
+- Capability modules own one program or user service. They expose `enable` and
+  `package`, then guard all outputs with `lib.mkIf`.
+- Suites compose capabilities with `lib.mkDefault`. Every suite flag must change
+  a real output; remove flags with no consumer.
+- Foundational modules publish identity or shared metadata only. Workflow
+  packages, aliases, and application choices belong in suites.
+- Pure-data modules have no activation side effects and do not need an `enable`
+  option. `aytordev.theme` is the reference pattern.
+- Platform-only outputs use explicit `pkgs.stdenv.hostPlatform.isDarwin` or
+  `isLinux` guards.
+- Large capabilities may use contained sibling files, but the directory's
+  `default.nix` remains the only discovered module and owns the option namespace.
+
+For the full contract and runtime rules, see
+`docs/decisions/0008-module-contract-v1.md`.
+
 ## Module Categories
 
 ### programs (`programs/`)
@@ -28,13 +46,11 @@ CLI tools and terminal programs.
 
 **Key categories:**
 
-- **Shells:** bash, zsh, fish, nushell
+- **Shells:** bash, zsh, fish, nu-shell
 - **Multiplexers:** tmux, zellij
-- **Editors:** neovim, helix, emacs
-- **Tools:** git, gh, lazygit, fzf, ripgrep, bat, eza, zoxide
-- **Development:** direnv, devenv, language servers
-- **File managers:** yazi, ranger, lf
-- **Monitoring:** btop, htop, bottom
+- **Editors:** neovim
+- **Tools:** git, gh, lazygit, lazydocker, fzf, ripgrep, bat, eza, zoxide, jujutsu, k9s, etc.
+- **Emulators:** ghostty, warp
 
 **Pattern:**
 
@@ -50,50 +66,38 @@ GUI programs and desktop programs.
 
 **Key categories:**
 
-- **Browsers:** firefox, chromium, brave
-- **Communication:** discord, slack, telegram
-- **Media:** mpv, vlc, spotify
-- **Development:** vscode, jetbrains
-- **Window Managers:** hyprland, sway, i3
-- **Bars:** waybar, eww, ags
-- **Launchers:** rofi, wofi, anyrun
-- **Notifications:** swaync, mako, dunst
+- **Browsers:** brave, chrome, chrome-dev, chromium, firefox
+- **Communication:** thunderbird, discord, vesktop
+- **Editors:** antigravity, vscode, zed
+- **Launchers:** raycast
+- **Security:** bitwarden
+- **Bars / window management:** sketchybar, aerospace (macOS)
 
-**Wayland-specific:**
-
-- `hyprland`: Main Wayland compositor config
-- `waybar`: Status bar with module configs
-- `swaync`: Notification center
-- `hyprlock`: Screen locker
-- `hypridle`: Idle management
+**macOS desktop:** on `aarch64-darwin`, desktop programs are macOS GUI apps
+rather than Linux compositor components.
 
 **Pattern:**
 
 ```nix
-aytordev.programs.desktop.wms.hyprland.enable = true;
-aytordev.programs.desktop.bars.waybar.enable = true;
+aytordev.programs.desktop.browsers.firefox.enable = true;
+aytordev.programs.desktop.editors.vscode.enable = true;
 ```
 
 ### Services (`services/`)
 
-User services and daemons (systemd user units).
+User services and daemons (launchd agents or systemd user units).
 
-**Common services:**
+**Available services:**
 
-- `keyring`: Secret management
-- `ssh-agent`: SSH key management
-- `syncthing`: File synchronization
-- `mpd`: Music server
-- `hypridle`: Idle daemon for Hyprland
-- `hyprpaper`: Wallpaper daemon
-- `easyeffects`: Audio effects pipeline
+- `jankyborders`: macOS window border highlighting
+- `protonmail-bridge`: Proton Mail bridge daemon
 
 **Pattern:**
 
 ```nix
 aytordev.services.{service}.enable = true;
 
-# Creates: systemd.user.services.{service}
+# Creates a platform-appropriate user unit.
 ```
 
 ### Suites (`suites/`)
@@ -103,11 +107,10 @@ Bundled configurations for workflows.
 **Available:**
 
 - `common`: Essential user tools (git, shell, editor)
-- `desktop`: Full desktop environment
+- `desktop`: Desktop programs and services
 - `development`: Development workflow
-- `wlroots`: Wayland desktop components
-- `art`, `music`, `photo`, `video`: Creative workflows
-- `games`: Gaming setup
+- `networking`: VPN and network tooling
+- `business`: Business programs
 - `social`: Communication apps
 
 **Pattern:**
@@ -121,34 +124,10 @@ aytordev.suites.development.enable = true;
 
 Theming and visual customization.
 
-**Modules:**
-
-- `catppuccin`: Catppuccin theme integration
-- `gtk`: GTK theme and icons
-- `qt`: Qt theme
-- `stylix`: System-wide theming via stylix
-
-**Theming hierarchy (priority order):**
-
-1. **Module-specific theme options** (highest priority)
-
-   ```nix
-   aytordev.programs.desktop.wms.hyprland.theme = "catppuccin-mocha";
-   ```
-
-2. **Catppuccin module** (mid priority)
-
-   ```nix
-   aytordev.theme.catppuccin.enable = true;
-   aytordev.theme.catppuccin.flavor = "mocha";
-   ```
-
-3. **Stylix** (lowest priority, fallback)
-   ```nix
-   aytordev.theme.stylix.enable = true;
-   ```
-
-**Always prefer module-specific theming over generic stylix.**
+The pure-data theme module publishes the active Kanagawa palette and application
+theme names. Select `aytordev.theme.variant`; there is no `theme.enable` switch.
+Capabilities consume the shared palette and may expose a module-specific
+override when an application needs one.
 
 ### System (`system/`)
 
@@ -157,12 +136,12 @@ User-level system configuration.
 **Modules:**
 
 - `xdg`: XDG base directory specification
-- `env`: User environment variables
 - `input`: Keyboard/mouse user preferences (complement to system-level)
 
 ### User (`user/`)
 
-User metadata and preferences.
+User identity metadata only. Workflow preferences belong in suites or program
+capabilities.
 
 **Example:**
 
@@ -170,7 +149,7 @@ User metadata and preferences.
 aytordev.user = {
   name = "username";
   email = "username@example.com";
-  theme = "catppuccin-mocha";
+  fullName = "Example User";
 };
 ```
 
@@ -188,8 +167,8 @@ aytordev.{category}.{subcategory}.{program}.{option}
 
 ```nix
 aytordev.programs.terminal.shells.zsh.enable = true;
-aytordev.programs.desktop.wms.hyprland.settings = { };
-aytordev.services.syncthing.folders = { };
+aytordev.programs.desktop.bars.sketchybar.enable = true;
+aytordev.services.jankyborders.enable = true;
 ```
 
 ### Enable Patterns
@@ -212,8 +191,8 @@ aytordev.suites.development.enable = true;
 **3. Conditional enable:**
 
 ```nix
-aytordev.programs.desktop.bars.waybar.enable =
-  lib.mkIf config.aytordev.programs.desktop.wms.hyprland.enable true;
+aytordev.programs.desktop.bars.sketchybar.enable =
+  lib.mkIf config.aytordev.programs.desktop.window-manager-system.aerospace.enable true;
 ```
 
 ### XDG Configuration Files
@@ -262,47 +241,28 @@ programs.zoxide.enableBashIntegration = true;
 
 ## Application-Specific Patterns
 
-### Hyprland Configuration
+### Window Management (aerospace)
 
-Hyprland config uses structured Nix:
+macOS uses a tiling window manager:
 
 ```nix
-aytordev.programs.desktop.wms.hyprland = {
-  enable = true;
-  settings = {
-    general = {
-      gaps_in = 5;
-      gaps_out = 10;
-    };
-    bind = [
-      "SUPER, Return, exec, kitty"
-      "SUPER, Q, killactive"
-    ];
-  };
-};
+aytordev.programs.desktop.window-manager-system.aerospace.enable = true;
 ```
 
-### Waybar Modules
+### Status Bar (sketchybar)
 
-Waybar uses a module system. Each module is configured separately:
+Sketchybar is configured through Home Manager:
 
 ```nix
-aytordev.programs.desktop.bars.waybar = {
-  enable = true;
-  modules = {
-    clock.enable = true;
-    cpu.enable = true;
-    # Each module has its own options
-  };
-};
+aytordev.programs.desktop.bars.sketchybar.enable = true;
 ```
 
 ### Terminal Emulators
 
-Terminal emulators (kitty, alacritty, foot) should:
+Terminal emulators (ghostty, etc.) should:
 
-- Use theme from `aytordev.user.theme`
-- Configure fonts from `aytordev.system.fonts`
+- Use theme from `aytordev.theme.appTheme`
+- Configure fonts from the shared palette
 - Enable shell integration where available
 
 ## Testing Home Changes
@@ -324,8 +284,8 @@ home-manager switch
    `lib.mkMerge` or priorities.
 2. **Service ordering:** User services may start before system services are
    ready. Use `After=` directives.
-3. **Theme inconsistency:** Ensure all themed apps use same theme source
-   (`aytordev.user.theme`).
+3. **Theme inconsistency:** Ensure all themed apps use the same theme source
+   (`config.aytordev.theme`).
 4. **Shell rc files:** Don't mix manual and managed shell configs - choose one
    approach.
 5. **Dotfile links:** Home Manager creates symlinks to /nix/store - don't expect

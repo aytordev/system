@@ -1,5 +1,11 @@
 {
-  config = {
+  config,
+  lib,
+  ...
+}: let
+  cfg = config.aytordev.programs.terminal.tools.zellij;
+in {
+  config = lib.mkIf cfg.enable {
     programs = {
       zellij = {
         layouts = {

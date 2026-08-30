@@ -12,12 +12,9 @@
         nix-rosetta-builder.follows = "";
         home-manager.follows = "";
         nix-darwin.follows = "";
-        nixpkgs-darwin.follows = "";
-        nixpkgs-stable.follows = "";
       };
     };
     nixpkgs.follows = "root/nixpkgs";
-    nixpkgs-unstable.follows = "root/nixpkgs-unstable";
 
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -30,6 +27,12 @@
         nixpkgs.follows = "nixpkgs";
         flake-compat.follows = "";
       };
+    };
+
+    nix-unit = {
+      url = "github:nix-community/nix-unit";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
   };
 

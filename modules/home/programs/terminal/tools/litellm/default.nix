@@ -4,11 +4,28 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkOption mkEnableOption types;
+  inherit
+    (lib)
+    mkIf
+    mkOption
+    mkEnableOption
+    types
+    ;
 
   cfg = config.aytordev.programs.terminal.tools.litellm;
 
   configDir = "${config.xdg.configHome}/litellm";
+  configFile = "${configDir}/config.yaml";
+  environmentNames = builtins.attrNames cfg.environmentFiles;
+  validEnvironmentName = name: builtins.match "[A-Za-z_][A-Za-z0-9_]*" name != null;
+  startPackage = import ./start.nix {
+    inherit
+      cfg
+      configFile
+      lib
+      pkgs
+      ;
+  };
 
   proxyConfig = {
     model_list =
@@ -31,6 +48,8 @@
       // cfg.settings;
   };
 in {
+  imports = [./service.nix];
+
   options.aytordev.programs.terminal.tools.litellm = {
     enable = mkEnableOption "LiteLLM unified proxy for LLM model routing";
 
@@ -53,28 +72,30 @@ in {
     };
 
     models = mkOption {
-      type = types.listOf (types.submodule {
-        options = {
-          modelName = mkOption {
-            type = types.str;
-            description = "Virtual model name exposed by the proxy";
+      type = types.listOf (
+        types.submodule {
+          options = {
+            modelName = mkOption {
+              type = types.str;
+              description = "Virtual model name exposed by the proxy";
+            };
+            model = mkOption {
+              type = types.str;
+              description = "Underlying model identifier (e.g. ollama/qwen2.5-coder:32b)";
+            };
+            apiBase = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "API base URL for the model provider";
+            };
+            extraParams = mkOption {
+              type = types.attrsOf types.anything;
+              default = {};
+              description = "Additional litellm_params for this model";
+            };
           };
-          model = mkOption {
-            type = types.str;
-            description = "Underlying model identifier (e.g. ollama/qwen2.5-coder:32b)";
-          };
-          apiBase = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "API base URL for the model provider";
-          };
-          extraParams = mkOption {
-            type = types.attrsOf types.anything;
-            default = {};
-            description = "Additional litellm_params for this model";
-          };
-        };
-      });
+        }
+      );
       default = [
         {
           modelName = "local-coder";
@@ -96,10 +117,11 @@ in {
       description = "Additional litellm_settings merged into the proxy config";
     };
 
-    environmentVariables = mkOption {
+    environmentFiles = mkOption {
       type = types.attrsOf types.str;
       default = {};
-      description = "Environment variables for API keys and provider configuration";
+      example.OPENAI_API_KEY = "/run/secrets/openai-api-key";
+      description = "Environment variable names mapped to runtime secret files";
     };
 
     shellAliases = mkOption {
@@ -110,26 +132,32 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home = {
-      packages = [cfg.package];
+    assertions = [
+      {
+        assertion = builtins.all validEnvironmentName environmentNames;
+        message = "LiteLLM environment file names must be valid environment variable names";
+      }
+    ];
 
-      sessionVariables =
-        {
-          LITELLM_CONFIG = "${configDir}/config.yaml";
-          LITELLM_HOST = cfg.host;
-          LITELLM_PORT = toString cfg.port;
-        }
-        // cfg.environmentVariables;
+    home = {
+      packages = [
+        cfg.package
+        startPackage
+      ];
+
+      sessionVariables = {
+        LITELLM_CONFIG = "${configDir}/config.yaml";
+        LITELLM_HOST = cfg.host;
+        LITELLM_PORT = toString cfg.port;
+      };
 
       shellAliases = mkIf cfg.shellAliases {
-        litellm-start = "litellm --config ${configDir}/config.yaml --host ${cfg.host} --port ${toString cfg.port}";
         litellm-models = "curl -s http://${cfg.host}:${toString cfg.port}/v1/models | python3 -m json.tool";
         litellm-health = "curl -s http://${cfg.host}:${toString cfg.port}/health";
       };
     };
 
     # XDG-compliant configuration
-    xdg.configFile."litellm/config.yaml".text =
-      lib.generators.toYAML {} proxyConfig;
+    xdg.configFile."litellm/config.yaml".text = lib.generators.toYAML {} proxyConfig;
   };
 }

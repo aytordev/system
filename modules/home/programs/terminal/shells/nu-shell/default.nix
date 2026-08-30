@@ -4,7 +4,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkMerge;
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkMerge
+    mkPackageOption
+    ;
   cfg = config.aytordev.programs.terminal.shells.nushell;
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
@@ -12,17 +18,19 @@
 in {
   options.aytordev.programs.terminal.shells.nushell = {
     enable = mkEnableOption "Nu shell with useful defaults";
+    package = mkPackageOption pkgs "nushell" {};
   };
   config = mkIf cfg.enable (mkMerge [
     {
       home.packages = with pkgs; [
-        nushell
+        cfg.package
         nushellPlugins.query
         nushellPlugins.formats
         nushellPlugins.polars
       ];
       programs.nushell = {
         enable = true;
+        inherit (cfg) package;
         envFile = {
           text = ''
             $env.XDG_CONFIG_HOME = "${xdgConfigHome}"

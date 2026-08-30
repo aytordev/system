@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   cfg = config.aytordev.programs.terminal.tools.navi;
@@ -19,6 +20,7 @@
 in {
   options.aytordev.programs.terminal.tools.navi = {
     enable = lib.mkEnableOption "navi";
+    package = lib.mkPackageOption pkgs "navi" {};
     settings = {
       style = {
         tag = {
@@ -78,6 +80,7 @@ in {
   config = mkIf cfg.enable {
     programs.navi = {
       enable = true;
+      inherit (cfg) package;
       inherit (cfg) settings;
     };
   };

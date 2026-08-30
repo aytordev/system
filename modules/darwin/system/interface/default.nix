@@ -3,26 +3,23 @@
   lib,
   ...
 }: let
-  inherit (lib) mkIf mkMerge mkEnableOption mapAttrs' nameValuePair;
+  inherit
+    (lib)
+    mkIf
+    mkMerge
+    mkEnableOption
+    ;
 
   cfg = config.aytordev.system.interface;
-
-  mkHotCorners = corners: mapAttrs' (pos: action: nameValuePair "wvous-${pos}-corner" action) corners;
+  userHome = config.users.users.${config.aytordev.user.name}.home;
 in {
+  imports = [./dock.nix];
+
   options.aytordev.system.interface = {
     enable = mkEnableOption "macOS interface";
   };
 
   config = mkIf cfg.enable {
-    system.activationScripts.extraActivation.text = ''
-      echo "Creating screenshots directory..."
-      mkdir -p "$HOME/Pictures/screenshots"
-      touch "$HOME/Pictures/screenshots/.keep"
-      chown "$USER" "$HOME/Pictures/screenshots"
-      chown "$USER" "$HOME/Pictures/screenshots/.keep"
-      /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-    '';
-
     system = {
       defaults = mkMerge [
         {
@@ -33,36 +30,6 @@ in {
             SortColumn = "CPUUsage";
             SortDirection = 0;
           };
-        }
-        {
-          dock =
-            {
-              autohide = true;
-              autohide-delay = 0.20;
-              autohide-time-modifier = 1.0;
-              enable-spring-load-actions-on-all-items = false;
-              show-process-indicators = true;
-              show-recents = false;
-              showhidden = true;
-              slow-motion-allowed = false;
-              largesize = 16;
-              mineffect = "genie";
-              orientation = "left";
-              tilesize = 43;
-              persistent-apps = [
-                "/System/Applications/Apps.app"
-                "/Applications/Ghostty.app"
-              ];
-              persistent-others = [
-                "/System/Applications/System Settings.app"
-              ];
-            }
-            // mkHotCorners {
-              bl = 2;
-              br = 12;
-              tl = 14;
-              tr = 4;
-            };
         }
         {
           finder = {
@@ -115,7 +82,7 @@ in {
           screencapture = {
             show-thumbnail = false;
             type = "png";
-            location = "~/Pictures/screenshots/";
+            location = "${userHome}/Pictures/screenshots/";
             disable-shadow = true;
           };
           screensaver.askForPassword = true;

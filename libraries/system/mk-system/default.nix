@@ -5,28 +5,49 @@ Create a NixOS system configuration.
 {
   system,
   hostname,
-  username ? inputs.secrets.username,
+  username,
   modules ? [],
+  matchingHomes ? null,
+  nixosModules ? null,
+  homeModules ? null,
+  hostModule ? ../../../systems/${system}/${hostname},
+  extraSpecialArgs ? {},
   ...
 }: let
   flake = inputs.self or (throw "mkSystem requires 'inputs.self' to be passed");
   common = import ../common {inherit inputs;};
 
   extendedLib = common.mkExtendedLib flake inputs.nixpkgs;
-  matchingHomes = common.mkHomeConfigs {
-    inherit
-      flake
-      system
-      hostname
-      ;
-  };
+  nixosModulesPath = ../../../modules/nixos;
+  resolvedMatchingHomes =
+    if matchingHomes == null
+    then
+      common.mkHomeConfigs {
+        inherit
+          flake
+          system
+          hostname
+          ;
+      }
+    else matchingHomes;
+  baseNixOSModules =
+    if nixosModules == null
+    then
+      if builtins.pathExists nixosModulesPath
+      then extendedLib.importModulesRecursive nixosModulesPath
+      else []
+    else nixosModules;
   homeManagerConfig = common.mkHomeManagerConfig {
     inherit
       extendedLib
       inputs
       system
-      matchingHomes
+      hostname
+      username
+      homeModules
+      extraSpecialArgs
       ;
+    matchingHomes = resolvedMatchingHomes;
     isNixOS = true;
   };
 in
@@ -39,6 +60,7 @@ in
         hostname
         username
         extendedLib
+        extraSpecialArgs
         ;
     };
 
@@ -63,9 +85,7 @@ in
 
         # Import all nixos modules recursively
       ]
-      ++ (extendedLib.importModulesRecursive ../../../modules/nixos)
-      ++ [
-        ../../../systems/${system}/${hostname}
-      ]
+      ++ baseNixOSModules
+      ++ inputs.nixpkgs.lib.optional (hostModule != null) hostModule
       ++ modules;
   }

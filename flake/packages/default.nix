@@ -4,6 +4,7 @@
   ...
 }: let
   directory = ../../packages;
+  reusableInputs = builtins.removeAttrs inputs ["secrets"];
 
   packageFunctions = lib.filesystem.packagesFromDirectoryRecursive {
     inherit directory;
@@ -15,7 +16,7 @@
     aytordev = prev.lib.fix (
       self:
         prev.lib.mapAttrs (
-          _name: func: final.callPackage func (self // {inherit inputs;})
+          _name: func: final.callPackage func (self // {inputs = reusableInputs;})
         )
         packageFunctions
     );
@@ -23,7 +24,6 @@
 in {
   flake.overlays = {
     default = aytordevPackagesOverlay;
-    aytordev = aytordevPackagesOverlay;
   };
 
   perSystem = {pkgs, ...}: let

@@ -1,39 +1,28 @@
-{
+moduleArgs @ {
   config,
   lib,
-  self,
-  inputs,
   ...
 }: let
   cfg = config.aytordev.nix;
 in {
-  imports = [(lib.getFile "modules/common/nix/default.nix")];
+  imports = [
+    (lib.getFile "modules/common/nix/default.nix")
+    ./inputs.nix
+  ];
 
   config = lib.mkIf cfg.enable {
-    # TODO: This configuration should be in the shared module but environment.etc
-    # from shared modules imported via lib.getFile doesn't work properly in flake-parts.
-    # The shared module's other configurations (nix.registry, nix.nixPath, etc.) work fine,
-    # but environment.etc gets ignored. This is likely due to how lib.getFile imports
-    # don't participate in the module system's attribute merging.
-    # Fix: Find a way to properly import shared modules so environment.etc works.
-    environment.etc =
+    assertions = [
       {
-        # set channels (backwards compatibility)
-        "nix/flake-channels/system".source = self;
-        "nix/flake-channels/nixpkgs".source = inputs.nixpkgs;
-        "nix/flake-channels/home-manager".source = inputs.home-manager;
-
-        # preserve current flake in /etc
-        "nix-darwin".source = self;
+        assertion = !(moduleArgs ? secretsRoot);
+        message = "Reusable Darwin modules must not receive the private secrets root";
       }
-      # Create /etc/nix/inputs symlinks for all flake inputs
-      // lib.mapAttrs' (
-        name: input:
-          lib.nameValuePair "nix/inputs/${name}" {
-            source = input.outPath or input;
-          }
+    ];
+
+    aytordev.nix.extraTrustedUsers =
+      lib.optional (
+        config.system.primaryUser != null
       )
-      inputs;
+      config.system.primaryUser;
 
     # Nix-Darwin config options
     # Check corresponding shared imported module

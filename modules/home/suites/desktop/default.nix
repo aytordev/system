@@ -5,7 +5,6 @@
   ...
 }: let
   inherit (lib) mkDefault mkIf;
-  inherit (lib.aytordev) enabled;
 
   cfg = config.aytordev.suites.desktop;
 in {
@@ -16,28 +15,27 @@ in {
   config = mkIf cfg.enable {
     aytordev = {
       theme = {
-        enable = true;
-        variant = "wave";
+        variant = mkDefault "wave";
       };
 
       programs = {
         desktop = {
           bars = {
             sketchybar = {
-              enable = true;
+              enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
               items = {
-                menus.enable = true;
-                themePicker.enable = true;
-                pomodoro.enable = true;
+                menus.enable = mkDefault true;
+                themePicker.enable = mkDefault true;
+                pomodoro.enable = mkDefault true;
               };
             };
           };
           browsers = {
-            brave = enabled;
-            chrome = enabled;
-            chrome-dev = enabled;
-            chromium = enabled;
-            firefox = enabled;
+            brave.enable = mkDefault true;
+            chrome.enable = mkDefault true;
+            chrome-dev.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
+            chromium.enable = mkDefault true;
+            firefox.enable = mkDefault true;
           };
           launchers = {
             raycast.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
@@ -49,7 +47,7 @@ in {
       };
 
       services = {
-        jankyborders = enabled;
+        jankyborders.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
       };
     };
 
@@ -57,9 +55,13 @@ in {
       # TODO: Add more packages
     ];
 
+    home.file = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+      "Pictures/screenshots/.keep".text = "";
+    };
+
     targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-      copyApps.enable = true;
-      linkApps.enable = false;
+      copyApps.enable = mkDefault true;
+      linkApps.enable = mkDefault false;
     };
   };
 }

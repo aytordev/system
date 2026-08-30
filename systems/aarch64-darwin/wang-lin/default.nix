@@ -1,89 +1,97 @@
 {
   lib,
-  inputs,
+  identity,
+  secretsRoot,
   config,
   ...
 }: let
   inherit (lib.aytordev) enabled;
+  inherit (identity) username;
 
   cfg = config.aytordev.user;
 
-  sopsFolder = builtins.toString inputs.secrets + "/hard-secrets";
+  sopsFolder = builtins.toString secretsRoot + "/hard-secrets";
 in {
   # Host-specific settings only
   # All modules auto-discovered from modules/darwin/
   # All homes auto-injected from homes/aarch64-darwin/aytordev@wang-lin/
 
   aytordev = {
-    # User configuration is handled by modules/darwin/user
+    user = {
+      name = username;
+      inherit (identity) email fullName;
+    };
+
     archetypes = {
       personal = enabled;
       workstation = enabled;
     };
 
-    # AI services: disabled by default, start manually with `launchctl start <service>`
-    services.ollama.enable = lib.mkForce false;
-    services.litellm.enable = lib.mkForce false;
-
     security = {
       sops = {
         enable = true;
-        defaultSopsFile = "${sopsFolder}/${inputs.secrets.username}.yaml";
-        age.keyFile = "/Users/${inputs.secrets.username}/.config/sops/age/keys.txt";
+        defaultSopsFile = "${sopsFolder}/${username}.yaml";
+        age.keyFile = "/Users/${username}/.config/sops/age/keys.txt";
         secrets = {
           github_ssh_private_key = {
             key = "github_ssh_private_key";
-            path = "/Users/${inputs.secrets.username}/.ssh/ssh_key_github_ed25519";
+            path = "/Users/${username}/.ssh/ssh_key_github_ed25519";
             mode = "0600";
-            owner = inputs.secrets.username;
+            owner = username;
           };
           bitwarden_api_client_id = {
             sopsFile = "${sopsFolder}/shared.yaml";
             key = "bitwarden_api_client_id";
-            path = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_id";
+            path = "/Users/${username}/.config/sops/bitwarden_api_client_id";
             mode = "0600";
-            owner = inputs.secrets.username;
+            owner = username;
           };
           bitwarden_api_client_secret = {
             sopsFile = "${sopsFolder}/shared.yaml";
             key = "bitwarden_api_client_secret";
-            path = "/Users/${inputs.secrets.username}/.config/sops/bitwarden_api_client_secret";
+            path = "/Users/${username}/.config/sops/bitwarden_api_client_secret";
             mode = "0600";
-            owner = inputs.secrets.username;
+            owner = username;
           };
           github_cli_personal_access_token = {
             key = "github_cli_personal_access_token";
-            path = "/Users/${inputs.secrets.username}/.config/sops/github_cli_personal_access_token";
+            path = "/Users/${username}/.config/sops/github_cli_personal_access_token";
             mode = "0600";
-            owner = inputs.secrets.username;
+            owner = username;
+          };
+          nan_builders_api_key = {
+            key = "nan_builders_api_key";
+            path = "/Users/${username}/.config/sops/nan_builders_api_key";
+            mode = "0600";
+            owner = username;
           };
           hetzner_ssh_private_key = {
             sopsFile = "${sopsFolder}/portfolio.yaml";
             key = "hetzner_ssh_private_key";
-            path = "/Users/${inputs.secrets.username}/.ssh/portfolio_hetzner_ed25519";
+            path = "/Users/${username}/.ssh/portfolio_hetzner_ed25519";
             mode = "0600";
-            owner = inputs.secrets.username;
+            owner = username;
           };
           hetzner_api_token = {
             sopsFile = "${sopsFolder}/portfolio.yaml";
             key = "hetzner_api_token";
-            path = "/Users/${inputs.secrets.username}/.config/sops/hcloud_token";
+            path = "/Users/${username}/.config/sops/hcloud_token";
             mode = "0600";
-            owner = inputs.secrets.username;
+            owner = username;
           };
           b2_key_id = {
             sopsFile = "${sopsFolder}/portfolio.yaml";
             key = "b2_key_id";
-            path = "/Users/${inputs.secrets.username}/.config/sops/b2_key_id";
+            path = "/Users/${username}/.config/sops/b2_key_id";
             mode = "0600";
-            owner = inputs.secrets.username;
+            owner = username;
           };
           b2_app_key = {
             sopsFile = "${sopsFolder}/portfolio.yaml";
             key = "b2_app_key";
-            path = "/Users/${inputs.secrets.username}/.config/sops/b2_app_key";
+            path = "/Users/${username}/.config/sops/b2_app_key";
             mode = "0600";
-            owner = inputs.secrets.username;
+            owner = username;
           };
         };
       };

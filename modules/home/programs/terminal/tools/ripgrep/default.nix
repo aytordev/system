@@ -3,14 +3,17 @@
   lib,
   pkgs,
   ...
-}: {
+}: let
+  cfg = config.aytordev.programs.terminal.tools.ripgrep;
+in {
   options.aytordev.programs.terminal.tools.ripgrep = {
     enable = lib.mkEnableOption "ripgrep";
+    package = lib.mkPackageOption pkgs "ripgrep" {};
   };
-  config = lib.mkIf config.aytordev.programs.terminal.tools.ripgrep.enable {
+  config = lib.mkIf cfg.enable {
     programs.ripgrep = {
       enable = true;
-      package = pkgs.ripgrep;
+      inherit (cfg) package;
       arguments = [
         "--max-columns=150"
         "--max-columns-preview"
@@ -19,10 +22,10 @@
       ];
     };
     home.shellAliases = {
-      grep = "${pkgs.ripgrep}/bin/rg";
+      grep = "${cfg.package}/bin/rg";
     };
     xdg.configFile."bash/conf.d/ripgrep.sh".text = ''
-      export RIPGREP_CONFIG_PATH="${pkgs.ripgrep}/share/ripgreprc"
+      export RIPGREP_CONFIG_PATH="${cfg.package}/share/ripgreprc"
       alias grep="rg"
     '';
   };

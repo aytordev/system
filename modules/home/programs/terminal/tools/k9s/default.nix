@@ -10,6 +10,7 @@
 in {
   options.aytordev.programs.terminal.tools.k9s = {
     enable = lib.mkEnableOption "k9s";
+    package = lib.mkPackageOption pkgs "k9s" {};
   };
 
   config = mkIf cfg.enable {
@@ -26,7 +27,7 @@ in {
     programs = {
       k9s = {
         enable = true;
-        package = pkgs.k9s;
+        inherit (cfg) package;
 
         settings.k9s = {
           liveViewAutoRefresh = true;

@@ -5,14 +5,16 @@
   ...
 }: let
   inherit (lib) mkEnableOption mkIf;
+  cfg = config.aytordev.programs.terminal.tools.fastfetch;
 in {
   options.aytordev.programs.terminal.tools.fastfetch = {
     enable = mkEnableOption "fastfetch";
+    package = lib.mkPackageOption pkgs "fastfetch" {};
   };
-  config = mkIf config.aytordev.programs.terminal.tools.fastfetch.enable {
+  config = mkIf cfg.enable {
     programs.fastfetch = {
       enable = true;
-      package = pkgs.fastfetch;
+      inherit (cfg) package;
       settings = {
         "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json";
         logo = {

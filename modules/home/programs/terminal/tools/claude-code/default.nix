@@ -11,8 +11,11 @@
 
   claudeIcon = ./assets/claude.ico;
 in {
+  imports = [./permissions.nix];
+
   options.aytordev.programs.terminal.tools.claude-code = {
     enable = mkEnableOption "Claude Code configuration";
+    package = lib.mkPackageOption pkgs "claude-code" {nullable = true;};
   };
 
   config = mkIf cfg.enable {
@@ -21,13 +24,14 @@ in {
 
     programs.claude-code = {
       enable = true;
+      inherit (cfg) package;
 
       enableMcpIntegration = mkIf mcpModuleEnabled true;
 
       settings = {
         theme = "dark";
 
-        hooks = lib.importDir ./hooks {inherit pkgs;};
+        hooks = lib.importDir ./hooks {inherit lib pkgs;};
 
         # Let default do its job
         # model = "claude-sonnet-4-5";

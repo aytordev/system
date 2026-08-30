@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   inherit
@@ -24,28 +23,32 @@ in {
       defaultText = literalExpression "pkgs.jujutsu";
       description = "The jujutsu package to use.";
     };
-    signByDefault = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Whether to sign commits by default.";
-    };
-    signingKey = mkOption {
-      type = types.str;
-      default = "${config.home.homeDirectory}/.ssh/ssh_key_github_ed25519";
-      description = "The key ID to sign commits with.";
+    signing = {
+      enable = mkEnableOption "SSH signing for jujutsu commits";
+      key = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "The SSH key ID to sign commits with.";
+      };
     };
     userName = mkOption {
       type = types.str;
-      default = inputs.secrets.username;
+      default = config.aytordev.user.name;
       description = "The name to configure jujutsu with.";
     };
     userEmail = mkOption {
       type = types.str;
-      default = inputs.secrets.useremail;
+      default = config.aytordev.user.email;
       description = "The email to configure jujutsu with.";
     };
   };
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = !cfg.signing.enable || cfg.signing.key != null;
+        message = "aytordev.programs.terminal.tools.jujutsu.signing.key must be set when signing is enabled";
+      }
+    ];
     home.packages = [
       cfg.package
       pkgs.lazyjj
@@ -73,10 +76,10 @@ in {
             diff-instructions = false;
           };
         }
-        // optionalAttrs cfg.signByDefault {
+        // optionalAttrs cfg.signing.enable {
           signing = {
             backend = "ssh";
-            key = cfg.signingKey;
+            inherit (cfg.signing) key;
             sign-all = true;
           };
         };

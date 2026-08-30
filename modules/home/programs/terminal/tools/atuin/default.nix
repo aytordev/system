@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   inherit (lib) mkIf mkEnableOption optionalAttrs;
@@ -8,6 +9,7 @@
 in {
   options.aytordev.programs.terminal.tools.atuin = {
     enable = mkEnableOption "atuin";
+    package = lib.mkPackageOption pkgs "atuin" {};
     enableDebug = mkEnableOption "atuin daemon debug logging";
     enableBashIntegration = mkEnableOption "atuin bash integration";
     enableFishIntegration = mkEnableOption "atuin fish integration";
@@ -17,6 +19,7 @@ in {
   config = mkIf cfg.enable {
     programs.atuin = {
       enable = true;
+      inherit (cfg) package;
       inherit (cfg) enableBashIntegration;
       inherit (cfg) enableFishIntegration;
       inherit (cfg) enableZshIntegration;

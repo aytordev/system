@@ -38,19 +38,11 @@ in {
     };
 
     aytordev = {
-      home.extraOptions = {
-        home.shellAliases = {
-          # Prevent shell log command from overriding macos log
-          log = ''command log'';
-        };
-      };
-
       nix = mkDefault enabled;
 
       programs.terminal.tools = {
         atuin = mkDefault enabled;
         nh = mkDefault enabled;
-        ssh = mkDefault enabled;
       };
 
       tools = {
@@ -58,7 +50,7 @@ in {
       };
 
       services = {
-        openssh = mkDefault enabled;
+        openssh.enable = mkDefault false;
       };
 
       system = {

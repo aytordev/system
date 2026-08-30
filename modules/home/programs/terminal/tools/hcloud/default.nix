@@ -13,9 +13,37 @@
     ;
   cfg = config.aytordev.programs.terminal.tools.hcloud;
   hasToken = cfg.auth.tokenPath != null;
+  tokenPath =
+    if hasToken
+    then cfg.auth.tokenPath
+    else "";
+  tokenPathShell = lib.escapeShellArg tokenPath;
+  executable = lib.getExe cfg.package;
+  wrappedExecutable = pkgs.writeShellScript "hcloud-with-runtime-token" ''
+    set -euo pipefail
+    if [[ ! -r ${tokenPathShell} ]]; then
+      printf 'Hetzner Cloud token file is not readable: %s\n' ${tokenPathShell} >&2
+      exit 1
+    fi
+    HCLOUD_TOKEN="$(<${tokenPathShell})" exec ${executable} "$@"
+  '';
+  wrappedPackage = pkgs.symlinkJoin {
+    name = "hcloud-with-runtime-token";
+    paths = [cfg.package];
+    meta.mainProgram = "hcloud";
+    postBuild = ''
+      rm -f "$out/bin/hcloud"
+      ln -s ${wrappedExecutable} "$out/bin/hcloud"
+    '';
+  };
+  effectivePackage =
+    if hasToken
+    then wrappedPackage
+    else cfg.package;
 in {
   options.aytordev.programs.terminal.tools.hcloud = {
     enable = mkEnableOption "Hetzner Cloud CLI";
+    package = lib.mkPackageOption pkgs "hcloud" {};
 
     auth = {
       tokenPath = mkOption {
@@ -24,7 +52,7 @@ in {
         example = "/Users/username/.config/sops/hcloud_token";
         description = ''
           Path to a file containing the Hetzner Cloud API token.
-          When set, HCLOUD_TOKEN is exported at shell startup for automatic authentication.
+          The token is injected only into Hetzner Cloud CLI processes.
           Designed to work with sops-nix managed secrets.
         '';
       };
@@ -32,32 +60,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [pkgs.hcloud];
-
-    programs = {
-      zsh.initContent = mkIf hasToken ''
-        if [[ -f "${cfg.auth.tokenPath}" ]]; then
-          export HCLOUD_TOKEN="$(command cat "${cfg.auth.tokenPath}")"
-        fi
-      '';
-
-      bash.initExtra = mkIf hasToken ''
-        if [[ -f "${cfg.auth.tokenPath}" ]]; then
-          export HCLOUD_TOKEN="$(command cat "${cfg.auth.tokenPath}")"
-        fi
-      '';
-
-      fish.interactiveShellInit = mkIf hasToken ''
-        if test -f "${cfg.auth.tokenPath}"
-          set -gx HCLOUD_TOKEN (command cat "${cfg.auth.tokenPath}")
-        end
-      '';
-
-      nushell.extraEnv = mkIf hasToken ''
-        if ("${cfg.auth.tokenPath}" | path exists) {
-          $env.HCLOUD_TOKEN = (open "${cfg.auth.tokenPath}" | str trim)
-        }
-      '';
-    };
+    home.packages = [effectivePackage];
   };
 }

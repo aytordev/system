@@ -1,285 +1,89 @@
-# Bitwarden Password Manager Modules
+# Bitwarden Password Manager
 
-This directory contains NixOS/nix-darwin modules for managing Bitwarden password manager, including both desktop and CLI programs.
+Home Manager modules for the Bitwarden password manager: the desktop app and
+the CLI.
 
-## 📦 Available Modules
+## Modules
 
-### Desktop Application
+- **Desktop app**: `modules/home/programs/desktop/security/bitwarden`
+- **CLI**: `modules/home/programs/terminal/tools/bitwarden-cli`
 
-- **Path**: `modules/home/programs/desktop/security/bitwarden`
-- **Purpose**: Bitwarden desktop application with GUI for password management
-- **Platform**: macOS (via nix-darwin) and Linux
+Both are capability modules under `aytordev.*`.
 
-### CLI Tool
+## Desktop Application
 
-- **Path**: `modules/home/programs/terminal/tools/bitwarden-cli`
-- **Purpose**: Command-line interface for Bitwarden with shell integrations
-- **Platform**: Cross-platform
-
-## 🚀 Features
-
-### Desktop Application Features
-
-- 🔐 Secure password storage and management
-- 🌐 Browser integration for auto-fill
-- 🔑 Biometric unlock support (Touch ID on macOS)
-- 🔄 Auto-sync with Bitwarden servers
-- 📱 Cross-device synchronization
-- 💼 Vault timeout configuration
-- 🎨 Theme customization
-
-### CLI Features
-
-- 🖥️ Full vault access from terminal
-- 🔧 Shell integration (Zsh, Bash, Fish, Nushell)
-- 📝 Custom aliases for common operations
-- 🔐 Session management helpers
-- 🤖 Automation-friendly API
-- 🔄 rbw integration (optional alternative client)
-
-## 📋 Configuration
-
-### Basic Setup
-
-#### Desktop Application
+Enable the Bitwarden desktop app:
 
 ```nix
-{
-  programs.desktop.security.bitwarden.enable = true;
-  programs.desktop.security.bitwarden.enableBrowserIntegration = true;
-  programs.desktop.security.bitwarden.enableTrayIcon = true;
-}
+aytordev.programs.desktop.security.bitwarden.enable = true;
 ```
 
-#### CLI Tool
+Available options (see the module for full descriptions):
+
+- `enableBrowserIntegration` (default `true`)
+- `enableSystemStartup` (default `false`)
+- `enableTrayIcon` (default `true`)
+- `biometricUnlock.enable` (default `false`, Touch ID on macOS)
+- `biometricUnlock.requirePasswordOnStart` (default `true`)
+- `vault.timeout` (minutes, default `15`, `null` = never)
+- `vault.timeoutAction` (`"lock"` | `"logout"`, default `"lock"`)
+- `settings` — raw data.json overrides (e.g. `theme`)
+- `package` / `installPackage` — package and install strategy
+
+**Platform notes:**
+
+- On Darwin the desktop app is managed as a Homebrew cask (to avoid nixpkgs
+  Electron build failures); `installPackage` defaults to `false`.
+- On Linux the package is installed via Home Manager; `installPackage` defaults
+  to `true`.
+
+## CLI
+
+Enable the Bitwarden CLI (official `bw` client):
 
 ```nix
-{
-  programs.terminal.tools.bitwarden-cli.enable = true;
-  programs.terminal.tools.bitwarden-cli.shellIntegration.enable = true;
-  programs.terminal.tools.bitwarden-cli.aliases.enable = true;
-}
+aytordev.programs.terminal.tools.bitwarden-cli = {
+  enable = true;
+  client = "bw";            # or "rbw" (default)
+  shellIntegration.enable = true;
+  aliases.enable = true;
+};
 ```
 
-### Advanced Configuration
+Key options:
 
-#### Desktop with Biometric Unlock
+- `client` — `"rbw"` (default) or `"bw"`.
+- `server` — custom server URL (rbw only).
+- `apiKey` — runtime API-key login: set `enable` plus `clientIdFile` /
+  `clientSecretFile`. The generated `bitwarden-login-sops` helper uses a scoped
+  pinentry adapter (rbw) or `bw login --apikey` (bw) and never exports tokens
+  into the environment.
+- `shellIntegration` — bash/zsh/fish session helpers that store `BW_SESSION`
+  in a validated private directory.
+- `aliases` — `bwl`, `bwu`, `bws`, `bwg`, `bwp`, `bwc`.
 
-```nix
-{
-  programs.desktop.security.bitwarden = {
-    enable = true;
-    enableBrowserIntegration = true;
-    biometricUnlock = {
-      enable = true;
-      requirePasswordOnStart = false;  # Skip password on start if using biometrics
-    };
-    vault = {
-      timeout = 30;  # Lock after 30 minutes
-      timeoutAction = "lock";  # "lock" or "logout"
-    };
-  };
-}
-```
-
-#### CLI with Custom Server
-
-```nix
-{
-  programs.terminal.tools.bitwarden-cli = {
-    enable = true;
-    settings = {
-      server = "https://bitwarden.company.com";  # Self-hosted instance
-      syncOnLogin = true;
-      sessionTimeout = 1800;  # 30 minutes
-    };
-    shellIntegration = {
-      enable = true;
-      enableZshIntegration = true;
-      enableBashIntegration = true;
-      enableFishIntegration = true;
-    };
-  };
-}
-```
-
-#### Enable rbw (Alternative CLI Client)
-
-```nix
-{
-  programs.terminal.tools.bitwarden-cli = {
-    enable = true;
-    rbw = {
-      enable = true;
-      pinentry = "pinentry-mac";  # or "pinentry-curses" for terminal
-    };
-  };
-}
-```
-
-## 🎯 Usage Examples
-
-### CLI Commands
-
-After enabling the module, you'll have access to these commands:
-
-#### Standard Bitwarden CLI
+### Basic CLI usage
 
 ```bash
-# Login to Bitwarden
-bw login email@example.com
-
-# Unlock vault (using helper function)
-bw-unlock  # Sets BW_SESSION environment variable
-
-# Lock vault
-bw-lock
-
-# Get a password
+# Official client
+bw-unlock            # unlock and store session
 bw get password "GitHub"
 
-# List all items
-bw list items
-
-# Create a new login
-bw create item login '{"name":"Example","login":{"username":"user","password":"pass"}}'
-
-# Sync vault
-bw sync
+# rbw client
+rbw get github.com
 ```
 
-#### With Aliases Enabled
+## Security
 
-```bash
-bwl  # Login
-bwu  # Unlock
-bws  # Sync
-bwg item "GitHub"  # Get item
-bwp "GitHub"  # Get password directly
-bwc "GitHub"  # Get complete item details
-```
+- API keys are read from files at runtime; they are never placed in
+  `home.sessionVariables`.
+- Session keys live in a `0700` directory validated for ownership and
+  permissions; see `checks/home-identity` for the enforced contract.
+- Prefer file-based secrets (e.g. via the private `secrets` flake / sops) over
+  plaintext in the config.
 
-#### Using rbw (if enabled)
+## Contributing
 
-```bash
-# Initial setup
-rbw register  # First time only
-rbw login
-
-# Daily usage
-rbw get github.com  # Get password
-rbw get github.com --full  # Get all fields
-rbw add example.com --folder Work  # Add new entry
-rbw sync  # Sync with server
-```
-
-### Desktop Application
-
-The desktop application will be available in your programs folder (macOS) or application menu (Linux). Features include:
-
-1. **Quick Access**: Use system tray/menu bar icon
-2. **Browser Integration**: Install browser extension and connect to desktop app
-3. **Keyboard Shortcuts**:
-   - `Cmd/Ctrl + Shift + L` - Auto-fill login
-   - `Cmd/Ctrl + Shift + Y` - Open Bitwarden
-4. **Touch ID/Biometric**: Enable in settings for quick unlock
-
-## 🔒 Security Best Practices
-
-1. **Strong Master Password**: Use a unique, strong master password
-2. **Two-Factor Authentication**: Enable 2FA in your Bitwarden account
-3. **Regular Backups**: Export your vault periodically
-4. **Session Management**: Always lock/logout when done
-5. **API Keys**: Store API keys in secure locations (e.g., using sops-nix)
-
-## 🧩 Integration with Other Modules
-
-### Browser Integration
-
-Works seamlessly with browser modules:
-
-- `programs.desktop.browsers.firefox`
-- `programs.desktop.browsers.chrome`
-- `programs.desktop.browsers.brave`
-
-### Shell Integration
-
-Automatically integrates with enabled shells:
-
-- `programs.terminal.shells.zsh`
-- `programs.terminal.shells.bash`
-- `programs.terminal.shells.fish`
-- `programs.terminal.shells.nu`
-
-### Secret Management
-
-Can be combined with:
-
-- `darwin.security.sops` for API key storage
-- SSH modules for secure key management
-
-## 🐛 Troubleshooting
-
-### Desktop App Issues
-
-**App won't start:**
-
-```bash
-# Check logs
-tail -f /tmp/bitwarden.*.log
-
-# Reset config
-rm -rf ~/.config/Bitwarden
-```
-
-**Browser integration not working:**
-
-1. Ensure browser extension is installed
-2. Enable integration in Bitwarden settings
-3. Restart both browser and Bitwarden app
-
-### CLI Issues
-
-**Session expires quickly:**
-
-```bash
-# Increase timeout in configuration
-programs.terminal.tools.bitwarden-cli.settings.sessionTimeout = 3600;
-```
-
-**Commands not found:**
-
-```bash
-# Ensure PATH is correct
-which bw
-# Should show: /Users/username/.nix-profile/bin/bw
-
-# Reload shell configuration
-source ~/.zshrc  # or ~/.bashrc
-```
-
-**rbw pinentry issues:**
-
-```bash
-# Test pinentry
-echo "test" | pinentry-mac
-
-# Use terminal-based pinentry if GUI fails
-programs.terminal.tools.bitwarden-cli.rbw.pinentry = "pinentry-curses";
-```
-
-## 📚 Resources
-
-- [Bitwarden Official Documentation](https://bitwarden.com/help/)
-- [Bitwarden CLI Documentation](https://bitwarden.com/help/cli/)
-- [rbw Documentation](https://github.com/doy/rbw)
-- [Browser Extension Guide](https://bitwarden.com/help/getting-started-browserext/)
-
-## 🤝 Contributing
-
-To contribute improvements to these modules:
-
-1. Follow the project's [CONTRIBUTING.md](../../../../../../CONTRIBUTING.md) guidelines
-2. Test changes on both macOS and Linux if possible
-3. Update this README with new features or options
-4. Include examples for new configuration options
+Follow `CONTRIBUTING.md` and the Module Contract V1 rules
+(`docs/decisions/0008-module-contract-v1.md`). Update this README when module
+options change.

@@ -5,7 +5,13 @@
   system,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit
+    (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
   inherit (lib.aytordev) mkBoolOpt;
 
   cfg = config.aytordev.programs.terminal.editors.neovim;
@@ -14,6 +20,11 @@
 in {
   options.aytordev.programs.terminal.editors.neovim = {
     enable = mkEnableOption "Neovim";
+    package = mkOption {
+      type = types.package;
+      default = neovim;
+      description = "The Neovim package to install.";
+    };
     default = mkBoolOpt true "Whether to set Neovim as the session EDITOR";
   };
 
@@ -25,7 +36,7 @@ in {
       };
 
       packages = [
-        neovim
+        cfg.package
       ];
     };
   };

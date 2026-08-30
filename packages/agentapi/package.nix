@@ -9,7 +9,7 @@
   sources = {
     "x86_64-linux" = fetchurl {
       url = "https://github.com/coder/agentapi/releases/download/v${version}/agentapi-linux-amd64";
-      hash = "sha256-IiqgZougBIM8c6nkwVQpsyRI2bx4wX57jGHpsHGhuBs=";
+      hash = "sha256-IiqgZougBIM8c6nkwVQpsyRI2bx4wX53jGHpsHGhuBs=";
     };
     "aarch64-linux" = fetchurl {
       url = "https://github.com/coder/agentapi/releases/download/v${version}/agentapi-linux-arm64";
@@ -29,7 +29,9 @@ in
     pname = "agentapi";
     inherit version;
 
-    src = sources.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
+    src =
+      sources.${stdenvNoCC.hostPlatform.system}
+      or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
 
     dontUnpack = true;
     dontBuild = true;

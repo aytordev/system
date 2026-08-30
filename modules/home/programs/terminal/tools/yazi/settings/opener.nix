@@ -66,7 +66,7 @@
         desc = "Show media info";
         for = "unix";
       }
-      # FIXME: mpv broken due to Swift build failure in nixpkgs-unstable
+      # FIXME: mpv broken due to Swift build failure in nixpkgs
       # {
       #   run = "${lib.getExe config.programs.mpv.package} \"$@\"";
       #   orphan = true;

@@ -21,11 +21,9 @@ in {
       findutils
       killall
       lsof
-      pciutils
       tldr
       unzip
       wget
-      xclip
     ];
   };
 }

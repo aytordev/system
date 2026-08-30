@@ -2,561 +2,246 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   cfg = config.aytordev.programs.terminal.tools.bitwarden-cli;
+  isRbw = cfg.client == "rbw";
+  hasApiKeyFiles = cfg.apiKey.clientIdFile != null && cfg.apiKey.clientSecretFile != null;
+  clientIdFile = lib.escapeShellArg (toString cfg.apiKey.clientIdFile);
+  clientSecretFile = lib.escapeShellArg (toString cfg.apiKey.clientSecretFile);
+  apiKeyPinentryMarker = "aytordev-bitwarden-api-key";
+  apiKeyPinentry = pkgs.writeShellApplication {
+    name = "rbw-api-key-pinentry";
+    text = ''
+      if [[ "''${PINENTRY_USER_DATA:-}" != ${lib.escapeShellArg apiKeyPinentryMarker} ]]; then
+        exec ${lib.getExe cfg.pinentry} "$@"
+      fi
+
+      client_id_file=${clientIdFile}
+      client_secret_file=${clientSecretFile}
+      prompt=""
+      state="title"
+      printf 'OK Pleased to meet you\n'
+
+      while IFS= read -r command; do
+        case "$state:$command" in
+          "title:SETTITLE rbw")
+            state="prompt"
+            printf 'OK\n'
+            ;;
+          prompt:SETPROMPT\ *)
+            prompt="''${command#SETPROMPT }"
+            case "$prompt" in
+              "API key client__id" | "API key client__secret") ;;
+              *)
+                printf 'ERR 83886179 Unexpected%%20rbw%%20prompt\n'
+                exit 1
+                ;;
+            esac
+            state="description"
+            printf 'OK\n'
+            ;;
+          description:SETDESC\ *)
+            state="ready"
+            printf 'OK\n'
+            ;;
+          ready:SETERROR\ *) printf 'OK\n' ;;
+          ready:GETPIN)
+            case "$prompt" in
+              "API key client__id") secret_file="$client_id_file" ;;
+              "API key client__secret") secret_file="$client_secret_file" ;;
+            esac
+
+            if [[ ! -r "$secret_file" ]]; then
+              printf 'ERR 83886179 Bitwarden%%20API%%20key%%20file%%20is%%20not%%20readable\n'
+              exit 1
+            fi
+
+            secret="$(<"$secret_file")"
+            secret="''${secret//%/%25}"
+            secret="''${secret//$'\r'/%0D}"
+            secret="''${secret//$'\n'/%0A}"
+            printf 'D %s\nOK\n' "$secret"
+            state="done"
+            ;;
+          done:BYE)
+            printf 'OK\n'
+            exit 0
+            ;;
+          *)
+            printf 'ERR 83886179 Unexpected%%20pinentry%%20command\n'
+            exit 1
+            ;;
+        esac
+      done
+    '';
+  };
+  rbwPinentry =
+    if isRbw && cfg.apiKey.enable && hasApiKeyFiles
+    then apiKeyPinentry
+    else cfg.pinentry;
+  clientCommand =
+    if isRbw
+    then "rbw"
+    else "bw";
 in {
+  imports = [./shell-integration.nix];
+
   options.aytordev.programs.terminal.tools.bitwarden-cli = {
-    enable = lib.mkEnableOption "Bitwarden CLI for terminal-based password management";
+    enable = lib.mkEnableOption "a Bitwarden-compatible command-line client";
+
+    client = lib.mkOption {
+      type = lib.types.enum [
+        "rbw"
+        "bw"
+      ];
+      default = "rbw";
+      description = "Bitwarden-compatible client to configure.";
+    };
 
     package = lib.mkOption {
       type = lib.types.package;
-      default = pkgs.bitwarden-cli;
-      defaultText = lib.literalExpression "pkgs.bitwarden-cli";
-      description = "The Bitwarden CLI package to install.";
+      default =
+        if isRbw
+        then pkgs.rbw
+        else pkgs.bitwarden-cli;
+      defaultText = lib.literalExpression ''
+        if config.aytordev.programs.terminal.tools.bitwarden-cli.client == "rbw"
+        then pkgs.rbw
+        else pkgs.bitwarden-cli
+      '';
+      description = "Package providing the selected Bitwarden client.";
     };
 
-    settings = {
-      server = lib.mkOption {
+    server = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "https://bitwarden.example.com";
+      description = "Custom server URL for rbw.";
+    };
+
+    apiKey = {
+      enable = lib.mkEnableOption "runtime login using API key files";
+      clientIdFile = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
-        example = "https://bitwarden.company.com";
-        description = ''
-          Custom Bitwarden server URL. Leave null to use the official Bitwarden server.
-        '';
+        example = "/run/secrets/bitwarden-client-id";
+        description = "Runtime file containing the Bitwarden API client ID.";
       };
-
-      apiKeyFile = lib.mkOption {
-        type = lib.types.nullOr lib.types.path;
+      clientSecretFile = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
         default = null;
-        example = "/run/secrets/bitwarden-api-key";
-        description = ''
-          Path to a file containing the Bitwarden API key for automated operations.
-          The file should contain CLIENT_ID and CLIENT_SECRET separated by a newline.
-        '';
-      };
-
-      apiKey = {
-        useSops = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = ''
-            Use sops-nix to securely manage Bitwarden API keys.
-            When enabled, expects secrets at:
-            - bitwarden_api_client_id
-            - bitwarden_api_client_secret
-          '';
-        };
-
-        clientIdPath = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          example = "/run/secrets/bitwarden_api_client_id";
-          description = ''
-            Path to the file containing the Bitwarden API client ID.
-            Automatically set when using sops-nix.
-          '';
-        };
-
-        clientSecretPath = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          example = "/run/secrets/bitwarden_api_client_secret";
-          description = ''
-            Path to the file containing the Bitwarden API client secret.
-            Automatically set when using sops-nix.
-          '';
-        };
-
-        clientId = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          example = "user.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
-          description = ''
-            Bitwarden API client ID (for non-sops configurations).
-            Get this from vault.bitwarden.com > Account Settings > Security > API Key.
-            Prefer using sops-nix for security.
-          '';
-        };
-
-        clientSecret = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          example = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-          description = ''
-            Bitwarden API client secret (for non-sops configurations).
-            Get this from vault.bitwarden.com > Account Settings > Security > API Key.
-            Prefer using sops-nix for security.
-          '';
-        };
-      };
-
-      sessionTimeout = lib.mkOption {
-        type = lib.types.int;
-        default = 900;
-        example = 1800;
-        description = ''
-          Session timeout in seconds. Default is 15 minutes (900 seconds).
-        '';
-      };
-
-      syncOnLogin = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = ''
-          Automatically sync vault on login.
-        '';
+        example = "/run/secrets/bitwarden-client-secret";
+        description = "Runtime file containing the Bitwarden API client secret.";
       };
     };
 
     shellIntegration = {
-      enable = lib.mkOption {
+      enable = lib.mkEnableOption "session helpers and completions for the official bw client";
+      zsh = lib.mkOption {
         type = lib.types.bool;
-        default = true;
-        description = ''
-          Enable shell integration for session management and auto-completion.
-        '';
+        default = config.aytordev.programs.terminal.shells.zsh.enable;
+        description = "Enable Zsh integration.";
       };
-
-      enableZshIntegration = lib.mkOption {
+      bash = lib.mkOption {
         type = lib.types.bool;
-        default = config.programs.terminal.shells.zsh.enable or false;
-        description = ''
-          Enable Zsh integration for Bitwarden CLI.
-        '';
+        default = config.aytordev.programs.terminal.shells.bash.enable;
+        description = "Enable Bash integration.";
       };
-
-      enableBashIntegration = lib.mkOption {
+      fish = lib.mkOption {
         type = lib.types.bool;
-        default = config.programs.terminal.shells.bash.enable or false;
-        description = ''
-          Enable Bash integration for Bitwarden CLI.
-        '';
-      };
-
-      enableFishIntegration = lib.mkOption {
-        type = lib.types.bool;
-        default = config.programs.terminal.shells.fish.enable or false;
-        description = ''
-          Enable Fish integration for Bitwarden CLI.
-        '';
+        default = config.aytordev.programs.terminal.shells.fish.enable;
+        description = "Enable Fish integration.";
       };
     };
 
-    aliases = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
+    aliases.enable =
+      lib.mkEnableOption "short aliases for the selected Bitwarden client"
+      // {
         default = true;
-        description = ''
-          Enable convenient aliases for common Bitwarden operations.
-        '';
       };
 
-      bwl = lib.mkOption {
-        type = lib.types.str;
-        default = "bw login";
-        description = "Alias for Bitwarden login.";
-      };
-
-      bwu = lib.mkOption {
-        type = lib.types.str;
-        default = "bw unlock";
-        description = "Alias for Bitwarden unlock.";
-      };
-
-      bws = lib.mkOption {
-        type = lib.types.str;
-        default = "bw sync";
-        description = "Alias for Bitwarden sync.";
-      };
-
-      bwg = lib.mkOption {
-        type = lib.types.str;
-        default = "bw get";
-        description = "Alias for Bitwarden get.";
-      };
-
-      bwp = lib.mkOption {
-        type = lib.types.str;
-        default = "bw get password";
-        description = "Alias for getting passwords.";
-      };
-
-      bwc = lib.mkOption {
-        type = lib.types.str;
-        default = "bw get item --full-object";
-        description = "Alias for getting complete item details.";
-      };
-    };
-
-    rbw = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = ''
-          Enable rbw, an unofficial Bitwarden CLI client with better session management.
-          This is a great alternative when the official bitwarden-cli is broken or unavailable.
-        '';
-      };
-
-      package = lib.mkOption {
-        type = lib.types.package;
-        default = pkgs.rbw;
-        defaultText = lib.literalExpression "pkgs.rbw";
-        description = "The rbw package to install.";
-      };
-
-      pinentry = lib.mkOption {
-        type = lib.types.package;
-        default =
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then pkgs.pinentry_mac
-          else pkgs.pinentry-gnome3;
-        example = lib.literalExpression "pkgs.pinentry-curses";
-        description = ''
-          Pinentry program to use for password prompts.
-        '';
-      };
+    pinentry = lib.mkOption {
+      type = lib.types.package;
+      default =
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then pkgs.pinentry_mac
+        else pkgs.pinentry-gnome3;
+      defaultText = lib.literalExpression "pkgs.pinentry_mac or pkgs.pinentry-gnome3";
+      description = "Pinentry package used by rbw.";
     };
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = !cfg.apiKey.enable || hasApiKeyFiles;
+        message = "bitwarden-cli requires both API key files when apiKey.enable is true";
+      }
+      {
+        assertion = isRbw || cfg.server == null;
+        message = "bitwarden-cli.server is only supported by the rbw client";
+      }
+    ];
+
     home = {
-      packages =
-        lib.optionals (!cfg.rbw.enable) [cfg.package]
-        ++ lib.optionals cfg.rbw.enable [
-          cfg.rbw.package
-          cfg.rbw.pinentry
-        ];
+      packages = lib.optionals isRbw [cfg.pinentry] ++ lib.optionals (!isRbw) [cfg.package];
 
-      # Configure Bitwarden CLI settings
-      sessionVariables = lib.mkMerge [
-        (lib.mkIf (cfg.settings.server != null) {
-          BW_CLIENTSECRET = cfg.settings.server;
-        })
-        {
-          BW_SESSION_TIMEOUT = toString cfg.settings.sessionTimeout;
-        }
-      ];
+      shellAliases = lib.mkIf cfg.aliases.enable {
+        bwl = "${clientCommand} login";
+        bwu = "${clientCommand} unlock";
+        bws = "${clientCommand} sync";
+        bwg = "${clientCommand} get";
+        bwp =
+          if isRbw
+          then "rbw get --field password"
+          else "bw get password";
+        bwc =
+          if isRbw
+          then "rbw get"
+          else "bw get item --full-object";
+      };
 
-      # Create helper scripts
-      file = {
-        ".local/bin/rbw-unlock-sops" = lib.mkIf cfg.settings.apiKey.useSops {
-          executable = true;
-          text = ''
-            #!/usr/bin/env bash
-            # Helper script to unlock rbw using sops-managed API keys
+      file.".local/bin/bitwarden-login-sops" = lib.mkIf (cfg.apiKey.enable && hasApiKeyFiles) {
+        executable = true;
+        text = ''
+          #!${lib.getExe pkgs.bash}
+          set -euo pipefail
 
-            CLIENT_ID_PATH="${
-              cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"
-            }"
-            CLIENT_SECRET_PATH="${
-              cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"
-            }"
+          client_id_file=${clientIdFile}
+          client_secret_file=${clientSecretFile}
 
-            if [[ ! -f "$CLIENT_ID_PATH" ]] || [[ ! -f "$CLIENT_SECRET_PATH" ]]; then
-              echo "Error: Bitwarden API keys not found in sops secrets"
-              echo "Expected locations:"
-              echo "  Client ID: $CLIENT_ID_PATH"
-              echo "  Client Secret: $CLIENT_SECRET_PATH"
-              echo ""
-              echo "Add these to your sops secrets file:"
-              echo "  bitwarden_api_client_id: your-client-id"
-              echo "  bitwarden_api_client_secret: your-client-secret"
-              exit 1
-            fi
+          if [[ ! -r "$client_id_file" || ! -r "$client_secret_file" ]]; then
+            printf 'Bitwarden API key files are not readable\n' >&2
+            exit 1
+          fi
 
-            CLIENT_ID=$(cat "$CLIENT_ID_PATH")
-            CLIENT_SECRET=$(cat "$CLIENT_SECRET_PATH")
-
-            export BW_CLIENTID="$CLIENT_ID"
-            export BW_CLIENTSECRET="$CLIENT_SECRET"
-            rbw login
-          '';
-        };
-
-        ".local/bin/bw-session" = lib.mkIf cfg.shellIntegration.enable {
-          executable = true;
-          text = ''
-            #!/usr/bin/env bash
-            # Helper script to manage Bitwarden sessions
-
-            case "$1" in
-              unlock)
-                export BW_SESSION=$(bw unlock --raw)
-                echo "export BW_SESSION=$BW_SESSION"
-                ;;
-              lock)
-                bw lock
-                echo "unset BW_SESSION"
-                ;;
-              status)
-                bw status
-                ;;
-              *)
-                echo "Usage: $0 {unlock|lock|status}"
-                exit 1
-                ;;
-            esac
-          '';
-        };
+          ${
+            if isRbw
+            then ''
+              export PINENTRY_USER_DATA=${lib.escapeShellArg apiKeyPinentryMarker}
+              ${lib.getExe cfg.package} register
+              unset PINENTRY_USER_DATA
+              exec ${lib.getExe cfg.package} login
+            ''
+            else ''
+              export BW_CLIENTID="$(<"$client_id_file")"
+              export BW_CLIENTSECRET="$(<"$client_secret_file")"
+              exec ${lib.getExe cfg.package} login --apikey
+            ''
+          }
+        '';
       };
     };
 
-    xdg.configFile = {
-      "bitwarden-cli/zsh-integration.sh" =
-        lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration)
-        {
-          text = ''
-            # Bitwarden CLI session management
-            export BW_SESSION=""
-
-            # Function to unlock Bitwarden and export session
-            bw-unlock() {
-              export BW_SESSION=$(bw unlock --raw)
-              echo "Bitwarden vault unlocked for this session"
-            }
-
-            # Function to lock Bitwarden
-            bw-lock() {
-              bw lock
-              unset BW_SESSION
-              echo "Bitwarden vault locked"
-            }
-
-            # rbw helper functions
-            rbw-login-apikey() {
-              ${lib.optionalString cfg.settings.apiKey.useSops ''
-              if [[ -f "${
-                cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"
-              }" ]] && \
-                 [[ -f "${
-                cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"
-              }" ]]; then
-                export BW_CLIENTID=$(cat "${
-                cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"
-              }")
-                export BW_CLIENTSECRET=$(cat "${
-                cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"
-              }")
-                rbw login
-            ''}
-              ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
-              if [[ -f "$XDG_CONFIG_HOME/rbw/apikey" ]]; then
-                source "$XDG_CONFIG_HOME/rbw/apikey"
-                export BW_CLIENTID
-                export BW_CLIENTSECRET
-                rbw login
-            ''}
-              else
-                echo "API key not configured. Use 'rbw login' for password login."
-                echo "To configure: Add bitwarden_api_client_id and bitwarden_api_client_secret to your sops secrets"
-              fi
-            }
-
-            # Auto-completion for Bitwarden CLI
-            if command -v bw &> /dev/null; then
-              eval "$(bw completion --shell zsh)"
-            fi
-
-            # rbw aliases if using rbw instead of bw
-            if command -v rbw &> /dev/null && ! command -v bw &> /dev/null; then
-              alias bw="rbw"
-              alias bwl="rbw login"
-              alias bwu="rbw unlock"
-              alias bws="rbw sync"
-              alias bwg="rbw get"
-              alias bwp="rbw get --field password"
-            fi
-
-            ${lib.optionalString cfg.aliases.enable ''
-              # Bitwarden aliases
-              alias bwl="${cfg.aliases.bwl}"
-              alias bwu="${cfg.aliases.bwu}"
-              alias bws="${cfg.aliases.bws}"
-              alias bwg="${cfg.aliases.bwg}"
-              alias bwp="${cfg.aliases.bwp}"
-              alias bwc="${cfg.aliases.bwc}"
-            ''}
-          '';
-        };
-
-      "bitwarden-cli/bash-integration.sh" =
-        lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration)
-        {
-          text = ''
-            # Bitwarden CLI session management
-            export BW_SESSION=""
-
-            # Function to unlock Bitwarden and export session
-            bw-unlock() {
-              export BW_SESSION=$(bw unlock --raw)
-              echo "Bitwarden vault unlocked for this session"
-            }
-
-            # Function to lock Bitwarden
-            bw-lock() {
-              bw lock
-              unset BW_SESSION
-              echo "Bitwarden vault locked"
-            }
-
-            # Auto-completion for Bitwarden CLI
-            if command -v bw &> /dev/null; then
-              eval "$(bw completion --shell bash)"
-            fi
-
-            # rbw aliases if using rbw instead of bw
-            if command -v rbw &> /dev/null && ! command -v bw &> /dev/null; then
-              alias bw="rbw"
-              alias bwl="rbw login"
-              alias bwu="rbw unlock"
-              alias bws="rbw sync"
-              alias bwg="rbw get"
-              alias bwp="rbw get --field password"
-            fi
-
-            ${lib.optionalString cfg.aliases.enable ''
-              # Bitwarden aliases
-              alias bwl="${cfg.aliases.bwl}"
-              alias bwu="${cfg.aliases.bwu}"
-              alias bws="${cfg.aliases.bws}"
-              alias bwg="${cfg.aliases.bwg}"
-              alias bwp="${cfg.aliases.bwp}"
-              alias bwc="${cfg.aliases.bwc}"
-            ''}
-          '';
-        };
-
-      "bitwarden-cli/fish-integration.fish" =
-        lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration)
-        {
-          text = ''
-            # Bitwarden CLI session management
-            set -gx BW_SESSION ""
-
-            # Function to unlock Bitwarden and export session
-            function bw-unlock
-              set -gx BW_SESSION (bw unlock --raw)
-              echo "Bitwarden vault unlocked for this session"
-            end
-
-            # Function to lock Bitwarden
-            function bw-lock
-              bw lock
-              set -e BW_SESSION
-              echo "Bitwarden vault locked"
-            end
-
-            # rbw helper functions
-            function rbw-login-apikey
-              ${lib.optionalString cfg.settings.apiKey.useSops ''
-              if test -f "${
-                cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"
-              }" -a \
-                      -f "${
-                cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"
-              }"
-                set -gx BW_CLIENTID (cat "${
-                cfg.settings.apiKey.clientIdPath or "/run/user/$UID/secrets/bitwarden_api_client_id"
-              }")
-                set -gx BW_CLIENTSECRET (cat "${
-                cfg.settings.apiKey.clientSecretPath or "/run/user/$UID/secrets/bitwarden_api_client_secret"
-              }")
-                rbw login
-            ''}
-              ${lib.optionalString (!cfg.settings.apiKey.useSops) ''
-              if test -f "$XDG_CONFIG_HOME/rbw/apikey"
-                source "$XDG_CONFIG_HOME/rbw/apikey"
-                set -gx BW_CLIENTID $BW_CLIENTID
-                set -gx BW_CLIENTSECRET $BW_CLIENTSECRET
-                rbw login
-            ''}
-              else
-                echo "API key not configured. Use 'rbw login' for password login."
-                echo "To configure: Add bitwarden_api_client_id and bitwarden_api_client_secret to your sops secrets"
-              end
-            end
-
-            # Auto-completion for Bitwarden CLI
-            if command -v bw &> /dev/null
-              bw completion --shell fish | source
-            end
-
-            # rbw aliases if using rbw instead of bw
-            if command -v rbw &> /dev/null; and not command -v bw &> /dev/null
-              alias bw="rbw"
-              alias bwl="rbw login"
-              alias bwu="rbw unlock"
-              alias bws="rbw sync"
-              alias bwg="rbw get"
-              alias bwp="rbw get --field password"
-            end
-
-            ${lib.optionalString cfg.aliases.enable ''
-              # Bitwarden aliases
-              alias bwl="${cfg.aliases.bwl}"
-              alias bwu="${cfg.aliases.bwu}"
-              alias bws="${cfg.aliases.bws}"
-              alias bwg="${cfg.aliases.bwg}"
-              alias bwp="${cfg.aliases.bwp}"
-              alias bwc="${cfg.aliases.bwc}"
-            ''}
-          '';
-        };
-
-      "rbw/apikey" =
-        lib.mkIf
-        (
-          !cfg.settings.apiKey.useSops
-          && cfg.settings.apiKey.clientId != null
-          && cfg.settings.apiKey.clientSecret != null
-        )
-        {
-          text = ''
-            BW_CLIENTID="${cfg.settings.apiKey.clientId}"
-            BW_CLIENTSECRET="${cfg.settings.apiKey.clientSecret}"
-          '';
-          mode = "0600";
-        };
-    };
-
-    programs = {
-      # Add sourcing instructions to shell configs
-      zsh = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableZshIntegration) {
-        initContent = ''
-          # Source Bitwarden CLI integration
-          [[ -f "$XDG_CONFIG_HOME/bitwarden-cli/zsh-integration.sh" ]] && source "$XDG_CONFIG_HOME/bitwarden-cli/zsh-integration.sh"
-        '';
-      };
-
-      bash = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableBashIntegration) {
-        initExtra = ''
-          # Source Bitwarden CLI integration
-          [[ -f "$XDG_CONFIG_HOME/bitwarden-cli/bash-integration.sh" ]] && source "$XDG_CONFIG_HOME/bitwarden-cli/bash-integration.sh"
-        '';
-      };
-
-      fish = lib.mkIf (cfg.shellIntegration.enable && cfg.shellIntegration.enableFishIntegration) {
-        interactiveShellInit = ''
-          # Source Bitwarden CLI integration
-          if test -f "$XDG_CONFIG_HOME/bitwarden-cli/fish-integration.fish"
-            source "$XDG_CONFIG_HOME/bitwarden-cli/fish-integration.fish"
-          end
-        '';
-      };
-
-      # Configure rbw if enabled
-      rbw = lib.mkIf cfg.rbw.enable {
-        enable = true;
-        inherit (cfg.rbw) package;
-        settings = {
-          email = inputs.secrets.useremail or "";
-          base_url = cfg.settings.server;
-          inherit (cfg.rbw) pinentry;
-          sync_interval = 3600;
-        };
+    programs.rbw = lib.mkIf isRbw {
+      enable = true;
+      inherit (cfg) package;
+      settings = {
+        email = config.aytordev.user.email;
+        base_url = cfg.server;
+        pinentry = rbwPinentry;
+        sync_interval = 3600;
       };
     };
   };

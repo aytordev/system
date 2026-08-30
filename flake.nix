@@ -31,18 +31,9 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
-    nixpkgs-unstable = {
-      url = "github:nixos/nixpkgs/nixos-unstable";
-    };
-    nixpkgs-stable = {
-      url = "github:nixos/nixpkgs/nixos-25.05";
-    };
-    nixpkgs-darwin = {
-      url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    };
     nix-darwin = {
       url = "github:lnl7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -51,7 +42,7 @@
     secrets.url = "git+ssh://git@github.com/aytordev/secrets.git?ref=main&shallow=1";
     sops-nix = {
       url = "github:mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     yazi-flavors = {
       url = "github:yazi-rs/flavors";
@@ -78,10 +69,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.nvf.follows = "nvf";
-    };
-    meridian = {
-      url = "github:rynfar/meridian";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 }
