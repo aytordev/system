@@ -125,7 +125,6 @@ Available packages (built per platform in `packages/`):
 - `agentapi`
 - `engram`
 - `luaposix`
-- `meridian-plugin-opencode-scrub`
 - `pencil-dev`
 - `sketchybar-app-font`
 

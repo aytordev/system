@@ -26,9 +26,12 @@
       "architecture-layers"
       "file-parsers"
       "input-policy"
+      "library-exports"
       "library-overlay"
       "lua-shell-quoting"
       "nix-unit"
+      "parse-lix"
+      "parse-nix"
     ];
     productionCheckNames = [
       "home-integration"

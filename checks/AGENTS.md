@@ -13,7 +13,8 @@ them. The loader assigns a verification-level prefix based on the check name.
 
 - `unit-*`: Pure contracts, parsers, and architecture policies
   (`architecture-layers`, `file-parsers`, `input-policy`,
-  `library-overlay`, `lua-shell-quoting`, `nix-unit`).
+  `library-exports`, `library-overlay`, `lua-shell-quoting`,
+  `nix-unit`, `parse-lix`, `parse-nix`).
 - `integration-*`: Synthetic Home Manager and system compositions
   (`home-bitwarden`, `home-identity`, `home-module`, `home-portability`,
   `module-contract`, `synthetic-darwin`, `synthetic-home`, `synthetic-nixos`,
@@ -27,6 +28,10 @@ them. The loader assigns a verification-level prefix based on the check name.
 The level is derived from a hardcoded allow-list in the loader; the other check
 directories are treated as integration checks. Name check directories by the
 behavior they test, not the level.
+
+> `integration-docs-generation` additionally **builds `packages.docs-html`**
+> (the searchable mdbook of the `aytordev.*` surface) on darwin, so CI
+> validates both the committed option-index snapshot and the mdbook build.
 
 ## Secrets Handling
 

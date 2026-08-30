@@ -50,7 +50,7 @@ jobs:
       - name: Update flake.lock
         # Update every input except the private `secrets` repo, which CI cannot
         # fetch (git+ssh) and must never be auto-bumped.
-        run: nix flake update nixpkgs flake-parts nix-darwin home-manager sops-nix yazi-flavors nix-index-database nix-rosetta-builder mcp-servers-nix nvf aytordev-nvim meridian
+        run: nix flake update nixpkgs flake-parts nix-darwin home-manager sops-nix yazi-flavors nix-index-database nix-rosetta-builder mcp-servers-nix nvf aytordev-nvim
       - name: Update dev flake.lock
         run: nix flake update --flake flake/dev treefmt-nix git-hooks-nix nix-unit
       - name: Check for nixpkgs updates

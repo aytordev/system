@@ -8,6 +8,7 @@ in {
     ./configs
     ./home
     ./apps
+    ./docs
     inputs.flake-parts.flakeModules.partitions
   ];
 

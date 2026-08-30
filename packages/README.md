@@ -11,7 +11,6 @@ platform by `flake/packages/default.nix`.
 | `agentapi` | Coder's agent API binary (`agentapi` MCP/agent bridge) | linux + darwin (x86_64/aarch64) |
 | `engram` | Persistent memory MCP server for AI coding agents (Gentleman-Programming) | linux + darwin (x86_64/aarch64) |
 | `luaposix` | Lua 5.5-compatible `luaposix` build (upstream rockspec upper bound patched) | per nixpkgs |
-| `meridian-plugin-opencode-scrub` | Meridian plugin that strips OpenCode identifying fingerprints from the system prompt | per nixpkgs |
 | `pencil-dev` | Pencil dev macOS app (dmg → `/Applications`) | aarch64-darwin only |
 | `sketchybar-app-font` | Ligature icon font + `icon_map.lua` for Sketchybar | per nixpkgs |
 
