@@ -24,4 +24,13 @@ in
     knownRockspec = patchedRockspec.outPath;
 
     disabled = false;
+
+    # luaposix links against `crypt`, which moved out of glibc into libxcrypt
+    # on modern Linux. On Darwin the symbol lives in the system libc.
+    buildInputs = pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [pkgs.libxcrypt];
+  }
+  // {
+    # luaposix links against `crypt`, which moved out of glibc into libxcrypt
+    # on modern Linux. On Darwin the symbol lives in the system libc.
+    buildInputs = pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [pkgs.libxcrypt];
   }
