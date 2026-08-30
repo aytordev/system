@@ -56,6 +56,16 @@ docs-golden:
 docs:
     nix run .#docs-html --extra-experimental-features "nix-command flakes"
 
+# Build all checks in parallel with nix-fast-build (prioritized by dependency)
+[group('nix')]
+fast-checks:
+    nix run .#fast-build-checks --extra-experimental-features "nix-command flakes"
+
+# Build all packages in parallel with nix-fast-build (prioritized)
+[group('nix')]
+fast-packages:
+    nix run .#fast-build-packages --extra-experimental-features "nix-command flakes"
+
 ############################################################################
 # System Management
 ############################################################################
