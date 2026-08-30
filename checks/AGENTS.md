@@ -12,7 +12,7 @@ them. The loader assigns a verification-level prefix based on the check name.
 ## Verification Levels
 
 - `unit-*`: Pure contracts, parsers, and architecture policies
-  (`architecture-layers`, `file-parsers`, `input-policy`,
+  (`ai-tools-inventory`, `architecture-layers`, `file-parsers`, `input-policy`,
   `library-exports`, `library-overlay`, `lua-shell-quoting`,
   `nix-unit`, `parse-lix`, `parse-nix`).
 - `integration-*`: Synthetic Home Manager and system compositions
