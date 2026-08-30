@@ -10,17 +10,11 @@
   ignores = import ./git-ignore.nix;
   shell-aliases = import ./shell-aliases.nix {inherit config lib pkgs;};
   gitConfig =
-    {
+     {
       enable = true;
       inherit (cfg) package;
       inherit ignores;
       maintenance.enable = true;
-      hooks.pre-commit = pkgs.writeShellScript "git-pre-commit-conflict-check" ''
-        if git diff --cached | grep -qE '^\+(<{7}|>{7})'; then
-          printf 'Error: staged changes contain conflict markers\n' >&2
-          exit 1
-        fi
-      '';
       settings = {
         alias = aliases;
         user = {
