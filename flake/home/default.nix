@@ -7,7 +7,6 @@
   inherit (self.lib.file) parseHomeConfigurations importModulesRecursive;
 
   reusableInputs = builtins.removeAttrs inputs ["secrets"];
-  identity = self.lib.identity.fromSecrets inputs.secrets;
   common = import ../../libraries/system/common {inputs = reusableInputs;};
   extendedLib = common.mkExtendedLib self inputs.nixpkgs;
   homesPath = ../../homes;
@@ -22,7 +21,8 @@
     ...
   }: let
     configPath = args.path;
-    validatedUsername = self.lib.identity.assertUsername identity.username username;
+    hostIdentity = self.lib.identity.fromSecretsFor username inputs.secrets;
+    validatedUsername = self.lib.identity.assertUsername hostIdentity.username username;
   in {
     name = userAtHost; # Use the full "username@hostname" as key
     value = self.lib.system.mkHome {
@@ -32,7 +32,9 @@
         hostname
         ;
       username = validatedUsername;
-      extraSpecialArgs = {inherit identity;};
+      extraSpecialArgs = {
+        identity = hostIdentity;
+      };
       modules = [configPath];
       homeModules = allHomeModules;
     };

@@ -222,6 +222,65 @@ in {
     };
   };
 
+  testIdentityFromSecretsForUsersMap = {
+    expr = identity.fromSecretsFor "avicente" {
+      username = "aytordev";
+      users.avicente = {
+        username = "avicente";
+        useremail = "avicente@example.test";
+        userfullname = "Avicente User";
+      };
+    };
+    expected = {
+      username = "avicente";
+      email = "avicente@example.test";
+      fullName = "Avicente User";
+    };
+  };
+
+  testIdentityFromSecretsForOwnerFallsBackToFlat = {
+    expr = identity.fromSecretsFor "aytordev" {
+      username = "aytordev";
+      useremail = "owner@example.test";
+      userfullname = "Owner User";
+    };
+    expected = {
+      username = "aytordev";
+      email = "owner@example.test";
+      fullName = "Owner User";
+    };
+  };
+
+  testIdentityFromSecretsForUnknownUserRejected = {
+    expr =
+      (builtins.tryEval (
+        identity.fromSecretsFor "ghost" {
+          username = "aytordev";
+          users.aytordev = {
+            username = "aytordev";
+            useremail = "owner@example.test";
+            userfullname = "Owner User";
+          };
+        }
+      )).success;
+    expected = false;
+  };
+
+  testIdentityFromSecretsForRejectsInvalidUserFields = {
+    expr =
+      (builtins.tryEval (
+        identity.fromSecretsFor "avicente" {
+          username = "aytordev";
+          users.avicente = {
+            username = "avicente";
+            useremail = "";
+            userfullname = "Avicente User";
+          };
+        }
+      )).success;
+    expected = false;
+  };
+
   testIdentityRejectsInvalidSecrets = {
     expr = map (secrets: (builtins.tryEval (identity.fromSecrets secrets)).success) [
       {
