@@ -41,8 +41,8 @@ just darwin-switch wang-lin       # build and switch
 sudo nixos-rebuild switch --flake .#<hostname>
 ```
 
-> The flake targets `x86_64-linux` and `aarch64-darwin`. Only the macOS host
-> `wang-lin` is currently configured.
+> The flake targets `x86_64-linux` and `aarch64-darwin`. Active macOS hosts are
+> `wang-lin` (owner identity) and `civislend` (work identity `avicente`).
 
 ## Features
 
@@ -74,9 +74,9 @@ The private `secrets` flake is the single source of truth for personal identity
 and encrypted SOPS documents. Its identity outputs are intentionally plain
 metadata:
 
-- `username`
-- `useremail`
-- `userfullname`
+- `username` / `useremail` / `userfullname`: the flat owner identity.
+- `users.<name>`: per-user identities (same three fields) for machines that use
+  a different identity, e.g. `users.avicente` for host `civislend`.
 
 The root flake validates these fields once and passes a normalized `identity`
 argument to concrete host and home configurations. Reusable modules do not
@@ -98,8 +98,8 @@ The configuration is split by concern:
 - **`overlays`**: nixpkgs customizations via overlays.
 - **`dev-shells`**: per-project development environments.
 - **`templates`**: project initialization templates.
-- **`systems`** and **`homes`**: per-host, per-user entry points (currently the
-  single `wang-lin` host).
+- **`systems`** and **`homes`**: per-host, per-user entry points (hosts
+  `wang-lin` and `civislend`).
 - **`checks`**: verification derivations (loaded by `flake/dev`).
 - **`docs/decisions`**: Architecture Decision Records.
 

@@ -25,16 +25,29 @@
     import path (
       moduleArgs
       // {
-        inherit identity;
         secretsRoot = inputs.secrets;
       }
     );
-  identityModuleArgs = {inherit identity;};
   matchingHomes = system: hostname:
     lib.filterAttrs (
       _name: homeConfig: homeConfig.system == system && homeConfig.hostname == hostname
     )
     allHomes;
+
+  # A host gets its user from its matching home (e.g. "avicente@civislend"
+  # resolves "civislend" to user "avicente". Host without a home fall back to
+  # the owner identity.
+  perHostIdentity = system: hostname: let
+    hostHomes = matchingHomes system hostname;
+    homeUsers = lib.unique (lib.mapAttrsToList (_name: home: home.username) hostHomes);
+    username =
+      if homeUsers == []
+      then identity.username
+      else if builtins.length homeUsers == 1
+      then builtins.head homeUsers
+      else throw "host '${hostname}' has multiple users (${lib.concatStringsSep ", " homeUsers}); multi-user hosts are not supported yet";
+  in
+    self.lib.identity.fromSecretsFor username inputs.secrets;
 in {
   flake = {
     nixosConfigurations = lib.mapAttrs' (
@@ -43,12 +56,16 @@ in {
         hostname,
         path,
         ...
-      }: {
+      }: let
+        hostIdentity = perHostIdentity system hostname;
+      in {
         name = hostname;
         value = self.lib.system.mkSystem {
           inherit inputs system hostname;
-          inherit (identity) username;
-          extraSpecialArgs = identityModuleArgs;
+          inherit (hostIdentity) username;
+          extraSpecialArgs = {
+            identity = hostIdentity;
+          };
           hostModule = privateHostModule path;
           nixosModules = allNixOSModules;
           homeModules = allHomeModules;
@@ -63,12 +80,16 @@ in {
         hostname,
         path,
         ...
-      }: {
+      }: let
+        hostIdentity = perHostIdentity system hostname;
+      in {
         name = hostname;
         value = self.lib.system.mkDarwin {
           inherit inputs system hostname;
-          inherit (identity) username;
-          extraSpecialArgs = identityModuleArgs;
+          inherit (hostIdentity) username;
+          extraSpecialArgs = {
+            identity = hostIdentity;
+          };
           hostModule = privateHostModule path;
           darwinModules = allDarwinModules;
           homeModules = allHomeModules;

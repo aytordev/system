@@ -14,7 +14,8 @@ systems/
     └── {hostname}/            # Future NixOS hosts would live here
 ```
 
-The only active host is `aarch64-darwin/wang-lin`. NixOS hosts can be added by
+Active hosts are `aarch64-darwin/wang-lin` (owner) and
+`aarch64-darwin/civislend` (work, user `avicente`). NixOS hosts can be added by
 creating `systems/x86_64-linux/{hostname}/default.nix`; the flake already targets
 `x86_64-linux`.
 

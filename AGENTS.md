@@ -19,8 +19,9 @@ flake-parts.**
 ## Platforms
 
 - Built for `x86_64-linux` and `aarch64-darwin`.
-- No concrete NixOS host is configured yet; the only active host is
-  `aarch64-darwin/wang-lin` (`systems/` + `homes/`).
+- No concrete NixOS host is configured yet; active hosts are
+  `aarch64-darwin/wang-lin` (owner) and `aarch64-darwin/civislend` (work, user
+  `avicente`) (`systems/` + `homes/`).
 
 ## Essential Commands
 

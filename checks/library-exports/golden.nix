@@ -21,6 +21,7 @@
   identity = [
     "assertUsername"
     "fromSecrets"
+    "fromSecretsFor"
   ];
   module = [
     "boolToNum"
