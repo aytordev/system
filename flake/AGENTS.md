@@ -31,3 +31,6 @@ The root `flake.nix` imports `flake/default.nix`, which aggregates these modules
   `generate.nix` is the shared implementation reused by
   `checks/docs-generation`, which validates index drift AND gates the mdbook
   build on darwin.
+- **apps**: Maintenance apps — `update-{core,system,apps,all}` for lock groups and
+  `fast-build-{checks,packages}` which evaluate/build in parallel via
+  `nix-fast-build` (prioritized by dependency order).

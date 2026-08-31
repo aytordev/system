@@ -30,11 +30,14 @@ Code agents, slash commands, and skills for this repository.
   `/commit-changes`, etc.)
 - Skills: Reusable skill definitions
 
-**When adding new agents/commands:**
+**When adding new agents/commands/skills:**
 
-- Follow existing pattern in `agents/` or `commands/`
-- Export via `default.nix`
-- Document in `ai-tools/AGENTS.md`
+- Follow existing pattern in `agents/`, `commands/`, or `skills/`
+- Export via `commands.nix`/`agents.nix`/skill directory
+- Document in `ai-tools/AGENTS.md` Current Inventory
+- The `unit-ai-tools-inventory` check fails if the documented inventory
+  diverges from the on-disk tree (`skills/*/SKILL.md`, `commands/*/*.nix`,
+  `agents/*/*.nix`), so the doc can never go stale silently.
 
 ### Nix Utilities (`nix/`)
 

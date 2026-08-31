@@ -54,6 +54,7 @@ ai-tools/
 | sdd-apply | sdd | Implement tasks from the change |
 | sdd-verify | sdd | Validate implementation against specs |
 | sdd-archive | sdd | Sync specs and archive completed change |
+| sdd-onboard | sdd | Guided end-to-end SDD walkthrough on a real codebase |
 
 ### Skills
 
@@ -73,6 +74,7 @@ ai-tools/
 | sdd-apply | sdd | Implement tasks following specs and design |
 | sdd-verify | sdd | Quality gate — validate implementation matches specs |
 | sdd-archive | sdd | Sync delta specs to main specs, archive change |
+| sdd-onboard | sdd | Guided walkthrough of the full SDD cycle on the real codebase |
 | branch-pr | workflow | Create PRs with issue-first checks and conventional commits |
 | chained-pr | workflow | Split oversized PRs (>400 lines) into chained review slices |
 | cognitive-doc-design | workflow | Design docs that reduce cognitive load |

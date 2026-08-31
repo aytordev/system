@@ -53,6 +53,20 @@
       );
     };
 
+    mkFastBuildApp = name: flakeRef: description: {
+      type = "app";
+      meta.description = description;
+      program = lib.getExe (
+        pkgs.writeShellApplication {
+          name = "fast-build-${name}";
+          runtimeInputs = [pkgs.nix-fast-build];
+          text = ''
+            nix-fast-build --flake ${flakeRef} --no-link "$@"
+          '';
+        }
+      );
+    };
+
     groupApps =
       lib.mapAttrs' (
         name: value: lib.nameValuePair "update-${name}" (mkUpdateApp name value)
@@ -86,6 +100,13 @@
             }
           );
         };
+
+        fast-build-checks =
+          mkFastBuildApp "checks" ".#checks"
+          "Evaluate and build checks with nix-fast-build";
+        fast-build-packages =
+          mkFastBuildApp "packages" ".#packages"
+          "Evaluate and build packages with nix-fast-build";
       };
   };
 }
