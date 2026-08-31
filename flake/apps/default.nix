@@ -1,7 +1,4 @@
-{
-  lib,
-  ...
-}: {
+{lib, ...}: {
   perSystem = {pkgs, ...}: let
     onboardMember = import ./onboard-member {inherit pkgs lib;};
     inputGroups = {
