@@ -1,5 +1,6 @@
 {lib, ...}: {
   perSystem = {pkgs, ...}: let
+    onboardMember = import ./onboard-member {inherit pkgs lib;};
     inputGroups = {
       core = {
         description = "Core Nix ecosystem";
@@ -107,6 +108,8 @@
         fast-build-packages =
           mkFastBuildApp "packages" ".#packages"
           "Evaluate and build packages with nix-fast-build";
+
+        onboard-member = onboardMember;
       };
   };
 }

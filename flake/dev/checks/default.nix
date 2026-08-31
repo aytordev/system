@@ -26,6 +26,7 @@
       "ai-tools-inventory"
       "architecture-layers"
       "file-parsers"
+      "home-users-contract"
       "input-policy"
       "library-exports"
       "library-overlay"
