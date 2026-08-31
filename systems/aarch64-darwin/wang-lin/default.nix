@@ -40,14 +40,12 @@ in {
             owner = username;
           };
           bitwarden_api_client_id = {
-            sopsFile = "${sopsFolder}/shared.yaml";
             key = "bitwarden_api_client_id";
             path = "/Users/${username}/.config/sops/bitwarden_api_client_id";
             mode = "0600";
             owner = username;
           };
           bitwarden_api_client_secret = {
-            sopsFile = "${sopsFolder}/shared.yaml";
             key = "bitwarden_api_client_secret";
             path = "/Users/${username}/.config/sops/bitwarden_api_client_secret";
             mode = "0600";
