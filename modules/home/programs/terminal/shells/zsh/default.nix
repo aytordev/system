@@ -12,7 +12,6 @@
     mkPackageOption
     ;
   cfg = config.aytordev.programs.terminal.shells.zsh;
-  xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
   xdgCacheHome = "${config.xdg.cacheHome}";
 in {
@@ -26,9 +25,6 @@ in {
         packages = with pkgs; [
           cfg.package
           zsh-completions
-          nix-zsh-completions
-          zsh-autosuggestions
-          zsh-syntax-highlighting
         ];
         activation = {
           zshDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
@@ -60,26 +56,11 @@ in {
         dotDir = "${config.xdg.configHome}/zsh";
         enableCompletion = true;
         enableVteIntegration = true;
-        plugins = [
-          {
-            name = "zsh-completions";
-            src = "${pkgs.zsh-completions}/share/zsh/site-functions";
-          }
-          {
-            name = "nix-zsh-completions";
-            src = "${pkgs.nix-zsh-completions}/share/zsh/site-functions";
-          }
-          {
-            name = "zsh-autosuggestions";
-            src = "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions";
-          }
-          {
-            name = "zsh-syntax-highlighting";
-            src = "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting";
-          }
-        ];
+        autosuggestion.enable = true;
+        syntaxHighlighting.enable = true;
+        # Upstream writes ZDOTDIR into .zshenv when dotDir is set; only the
+        # ZSH_* overrides are needed here.
         envExtra = ''
-          export ZDOTDIR="${xdgConfigHome}/zsh"
           export ZSH_CACHE_DIR="${xdgCacheHome}/zsh"
           export ZSH_DATA_DIR="${xdgDataHome}/zsh"
           export ZSH_SESSION_DIR="$ZSH_DATA_DIR/sessions"
@@ -93,21 +74,17 @@ in {
           expireDuplicatesFirst = true;
           extended = true;
         };
-        completionInit = "";
+        # Upstream runs compinit once (order 570) and sources autosuggestion
+        # (700) and syntax highlighting (1200). This block only adds fpath for
+        # zsh-completions and the completion styles.
         initContent = ''
           fpath=(
             ${pkgs.zsh-completions}/share/zsh/site-functions
-            ${pkgs.nix-zsh-completions}/share/zsh/site-functions
             "$fpath[@]"
           )
           [[ ! -d "$ZSH_CACHE_DIR" ]] && mkdir -p "$ZSH_CACHE_DIR"
           [[ ! -d "$ZSH_DATA_DIR" ]] && mkdir -p "$ZSH_DATA_DIR"
           [[ ! -d "$ZSH_SESSION_DIR" ]] && mkdir -p "$ZSH_SESSION_DIR"
-          autoload -Uz compinit
-          compinit -d "$ZSH_CACHE_DIR/zcompdump-''${ZSH_VERSION}"
-          autoload -Uz bashcompinit && bashcompinit
-          source "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-          source "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
           zstyle ":completion:*" menu select
           zstyle ":completion:*" group-name ""
           zstyle ":completion:*:descriptions" format "%F{green}-- %d --%f"

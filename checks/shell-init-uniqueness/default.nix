@@ -32,8 +32,7 @@
   };
   inherit (home) config;
 
-  cfgText = v:
-    v.text or (builtins.readFile v.source);
+  cfgText = v: v.text or (builtins.readFile v.source);
   bashConfDFiles =
     lib.filterAttrs (
       name: _: lib.hasPrefix "bash/conf.d/" name && lib.hasSuffix ".sh" name
@@ -73,8 +72,8 @@
         "zoxide init"
         "_carapace"
         "atuin init"
-        "compinit"
-        "bashcompinit"
+        "&& compinit"
+        "&& bashcompinit"
       ];
     }
     {
