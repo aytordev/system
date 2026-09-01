@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
   inherit (lib) types mkIf;
@@ -28,7 +27,6 @@ in {
   config = {
     users.users.${cfg.name} = {
       uid = mkIf (cfg.uid != null) cfg.uid;
-      shell = pkgs.zsh;
       home = "/Users/${cfg.name}";
     };
   };

@@ -18,7 +18,7 @@
             name = username;
             email = "ci-shell@example.test";
             fullName = "CI Shell";
-            inherit homeDirectory;
+            home = homeDirectory;
           };
           suites.common.enable = true;
         };
@@ -42,7 +42,7 @@ in
           name = username;
           email = "ci-shell@example.test";
           fullName = "CI Shell";
-          inherit homeDirectory;
+          home = homeDirectory;
         };
         suites.common.enable = true;
       };
@@ -59,17 +59,15 @@ in
         path = darwinHomeModule;
       };
       modules = [
-        (
-          _: {
-            aytordev = {
-              user = {
-                name = username;
-                email = "ci-shell@example.test";
-                fullName = "CI Shell";
-              };
+        (_: {
+          aytordev = {
+            user = {
+              name = username;
+              email = "ci-shell@example.test";
+              fullName = "CI Shell";
             };
-          }
-        )
+          };
+        })
       ];
     };
     cfg = darwin.config;
@@ -77,7 +75,7 @@ in
     namedTests = [
       {
         name = "darwin manages the user account (users.knownUsers)";
-        value = builtins.elem username cfg.users.knownUsers or [];
+        value = builtins.elem username (cfg.users.knownUsers or []);
       }
       {
         name = "login shell is zsh";
@@ -97,18 +95,20 @@ in
       }
     ];
   in
-    lib.foldl' (
-      acc: t: acc && lib.throwIfNot t.value t.name "shell-platform-consistency"
+    builtins.seq (lib.foldl' (_acc: t:
+        if !t.value
+        then throw t.name
+        else true)
+      true
+      namedTests) (
+      pkgs.runCommand "shell-platform-consistency"
+      {
+        nativeBuildInputs = [pkgs.coreutils];
+      }
+      ''
+        touch "$out"
+      ''
     )
-    true
-    namedTests
-    -> pkgs.runCommand "shell-platform-consistency"
-    {
-      nativeBuildInputs = [pkgs.coreutils];
-    }
-    ''
-      touch "$out"
-    ''
   else
     pkgs.runCommand "shell-platform-consistency-skipped" {} ''
       touch "$out"
