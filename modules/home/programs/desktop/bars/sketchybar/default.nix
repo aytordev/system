@@ -29,9 +29,15 @@ in {
     };
 
   config = lib.mkIf cfg.enable {
-    # Shell integration
-    home.shellAliases = luaGen.shellAliases;
-    programs.zsh.initContent = luaGen.brewIntegration;
+    # Shell integration. restart-sketchybar uses command substitution, which
+    # parses differently in each shell.
+    programs = {
+      bash.shellAliases.restart-sketchybar = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.sketchybar'';
+      zsh.shellAliases.restart-sketchybar = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.sketchybar'';
+      fish.shellAliases.restart-sketchybar = "launchctl kickstart -k gui/(id -u)/org.nix-community.home.sketchybar";
+      nushell.shellAliases.restart-sketchybar = "launchctl kickstart -k gui/(id -u)/org.nix-community.home.sketchybar";
+      zsh.initContent = luaGen.brewIntegration;
+    };
 
     # Main sketchybar configuration
     programs.sketchybar = {

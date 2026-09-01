@@ -32,8 +32,7 @@
   };
   inherit (home) config;
 
-  cfgText = v:
-    v.text or (builtins.readFile v.source);
+  cfgText = v: v.text or (builtins.readFile v.source);
   bashConfD = lib.concatStringsSep "\n" (
     map cfgText (
       lib.attrValues (lib.filterAttrs (name: _: lib.hasPrefix "bash/conf.d/" name) config.xdg.configFile)
@@ -43,6 +42,21 @@
   nuConfigDir = config.programs.nushell.configDir;
   nuConfig = config.home.file."${nuConfigDir}/config.nu".text or config.programs.nushell.extraConfig;
   nuEnv = config.home.file."${nuConfigDir}/env.nu".text or config.programs.nushell.envFile.text or "";
+
+  # A ';', '$(' or 'command ' in a nushell alias body is either a parse-time
+  # split into a bare command (executed at config.nu load) or an internal Nu
+  # command. home.shellAliases must therefore never carry such values.
+  nuAliasValues = lib.attrValues config.programs.nushell.shellAliases;
+  unsafeNushellAliases =
+    builtins.filter (
+      v: lib.hasInfix ";" v || lib.hasInfix "$(" v || lib.hasPrefix "command " v
+    )
+    nuAliasValues;
+
+  banshellAliasesFail =
+    lib.throwIf (unsafeNushellAliases != [])
+    "Nushell receives unsafe shell alias bodies: ${lib.concatStringsSep "; " unsafeNushellAliases}"
+    "shell-runtime-syntax";
 
   bashText = ''
     ${config.programs.bash.profileExtra}
@@ -78,6 +92,7 @@ in
   ''
     set -euo pipefail
     failures=0
+    : ${banshellAliasesFail}
 
     check() {
       if ! "$@"; then

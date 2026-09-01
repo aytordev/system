@@ -15,8 +15,13 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home.shellAliases = {
-      restart-aerospace = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.aerospace'';
+    # restart-aerospace uses command substitution, which parses differently in
+    # each shell. Bash and zsh need $(), fish and nushell accept ().
+    programs = {
+      bash.shellAliases.restart-aerospace = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.aerospace'';
+      zsh.shellAliases.restart-aerospace = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.aerospace'';
+      fish.shellAliases.restart-aerospace = "launchctl kickstart -k gui/(id -u)/org.nix-community.home.aerospace";
+      nushell.shellAliases.restart-aerospace = "launchctl kickstart -k gui/(id -u)/org.nix-community.home.aerospace";
     };
 
     home.packages = [cfg.package];

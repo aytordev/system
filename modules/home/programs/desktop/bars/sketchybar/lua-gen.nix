@@ -303,10 +303,6 @@
 
   # ── Shell Integration ──────────────────────────────────────────────────
 
-  shellAliases = {
-    restart-sketchybar = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.sketchybar'';
-  };
-
   brewIntegration = ''
     brew() {
       command brew "$@" && ${getExe cfg.package} --trigger brew_update
@@ -413,7 +409,6 @@
 in {
   inherit
     allPackages
-    shellAliases
     brewIntegration
     mainConfig
     configFiles
