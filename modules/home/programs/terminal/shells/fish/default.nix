@@ -58,21 +58,10 @@ in {
           fish_add_path --path --global ~/.local/bin
           fish_add_path --path --global ~/.cargo/bin
           fish_add_path --path --global ~/go/bin
-          set -gx EDITOR (command -v nvim || command -v vim || command -v vi || echo "vi")
-          set -gx VISUAL $EDITOR
+          set -gx VISUAL (command -v nvim || command -v vim || command -v vi || echo "vi")
           set -gx PAGER (command -v less || echo "cat")
           set -gx LESS "-R"
-          set -gx LANG en_US.UTF-8
-          set -gx LC_ALL en_US.UTF-8
           set -gx BAT_THEME "base16"
-        '';
-        interactiveShellInit = ''
-          if command -q zoxide
-            zoxide init fish | source
-          end
-          if command -q direnv
-            direnv hook fish | source
-          end
         '';
         plugins = [
           {

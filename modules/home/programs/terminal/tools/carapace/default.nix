@@ -15,6 +15,7 @@ in {
     home.packages = [
       cfg.package
     ];
+    # Upstream programs.carapace owns every shell's init.
     programs.carapace = {
       enable = true;
       inherit (cfg) package;
@@ -23,21 +24,5 @@ in {
       enableZshIntegration = true;
       enableNushellIntegration = true;
     };
-    programs.zsh.initContent = ''
-      if [ -n "$ZSH_VERSION" ]; then
-        export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
-        if [[ $- == *i* ]]; then
-          if command -v carapace >/dev/null 2>&1; then
-            eval "$(carapace _carapace | sed 's/^compdef /compdef -e /')"
-          fi
-        fi
-      fi
-      zstyle ':completion:*' format '%F{8}%d%f'
-      zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
-    '';
-    xdg.configFile."bash/conf.d/carapace.sh".text = ''
-      export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
-      source <(carapace _carapace)
-    '';
   };
 }

@@ -33,6 +33,9 @@
     ]))
   '';
 in {
+  # upstream programs.fzf integrates bash/zsh/fish/nushell by default
+  # (enable*Integration follows home.shell, defaulting to true). Only
+  # additional per-shell conveniences below.
   zsh = {
     plugins = [
       {
@@ -40,21 +43,6 @@ in {
         src = "${pkgs.zsh-fzf-tab}/share/fzf-tab";
       }
     ];
-    initContent = ''
-      if [[ -f "${cfg.package}/share/fzf/key-bindings.zsh" ]]; then
-        source "${cfg.package}/share/fzf/key-bindings.zsh"
-      fi
-      if [[ -f "${cfg.package}/share/fzf/completion.zsh" ]]; then
-        source "${cfg.package}/share/fzf/completion.zsh"
-      fi
-      export FZF_DEFAULT_COMMAND="${cfg.defaultCommand}"
-      _fzf_compgen_path() {
-        ${pkgs.fd}/bin/fd --hidden --follow --exclude ".git" . "$1"
-      }
-      _fzf_compgen_dir() {
-        ${pkgs.fd}/bin/fd --type d --hidden --follow --exclude ".git" . "$1"
-      }
-    '';
   };
   fish = {
     plugins = [
@@ -63,12 +51,6 @@ in {
         src = "${pkgs.fishPlugins.fzf-fish.src}";
       }
     ];
-    shellInit = ''
-      set -gx FZF_DEFAULT_COMMAND "${cfg.defaultCommand}"
-      set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
-      set -gx FZF_ALT_C_COMMAND "${pkgs.fd}/bin/fd --type d --hidden --exclude .git"
-      set -gx FZF_CTRL_R_OPTS "--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
-    '';
   };
   nushell.extraConfig = ''
     ${nuFzfBindings}
