@@ -22,7 +22,8 @@ in {
       keyMode = "vi";
       mouse = true;
       prefix = "C-a";
-      secureSocket = true;
+      # HM's default (isLinux) keeps secureSocket off on macOS, where
+      # /run/user does not exist and TMUX_TMPDIR would point nowhere.
       sensibleOnTop = false;
       terminal = "tmux-256color";
 
