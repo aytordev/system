@@ -34,6 +34,7 @@ in {
     mkOpt'
     mkBoolOpt
     mkBoolOpt'
+    shellIntegration
     enabled
     disabled
     capitalize
