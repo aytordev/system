@@ -78,7 +78,9 @@
     (config.programs.zsh.package == config.aytordev.programs.terminal.shells.zsh.package)
     (builtins.seq commonHome.activationPackage true)
     (config.home.file ? "Desktop/.keep")
-    (config.home.shellAliases ? cleanup)
+    (config.programs.bash.shellAliases ? cleanup)
+    (config.programs.fish.shellAliases ? cleanup)
+    (!(config.home.shellAliases ? cleanup))
     config.programs.home-manager.enable
     (!(commonNoFastfetchConfig.programs.bash.shellAliases ? clear))
     (lib.hasInfix "__HM_SESS_VARS_SOURCED" config.programs.bash.shellAliases.hmvar-reload)

@@ -9,6 +9,8 @@
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.enable
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.logPaths\.stderr
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.logPaths\.stdout
+## aytordev\.programs\.terminal\.shells\.default
+## aytordev\.programs\.terminal\.shells\.loginPackage
 ## aytordev\.programs\.terminal\.tools\.atuin\.enable
 ## aytordev\.programs\.terminal\.tools\.atuin\.logPaths\.stderr
 ## aytordev\.programs\.terminal\.tools\.atuin\.logPaths\.stdout

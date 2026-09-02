@@ -89,6 +89,7 @@
 ## aytordev\.programs\.terminal\.emulators\.ghostty\.theme
 ## aytordev\.programs\.terminal\.emulators\.warp\.enable
 ## aytordev\.programs\.terminal\.emulators\.warp\.package
+## aytordev\.programs\.terminal\.shells\.enabledNames
 ## aytordev\.programs\.terminal\.shells\.bash\.enable
 ## aytordev\.programs\.terminal\.shells\.bash\.package
 ## aytordev\.programs\.terminal\.shells\.fish\.enable

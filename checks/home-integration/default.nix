@@ -22,7 +22,7 @@
       "text"
     ] ""
     darwin.config;
-  getLogAlias = config: lib.attrByPath ["home" "shellAliases" "log"] null config;
+  getLogAlias = config: lib.attrByPath ["programs" "bash" "shellAliases" "log"] null config;
   getXdgConfigHome = config: lib.attrByPath ["home" "sessionVariables" "XDG_CONFIG_HOME"] null config;
   tests = [
     home.xdg.enable
