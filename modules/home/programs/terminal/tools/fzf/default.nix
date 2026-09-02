@@ -26,7 +26,8 @@
     "--border=rounded"
   ];
   defaultCommand = "${pkgs.fd}/bin/fd --type=f --hidden --exclude=.git";
-  shellIntegration = import ./shell-integration.nix {inherit cfg pkgs;};
+  si = lib.aytordev.shellIntegration config;
+  shellIntegration = import ./shell-integration.nix {inherit cfg pkgs si;};
 in {
   options.aytordev.programs.terminal.tools.fzf = {
     enable = mkEnableOption "fuzzy finder";
@@ -53,13 +54,15 @@ in {
     '';
     programs =
       {
-        fzf = {
-          enable = true;
-          inherit (cfg) package;
-          inherit (cfg) defaultCommand;
-          defaultOptions = defaultOptions ++ cfg.extraOptions;
-          historyWidget.command = "";
-        };
+        fzf =
+          {
+            enable = true;
+            inherit (cfg) package;
+            inherit (cfg) defaultCommand;
+            defaultOptions = defaultOptions ++ cfg.extraOptions;
+            historyWidget.command = "";
+          }
+          // si.flags;
       }
       // shellIntegration;
   };

@@ -11,10 +11,26 @@ in {
     enable = mkEnableOption "atuin";
     package = lib.mkPackageOption pkgs "atuin" {};
     enableDebug = mkEnableOption "atuin daemon debug logging";
-    enableBashIntegration = mkEnableOption "atuin bash integration";
-    enableFishIntegration = mkEnableOption "atuin fish integration";
-    enableZshIntegration = mkEnableOption "atuin zsh integration";
-    enableNushellIntegration = mkEnableOption "atuin nushell integration";
+    enableBashIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "bash";
+      description = "atuin bash integration";
+    };
+    enableFishIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "fish";
+      description = "atuin fish integration";
+    };
+    enableZshIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "zsh";
+      description = "atuin zsh integration";
+    };
+    enableNushellIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "nushell";
+      description = "atuin nushell integration";
+    };
   };
   config = mkIf cfg.enable {
     programs.atuin = {

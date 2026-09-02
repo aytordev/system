@@ -335,22 +335,22 @@ in {
 
     enableBashIntegration = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "bash";
       description = "Whether to enable Starship integration with Bash";
     };
     enableFishIntegration = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "fish";
       description = "Whether to enable Starship integration with Fish";
     };
     enableZshIntegration = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "zsh";
       description = "Whether to enable Starship integration with Zsh";
     };
     enableNushellIntegration = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "nushell";
       description = "Whether to enable Starship integration with Nushell";
     };
   };

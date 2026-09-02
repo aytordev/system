@@ -11,38 +11,48 @@ in {
     enable = mkEnableOption "eza";
     package = lib.mkPackageOption pkgs "eza" {};
   };
-  config = mkIf cfg.enable {
-    home.packages = [cfg.package];
-    programs.eza = {
-      enable = true;
-      inherit (cfg) package;
-      enableZshIntegration = true;
-      enableFishIntegration = true;
-      enableBashIntegration = true;
-      extraOptions = [
-        "--group-directories-first"
-        "--header"
-        "--hyperlink"
-        "--follow-symlinks"
-      ];
-      git = true;
-      icons = "auto";
-    };
-    home.shellAliases = {
-      la = "${getExe cfg.package} -lah --tree";
-      tree = "${getExe cfg.package} --tree --icons=always";
-    };
-    xdg.configFile."bash/conf.d/eza.sh" = {
-      text = ''
-        if command -v eza &> /dev/null; then
-          alias ls='eza --group-directories-first --icons=auto --color=auto'
-          alias ll='eza -l --group-directories-first --header --icons=auto --git --color=auto'
-          alias la='eza -la --group-directories-first --header --icons=auto --git --color=auto --tree'
-          alias lt='eza --tree --level=2 --group-directories-first --icons=auto --color=auto'
-          alias l.='eza -a | grep -E "^\." --color=never'
-        fi
-      '';
-      executable = true;
-    };
-  };
+  config = mkIf cfg.enable (
+    let
+      si = lib.aytordev.shellIntegration config;
+    in {
+      home.packages = [cfg.package];
+      programs.eza =
+        {
+          enable = true;
+          inherit (cfg) package;
+          extraOptions = [
+            "--group-directories-first"
+            "--header"
+            "--hyperlink"
+            "--follow-symlinks"
+          ];
+          git = true;
+          icons = "auto";
+        }
+        // {
+          inherit
+            (si.flags)
+            enableBashIntegration
+            enableFishIntegration
+            enableZshIntegration
+            ;
+        };
+      home.shellAliases = {
+        la = "${getExe cfg.package} -lah --tree";
+        tree = "${getExe cfg.package} --tree --icons=always";
+      };
+      xdg.configFile."bash/conf.d/eza.sh" = si.whenShellEnabled "bash" {
+        text = ''
+          if command -v eza &> /dev/null; then
+            alias ls='eza --group-directories-first --icons=auto --color=auto'
+            alias ll='eza -l --group-directories-first --header --icons=auto --git --color=auto'
+            alias la='eza -la --group-directories-first --header --icons=auto --git --color=auto --tree'
+            alias lt='eza --tree --level=2 --group-directories-first --icons=auto --color=auto'
+            alias l.='eza -a | grep -E "^\." --color=never'
+          fi
+        '';
+        executable = true;
+      };
+    }
+  );
 }

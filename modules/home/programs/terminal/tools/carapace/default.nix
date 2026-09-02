@@ -15,14 +15,13 @@ in {
     home.packages = [
       cfg.package
     ];
-    # Upstream programs.carapace owns every shell's init.
-    programs.carapace = {
-      enable = true;
-      inherit (cfg) package;
-      enableBashIntegration = true;
-      enableFishIntegration = true;
-      enableZshIntegration = true;
-      enableNushellIntegration = true;
-    };
+    # Upstream programs.carapace owns every shell's init; integrations follow
+    # the enabled shells.
+    programs.carapace =
+      {
+        enable = true;
+        inherit (cfg) package;
+      }
+      // (lib.aytordev.shellIntegration config).flags;
   };
 }

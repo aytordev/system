@@ -1,6 +1,7 @@
 {
   cfg,
   pkgs,
+  si,
 }: let
   nuFzfBindings = ''
     def fzf-cd [] {
@@ -33,10 +34,9 @@
     ]))
   '';
 in {
-  # upstream programs.fzf integrates bash/zsh/fish/nushell by default
-  # (enable*Integration follows home.shell, defaulting to true). Only
-  # additional per-shell conveniences below.
-  zsh = {
+  # upstream programs.fzf integrates bash/zsh/fish/nushell via si.flags. These
+  # are additional per-shell conveniences, guarded on the associated shell.
+  zsh = si.whenShellEnabled "zsh" {
     plugins = [
       {
         name = "fzf-tab";
@@ -44,7 +44,7 @@ in {
       }
     ];
   };
-  fish = {
+  fish = si.whenShellEnabled "fish" {
     plugins = [
       {
         name = "fzf-fish";
@@ -52,7 +52,7 @@ in {
       }
     ];
   };
-  nushell.extraConfig = ''
+  nushell.extraConfig = si.whenShellEnabled "nushell" ''
     ${nuFzfBindings}
   '';
 }

@@ -92,10 +92,14 @@ in {
           programs.git = gitConfig;
         }
         (lib.mkIf (shell-aliases.allAliases != {}) {
-          home.file."${bashConfigDir}/git-aliases.sh" = {
-            text = shell-aliases.generateGitAliasesFile shell-aliases.allAliases;
-            executable = true;
-          };
+          # The alias file is a bash conf.d drop-in; guard it on bash being
+          # enabled. The same aliases reach all shells via home.shellAliases.
+          home.file."${bashConfigDir}/git-aliases.sh" =
+            (lib.aytordev.shellIntegration config).whenShellEnabled "bash"
+            {
+              text = shell-aliases.generateGitAliasesFile shell-aliases.allAliases;
+              executable = true;
+            };
           home.shellAliases = shell-aliases.allAliases;
         })
       ]

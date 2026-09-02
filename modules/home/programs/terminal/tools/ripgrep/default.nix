@@ -24,9 +24,13 @@ in {
     home.shellAliases = {
       grep = "${cfg.package}/bin/rg";
     };
-    xdg.configFile."bash/conf.d/ripgrep.sh".text = ''
-      export RIPGREP_CONFIG_PATH="${cfg.package}/share/ripgreprc"
-      alias grep="rg"
-    '';
+    xdg.configFile."bash/conf.d/ripgrep.sh" =
+      (lib.aytordev.shellIntegration config).whenShellEnabled "bash"
+      {
+        text = ''
+          export RIPGREP_CONFIG_PATH="${cfg.package}/share/ripgreprc"
+          alias grep="rg"
+        '';
+      };
   };
 }

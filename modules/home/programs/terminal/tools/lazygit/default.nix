@@ -47,13 +47,15 @@
     home.shellAliases = {
       lg = "lazygit";
     };
-    xdg.configFile."bash/conf.d/lazygit.sh" = {
-      text = ''
-        if command -v lazygit &> /dev/null; then
-          alias lg='lazygit'
-        fi
-      '';
-      executable = true;
-    };
+    xdg.configFile."bash/conf.d/lazygit.sh" =
+      (lib.aytordev.shellIntegration config).whenShellEnabled "bash"
+      {
+        text = ''
+          if command -v lazygit &> /dev/null; then
+            alias lg='lazygit'
+          fi
+        '';
+        executable = true;
+      };
   };
 }

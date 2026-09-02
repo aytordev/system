@@ -29,18 +29,17 @@ in {
     };
 
     # Upstream programs.zoxide owns every shell's init (initExtra,
-    # initContent, interactiveShellInit, extraConfig). No manual fragments.
-    programs.zoxide = {
-      enable = true;
-      inherit (cfg) package;
-      enableBashIntegration = true;
-      enableZshIntegration = true;
-      enableFishIntegration = true;
-      enableNushellIntegration = true;
-      options = [
-        "--cmd cd"
-        "--no-aliases"
-      ];
-    };
+    # initContent, interactiveShellInit, extraConfig). No manual fragments;
+    # integrations follow the enabled shells.
+    programs.zoxide =
+      {
+        enable = true;
+        inherit (cfg) package;
+        options = [
+          "--cmd cd"
+          "--no-aliases"
+        ];
+      }
+      // (lib.aytordev.shellIntegration config).flags;
   };
 }

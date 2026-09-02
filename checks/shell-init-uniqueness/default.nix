@@ -32,6 +32,41 @@
   };
   inherit (home) config;
 
+  # A home where one shell is disabled must not pull that shell's integration:
+  # tool integrations follow enabledNames, and bash conf.d drop-ins are guarded.
+  subsetHome = inputs.self.lib.system.mkHome {
+    inherit username;
+    system = pkgs.stdenv.hostPlatform.system;
+    hostname = "shell-subset";
+    modules = [
+      {
+        aytordev = {
+          user = {
+            enable = true;
+            name = username;
+            email = "shell@example.test";
+            fullName = "Shell User";
+            home = homeDirectory;
+          };
+        };
+        home.stateVersion = "25.11";
+      }
+      {aytordev.suites.common.enable = true;}
+      {aytordev.suites.development.enable = true;}
+      {aytordev.programs.terminal.shells.bash.enable = false;}
+    ];
+  };
+  sc = subsetHome.config;
+  subsetTests = [
+    (!sc.programs.bash.enable)
+    (!sc.programs.zoxide.enableBashIntegration)
+    sc.programs.zoxide.enableFishIntegration
+    (!sc.programs.starship.enableBashIntegration)
+    (!(sc.xdg.configFile ? "bash/conf.d/bat.sh"))
+    (!(sc.home.file ? "bash/conf.d/git-aliases.sh"))
+  ];
+  subsetPass = builtins.all (test: test) subsetTests;
+
   cfgText = v: v.text or (builtins.readFile v.source);
   bashConfDFiles =
     lib.filterAttrs (
@@ -142,21 +177,25 @@
     failures=1
   '';
 in
-  pkgs.runCommand "shell-init-uniqueness"
-  {
-    nativeBuildInputs = [
-      pkgs.bash
-      pkgs.coreutils
-      pkgs.gnugrep
-    ];
-  }
-  ''
-    set -euo pipefail
-    failures=0
-    ${checksScript}
-    ${subdirFailLine}
-    if [ "$failures" -ne 0 ]; then
-      exit 1
-    fi
-    touch "$out"
-  ''
+  builtins.seq
+  (lib.throwIfNot subsetPass "shell-init-uniqueness: a disabled shell pulled shell integration")
+  (
+    pkgs.runCommand "shell-init-uniqueness"
+    {
+      nativeBuildInputs = [
+        pkgs.bash
+        pkgs.coreutils
+        pkgs.gnugrep
+      ];
+    }
+    ''
+      set -euo pipefail
+      failures=0
+      ${checksScript}
+      ${subdirFailLine}
+      if [ "$failures" -ne 0 ]; then
+        exit 1
+      fi
+      touch "$out"
+    ''
+  )

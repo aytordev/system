@@ -40,8 +40,12 @@ in {
         ];
       };
     };
-    xdg.configFile."bash/conf.d/bottom.sh".text = ''
-      alias htop="${cfg.package}/bin/btm"
-    '';
+    xdg.configFile."bash/conf.d/bottom.sh" =
+      (lib.aytordev.shellIntegration config).whenShellEnabled "bash"
+      {
+        text = ''
+          alias htop="${cfg.package}/bin/btm"
+        '';
+      };
   };
 }

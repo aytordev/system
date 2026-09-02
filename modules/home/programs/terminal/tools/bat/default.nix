@@ -30,8 +30,12 @@ in {
     home.shellAliases = {
       cat = "${getExe cfg.package} --style=auto";
     };
-    xdg.configFile."bash/conf.d/bat.sh".text = ''
-      alias cat="${cfg.package}/bin/bat --style=auto"
-    '';
+    xdg.configFile."bash/conf.d/bat.sh" =
+      (lib.aytordev.shellIntegration config).whenShellEnabled "bash"
+      {
+        text = ''
+          alias cat="${cfg.package}/bin/bat --style=auto"
+        '';
+      };
   };
 }
