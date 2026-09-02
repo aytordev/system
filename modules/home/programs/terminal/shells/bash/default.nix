@@ -35,6 +35,7 @@ in {
       historyControl = [
         "ignoredups"
         "erasedups"
+        "ignorespace"
       ];
       historyFile = "${config.xdg.dataHome}/bash/history";
 

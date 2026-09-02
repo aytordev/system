@@ -39,12 +39,13 @@ in {
               OLD_SESSION_DIR="$HOME/.zsh_sessions"
               if [ -d "$OLD_SESSION_DIR" ] && [ ! -L "$OLD_SESSION_DIR" ]; then
                 $DRY_RUN_CMD echo "Migrando sesiones Zsh antiguas a directorio XDG..."
-                $DRY_RUN_CMD mv "$OLD_SESSION_DIR" "$OLD_SESSION_DIR.bak"
+                STAMP="$(date +%s 2>/dev/null || echo "prev")"
+                $DRY_RUN_CMD mv "$OLD_SESSION_DIR" "$OLD_SESSION_DIR.bak.$STAMP"
               fi
               if [ ! -e "$OLD_SESSION_DIR" ]; then
                 $DRY_RUN_CMD ln -sf "$ZSH_SESSION_DIR" "$OLD_SESSION_DIR"
               fi
-              unset OLD_SESSION_DIR
+              unset OLD_SESSION_DIR STAMP
             fi
           '';
         };

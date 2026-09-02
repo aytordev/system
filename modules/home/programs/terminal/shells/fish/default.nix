@@ -24,12 +24,11 @@ in {
     {
       home.packages = with pkgs; [
         cfg.package
-        grc # Required by fishPlugins.grc
+        # fishPlugins that ship vendored conf.d/functions auto-load via the
+        # nixpkgs fish wrapper; keeping them here is enough, no plugins wiring.
         fishPlugins.done
         fishPlugins.forgit
-        fishPlugins.grc
         fishPlugins.pisces
-        fishPlugins.pure
         fishPlugins.z
       ];
       programs.fish = {
@@ -59,16 +58,8 @@ in {
           fish_add_path --path --global ~/.cargo/bin
           fish_add_path --path --global ~/go/bin
           set -gx VISUAL (command -v nvim || command -v vim || command -v vi || echo "vi")
-          set -gx PAGER (command -v less || echo "cat")
-          set -gx LESS "-R"
           set -gx BAT_THEME "base16"
         '';
-        plugins = [
-          {
-            name = "z";
-            src = "${pkgs.fishPlugins.z.src}";
-          }
-        ];
       };
       home.activation.fishDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
         $DRY_RUN_CMD mkdir -p "${xdgConfigHome}/fish/functions"

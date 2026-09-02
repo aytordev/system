@@ -48,5 +48,10 @@ in {
     home.shellAliases = {
       atuin-prune-failed = "atuin search --exclude-exit 0 --delete";
     };
+    # atuin writes a plaintext SQLite history database; seal its data dir.
+    home.activation.createAtuinDataDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      $DRY_RUN_CMD mkdir -p "${config.xdg.dataHome}/atuin"
+      $DRY_RUN_CMD chmod 700 "${config.xdg.dataHome}/atuin"
+    '';
   };
 }

@@ -49,7 +49,7 @@ in {
       pkgs.zsh-fzf-tab
     ];
     home.activation.createFzfDataDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      mkdir -p "${config.xdg.dataHome}/fzf"
+      $DRY_RUN_CMD mkdir -p "${config.xdg.dataHome}/fzf"
     '';
     programs =
       {

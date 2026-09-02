@@ -12,8 +12,8 @@ in {
         ".ssh/authorized_keys".text = lib.concatStringsSep "\n" cfg.authorizedKeys;
       };
       activation.createSshControlmastersDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        mkdir -p ~/.ssh/controlmasters
-        chmod 700 ~/.ssh/controlmasters
+        $DRY_RUN_CMD mkdir -p ~/.ssh/controlmasters
+        $DRY_RUN_CMD chmod 700 ~/.ssh/controlmasters
       '';
       packages = [
         (pkgs.writeShellScriptBin "ssh-fix-perms" ''

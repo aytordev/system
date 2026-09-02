@@ -33,28 +33,45 @@
   inherit (home) config;
   dataHome = "${config.xdg.dataHome}";
 
-  activationEntries = lib.mapAttrsToList (_name: v: v.text) config.home.activation;
-  activationText = lib.concatStringsSep "\n" activationEntries;
-
   nuEnv =
     config.home.file."${config.programs.nushell.configDir}/env.nu".text
       or config.programs.nushell.envFile.text or "";
   fishInit = config.programs.fish.interactiveShellInit + config.programs.fish.shellInit;
 
   # Every directory that holds plaintext command history must be sealed 0700
-  # through an activation entry (chmod 700 "<dir>").
+  # through its activation entry (chmod 700 "<dir>"). El entry name matches the
+  # module that owns it, so the assertion can point at the right one.
   sealedDirs = [
-    "${dataHome}/zsh/sessions"
-    "${dataHome}/fish"
-    "${dataHome}/nu"
-    "${dataHome}/atuin"
-    "${dataHome}/zoxide"
+    {
+      entry = "zshSessionDir";
+      dir = "${dataHome}/zsh/sessions";
+    }
+    {
+      entry = "fishDirs";
+      dir = "${dataHome}/fish";
+    }
+    {
+      entry = "createXdgDirs";
+      dir = "${dataHome}/nu";
+    }
+    {
+      entry = "createAtuinDataDir";
+      dir = "${dataHome}/atuin";
+    }
+    {
+      entry = "createZoxideDataDir";
+      dir = "${dataHome}/zoxide";
+    }
   ];
   sealAssertions =
-    map (dir: {
-      assertion = lib.hasInfix ''chmod 700 "${dir}"'' activationText;
-      message = "Activation must seal ${dir} with chmod 700";
-    })
+    map (
+      s: let
+        entryText = config.home.activation.${s.entry}.data or "";
+      in {
+        assertion = lib.hasInfix "chmod 700" entryText && lib.hasInfix s.dir entryText;
+        message = "Activation entry ${s.entry} must seal ${s.dir} with chmod 700";
+      }
+    )
     sealedDirs;
 
   tests = [
@@ -81,11 +98,14 @@
   ];
   assertions = tests ++ sealAssertions;
 in
-  lib.foldl' (
-    acc: a: acc && lib.throwIfNot a.assertion a.message "shell-history-privacy"
+  builtins.seq (lib.foldl' (_acc: a:
+      if !a.assertion
+      then throw a.message
+      else true)
+    true
+    assertions)
+  (
+    pkgs.runCommand "shell-history-privacy" {} ''
+      touch "$out"
+    ''
   )
-  true
-  assertions
-  -> pkgs.runCommand "shell-history-privacy" {} ''
-    touch "$out"
-  ''

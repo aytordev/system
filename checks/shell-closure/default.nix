@@ -42,14 +42,16 @@
     pure = "pure (fish prompt) is dead weight while starship owns the prompt";
   };
   failures = lib.concatStringsSep "\n" (
-    lib.mapAttrsToList (
-      name: reason:
-        lib.optionalString (lib.elem name packageNames) "${name} must not be in shell packages: ${reason}"
+    lib.filter (s: s != "") (
+      lib.mapAttrsToList (
+        name: reason:
+          lib.optionalString (lib.elem name packageNames) "${name} must not be in shell packages: ${reason}"
+      )
+      bannedPackages
     )
-    bannedPackages
   );
 in
-  lib.throwIf (failures != "") failures "shell-closure" (
+  builtins.seq (lib.throwIf (failures != "") failures) (
     pkgs.runCommand "shell-closure" {} ''
       touch "$out"
     ''
