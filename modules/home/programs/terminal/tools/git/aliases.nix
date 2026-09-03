@@ -6,7 +6,6 @@
     co = "checkout";
     p = "push";
     s = "status -sb";
-    st = "stash";
     stl = "stash list";
     d = "diff";
     ds = "diff --stat";
