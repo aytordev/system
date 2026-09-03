@@ -17,8 +17,10 @@ them. The loader assigns a verification-level prefix based on the check name.
   `nix-unit`, `parse-lix`, `parse-nix`).
 - `integration-*`: Synthetic Home Manager and system compositions
   (`home-bitwarden`, `home-identity`, `home-module`, `home-portability`,
-  `module-contract`, `synthetic-darwin`, `synthetic-home`, `synthetic-nixos`,
-  `system-common-suite`, `system-env`, `system-fonts`,
+  `module-contract`, `shell-init-uniqueness`, `shell-runtime-syntax`,
+  `shell-history-privacy`, `shell-closure`, `activation-dry-run`,
+  `shell-platform-consistency`, `synthetic-darwin`, `synthetic-home`,
+  `synthetic-nixos`, `system-common-suite`, `system-env`, `system-fonts`,
   `system-logging`, `system-nix-platforms`).
 - `production-*`: Discovered real homes and systems; the loader also emits
   `production-home-*` and `production-darwin-*` for each discovered host

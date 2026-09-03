@@ -66,7 +66,8 @@ normalized `identity` result is passed down.
 
 - **file**: File operations (getFile, importDir, scanDir, etc.)
 - **identity**: Normalizes secret metadata into full/email/username
-- **module**: Module helpers (enabled, mkOpt, mkBoolOpt, mkModule)
+- **module**: Module helpers (enabled, mkOpt, mkBoolOpt, mkModule,
+  shellIntegration)
 - **system**: System builders (mkDarwin, mkHome)
 - **overlay**: Overlay creation helpers
 

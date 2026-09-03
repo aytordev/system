@@ -122,9 +122,13 @@ wrappers fail closed without real tokens in env.
 2. Define `aytordev.programs.terminal.tools.{tool}` with `enable` + `package`.
 3. Guard outputs with `mkIf`.
 4. If needed, split helpers into contiguous `*.nix` files and `import` them.
-5. Wire aliases/integrations through options so the tool stays reusable.
-   Add a check under `checks/` when the behavior deserves regression
-   coverage (example: `checks/home-module` covers ollama/litellm service wiring).
+5. Wire integrations through `lib.aytordev.shellIntegration config` (so they
+   follow `enabledNames`). Add shell aliases as shell-agnostic strings in
+   `home.shellAliases` — never duplicate them in a bash `conf.d` drop-in, and
+   put logic/pipelines in a `writeShellApplication`/`writeShellScriptBin` bin
+   with a thin forward. Add a check under `checks/` when the behavior deserves
+   regression coverage (example: `checks/home-module` covers ollama/litellm
+   service wiring).
 
 ## Testing Terminal Changes
 
