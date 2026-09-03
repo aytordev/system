@@ -82,6 +82,18 @@
     )
     bashConfDFiles;
 
+  # An alias must not be defined both in home.shellAliases (which fans out to
+  # bash) and again as `alias name=` in a bash conf.d drop-in: the latter is
+  # sourced first and then overridden, so it is dead (or diverges).
+  aliasDup = builtins.filter (name: lib.hasInfix "alias ${name}=" bashConfD) (
+    builtins.attrNames config.home.shellAliases
+  );
+
+  aliasDupFailLine = lib.optionalString (aliasDup != []) ''
+    echo "FAIL: alias defined in both home.shellAliases and bash conf.d: ${lib.concatStringsSep ", " aliasDup}" >&2
+    failures=1
+  '';
+
   texts = {
     zshEnv = config.programs.zsh.envExtra;
     zshInit = config.programs.zsh.initContent;
@@ -189,13 +201,14 @@ in
       ];
     }
     ''
-      set -euo pipefail
-      failures=0
+        set -euo pipefail
+        failures=0
       ${checksScript}
       ${subdirFailLine}
-      if [ "$failures" -ne 0 ]; then
-        exit 1
-      fi
-      touch "$out"
+      ${aliasDupFailLine}
+        if [ "$failures" -ne 0 ]; then
+          exit 1
+        fi
+        touch "$out"
     ''
   )

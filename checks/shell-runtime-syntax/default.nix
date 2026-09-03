@@ -43,13 +43,22 @@
   nuConfig = config.home.file."${nuConfigDir}/config.nu".text or config.programs.nushell.extraConfig;
   nuEnv = config.home.file."${nuConfigDir}/env.nu".text or config.programs.nushell.envFile.text or "";
 
-  # A ';', '$(' or 'command ' in a nushell alias body is either a parse-time
-  # split into a bare command (executed at config.nu load) or an internal Nu
-  # command. home.shellAliases must therefore never carry such values.
+  # home.shellAliases fans out to every shell; nushell renders values verbatim.
+  # A ';' splits into a bare command executed at config.nu load; '$(' and
+  # 'command ' are Nu-syntax hazards; and a '|'/'&&'/'||' or a newline is either
+  # a parse error or a silent no-op (pipes are passed as a single arg). These
+  # values must never reach nushell.
   nuAliasValues = lib.attrValues config.programs.nushell.shellAliases;
   unsafeNushellAliases =
     builtins.filter (
-      v: lib.hasInfix ";" v || lib.hasInfix "$(" v || lib.hasPrefix "command " v
+      v:
+        lib.hasInfix ";" v
+        || lib.hasInfix "$(" v
+        || lib.hasPrefix "command " v
+        || lib.hasInfix "|" v
+        || lib.hasInfix "&&" v
+        || lib.hasInfix "||" v
+        || lib.hasInfix "\n" v
     )
     nuAliasValues;
 
