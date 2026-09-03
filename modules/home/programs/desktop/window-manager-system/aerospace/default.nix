@@ -15,16 +15,22 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    # restart-aerospace uses command substitution, which parses differently in
-    # each shell. Bash and zsh need $(), fish and nushell accept ().
-    programs = {
-      bash.shellAliases.restart-aerospace = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.aerospace'';
-      zsh.shellAliases.restart-aerospace = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.aerospace'';
-      fish.shellAliases.restart-aerospace = "launchctl kickstart -k gui/(id -u)/org.nix-community.home.aerospace";
-      nushell.shellAliases.restart-aerospace = "launchctl kickstart -k gui/(id -u)/org.nix-community.home.aerospace";
-    };
-
-    home.packages = [cfg.package];
+    # The restart command needs command substitution, which parses differently
+    # per shell. A single bin is shell-agnostic; no aliases needed (the bin name
+    # equals the command name).
+    home.packages =
+      [
+        cfg.package
+      ]
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+        (pkgs.writeShellApplication {
+          name = "restart-aerospace";
+          runtimeInputs = [pkgs.coreutils];
+          text = ''
+            exec launchctl kickstart -k "gui/$(id -u)/org.nix-community.home.aerospace"
+          '';
+        })
+      ];
 
     programs.aerospace = {
       enable = true;

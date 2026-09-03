@@ -29,15 +29,31 @@ in {
     };
 
   config = lib.mkIf cfg.enable {
-    # Shell integration. restart-sketchybar uses command substitution, which
-    # parses differently in each shell.
-    programs = {
-      bash.shellAliases.restart-sketchybar = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.sketchybar'';
-      zsh.shellAliases.restart-sketchybar = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.sketchybar'';
-      fish.shellAliases.restart-sketchybar = "launchctl kickstart -k gui/(id -u)/org.nix-community.home.sketchybar";
-      nushell.shellAliases.restart-sketchybar = "launchctl kickstart -k gui/(id -u)/org.nix-community.home.sketchybar";
-      zsh.initContent = luaGen.brewIntegration;
-    };
+    # restart-sketchybar and the brew/mas refresh are shell-agnostic commands;
+    # publish them as bins so no per-shell command-substitution aliases are
+    # needed (the bin name equals the command name). `forced` is the manual
+    # refresh trigger the brew widget subscribes to (see config/items/widgets/brew.lua).
+    home.packages = lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+      (pkgs.writeShellApplication {
+        name = "restart-sketchybar";
+        runtimeInputs = [pkgs.coreutils];
+        text = ''
+          exec launchctl kickstart -k "gui/$(id -u)/org.nix-community.home.sketchybar"
+        '';
+      })
+      (pkgs.writeShellApplication {
+        name = "sketchybar-brew";
+        text = ''
+          command brew "$@" && ${lib.getExe cfg.package} --trigger forced
+        '';
+      })
+      (pkgs.writeShellApplication {
+        name = "sketchybar-mas";
+        text = ''
+          command mas "$@" && ${lib.getExe cfg.package} --trigger forced
+        '';
+      })
+    ];
 
     # Main sketchybar configuration
     programs.sketchybar = {
