@@ -45,8 +45,6 @@
           sudo systemctl restart nix-daemon.service
         fi
       '';
-      remove-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -delete";
-      print-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -print";
       usage = "${getExe' pkgs.coreutils "du"} -ah -d1 | sort -rn 2>/dev/null";
       psg = "${getExe pkgs.ps} aux | grep";
       hmvar-reload = ''unset __HM_SESS_VARS_SOURCED; source "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"'';
@@ -113,6 +111,8 @@ in {
           wget = "${getExe pkgs.wget} -c ";
           dfh = "${getExe' pkgs.coreutils "df"} -h";
           duh = "${getExe' pkgs.coreutils "du"} -h";
+          remove-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -delete";
+          print-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -print";
           home = "cd ~";
           ".." = "cd ..";
           "..." = "cd ../..";
