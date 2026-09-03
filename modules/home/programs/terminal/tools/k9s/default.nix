@@ -24,28 +24,29 @@ in {
       kubeseal
     ];
 
-    programs = {
-      k9s = {
-        enable = true;
-        inherit (cfg) package;
+    programs.k9s = {
+      enable = true;
+      inherit (cfg) package;
 
-        settings.k9s = {
-          liveViewAutoRefresh = true;
-          refreshRate = 1;
-          maxConnRetry = 3;
-          ui = {
-            enableMouse = true;
-          };
+      settings.k9s = {
+        liveViewAutoRefresh = true;
+        refreshRate = 1;
+        maxConnRetry = 3;
+        ui = {
+          enableMouse = true;
         };
       };
+    };
 
-      zsh.shellAliases = {
-        k = "kubecolor";
-        kc = "kubectx";
-        kn = "kubens";
-        ks = "kubeseal";
-        kubectl = "kubecolor";
-      };
+    # Nu-safe single-command aliases reach all shells via home.shellAliases.
+    # Use getExe for k/kubectl so the kubecolor wrapper resolves its target
+    # deterministically.
+    home.shellAliases = {
+      k = "${lib.getExe pkgs.kubecolor}";
+      kc = "kubectx";
+      kn = "kubens";
+      ks = "kubeseal";
+      kubectl = "${lib.getExe pkgs.kubecolor}";
     };
   };
 }
