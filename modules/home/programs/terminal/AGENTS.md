@@ -55,6 +55,19 @@ commands, prefer shell-agnostic aliases there (one entry per alias behaves the
 same in bash/zsh/fish/nushell). For per-shell concerns, use the shell-specific
 integration options instead (see bitwarden-cli, ollama).
 
+Rules for `home.shellAliases` values (they fan out to every shell, and nushell
+renders them verbatim):
+
+- Must be a single, simple command. A value containing `;`, `$(`, `command `,
+  `|`, `&&`, `||`, or a newline breaks or silently misbehaves in nushell.
+- Never define the same alias again in a `bash/conf.d/*.sh` drop-in — it is
+  sourced first and then overridden, so it is dead (or diverges).
+- If the behavior needs command substitution, a pipeline, or args/logic, put it
+  in a `writeShellApplication`/`writeShellScriptBin` bin and make the alias a
+  thin forward (or skip the alias; the bin name can equal the command name).
+- If the shell integration for a tool already defines the command (e.g.
+  `programs.lazygit`'s `lg`), do not add a manual alias that would shadow it.
+
 ### Shell Integration
 
 When a tool offers shell integration, wrap it behind an option and pass owner
