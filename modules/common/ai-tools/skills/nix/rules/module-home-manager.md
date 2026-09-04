@@ -32,37 +32,33 @@ in
   ...
 }:
 let
-  inherit (lib) mkIf mkEnableOption mkOption types;
-  cfg = config.programs.myApp;
+  inherit (lib) mkIf mkEnableOption mkPackageOption mkOption types;
+  cfg = config.aytordev.programs.myApp;
 in
 {
-  options.programs.myApp = {
+  options.aytordev.programs.myApp = {
     enable = mkEnableOption "My App";
 
-    theme = mkOption {
-      type = types.enum [
-        "light"
-        "dark"
-      ];
-      default = "dark";
-      description = "Color theme for the application";
+    package = mkPackageOption pkgs "myApp" {};
+
+    settings = mkOption {
+      type = types.attrs;
+      default = { };
+      description = "Settings passed to the myApp Home Manager module";
     };
   };
 
   config = mkIf cfg.enable {
-    # User-level package installation
-    home.packages = [ pkgs.myApp ];
-
-    # XDG configuration file
-    xdg.configFile."myapp/config.toml".text = ''
-      theme = "${cfg.theme}"
-      auto_save = true
-    '';
-
-    # Environment variables
-    home.sessionVariables = {
-      MYAPP_CONFIG = "${config.xdg.configHome}/myapp/config.toml";
+    # Prefer the Home Manager module when it exists (it installs the package).
+    programs.myApp = {
+      enable = true;
+      inherit (cfg) package;
+      settings = cfg.settings;
     };
+
+    # Only when there is no `programs.myApp` HM module, fall back to manual
+    # installation and config (home.packages = [ cfg.package ] / a hand-built
+    # xdg.configFile, as shown above).
   };
 }
 ```
