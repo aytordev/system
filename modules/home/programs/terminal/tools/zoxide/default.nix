@@ -13,7 +13,6 @@ in {
   };
   config = mkIf cfg.enable {
     home = {
-      packages = [cfg.package];
       sessionVariables = {
         _ZO_DATA_DIR = "${config.xdg.dataHome}/zoxide";
       };
