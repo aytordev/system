@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkIf
     mkOption
     mkEnableOption
@@ -27,18 +27,19 @@ let
     lint-cmd = cfg.lintCommands;
   };
 
-  modelSettings = map (m: {
-    inherit (m) name;
-    edit_format = m.editFormat;
-    use_repo_map = m.useRepoMap;
-    extra_params = m.extraParams;
-  }) cfg.modelSettings;
-in
-{
+  modelSettings =
+    map (m: {
+      inherit (m) name;
+      edit_format = m.editFormat;
+      use_repo_map = m.useRepoMap;
+      extra_params = m.extraParams;
+    })
+    cfg.modelSettings;
+in {
   options.aytordev.programs.terminal.tools.aider = {
     enable = mkEnableOption "Aider AI pair programming assistant";
 
-    package = mkPackageOption pkgs "aider-chat" { };
+    package = mkPackageOption pkgs "aider-chat" {};
 
     defaultModel = mkOption {
       type = types.str;
@@ -75,7 +76,7 @@ in
             };
             extraParams = mkOption {
               type = types.attrsOf types.anything;
-              default = { };
+              default = {};
               description = "Extra parameters for the model";
             };
           };
@@ -107,7 +108,7 @@ in
 
   config = mkIf cfg.enable {
     home = {
-      packages = [ cfg.package ];
+      packages = [cfg.package];
 
       sessionVariables = {
         AIDER_CONFIG = "${configDir}/aider.conf.yml";
@@ -121,8 +122,8 @@ in
     };
 
     # XDG-compliant configuration
-    xdg.configFile."aider/aider.conf.yml".text = lib.generators.toYAML { } aiderConfig;
+    xdg.configFile."aider/aider.conf.yml".text = lib.generators.toYAML {} aiderConfig;
 
-    xdg.configFile."aider/aider.model.settings.yml".text = lib.generators.toYAML { } modelSettings;
+    xdg.configFile."aider/aider.model.settings.yml".text = lib.generators.toYAML {} modelSettings;
   };
 }

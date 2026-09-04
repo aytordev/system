@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkIf
     mkEnableOption
     mkMerge
@@ -15,11 +15,10 @@ let
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
   xdgCacheHome = "${config.xdg.cacheHome}";
-in
-{
+in {
   options.aytordev.programs.terminal.shells.fish = {
     enable = mkEnableOption "Fish shell with useful defaults";
-    package = mkPackageOption pkgs "fish" { };
+    package = mkPackageOption pkgs "fish" {};
   };
   config = mkIf cfg.enable (mkMerge [
     {
@@ -61,7 +60,7 @@ in
           set -gx BAT_THEME "base16"
         '';
       };
-      home.activation.fishDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      home.activation.fishDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
         $DRY_RUN_CMD mkdir -p "${xdgConfigHome}/fish/functions"
         $DRY_RUN_CMD mkdir -p "${xdgDataHome}/fish"
         $DRY_RUN_CMD chmod 700 "${xdgDataHome}/fish"

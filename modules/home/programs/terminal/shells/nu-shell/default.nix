@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkIf
     mkEnableOption
     mkMerge
@@ -15,11 +15,10 @@ let
   xdgConfigHome = "${config.xdg.configHome}";
   xdgDataHome = "${config.xdg.dataHome}";
   xdgCacheHome = "${config.xdg.cacheHome}";
-in
-{
+in {
   options.aytordev.programs.terminal.shells.nushell = {
     enable = mkEnableOption "Nu shell with useful defaults";
-    package = mkPackageOption pkgs "nushell" { };
+    package = mkPackageOption pkgs "nushell" {};
   };
   config = mkIf cfg.enable (mkMerge [
     {
@@ -86,7 +85,7 @@ in
         };
       };
       home.activation = {
-        createXdgDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        createXdgDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
           # nushell ignores NU_HISTORY and stores history.txt under the config
           # dir; seal that dir to keep plaintext history private.
           $DRY_RUN_CMD mkdir -p "${xdgConfigHome}/nushell"

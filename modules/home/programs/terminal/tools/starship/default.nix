@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkIf
     mkEnableOption
     mkPackageOption
@@ -18,12 +18,11 @@ let
   inherit (themeCfg) palette;
 
   # Helper: Create language module config
-  mkLang =
-    {
-      symbol,
-      color,
-      extraAttrs ? { },
-    }:
+  mkLang = {
+    symbol,
+    color,
+    extraAttrs ? {},
+  }:
     {
       inherit symbol;
       format = "[[ $symbol ($version) ](fg:${color})]($style)";
@@ -158,174 +157,174 @@ let
     };
   };
 
-  starshipConfig = {
-    "$schema" = "https://starship.rs/config-schema.json";
-    add_newline = true;
-    command_timeout = 10000;
-    scan_timeout = 30;
-    palette = "kanagawa_wave";
+  starshipConfig =
+    {
+      "$schema" = "https://starship.rs/config-schema.json";
+      add_newline = true;
+      command_timeout = 10000;
+      scan_timeout = 30;
+      palette = "kanagawa_wave";
 
-    format = concatStrings formatModules + "\n" + concatStrings promptModules;
+      format = concatStrings formatModules + "\n" + concatStrings promptModules;
 
-    inherit palettes;
+      inherit palettes;
 
-    fill.symbol = " ";
+      fill.symbol = " ";
 
-    character = {
-      success_symbol = "[ ](fg:green)";
-      error_symbol = "[ ](fg:red)";
-      vimcmd_symbol = "[N](bold fg:red)";
-      vimcmd_replace_one_symbol = "[R](bold fg:peach)";
-      vimcmd_replace_symbol = "[R](bold fg:peach)";
-      vimcmd_visual_symbol = "[V](bold fg:mauve)";
-    };
-
-    username = {
-      style_user = "bold fg:blue";
-      style_root = "bold fg:red";
-      format = "[ $user](fg:$style) ";
-      disabled = false;
-      show_always = true;
-    };
-
-    directory = {
-      format = "[$path](bold $style)[$read_only]($read_only_style) ";
-      truncation_length = 2;
-      style = "fg:blue";
-      read_only_style = "fg:blue";
-      before_repo_root_style = "fg:blue";
-      truncation_symbol = "…/";
-      truncate_to_repo = true;
-      read_only = "  ";
-      home_symbol = "⌂";
-      substitutions = {
-        "Documents" = "󰈙 ";
-        "Downloads" = " ";
-        "Music" = " ";
-        "Pictures" = " ";
-        "Developer" = "󰲋 ";
+      character = {
+        success_symbol = "[ ](fg:green)";
+        error_symbol = "[ ](fg:red)";
+        vimcmd_symbol = "[N](bold fg:red)";
+        vimcmd_replace_one_symbol = "[R](bold fg:peach)";
+        vimcmd_replace_symbol = "[R](bold fg:peach)";
+        vimcmd_visual_symbol = "[V](bold fg:mauve)";
       };
-    };
 
-    os = {
-      format = "[$symbol](fg:text) ";
-      disabled = false;
-      symbols = {
-        Macos = "";
-        Linux = "󰌽";
-        Windows = "󰍲";
-        Ubuntu = "󰕈";
-        Debian = "󰣚";
-        Arch = "󰣇";
-        Fedora = "󰣛";
+      username = {
+        style_user = "bold fg:blue";
+        style_root = "bold fg:red";
+        format = "[ $user](fg:$style) ";
+        disabled = false;
+        show_always = true;
       };
-    };
 
-    cmd_duration = {
-      format = " took [ $duration]($style) ";
-      style = "bold fg:yellow";
-      min_time = 500;
-    };
+      directory = {
+        format = "[$path](bold $style)[$read_only]($read_only_style) ";
+        truncation_length = 2;
+        style = "fg:blue";
+        read_only_style = "fg:blue";
+        before_repo_root_style = "fg:blue";
+        truncation_symbol = "…/";
+        truncate_to_repo = true;
+        read_only = "  ";
+        home_symbol = "⌂";
+        substitutions = {
+          "Documents" = "󰈙 ";
+          "Downloads" = " ";
+          "Music" = " ";
+          "Pictures" = " ";
+          "Developer" = "󰲋 ";
+        };
+      };
 
-    git_branch = {
-      format = "-> [$symbol$branch]($style) ";
-      style = "bold fg:mauve";
-      symbol = "git:";
-    };
+      os = {
+        format = "[$symbol](fg:text) ";
+        disabled = false;
+        symbols = {
+          Macos = "";
+          Linux = "󰌽";
+          Windows = "󰍲";
+          Ubuntu = "󰕈";
+          Debian = "󰣚";
+          Arch = "󰣇";
+          Fedora = "󰣛";
+        };
+      };
 
-    git_status = {
-      format = "[$all_status$ahead_behind]($style) ";
-      style = "fg:text";
-    };
+      cmd_duration = {
+        format = " took [ $duration]($style) ";
+        style = "bold fg:yellow";
+        min_time = 500;
+      };
 
-    git_metrics = {
-      format = "([+$added]($added_style)) ([-$deleted]($deleted_style)) ";
-      added_style = "fg:green";
-      deleted_style = "fg:red";
-      ignore_submodules = true;
-      disabled = false;
-    };
+      git_branch = {
+        format = "-> [$symbol$branch]($style) ";
+        style = "bold fg:mauve";
+        symbol = "git:";
+      };
 
-    nix_shell = {
-      style = "bold fg:blue";
-      symbol = "✶";
-      format = "[$symbol nix($state)]($style) ";
-      impure_msg = "⌽";
-      pure_msg = "⌾";
-      unknown_msg = "◌";
-    };
+      git_status = {
+        format = "[$all_status$ahead_behind]($style) ";
+        style = "fg:text";
+      };
 
-    docker_context = {
-      symbol = " ";
-      format = "[$symbol$context]($style) ";
-      disabled = true;
-    };
+      git_metrics = {
+        format = "([+$added]($added_style)) ([-$deleted]($deleted_style)) ";
+        added_style = "fg:green";
+        deleted_style = "fg:red";
+        ignore_submodules = true;
+        disabled = false;
+      };
 
-    time = {
-      disabled = false;
-      time_format = "%R";
-      format = "[[   $time ](fg:subtext0)]($style)";
-    };
+      nix_shell = {
+        style = "bold fg:blue";
+        symbol = "✶";
+        format = "[$symbol nix($state)]($style) ";
+        impure_msg = "⌽";
+        pure_msg = "⌾";
+        unknown_msg = "◌";
+      };
 
-    battery = {
-      format = "[ $percentage $symbol]($style)";
-      full_symbol = "█";
-      charging_symbol = "[↑](bold fg:green)";
-      discharging_symbol = "↓";
-      unknown_symbol = "░";
-      empty_symbol = "▃";
-      display = [
-        {
-          threshold = 20;
-          style = "bold fg:red";
-        }
-        {
-          threshold = 60;
-          style = "fg:mauve";
-        }
-        {
-          threshold = 70;
-          style = "fg:yellow";
-        }
-        {
-          threshold = 100;
+      docker_context = {
+        symbol = " ";
+        format = "[$symbol$context]($style) ";
+        disabled = true;
+      };
+
+      time = {
+        disabled = false;
+        time_format = "%R";
+        format = "[[   $time ](fg:subtext0)]($style)";
+      };
+
+      battery = {
+        format = "[ $percentage $symbol]($style)";
+        full_symbol = "█";
+        charging_symbol = "[↑](bold fg:green)";
+        discharging_symbol = "↓";
+        unknown_symbol = "░";
+        empty_symbol = "▃";
+        display = [
+          {
+            threshold = 20;
+            style = "bold fg:red";
+          }
+          {
+            threshold = 60;
+            style = "fg:mauve";
+          }
+          {
+            threshold = 70;
+            style = "fg:yellow";
+          }
+          {
+            threshold = 100;
+            style = "fg:green";
+          }
+        ];
+      };
+
+      localip = {
+        ssh_only = true;
+        format = " ◯[$localipv4](bold fg:pink)";
+        disabled = false;
+      };
+
+      sudo = {
+        format = "[$symbol]($style)";
+        style = "bold fg:lavender";
+        symbol = "⋈ ";
+        disabled = false;
+      };
+
+      jobs = {
+        format = "[$symbol$number]($style) ";
+        style = "fg:text";
+        symbol = "[▶](fg:blue)";
+      };
+
+      env_var = {
+        VIMSHELL = {
+          format = "[$env_value]($style)";
           style = "fg:green";
-        }
-      ];
-    };
-
-    localip = {
-      ssh_only = true;
-      format = " ◯[$localipv4](bold fg:pink)";
-      disabled = false;
-    };
-
-    sudo = {
-      format = "[$symbol]($style)";
-      style = "bold fg:lavender";
-      symbol = "⋈ ";
-      disabled = false;
-    };
-
-    jobs = {
-      format = "[$symbol$number]($style) ";
-      style = "fg:text";
-      symbol = "[▶](fg:blue)";
-    };
-
-    env_var = {
-      VIMSHELL = {
-        format = "[$env_value]($style)";
-        style = "fg:green";
+        };
       };
-    };
-  }
-  // languageModules;
-in
-{
+    }
+    // languageModules;
+in {
   options.aytordev.programs.terminal.tools.starship = {
     enable = mkEnableOption "Starship prompt";
-    package = mkPackageOption pkgs "starship" { };
+    package = mkPackageOption pkgs "starship" {};
 
     palette = mkOption {
       type = types.str;
@@ -335,9 +334,11 @@ in
 
     settings = mkOption {
       type = types.attrs;
-      default = starshipConfig // {
-        inherit (cfg) palette;
-      };
+      default =
+        starshipConfig
+        // {
+          inherit (cfg) palette;
+        };
       description = "Starship configuration options";
     };
 

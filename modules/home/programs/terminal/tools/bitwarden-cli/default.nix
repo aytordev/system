@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkIf
     mkEnableOption
     mkOption
@@ -14,7 +14,6 @@ let
     optionals
     getExe
     escapeShellArg
-    getExe'
     ;
   cfg = config.aytordev.programs.terminal.tools.bitwarden-cli;
   isRbw = cfg.client == "rbw";
@@ -88,11 +87,16 @@ let
       done
     '';
   };
-  rbwPinentry = if isRbw && cfg.apiKey.enable && hasApiKeyFiles then apiKeyPinentry else cfg.pinentry;
-  clientCommand = if isRbw then "rbw" else "bw";
-in
-{
-  imports = [ ./shell-integration.nix ];
+  rbwPinentry =
+    if isRbw && cfg.apiKey.enable && hasApiKeyFiles
+    then apiKeyPinentry
+    else cfg.pinentry;
+  clientCommand =
+    if isRbw
+    then "rbw"
+    else "bw";
+in {
+  imports = [./shell-integration.nix];
 
   options.aytordev.programs.terminal.tools.bitwarden-cli = {
     enable = mkEnableOption "a Bitwarden-compatible command-line client";
@@ -108,7 +112,10 @@ in
 
     package = mkOption {
       type = types.package;
-      default = if isRbw then pkgs.rbw else pkgs.bitwarden-cli;
+      default =
+        if isRbw
+        then pkgs.rbw
+        else pkgs.bitwarden-cli;
       defaultText = literalExpression ''
         if config.aytordev.programs.terminal.tools.bitwarden-cli.client == "rbw"
         then pkgs.rbw
@@ -159,13 +166,18 @@ in
       };
     };
 
-    aliases.enable = mkEnableOption "short aliases for the selected Bitwarden client" // {
-      default = true;
-    };
+    aliases.enable =
+      mkEnableOption "short aliases for the selected Bitwarden client"
+      // {
+        default = true;
+      };
 
     pinentry = mkOption {
       type = types.package;
-      default = if pkgs.stdenv.hostPlatform.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3;
+      default =
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then pkgs.pinentry_mac
+        else pkgs.pinentry-gnome3;
       defaultText = literalExpression "pkgs.pinentry_mac or pkgs.pinentry-gnome3";
       description = "Pinentry package used by rbw.";
     };
@@ -184,15 +196,21 @@ in
     ];
 
     home = {
-      packages = optionals isRbw [ cfg.pinentry ] ++ optionals (!isRbw) [ cfg.package ];
+      packages = optionals isRbw [cfg.pinentry] ++ optionals (!isRbw) [cfg.package];
 
       shellAliases = mkIf cfg.aliases.enable {
         bwl = "${clientCommand} login";
         bwu = "${clientCommand} unlock";
         bws = "${clientCommand} sync";
         bwg = "${clientCommand} get";
-        bwp = if isRbw then "rbw get --field password" else "bw get password";
-        bwc = if isRbw then "rbw get" else "bw get item --full-object";
+        bwp =
+          if isRbw
+          then "rbw get --field password"
+          else "bw get password";
+        bwc =
+          if isRbw
+          then "rbw get"
+          else "bw get item --full-object";
       };
 
       file.".local/bin/bitwarden-login-sops" = mkIf (cfg.apiKey.enable && hasApiKeyFiles) {
@@ -210,19 +228,18 @@ in
           fi
 
           ${
-            if isRbw then
-              ''
-                export PINENTRY_USER_DATA=${escapeShellArg apiKeyPinentryMarker}
-                ${getExe cfg.package} register
-                unset PINENTRY_USER_DATA
-                exec ${getExe cfg.package} login
-              ''
-            else
-              ''
-                export BW_CLIENTID="$(<"$client_id_file")"
-                export BW_CLIENTSECRET="$(<"$client_secret_file")"
-                exec ${getExe cfg.package} login --apikey
-              ''
+            if isRbw
+            then ''
+              export PINENTRY_USER_DATA=${escapeShellArg apiKeyPinentryMarker}
+              ${getExe cfg.package} register
+              unset PINENTRY_USER_DATA
+              exec ${getExe cfg.package} login
+            ''
+            else ''
+              export BW_CLIENTID="$(<"$client_id_file")"
+              export BW_CLIENTSECRET="$(<"$client_secret_file")"
+              exec ${getExe cfg.package} login --apikey
+            ''
           }
         '';
       };

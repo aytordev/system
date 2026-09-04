@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkIf
     mkEnableOption
     optionalAttrs
@@ -14,11 +14,10 @@ let
     types
     ;
   cfg = config.aytordev.programs.terminal.tools.atuin;
-in
-{
+in {
   options.aytordev.programs.terminal.tools.atuin = {
     enable = mkEnableOption "atuin";
-    package = mkPackageOption pkgs "atuin" { };
+    package = mkPackageOption pkgs "atuin" {};
     enableDebug = mkEnableOption "atuin daemon debug logging";
     enableBashIntegration = mkOption {
       type = types.bool;
@@ -49,12 +48,13 @@ in
       inherit (cfg) enableFishIntegration;
       inherit (cfg) enableZshIntegration;
       inherit (cfg) enableNushellIntegration;
-      daemon = {
-        enable = true;
-      }
-      // optionalAttrs cfg.enableDebug {
-        logLevel = "debug";
-      };
+      daemon =
+        {
+          enable = true;
+        }
+        // optionalAttrs cfg.enableDebug {
+          logLevel = "debug";
+        };
       settings = {
         enter_accept = true;
         filter_mode = "workspace";
@@ -73,7 +73,7 @@ in
       atuin-prune-failed = "atuin search --exclude-exit 0 --delete";
     };
     # atuin writes a plaintext SQLite history database; seal its data dir.
-    home.activation.createAtuinDataDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    home.activation.createAtuinDataDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
       $DRY_RUN_CMD mkdir -p "${config.xdg.dataHome}/atuin"
       $DRY_RUN_CMD chmod 700 "${config.xdg.dataHome}/atuin"
     '';

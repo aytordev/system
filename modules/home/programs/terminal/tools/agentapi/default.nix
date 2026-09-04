@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkIf
     mkEnableOption
     mkPackageOption
@@ -15,8 +15,7 @@ let
     ;
 
   cfg = config.aytordev.programs.terminal.tools.agentapi;
-in
-{
+in {
   options.aytordev.programs.terminal.tools.agentapi = {
     enable = mkEnableOption "AgentAPI - HTTP API wrapper for AI coding agents";
 
@@ -42,7 +41,7 @@ in
 
   config = mkIf cfg.enable {
     home = {
-      packages = [ cfg.package ];
+      packages = [cfg.package];
 
       shellAliases = mkIf cfg.shellAliases {
         agentapi-claude = "${getExe cfg.package} server -p ${toString cfg.defaultPort} -- claude";

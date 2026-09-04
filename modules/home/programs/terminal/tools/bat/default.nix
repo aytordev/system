@@ -3,11 +3,11 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib) getExe mkIf;
   cfg = config.aytordev.programs.terminal.tools.bat;
-  inherit (pkgs.bat-extras)
+  inherit
+    (pkgs.bat-extras)
     batdiff
     batgrep
     batman
@@ -15,11 +15,10 @@ let
     batwatch
     prettybat
     ;
-in
-{
+in {
   options.aytordev.programs.terminal.tools.bat = {
     enable = lib.mkEnableOption "bat";
-    package = lib.mkPackageOption pkgs "bat" { };
+    package = lib.mkPackageOption pkgs "bat" {};
   };
   config = mkIf cfg.enable {
     programs.bat = {

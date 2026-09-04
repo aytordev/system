@@ -3,19 +3,18 @@
   lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib)
+}: let
+  inherit
+    (lib)
     mkEnableOption
     mkIf
     mkPackageOption
     ;
   cfg = config.aytordev.programs.terminal.shells.bash;
-in
-{
+in {
   options.aytordev.programs.terminal.shells.bash = {
     enable = mkEnableOption "Bash shell with useful defaults for Bash 5.3+";
-    package = mkPackageOption pkgs "bash" { default = [ "bashInteractive" ]; };
+    package = mkPackageOption pkgs "bash" {default = ["bashInteractive"];};
   };
 
   config = mkIf cfg.enable {
