@@ -12,7 +12,29 @@ macOS system preferences and services.
 - Keep activation scripts idempotent and limited to state that requires system
   privileges.
 
-See `docs/decisions/0008-module-contract-v1.md` for the complete contract.
+See `docs/decisions/0008-module-contract-v1.md` for the complete contract. The
+canonical module template (per-class variants + style rules) lives in the
+**`dotfiles-coder` skill**
+(`modules/common/ai-tools/skills/dotfiles-coder/rules/patterns-module.md`).
+
+**Platform-adapter skeleton:**
+
+```nix
+{ config, lib, pkgs, ... }: let
+  inherit (lib) mkIf mkEnableOption mkPackageOption;
+  cfg = config.aytordev.programs.category.program;
+in {
+  options.aytordev.programs.category.program = {
+    enable = mkEnableOption "...";
+    package = mkPackageOption pkgs "program" {};
+  };
+
+  config = mkIf cfg.enable {
+    # Platform-only outputs guard with pkgs.stdenv.hostPlatform.isDarwin.
+    environment.systemPackages = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin [cfg.package];
+  };
+}
+```
 
 ## Module Categories
 

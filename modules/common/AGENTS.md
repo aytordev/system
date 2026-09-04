@@ -14,7 +14,10 @@ Cross-platform shared modules used by both NixOS and nix-darwin systems.
 - Do not place host identity, secret values, or concrete home paths in reusable
   modules.
 
-See `docs/decisions/0008-module-contract-v1.md` for the complete contract.
+See `docs/decisions/0008-module-contract-v1.md` for the complete contract. The
+canonical module template (per-class variants + style rules) lives in the
+**`dotfiles-coder` skill**
+(`modules/common/ai-tools/skills/dotfiles-coder/rules/patterns-module.md`).
 
 ## Module Categories
 

@@ -313,28 +313,25 @@ Create a new module when:
 - Building a reusable configuration pattern
 - Grouping related configuration options
 
-**Module template:**
+**Module skeleton (capability):**
 
 ```nix
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-let
-  inherit (lib) mkIf mkEnableOption;
+{ config, lib, pkgs, ... }: let
+  inherit (lib) mkIf mkEnableOption mkPackageOption mkOption types;
   cfg = config.aytordev.programs.category.program;
-in
-{
+in {
   options.aytordev.programs.category.program = {
     enable = mkEnableOption "program description";
+    package = mkPackageOption pkgs "program" {};  # only if it owns a primary package
+    setting = mkOption { type = types.bool; default = false; description = "..."; };
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ pkgs.program ];
-
-    xdg.configFile."program/config".source = ./config;
+    home.packages = [cfg.package];  # or programs.program if a HM module exists
   };
 }
 ```
+
+Full canonical template, per-class variants, and style rules live in the
+**`dotfiles-coder` skill** (`modules/common/ai-tools/skills/dotfiles-coder/rules/patterns-module.md`)
+and Module Contract V1 (`docs/decisions/0008-module-contract-v1.md`).
