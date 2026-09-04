@@ -7,7 +7,8 @@ Goal: converge every module on the canonical shape — `options`/`config`
 separation, `cfg` binding, `lib.mkIf cfg.enable`, `enable` + conditional
 `package` (via `lib.mkPackageOption` unless a conditional default needs the
 manual form), delegate to `programs.<tool>` when a Home Manager module exists
-(no redundant `home.packages`), `lib.getExe` for aliases/wrappers, shell
+(no redundant `home.packages`), no `mkOpt`/`mkBoolOpt` in tools (use
+`lib.mkOption` directly), `lib.getExe` for aliases/wrappers, shell
 integration as `aytordev.*` options defaulting to `shellEnabled`, platform
 guards `pkgs.stdenv.hostPlatform.isDarwin/isLinux`, no `with lib;`/`if-then-else`
 for conditions, sibling files only `import`ed.
