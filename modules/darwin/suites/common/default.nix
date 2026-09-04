@@ -21,19 +21,19 @@ in {
     };
 
     environment = {
-      systemPackages = with pkgs;
+      systemPackages =
         [
-          duti
-          gawk
-          gnugrep
-          gnupg
-          gnused
-          gnutls
-          terminal-notifier
-          wtfutil
+          pkgs.duti
+          pkgs.gawk
+          pkgs.gnugrep
+          pkgs.gnupg
+          pkgs.gnused
+          pkgs.gnutls
+          pkgs.terminal-notifier
+          pkgs.wtfutil
         ]
         ++ lib.optionals config.aytordev.tools.homebrew.masEnable [
-          mas
+          pkgs.mas
         ];
     };
 
