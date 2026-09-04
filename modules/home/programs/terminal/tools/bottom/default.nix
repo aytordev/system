@@ -4,15 +4,14 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf mkEnableOption mkPackageOption;
   cfg = config.aytordev.programs.terminal.tools.bottom;
 in {
   options.aytordev.programs.terminal.tools.bottom = {
-    enable = lib.mkEnableOption "bottom";
-    package = lib.mkPackageOption pkgs "bottom" {};
+    enable = mkEnableOption "bottom";
+    package = mkPackageOption pkgs "bottom" {};
   };
   config = mkIf cfg.enable {
-    home.packages = [cfg.package];
     programs.bottom = {
       enable = true;
       inherit (cfg) package;
@@ -44,7 +43,7 @@ in {
       (lib.aytordev.shellIntegration config).whenShellEnabled "bash"
       {
         text = ''
-          alias htop="${cfg.package}/bin/btm"
+          alias htop="${lib.getExe cfg.package}"
         '';
       };
   };
