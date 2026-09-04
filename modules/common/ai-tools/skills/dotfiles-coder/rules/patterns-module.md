@@ -6,6 +6,10 @@ Every module is a function `args → attrset` with three invariants: destructure
 args, a `cfg` binding, and separate `options` (the declared state) from `config`
 (a pure derivation of it). All outputs are guarded by a single `mkIf cfg.enable`.
 
+> **Note:** `lib.aytordev.mkModule` is a TEST-ONLY helper (used only by
+> `tests/default.nix`). Real modules are authored by hand in the `args → attrset`
+> shape shown here.
+
 **Incorrect (No Structure):**
 
 ```nix
@@ -75,7 +79,7 @@ The class drives the shape; choose one before writing outputs
 |---|---|---|---|
 | Capability | both | `mkIf cfg.enable` | owns the program/service |
 | Foundational | neither | `mkIf cfg.enable` | publishes identity/metadata only |
-| Platform adapter | `package` | `mkIf cfg.enable` **+** `isDarwin`/`isLinux` | bridges a capability to one platform |
+| Platform adapter | both | `mkIf cfg.enable` **+** `isDarwin`/`isLinux` | bridges a capability to one platform |
 | Suite | neither | `mkIf cfg.enable` | composes capabilities with **`lib.mkDefault`** |
 | Archetype | neither | `mkIf cfg.enable` | composes suites with `lib.mkDefault` |
 | Pure data | neither | **no `enable`** | computes values (`theme`, `shells.enabledNames`) |
