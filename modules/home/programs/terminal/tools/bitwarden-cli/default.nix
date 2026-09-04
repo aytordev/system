@@ -3,18 +3,30 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
+  inherit (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    types
+    literalExpression
+    optionals
+    getExe
+    escapeShellArg
+    getExe'
+    ;
   cfg = config.aytordev.programs.terminal.tools.bitwarden-cli;
   isRbw = cfg.client == "rbw";
   hasApiKeyFiles = cfg.apiKey.clientIdFile != null && cfg.apiKey.clientSecretFile != null;
-  clientIdFile = lib.escapeShellArg (toString cfg.apiKey.clientIdFile);
-  clientSecretFile = lib.escapeShellArg (toString cfg.apiKey.clientSecretFile);
+  clientIdFile = escapeShellArg (toString cfg.apiKey.clientIdFile);
+  clientSecretFile = escapeShellArg (toString cfg.apiKey.clientSecretFile);
   apiKeyPinentryMarker = "aytordev-bitwarden-api-key";
   apiKeyPinentry = pkgs.writeShellApplication {
     name = "rbw-api-key-pinentry";
     text = ''
-      if [[ "''${PINENTRY_USER_DATA:-}" != ${lib.escapeShellArg apiKeyPinentryMarker} ]]; then
-        exec ${lib.getExe cfg.pinentry} "$@"
+      if [[ "''${PINENTRY_USER_DATA:-}" != ${escapeShellArg apiKeyPinentryMarker} ]]; then
+        exec ${getExe cfg.pinentry} "$@"
       fi
 
       client_id_file=${clientIdFile}
@@ -76,22 +88,17 @@
       done
     '';
   };
-  rbwPinentry =
-    if isRbw && cfg.apiKey.enable && hasApiKeyFiles
-    then apiKeyPinentry
-    else cfg.pinentry;
-  clientCommand =
-    if isRbw
-    then "rbw"
-    else "bw";
-in {
-  imports = [./shell-integration.nix];
+  rbwPinentry = if isRbw && cfg.apiKey.enable && hasApiKeyFiles then apiKeyPinentry else cfg.pinentry;
+  clientCommand = if isRbw then "rbw" else "bw";
+in
+{
+  imports = [ ./shell-integration.nix ];
 
   options.aytordev.programs.terminal.tools.bitwarden-cli = {
-    enable = lib.mkEnableOption "a Bitwarden-compatible command-line client";
+    enable = mkEnableOption "a Bitwarden-compatible command-line client";
 
-    client = lib.mkOption {
-      type = lib.types.enum [
+    client = mkOption {
+      type = types.enum [
         "rbw"
         "bw"
       ];
@@ -99,13 +106,10 @@ in {
       description = "Bitwarden-compatible client to configure.";
     };
 
-    package = lib.mkOption {
-      type = lib.types.package;
-      default =
-        if isRbw
-        then pkgs.rbw
-        else pkgs.bitwarden-cli;
-      defaultText = lib.literalExpression ''
+    package = mkOption {
+      type = types.package;
+      default = if isRbw then pkgs.rbw else pkgs.bitwarden-cli;
+      defaultText = literalExpression ''
         if config.aytordev.programs.terminal.tools.bitwarden-cli.client == "rbw"
         then pkgs.rbw
         else pkgs.bitwarden-cli
@@ -113,23 +117,23 @@ in {
       description = "Package providing the selected Bitwarden client.";
     };
 
-    server = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
+    server = mkOption {
+      type = types.nullOr types.str;
       default = null;
       example = "https://bitwarden.example.com";
       description = "Custom server URL for rbw.";
     };
 
     apiKey = {
-      enable = lib.mkEnableOption "runtime login using API key files";
-      clientIdFile = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
+      enable = mkEnableOption "runtime login using API key files";
+      clientIdFile = mkOption {
+        type = types.nullOr types.str;
         default = null;
         example = "/run/secrets/bitwarden-client-id";
         description = "Runtime file containing the Bitwarden API client ID.";
       };
-      clientSecretFile = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
+      clientSecretFile = mkOption {
+        type = types.nullOr types.str;
         default = null;
         example = "/run/secrets/bitwarden-client-secret";
         description = "Runtime file containing the Bitwarden API client secret.";
@@ -137,42 +141,37 @@ in {
     };
 
     shellIntegration = {
-      enable = lib.mkEnableOption "session helpers and completions for the official bw client";
-      zsh = lib.mkOption {
-        type = lib.types.bool;
-        default = config.aytordev.programs.terminal.shells.zsh.enable;
+      enable = mkEnableOption "session helpers and completions for the official bw client";
+      zsh = mkOption {
+        type = types.bool;
+        default = (lib.aytordev.shellIntegration config).shellEnabled "zsh";
         description = "Enable Zsh integration.";
       };
-      bash = lib.mkOption {
-        type = lib.types.bool;
-        default = config.aytordev.programs.terminal.shells.bash.enable;
+      bash = mkOption {
+        type = types.bool;
+        default = (lib.aytordev.shellIntegration config).shellEnabled "bash";
         description = "Enable Bash integration.";
       };
-      fish = lib.mkOption {
-        type = lib.types.bool;
-        default = config.aytordev.programs.terminal.shells.fish.enable;
+      fish = mkOption {
+        type = types.bool;
+        default = (lib.aytordev.shellIntegration config).shellEnabled "fish";
         description = "Enable Fish integration.";
       };
     };
 
-    aliases.enable =
-      lib.mkEnableOption "short aliases for the selected Bitwarden client"
-      // {
-        default = true;
-      };
+    aliases.enable = mkEnableOption "short aliases for the selected Bitwarden client" // {
+      default = true;
+    };
 
-    pinentry = lib.mkOption {
-      type = lib.types.package;
-      default =
-        if pkgs.stdenv.hostPlatform.isDarwin
-        then pkgs.pinentry_mac
-        else pkgs.pinentry-gnome3;
-      defaultText = lib.literalExpression "pkgs.pinentry_mac or pkgs.pinentry-gnome3";
+    pinentry = mkOption {
+      type = types.package;
+      default = if pkgs.stdenv.hostPlatform.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3;
+      defaultText = literalExpression "pkgs.pinentry_mac or pkgs.pinentry-gnome3";
       description = "Pinentry package used by rbw.";
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     assertions = [
       {
         assertion = !cfg.apiKey.enable || hasApiKeyFiles;
@@ -185,27 +184,21 @@ in {
     ];
 
     home = {
-      packages = lib.optionals isRbw [cfg.pinentry] ++ lib.optionals (!isRbw) [cfg.package];
+      packages = optionals isRbw [ cfg.pinentry ] ++ optionals (!isRbw) [ cfg.package ];
 
-      shellAliases = lib.mkIf cfg.aliases.enable {
+      shellAliases = mkIf cfg.aliases.enable {
         bwl = "${clientCommand} login";
         bwu = "${clientCommand} unlock";
         bws = "${clientCommand} sync";
         bwg = "${clientCommand} get";
-        bwp =
-          if isRbw
-          then "rbw get --field password"
-          else "bw get password";
-        bwc =
-          if isRbw
-          then "rbw get"
-          else "bw get item --full-object";
+        bwp = if isRbw then "rbw get --field password" else "bw get password";
+        bwc = if isRbw then "rbw get" else "bw get item --full-object";
       };
 
-      file.".local/bin/bitwarden-login-sops" = lib.mkIf (cfg.apiKey.enable && hasApiKeyFiles) {
+      file.".local/bin/bitwarden-login-sops" = mkIf (cfg.apiKey.enable && hasApiKeyFiles) {
         executable = true;
         text = ''
-          #!${lib.getExe pkgs.bash}
+          #!${getExe pkgs.bash}
           set -euo pipefail
 
           client_id_file=${clientIdFile}
@@ -217,24 +210,25 @@ in {
           fi
 
           ${
-            if isRbw
-            then ''
-              export PINENTRY_USER_DATA=${lib.escapeShellArg apiKeyPinentryMarker}
-              ${lib.getExe cfg.package} register
-              unset PINENTRY_USER_DATA
-              exec ${lib.getExe cfg.package} login
-            ''
-            else ''
-              export BW_CLIENTID="$(<"$client_id_file")"
-              export BW_CLIENTSECRET="$(<"$client_secret_file")"
-              exec ${lib.getExe cfg.package} login --apikey
-            ''
+            if isRbw then
+              ''
+                export PINENTRY_USER_DATA=${escapeShellArg apiKeyPinentryMarker}
+                ${getExe cfg.package} register
+                unset PINENTRY_USER_DATA
+                exec ${getExe cfg.package} login
+              ''
+            else
+              ''
+                export BW_CLIENTID="$(<"$client_id_file")"
+                export BW_CLIENTSECRET="$(<"$client_secret_file")"
+                exec ${getExe cfg.package} login --apikey
+              ''
           }
         '';
       };
     };
 
-    programs.rbw = lib.mkIf isRbw {
+    programs.rbw = mkIf isRbw {
       enable = true;
       inherit (cfg) package;
       settings = {
