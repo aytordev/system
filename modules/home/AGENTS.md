@@ -188,12 +188,16 @@ aytordev.suites.development.enable = true;
 # Implicitly enables: git, neovim, direnv, etc.
 ```
 
-**3. Conditional enable:**
+**3. Conditional enable (platform guard):**
 
 ```nix
 aytordev.programs.desktop.bars.sketchybar.enable =
-  lib.mkIf config.aytordev.programs.desktop.window-manager-system.aerospace.enable true;
+  lib.mkIf pkgs.stdenv.hostPlatform.isDarwin true;
 ```
+
+Note: a capability's own `cfg.enable` gate already lives in its module `config`
+block, so only add a `lib.mkIf` here for a platform-specific feature (e.g.
+sketchybar is guarded by `isDarwin`, not by another program).
 
 ### XDG Configuration Files
 
@@ -234,10 +238,30 @@ truth: `aytordev.programs.terminal.shells.enabledNames` (read-only, derived from
 each `shells.<name>.enable`). Tie a tool's integrations to it with the helper
 `lib.aytordev.shellIntegration config`, which exposes:
 
+- `shellEnabled "<shell>"` — a boolean default for a `aytordev.*` option, so a
+  tool's integration follows the enabled shells.
 - `flags` — `enable{Bash,Fish,Zsh,Nushell}Integration` booleans to merge into
   `programs.<tool>` (so an integration only materializes when its shell is on).
 - `whenShellEnabled shell value` — `mkIf`-guard a config value (e.g. a bash
   `conf.d` drop-in) so it only materializes when that shell is enabled.
+
+**Preferred pattern:** expose `aytordev.*` options that default to the
+shell-enabled helper, then pass them through to the Home Manager module (see
+atuin, starship):
+
+```nix
+options.aytordev.programs.terminal.tools.tool = {
+  enable = mkEnableOption "...";
+  enableBashIntegration = mkOption {
+    type = types.bool;
+    default = (lib.aytordev.shellIntegration config).shellEnabled "bash";
+    description = "...";
+  };
+};
+```
+
+**Fallback:** merge the `flags` directly, with a comment proving every flag is
+valid for the tool (see carapace, zoxide):
 
 ```nix
 programs.zoxide = {
@@ -245,6 +269,8 @@ programs.zoxide = {
   options = ["--cmd cd"];
 } // (lib.aytordev.shellIntegration config).flags;
 ```
+
+Some tools intentionally exclude a shell — eza keeps nushell's built-in `ls`.
 
 **Rules for shell aliases** (see `terminal/AGENTS.md`): aliases are shell-agnostic
 strings in `home.shellAliases`; values must not contain `;`, `$(`, `command `,
@@ -277,7 +303,8 @@ Terminal emulators (ghostty, etc.) should:
 
 - Use theme from `aytordev.theme.appTheme`
 - Configure fonts from the shared palette
-- Enable shell integration where available
+- Enable shell integration via `lib.aytordev.shellIntegration config` so it
+  follows `enabledNames`.
 
 ## Testing Home Changes
 
@@ -327,10 +354,19 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [cfg.package];  # or programs.program if a HM module exists
+    # Prefer programs.<tool> when a Home Manager module exists (it installs the
+    # package itself). Use home.packages only when there is no programs.<tool>.
+    programs.program = {
+      enable = true;
+      inherit (cfg) package;
+    };
   };
 }
 ```
+
+Use the manual `lib.mkOption` + `defaultText` form when the default is conditional
+(see ollama, bitwarden-cli). `mkOpt`/`mkBoolOpt` are for foundational modules;
+capabilities use `lib.mkOption`.
 
 Full canonical template, per-class variants, and style rules live in the
 **`dotfiles-coder` skill** (`modules/common/ai-tools/skills/dotfiles-coder/rules/patterns-module.md`)
