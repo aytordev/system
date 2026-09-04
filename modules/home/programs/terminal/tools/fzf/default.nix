@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}: let
-  inherit
-    (lib)
+}:
+let
+  inherit (lib)
     mkIf
     mkEnableOption
     mkOption
@@ -27,11 +27,12 @@
   ];
   defaultCommand = "${pkgs.fd}/bin/fd --type=f --hidden --exclude=.git";
   si = lib.aytordev.shellIntegration config;
-  shellIntegration = import ./shell-integration.nix {inherit cfg pkgs si;};
-in {
+  shellIntegration = import ./shell-integration.nix { inherit cfg pkgs si; };
+in
+{
   options.aytordev.programs.terminal.tools.fzf = {
     enable = mkEnableOption "fuzzy finder";
-    package = lib.mkPackageOption pkgs "fzf" {};
+    package = lib.mkPackageOption pkgs "fzf" { };
     defaultCommand = mkOption {
       type = types.str;
       default = defaultCommand;
@@ -39,31 +40,29 @@ in {
     };
     extraOptions = mkOption {
       type = types.listOf types.str;
-      default = [];
+      default = [ ];
       description = "Additional options to pass to fzf";
     };
   };
   config = mkIf cfg.enable {
     home.packages = [
-      cfg.package
       pkgs.fd
       pkgs.zsh-fzf-tab
     ];
-    home.activation.createFzfDataDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    home.activation.createFzfDataDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p "${config.xdg.dataHome}/fzf"
+      $DRY_RUN_CMD chmod 700 "${config.xdg.dataHome}/fzf"
     '';
-    programs =
-      {
-        fzf =
-          {
-            enable = true;
-            inherit (cfg) package;
-            inherit (cfg) defaultCommand;
-            defaultOptions = defaultOptions ++ cfg.extraOptions;
-            historyWidget.command = "";
-          }
-          // si.flags;
+    programs = {
+      fzf = {
+        enable = true;
+        inherit (cfg) package;
+        inherit (cfg) defaultCommand;
+        defaultOptions = defaultOptions ++ cfg.extraOptions;
+        historyWidget.command = "";
       }
-      // shellIntegration;
+      // si.flags;
+    }
+    // shellIntegration;
   };
 }
