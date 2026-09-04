@@ -22,7 +22,7 @@ in {
       ];
     };
     home.shellAliases = {
-      grep = "${cfg.package}/bin/rg";
+      grep = lib.getExe cfg.package;
     };
     # grep -> rg reaches all shells via home.shellAliases; the conf.d only
     # carries the bash-only env export.
