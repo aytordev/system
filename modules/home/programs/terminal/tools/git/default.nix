@@ -76,26 +76,23 @@ in {
       };
     };
   };
-  config = let
-    cfg = config.aytordev.programs.terminal.tools.git;
-  in
-    lib.mkIf cfg.enable (
-      lib.mkMerge [
-        {
-          assertions = [
-            {
-              assertion = !cfg.signing.enable || cfg.signing.key != null;
-              message = "aytordev.programs.terminal.tools.git.signing.key must be set when signing is enabled";
-            }
-          ];
-          programs.git = gitConfig;
-        }
-        # Bare-command shorthands reach all shells via home.shellAliases. The
-        # old bash/conf.d/git-aliases.sh duplicate is gone: home.shellAliases
-        # already fans out to bash.
-        (lib.mkIf (shell-aliases.allAliases != {}) {
-          home.shellAliases = shell-aliases.allAliases;
-        })
-      ]
-    );
+  config = lib.mkIf cfg.enable (
+    lib.mkMerge [
+      {
+        assertions = [
+          {
+            assertion = !cfg.signing.enable || cfg.signing.key != null;
+            message = "aytordev.programs.terminal.tools.git.signing.key must be set when signing is enabled";
+          }
+        ];
+        programs.git = gitConfig;
+      }
+      # Bare-command shorthands reach all shells via home.shellAliases. The
+      # old bash/conf.d/git-aliases.sh duplicate is gone: home.shellAliases
+      # already fans out to bash.
+      (lib.mkIf (shell-aliases.allAliases != {}) {
+        home.shellAliases = shell-aliases.allAliases;
+      })
+    ]
+  );
 }
