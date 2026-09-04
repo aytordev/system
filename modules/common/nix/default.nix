@@ -8,6 +8,7 @@
     (lib)
     mkIf
     mkEnableOption
+    mkPackageOption
     mkOption
     types
     ;
@@ -19,10 +20,10 @@
       "nix-builder"
     ]
     ++ cfg.extraTrustedUsers;
-  essentialPackages = with pkgs; [
-    deploy-rs
-    git
-    nix-prefetch-git
+  essentialPackages = [
+    pkgs.deploy-rs
+    pkgs.git
+    pkgs.nix-prefetch-git
   ];
   nixDaemonSettings = {
     allowed-users = allowedUsers;
@@ -36,6 +37,8 @@
     keep-going = true;
     keep-outputs = true;
     log-lines = 50;
+    max-free = 15 * 1024 * 1024 * 1024;
+    min-free = 5 * 1024 * 1024 * 1024;
     use-xdg-base-directories = true;
     warn-dirty = false;
     experimental-features = [
@@ -46,7 +49,7 @@
 in {
   options.aytordev.nix = {
     enable = mkEnableOption "Common Nix configuration";
-    package = lib.mkPackageOption pkgs "Nix" {
+    package = mkPackageOption pkgs "Nix" {
       default = [
         "nixVersions"
         "latest"
@@ -71,10 +74,6 @@ in {
       };
       optimise.automatic = true;
       settings = nixDaemonSettings;
-      extraOptions = ''
-        min-free = ${toString (5 * 1024 * 1024 * 1024)}
-        max-free = ${toString (15 * 1024 * 1024 * 1024)}
-      '';
     };
   };
 }
