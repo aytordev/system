@@ -2,7 +2,7 @@
 
 **Impact:** HIGH
 
-Use `enabled`/`disabled` shorthands instead of `{ enable = true; }`. Use `mkOpt` instead of verbose `mkOption`. Combine with `mkDefault`/`mkForce` when needed.
+Use `enabled`/`disabled` shorthands instead of `{ enable = true; }`. Use `lib.mkOption` instead of verbose `mkOption`. Combine with `mkDefault` for overridable defaults (never `lib.mkForce`).
 
 **Incorrect (Verbose):**
 
@@ -32,14 +32,19 @@ in
 ```nix
 { config, lib, ... }:
 let
-  inherit (lib) mkIf mkEnableOption mkDefault mkForce;
-  inherit (lib.aytordev) mkOpt enabled disabled;
+  inherit (lib) mkIf mkEnableOption mkDefault;
+  inherit (lib.aytordev) enabled disabled;
   cfg = config.aytordev.programs.dev;
 in
 {
   options.aytordev.programs.dev = {
     enable = mkEnableOption "dev tools";
-    port = mkOpt lib.types.port 8080 "Development server port";
+    package = lib.mkPackageOption pkgs "dev" {};
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 8080;
+      description = "Development server port";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -49,7 +54,7 @@ in
 
     # Override patterns
     programs.bash = mkDefault enabled;   # User can override
-    programs.zsh = mkForce enabled;      # Cannot override
+    programs.zsh = mkDefault enabled;    # Never mkForce — mkDefault lets hosts override
   };
 }
 ```
