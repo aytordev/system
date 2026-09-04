@@ -22,26 +22,26 @@ Legend: `[x]` migrated & committed · `[~]` in progress · `[ ]` pending ·
 - [ ] atuin
 - [ ] bat
 - [ ] bitwarden-cli
-- [ ] bottom
-- [ ] carapace
+- [x] bottom
+- [x] carapace
 - [ ] eza
 - [ ] fzf
-- [ ] git
-- [ ] k9s
-- [ ] lazygit
+- [x] git
+- [x] k9s
+- [x] lazygit
 - [ ] lazydocker
 - [ ] litellm
-- [ ] lsd
+- [x] lsd
 - [ok] mcp
 - [ ] nh
 - [ ] ollama
 - [ok] opencode
-- [ ] ripgrep
-- [ ] run-as-service
+- [x] ripgrep
+- [x] run-as-service
 - [ok] ssh
 - [ ] starship
 - [ok] tmux
-- [ ] yazi
+- [x] yazi
 - [ ] zellij
 - [ ] zoxide
 
