@@ -12,45 +12,45 @@ integration as `aytordev.*` options defaulting to `shellEnabled`, platform
 guards `pkgs.stdenv.hostPlatform.isDarwin/isLinux`, no `with lib;`/`if-then-else`
 for conditions, sibling files only `import`ed.
 
-Legend: `[x]` migrated & committed · `[~]` in progress · `[ ]` pending ·
-`[ok]` already conformant (verified, no action needed)
+Legend: `[x]` migrated & committed · `[ok]` already conformant (verified, no
+action needed)
 
 ## Tools (`modules/home/programs/terminal/tools/`)
 
-- [ ] agentapi
-- [ ] aider
-- [ ] atuin
-- [ ] bat
-- [ ] bitwarden-cli
+- [x] agentapi
+- [x] aider
+- [x] atuin
+- [x] bat
+- [x] bitwarden-cli
 - [x] bottom
 - [x] carapace
-- [ ] eza
-- [ ] fzf
+- [x] eza
+- [x] fzf
 - [x] git
 - [x] k9s
 - [x] lazygit
-- [ ] lazydocker
-- [ ] litellm
+- [x] lazydocker
+- [x] litellm
 - [x] lsd
 - [ok] mcp
-- [ ] nh
-- [ ] ollama
+- [ok] nh
+- [x] ollama
 - [ok] opencode
 - [x] ripgrep
 - [x] run-as-service
 - [ok] ssh
-- [ ] starship
+- [x] starship
 - [ok] tmux
 - [x] yazi
-- [ ] zellij
-- [ ] zoxide
+- [ok] zellij
+- [x] zoxide
 
 ## Shells (`modules/home/programs/terminal/shells/`)
 
-- [ ] bash
-- [ ] fish
-- [ ] nu-shell
-- [ ] zsh
+- [x] bash
+- [x] fish
+- [x] nu-shell
+- [x] zsh
 - [ok] shells/default (pure-data)
 
 ## Suites (`modules/home/suites/`)
@@ -60,20 +60,20 @@ Legend: `[x]` migrated & committed · `[~]` in progress · `[ ]` pending ·
 
 ## Desktop (`modules/home/programs/desktop/`)
 
-- [ ] sketchybar
-- [ ] aerospace
+- [x] sketchybar
+- [x] aerospace
 
 ## Darwin (`modules/darwin/`)
 
-- [ ] darwin/programs/terminal/shells
-- [ ] darwin/user
-- [ ] darwin/suites/common
-- [ ] darwin/tools/homebrew
+- [x] darwin/programs/terminal/shells
+- [x] darwin/user
+- [x] darwin/suites/common
+- [x] darwin/tools/homebrew
 
 ## Common (`modules/common/`)
 
-- [ ] common/nix
-- [ ] common/suites/common
+- [x] common/nix
+- [x] common/suites/common
 - [ok] home/theme (pure-data reference)
 - [ok] home/user (foundational reference)
-- [ ] home/system/xdg
+- [x] home/system/xdg
