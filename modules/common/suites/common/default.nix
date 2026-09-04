@@ -4,26 +4,26 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf mkDefault mkEnableOption;
 
   cfg = config.aytordev.suites.common;
 in {
   options.aytordev.suites.common = {
-    enable = lib.mkEnableOption "common configuration";
+    enable = mkEnableOption "common configuration";
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      coreutils
-      curl
-      fd
-      file
-      findutils
-      killall
-      lsof
-      tldr
-      unzip
-      wget
+    environment.systemPackages = mkDefault [
+      pkgs.coreutils
+      pkgs.curl
+      pkgs.fd
+      pkgs.file
+      pkgs.findutils
+      pkgs.killall
+      pkgs.lsof
+      pkgs.tldr
+      pkgs.unzip
+      pkgs.wget
     ];
   };
 }
