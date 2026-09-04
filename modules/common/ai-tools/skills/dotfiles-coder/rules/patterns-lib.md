@@ -24,17 +24,20 @@ with lib;
 { config, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption mkOption types;
-  inherit (lib.aytordev) mkOpt enabled;
   cfg = config.aytordev.foo;
 in
 {
   options.aytordev.foo = {
     enable = mkEnableOption "foo";
-    name = mkOpt types.str "default" "Display name";
+    name = mkOption {
+      type = types.str;
+      default = "default";
+      description = "Display name";
+    };
   };
 
   config = mkIf cfg.enable {
-    programs.bar = enabled;
+    programs.bar = { enable = true; };
   };
 }
 ```
