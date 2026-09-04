@@ -3,14 +3,20 @@
   lib,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
+  inherit
+    (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
   cfg = config.aytordev.tools.homebrew;
 in {
   options.aytordev.tools.homebrew = {
     enable = mkEnableOption "Homebrew package manager";
-    masEnable = lib.mkEnableOption "Mac App Store downloads";
-    idempotentActivation = lib.mkOption {
-      type = lib.types.bool;
+    masEnable = mkEnableOption "Mac App Store downloads";
+    idempotentActivation = mkOption {
+      type = types.bool;
       default = true;
       description = "Install declared entries without updating or upgrading existing Homebrew packages.";
     };
@@ -36,8 +42,6 @@ in {
         cleanup = "uninstall";
         upgrade = !cfg.idempotentActivation;
       };
-      taps = [
-      ];
     };
   };
 }
