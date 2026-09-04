@@ -15,11 +15,6 @@
 in {
   enable = mkEnableOption "Sketchybar status bar";
 
-  package = mkOption {
-    type = package;
-    description = "The Sketchybar package to use.";
-  };
-
   extraPackages = mkOption {
     type = listOf package;
     default = [];

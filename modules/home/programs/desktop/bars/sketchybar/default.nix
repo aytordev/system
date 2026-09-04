@@ -28,12 +28,12 @@ in {
       };
     };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isDarwin) {
     # restart-sketchybar and the brew/mas refresh are shell-agnostic commands;
     # publish them as bins so no per-shell command-substitution aliases are
     # needed (the bin name equals the command name). `forced` is the manual
     # refresh trigger the brew widget subscribes to (see config/items/widgets/brew.lua).
-    home.packages = lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+    home.packages = [
       (pkgs.writeShellApplication {
         name = "restart-sketchybar";
         runtimeInputs = [pkgs.coreutils];
