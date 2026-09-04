@@ -23,7 +23,6 @@ in {
   config = mkIf cfg.enable (mkMerge [
     {
       home.packages = with pkgs; [
-        cfg.package
         # fishPlugins that ship vendored conf.d/functions auto-load via the
         # nixpkgs fish wrapper; keeping them here is enough, no plugins wiring.
         fishPlugins.done

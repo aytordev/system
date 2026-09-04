@@ -37,6 +37,7 @@ in
 {
   options.aytordev.programs.terminal.tools.myApp = {
     enable = mkEnableOption appName;
+    package = lib.mkPackageOption pkgs "my-app" {};
   };
 
   config = mkIf cfg.enable { };

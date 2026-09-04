@@ -14,14 +14,14 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      helmfile
-      kubecolor
-      kubectl
-      kubectx
-      kubelogin
-      kubernetes-helm
-      kubeseal
+    home.packages = [
+      pkgs.helmfile
+      pkgs.kubecolor
+      pkgs.kubectl
+      pkgs.kubectx
+      pkgs.kubelogin
+      pkgs.kubernetes-helm
+      pkgs.kubeseal
     ];
 
     programs.k9s = {

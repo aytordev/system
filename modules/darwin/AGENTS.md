@@ -12,7 +12,33 @@ macOS system preferences and services.
 - Keep activation scripts idempotent and limited to state that requires system
   privileges.
 
-See `docs/decisions/0008-module-contract-v1.md` for the complete contract.
+See `docs/decisions/0008-module-contract-v1.md` for the complete contract. The
+canonical module template (per-class variants + style rules) lives in the
+**`dotfiles-coder` skill**
+(`modules/common/ai-tools/skills/dotfiles-coder/rules/patterns-module.md`).
+
+**Platform-adapter skeleton (cross-platform adapter):**
+
+```nix
+{ config, lib, pkgs, ... }: let
+  inherit (lib) mkIf mkEnableOption mkPackageOption;
+  cfg = config.aytordev.programs.category.program;
+in {
+  options.aytordev.programs.category.program = {
+    enable = mkEnableOption "...";
+    package = mkPackageOption pkgs "program" {};
+  };
+
+  # Cross-platform adapters double-guard with
+  # `mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isDarwin)`. Darwin-ONLY
+  # adapters (modules/darwin/programs/terminal/shells, modules/darwin/user,
+  # modules/darwin/programs/desktop/sketchybar) guard with `mkIf cfg.enable`
+  # alone — the platform is already implicit.
+  config = mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isDarwin) {
+    environment.systemPackages = [cfg.package];
+  };
+}
+```
 
 ## Module Categories
 
@@ -45,7 +71,9 @@ macOS-specific desktop integration and logging.
 
 Darwin platform adapter for the login shell. It owns `aytordev.programs.terminal.shells`:
 
+- `enable` — whether to register the login shell (defaults to `default != null`).
 - `default` — the login shell (`bash`/`fish`/`zsh`, default `zsh`).
+- `package` — the package backing the login shell (replaceable; defaults to `loginPackage`).
 - `loginPackage` — the package backing the login shell (read-only).
 
 It registers `users.knownUsers`, sets `users.users.<name>.shell` and
@@ -53,6 +81,12 @@ It registers `users.knownUsers`, sets `users.users.<name>.shell` and
 nix-darwin's global `compinit`/`bashcompinit` so Home Manager owns completion.
 `modules/darwin/user` only publishes identity metadata; it no longer hardcodes
 the login shell.
+
+### User (`user/`)
+
+The foundational darwin identity adapter. It owns `aytordev.user`, exposes an
+`enable` flag, and gates its `config` output with `mkIf cfg.enable` (keeping
+`uid` via `mkOpt`) so identity metadata can be toggled without being dropped.
 
 ### Nix (`nix/`)
 

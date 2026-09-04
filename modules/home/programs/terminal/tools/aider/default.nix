@@ -4,7 +4,14 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkOption mkEnableOption types;
+  inherit
+    (lib)
+    mkIf
+    mkOption
+    mkEnableOption
+    mkPackageOption
+    types
+    ;
 
   cfg = config.aytordev.programs.terminal.tools.aider;
 
@@ -32,11 +39,7 @@ in {
   options.aytordev.programs.terminal.tools.aider = {
     enable = mkEnableOption "Aider AI pair programming assistant";
 
-    package = mkOption {
-      type = types.package;
-      default = pkgs.aider-chat;
-      description = "The Aider package to use";
-    };
+    package = mkPackageOption pkgs "aider-chat" {};
 
     defaultModel = mkOption {
       type = types.str;
@@ -54,29 +57,31 @@ in {
     };
 
     modelSettings = mkOption {
-      type = types.listOf (types.submodule {
-        options = {
-          name = mkOption {
-            type = types.str;
-            description = "Model name (e.g. ollama_chat/qwen2.5-coder:32b)";
+      type = types.listOf (
+        types.submodule {
+          options = {
+            name = mkOption {
+              type = types.str;
+              description = "Model name (e.g. ollama_chat/qwen2.5-coder:32b)";
+            };
+            editFormat = mkOption {
+              type = types.str;
+              default = "diff";
+              description = "Edit format for the model";
+            };
+            useRepoMap = mkOption {
+              type = types.bool;
+              default = true;
+              description = "Whether to use repository map";
+            };
+            extraParams = mkOption {
+              type = types.attrsOf types.anything;
+              default = {};
+              description = "Extra parameters for the model";
+            };
           };
-          editFormat = mkOption {
-            type = types.str;
-            default = "diff";
-            description = "Edit format for the model";
-          };
-          useRepoMap = mkOption {
-            type = types.bool;
-            default = true;
-            description = "Whether to use repository map";
-          };
-          extraParams = mkOption {
-            type = types.attrsOf types.anything;
-            default = {};
-            description = "Extra parameters for the model";
-          };
-        };
-      });
+        }
+      );
       default = [
         {
           name = "ollama_chat/qwen2.5-coder:32b";
@@ -117,10 +122,8 @@ in {
     };
 
     # XDG-compliant configuration
-    xdg.configFile."aider/aider.conf.yml".text =
-      lib.generators.toYAML {} aiderConfig;
+    xdg.configFile."aider/aider.conf.yml".text = lib.generators.toYAML {} aiderConfig;
 
-    xdg.configFile."aider/aider.model.settings.yml".text =
-      lib.generators.toYAML {} modelSettings;
+    xdg.configFile."aider/aider.model.settings.yml".text = lib.generators.toYAML {} modelSettings;
   };
 }

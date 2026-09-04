@@ -7,6 +7,7 @@
   inherit (lib) mkIf;
   cfg = config.aytordev.programs.terminal.tools.yazi;
   themeCfg = config.aytordev.theme;
+  si = lib.aytordev.shellIntegration config;
 in {
   options.aytordev.programs.terminal.tools.yazi = {
     enable = lib.mkEnableOption "yazi";
@@ -35,10 +36,10 @@ in {
       enable = true;
       inherit (cfg) package;
       shellWrapperName = "y";
-      enableBashIntegration = true;
-      enableFishIntegration = true;
-      enableNushellIntegration = true;
-      enableZshIntegration = true;
+      enableBashIntegration = si.shellEnabled "bash";
+      enableFishIntegration = si.shellEnabled "fish";
+      enableNushellIntegration = si.shellEnabled "nushell";
+      enableZshIntegration = si.shellEnabled "zsh";
       inherit (import ./init.nix {inherit config lib;}) initLua;
       keymap = lib.mkMerge [
         (import ./keymap/completion.nix)

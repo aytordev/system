@@ -70,9 +70,13 @@ renders them verbatim):
 
 ### Shell Integration
 
-When a tool offers shell integration, wrap it behind an option and pass owner
-/`enable*Integration` flags to Home Manager modules (see atuin, zoxide,
-carapace, starship).
+When a tool offers shell integration, expose it as `aytordev.*` options that
+default to `(lib.aytordev.shellIntegration config).shellEnabled "<shell>"`, then
+pass them through to the Home Manager module (see atuin, starship). If you merge
+the `enable*Integration` flags directly with
+`// (lib.aytordev.shellIntegration config).flags`, add a comment proving every
+flag is valid (see carapace, zoxide). Some tools intentionally exclude a shell —
+eza keeps nushell's built-in `ls`.
 
 ### `writeShellScript` / `writeShellApplication` Helpers
 

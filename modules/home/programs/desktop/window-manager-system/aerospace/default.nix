@@ -5,7 +5,7 @@
   ...
 }: let
   cfg = config.aytordev.programs.desktop.window-manager-system.aerospace;
-  sketchybar = "${config.programs.sketchybar.package}/bin/sketchybar";
+  sketchybar = lib.getExe config.programs.sketchybar.package;
 in {
   options = {
     aytordev.programs.desktop.window-manager-system.aerospace = {
@@ -14,23 +14,20 @@ in {
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isDarwin) {
     # The restart command needs command substitution, which parses differently
     # per shell. A single bin is shell-agnostic; no aliases needed (the bin name
     # equals the command name).
-    home.packages =
-      [
-        cfg.package
-      ]
-      ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-        (pkgs.writeShellApplication {
-          name = "restart-aerospace";
-          runtimeInputs = [pkgs.coreutils];
-          text = ''
-            exec launchctl kickstart -k "gui/$(id -u)/org.nix-community.home.aerospace"
-          '';
-        })
-      ];
+    home.packages = [
+      cfg.package
+      (pkgs.writeShellApplication {
+        name = "restart-aerospace";
+        runtimeInputs = [pkgs.coreutils];
+        text = ''
+          exec launchctl kickstart -k "gui/$(id -u)/org.nix-community.home.aerospace"
+        '';
+      })
+    ];
 
     programs.aerospace = {
       enable = true;

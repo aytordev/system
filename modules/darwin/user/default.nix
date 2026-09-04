@@ -9,6 +9,7 @@
   cfg = config.aytordev.user;
 in {
   options.aytordev.user = {
+    enable = mkOpt types.bool true "Whether to manage the darwin user account.";
     name = lib.mkOption {
       type = types.str;
       description = "The user account.";
@@ -24,7 +25,7 @@ in {
     uid = mkOpt (types.nullOr types.int) 501 "The uid for the user account.";
   };
 
-  config = {
+  config = mkIf cfg.enable {
     users.users.${cfg.name} = {
       uid = mkIf (cfg.uid != null) cfg.uid;
       home = "/Users/${cfg.name}";

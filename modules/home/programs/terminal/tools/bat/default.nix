@@ -6,6 +6,15 @@
 }: let
   inherit (lib) getExe mkIf;
   cfg = config.aytordev.programs.terminal.tools.bat;
+  inherit
+    (pkgs.bat-extras)
+    batdiff
+    batgrep
+    batman
+    batpipe
+    batwatch
+    prettybat
+    ;
 in {
   options.aytordev.programs.terminal.tools.bat = {
     enable = lib.mkEnableOption "bat";
@@ -18,7 +27,7 @@ in {
       config = {
         style = "auto,header-filesize";
       };
-      extraPackages = with pkgs.bat-extras; [
+      extraPackages = [
         batdiff
         batgrep
         batman

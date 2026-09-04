@@ -4,21 +4,15 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption;
+  inherit (lib) mkIf mkEnableOption mkPackageOption;
   cfg = config.aytordev.programs.terminal.tools.zoxide;
 in {
   options.aytordev.programs.terminal.tools.zoxide = {
     enable = mkEnableOption "zoxide, a smarter cd command";
-    package = lib.mkOption {
-      type = lib.types.package;
-      default = pkgs.zoxide;
-      defaultText = lib.literalExpression "pkgs.zoxide";
-      description = "The zoxide package to use.";
-    };
+    package = mkPackageOption pkgs "zoxide" {};
   };
   config = mkIf cfg.enable {
     home = {
-      packages = [cfg.package];
       sessionVariables = {
         _ZO_DATA_DIR = "${config.xdg.dataHome}/zoxide";
       };
@@ -30,7 +24,8 @@ in {
 
     # Upstream programs.zoxide owns every shell's init (initExtra,
     # initContent, interactiveShellInit, extraConfig). No manual fragments;
-    # integrations follow the enabled shells.
+    # it exposes enable*Integration for bash, zsh, fish and nushell, so the
+    # flags merge is safe here (unlike eza, which must exclude nushell).
     programs.zoxide =
       {
         enable = true;

@@ -12,8 +12,8 @@ GitHub Actions runs five workflows:
 1. **`check.yml`** — the main gate. Runs `nix flake check` on `x86_64-linux`
    and `aarch64-darwin`, covering unit checks, integration checks, production
    host/home builds, and package builds.
-2. **`fmt.yml`** — runs the treefmt check (`statix`, `deadnix`, `typos`,
-   formatters) on Linux only.
+2. **`fmt.yml`** — runs the treefmt check (`statix`, `deadnix`, formatters) on
+   Linux only.
 3. **`build-dev-shells.yml`** — builds every dev shell on both platforms so the
    closures are cached.
 4. **`update-flakes.yml`** — nightly dependency bump that opens a PR when
@@ -62,8 +62,8 @@ workloads.
 
 ## Caching
 
-- **Pulls**: every run pulls from `nix-community` and the project cache
-  `anyrun` (via `cachix-action`).
+- **Pulls**: `check.yml` and `build-dev-shells.yml` pull from `nix-community`
+  and the project cache `anyrun` (via `cachix-action`).
 - **Pushes**: the workflows contain `authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}`.
   Until that secret is set in the repo, results are not pushed back — builds
   are fast when inputs are already cached, slow on first build. Set the secret

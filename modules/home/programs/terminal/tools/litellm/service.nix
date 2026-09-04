@@ -43,6 +43,7 @@ in {
   config = lib.mkIf (cfg.enable && serviceCfg.enable) {
     home.activation.createLiteLLMStateDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
       $DRY_RUN_CMD mkdir -p ${lib.escapeShellArg logDir}
+      $DRY_RUN_CMD chmod 700 ${lib.escapeShellArg logDir}
     '';
 
     systemd.user.services.litellm = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {

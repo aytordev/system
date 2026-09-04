@@ -12,7 +12,6 @@ in {
     package = lib.mkPackageOption pkgs "btop" {};
   };
   config = mkIf cfg.enable {
-    home.packages = [cfg.package];
     programs.btop = {
       enable = true;
       inherit (cfg) package;

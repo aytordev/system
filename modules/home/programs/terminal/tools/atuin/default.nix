@@ -4,30 +4,38 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption optionalAttrs;
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    optionalAttrs
+    mkPackageOption
+    mkOption
+    types
+    ;
   cfg = config.aytordev.programs.terminal.tools.atuin;
 in {
   options.aytordev.programs.terminal.tools.atuin = {
     enable = mkEnableOption "atuin";
-    package = lib.mkPackageOption pkgs "atuin" {};
+    package = mkPackageOption pkgs "atuin" {};
     enableDebug = mkEnableOption "atuin daemon debug logging";
-    enableBashIntegration = lib.mkOption {
-      type = lib.types.bool;
+    enableBashIntegration = mkOption {
+      type = types.bool;
       default = (lib.aytordev.shellIntegration config).shellEnabled "bash";
       description = "atuin bash integration";
     };
-    enableFishIntegration = lib.mkOption {
-      type = lib.types.bool;
+    enableFishIntegration = mkOption {
+      type = types.bool;
       default = (lib.aytordev.shellIntegration config).shellEnabled "fish";
       description = "atuin fish integration";
     };
-    enableZshIntegration = lib.mkOption {
-      type = lib.types.bool;
+    enableZshIntegration = mkOption {
+      type = types.bool;
       default = (lib.aytordev.shellIntegration config).shellEnabled "zsh";
       description = "atuin zsh integration";
     };
-    enableNushellIntegration = lib.mkOption {
-      type = lib.types.bool;
+    enableNushellIntegration = mkOption {
+      type = types.bool;
       default = (lib.aytordev.shellIntegration config).shellEnabled "nushell";
       description = "atuin nushell integration";
     };

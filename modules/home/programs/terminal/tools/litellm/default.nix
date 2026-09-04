@@ -9,6 +9,7 @@
     mkIf
     mkOption
     mkEnableOption
+    mkPackageOption
     types
     ;
 
@@ -74,11 +75,7 @@ in {
   options.aytordev.programs.terminal.tools.litellm = {
     enable = mkEnableOption "LiteLLM unified proxy for LLM model routing";
 
-    package = mkOption {
-      type = types.package;
-      default = pkgs.litellm;
-      description = "The LiteLLM package to use";
-    };
+    package = mkPackageOption pkgs "litellm" {};
 
     host = mkOption {
       type = types.str;

@@ -76,6 +76,9 @@ in {
           $DRY_RUN_CMD mkdir -p \
             ${lib.escapeShellArg "${config.xdg.dataHome}/ollama/models"} \
             ${lib.escapeShellArg logDir}
+          $DRY_RUN_CMD chmod 700 \
+            ${lib.escapeShellArg "${config.xdg.dataHome}/ollama/models"} \
+            ${lib.escapeShellArg logDir}
         '';
       }
 

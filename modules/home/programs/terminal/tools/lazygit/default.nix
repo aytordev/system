@@ -3,20 +3,20 @@
   lib,
   pkgs,
   ...
-}: {
+}: let
+  inherit (lib) mkIf mkEnableOption mkPackageOption;
+  cfg = config.aytordev.programs.terminal.tools.lazygit;
+in {
   options.aytordev.programs.terminal.tools.lazygit = {
-    enable = lib.mkEnableOption "lazygit";
-    package = lib.mkPackageOption pkgs "lazygit" {};
+    enable = mkEnableOption "lazygit";
+    package = mkPackageOption pkgs "lazygit" {};
   };
-  config = lib.mkIf config.aytordev.programs.terminal.tools.lazygit.enable {
-    home.packages = [
-      config.aytordev.programs.terminal.tools.lazygit.package
-    ];
-    programs.lazygit = {
-      enable = true;
-      package = config.aytordev.programs.terminal.tools.lazygit.package;
-      settings =
-        {
+  config = mkIf cfg.enable {
+    programs.lazygit =
+      {
+        enable = true;
+        inherit (cfg) package;
+        settings = {
           customCommands = import ./custom-commands.nix;
           gui = {
             authorColors = {
@@ -43,9 +43,9 @@
           os = {
             editPreset = "nvim";
           };
-        }
-        // (lib.aytordev.shellIntegration config).flags;
-    };
+        };
+      }
+      // (lib.aytordev.shellIntegration config).flags;
     # The shell-integration wrapper owns `lg` (lazygit + cd on exit). No manual
     # alias/conf.d: a bare alias would shadow the wrapper in bash/fish/nushell.
   };

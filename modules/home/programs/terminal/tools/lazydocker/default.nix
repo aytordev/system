@@ -3,15 +3,19 @@
   lib,
   pkgs,
   ...
-}: {
+}: let
+  inherit (lib) mkIf mkEnableOption mkPackageOption;
+  cfg = config.aytordev.programs.terminal.tools.lazydocker;
+in {
   options.aytordev.programs.terminal.tools.lazydocker = {
-    enable = lib.mkEnableOption "lazydocker";
-    package = lib.mkPackageOption pkgs "lazydocker" {};
+    enable = mkEnableOption "lazydocker";
+    package = mkPackageOption pkgs "lazydocker" {};
   };
-  config = lib.mkIf config.aytordev.programs.terminal.tools.lazydocker.enable {
-    home.packages = [
-      config.aytordev.programs.terminal.tools.lazydocker.package
-    ];
+  config = mkIf cfg.enable {
+    programs.lazydocker = {
+      enable = true;
+      inherit (cfg) package;
+    };
     home.shellAliases = {
       dcd = "docker-compose down";
       dcu = "docker-compose up -d";

@@ -2,7 +2,7 @@
 
 **Impact:** CRITICAL
 
-ALL options must be under the `aytordev.*` namespace. Use `mkOpt` for concise option definitions. Use `mkEnableOption` for enable flags. Access user context via `config.aytordev.user`.
+ALL options must be under the `aytordev.*` namespace. Use `lib.mkOption` for option definitions. Use `mkEnableOption` for enable flags. Access user context via `config.aytordev.user`.
 
 **Incorrect (Global Namespace):**
 
@@ -27,14 +27,17 @@ ALL options must be under the `aytordev.*` namespace. Use `mkOpt` for concise op
 { config, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption;
-  inherit (lib.aytordev) mkOpt;
   cfg = config.aytordev.programs.myApp;
   user = config.aytordev.user;
 in
 {
   options.aytordev.programs.myApp = {
     enable = mkEnableOption "My App";
-    userName = mkOpt lib.types.str user.fullName "Display name";
+    userName = lib.mkOption {
+      type = lib.types.str;
+      default = user.fullName;
+      description = "Display name";
+    };
   };
 
   config = mkIf cfg.enable {

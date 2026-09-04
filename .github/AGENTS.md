@@ -22,7 +22,7 @@ are no non-Nix build steps.
 | Workflow | Trigger | Runs | Purpose |
 | --- | --- | --- | --- |
 | `check.yml` | PR, push to `main`, manual | ubuntu + macos | `nix flake check` (unit/integration/production checks + package builds) plus `flake-checker` input hygiene |
-| `fmt.yml` | PR, push to `main`, manual | ubuntu | `nix build .#checks.x86_64-linux.treefmt` — formatting, lint (statix), dead code (deadnix), typos |
+| `fmt.yml` | PR, push to `main`, manual | ubuntu | `nix build .#checks.x86_64-linux.treefmt` — formatting, lint (statix), dead code (deadnix) |
 | `build-dev-shells.yml` | PR/push (path-filtered), weekly | ubuntu + macos | build and cache every dev shell in Cachix (`anyrun`) |
 | `update-flakes.yml` | nightly + manual | ubuntu | bump inputs, open a PR when `nixpkgs` changed |
 | `label.yml` | PR | ubuntu | apply area labels from `.github/labeler.yml` |
@@ -61,7 +61,7 @@ nix build .#checks.x86_64-linux.treefmt --override-input secrets path:./checks/f
 
 ## Cost & Runtime Model
 
-- **4 core runs per PR** on open/sync: `check` × 2 platforms + `fmt` × 1
+- **3 core runs per PR** on open/sync: `check` × 2 platforms + `fmt` × 1
   (+ dev-shells only when `dev-shells/**` or flake files change).
 - `concurrency: { group: <wf>-${{ github.ref }}, cancel-in-progress: true }`
   cancels superseded runs on the same branch/PR, so rapid pushes only pay for

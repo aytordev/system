@@ -66,8 +66,11 @@ normalized `identity` result is passed down.
 
 - **file**: File operations (getFile, importDir, scanDir, etc.)
 - **identity**: Normalizes secret metadata into full/email/username
-- **module**: Module helpers (enabled, mkOpt, mkBoolOpt, mkModule,
-  shellIntegration)
+- **module**: Module helpers — full set validated by `checks/library-exports`
+  (`checks/library-exports/golden.nix`): `enabled`, `disabled`, `enable`,
+  `enableForSystem`, `mkOpt`, `mkOpt'`, `mkBoolOpt`, `mkBoolOpt'`,
+  `shellIntegration`, `capitalize`, `boolToNum`, `default-attrs`, `force-attrs`,
+  `nested-default-attrs`, `nested-force-attrs`, `mkModule` (test-only).
 - **system**: System builders (mkDarwin, mkHome)
 - **overlay**: Overlay creation helpers
 

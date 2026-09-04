@@ -45,12 +45,12 @@ in {
   };
   config = mkIf cfg.enable {
     home.packages = [
-      cfg.package
       pkgs.fd
       pkgs.zsh-fzf-tab
     ];
     home.activation.createFzfDataDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
       $DRY_RUN_CMD mkdir -p "${config.xdg.dataHome}/fzf"
+      $DRY_RUN_CMD chmod 700 "${config.xdg.dataHome}/fzf"
     '';
     programs =
       {

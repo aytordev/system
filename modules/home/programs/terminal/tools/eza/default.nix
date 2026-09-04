@@ -16,7 +16,6 @@ in {
       si = lib.aytordev.shellIntegration config;
       eza = getExe cfg.package;
     in {
-      home.packages = [cfg.package];
       programs.eza =
         {
           enable = true;

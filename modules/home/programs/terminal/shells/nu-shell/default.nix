@@ -22,9 +22,6 @@ in {
   };
   config = mkIf cfg.enable (mkMerge [
     {
-      home.packages = with pkgs; [
-        cfg.package
-      ];
       programs.nushell = {
         enable = true;
         inherit (cfg) package;

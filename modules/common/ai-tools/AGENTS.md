@@ -81,3 +81,6 @@ ai-tools/
 | comment-writer | workflow | Write warm, direct collaboration comments |
 | issue-creation | workflow | Create GitHub issues with issue-first checks |
 | work-unit-commits | workflow | Plan commits as reviewable work units |
+
+> `dotfiles-coder/rules/patterns-module.md` is the canonical module template
+> (per-class variants + style rules). Subtree `AGENTS.md` files reference it.

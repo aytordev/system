@@ -4,6 +4,15 @@
   pkgs,
   ...
 }: let
+  inherit
+    (lib)
+    mkIf
+    mkEnableOption
+    mkPackageOption
+    mkOption
+    types
+    concatStrings
+    ;
   cfg = config.aytordev.programs.terminal.tools.starship;
   themeCfg = config.aytordev.theme;
   inherit (themeCfg) palette;
@@ -156,7 +165,7 @@
       scan_timeout = 30;
       palette = "kanagawa_wave";
 
-      format = lib.concatStrings formatModules + "\n" + lib.concatStrings promptModules;
+      format = concatStrings formatModules + "\n" + concatStrings promptModules;
 
       inherit palettes;
 
@@ -314,17 +323,17 @@
     // languageModules;
 in {
   options.aytordev.programs.terminal.tools.starship = {
-    enable = lib.mkEnableOption "Starship prompt";
-    package = lib.mkPackageOption pkgs "starship" {};
+    enable = mkEnableOption "Starship prompt";
+    package = mkPackageOption pkgs "starship" {};
 
-    palette = lib.mkOption {
-      type = lib.types.str;
+    palette = mkOption {
+      type = types.str;
       default = "kanagawa";
       description = "Color palette to use for Starship prompt. Defaults to 'kanagawa' which adapts to the global theme variant.";
     };
 
-    settings = lib.mkOption {
-      type = lib.types.attrs;
+    settings = mkOption {
+      type = types.attrs;
       default =
         starshipConfig
         // {
@@ -333,33 +342,31 @@ in {
       description = "Starship configuration options";
     };
 
-    enableBashIntegration = lib.mkOption {
-      type = lib.types.bool;
+    enableBashIntegration = mkOption {
+      type = types.bool;
       default = (lib.aytordev.shellIntegration config).shellEnabled "bash";
       description = "Whether to enable Starship integration with Bash";
     };
-    enableFishIntegration = lib.mkOption {
-      type = lib.types.bool;
+    enableFishIntegration = mkOption {
+      type = types.bool;
       default = (lib.aytordev.shellIntegration config).shellEnabled "fish";
       description = "Whether to enable Starship integration with Fish";
     };
-    enableZshIntegration = lib.mkOption {
-      type = lib.types.bool;
+    enableZshIntegration = mkOption {
+      type = types.bool;
       default = (lib.aytordev.shellIntegration config).shellEnabled "zsh";
       description = "Whether to enable Starship integration with Zsh";
     };
-    enableNushellIntegration = lib.mkOption {
-      type = lib.types.bool;
+    enableNushellIntegration = mkOption {
+      type = types.bool;
       default = (lib.aytordev.shellIntegration config).shellEnabled "nushell";
       description = "Whether to enable Starship integration with Nushell";
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     # Upstream programs.starship owns the config file, STARSHIP_CONFIG, and
     # every shell's init. No wrapper binary or manual init fragments.
-    home.packages = [cfg.package];
-
     programs.starship = {
       enable = true;
       inherit (cfg) package;

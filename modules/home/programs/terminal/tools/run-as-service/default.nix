@@ -25,6 +25,6 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [runAsService];
+    home.packages = lib.mkIf pkgs.stdenv.hostPlatform.isLinux [runAsService];
   };
 }

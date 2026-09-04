@@ -32,12 +32,14 @@ in
   ...
 }:
 let
-  inherit (lib) mkIf mkEnableOption mkOption types;
+  inherit (lib) mkIf mkEnableOption mkPackageOption mkOption types;
   cfg = config.system.defaults.custom;
 in
 {
   options.system.defaults.custom = {
     enable = mkEnableOption "macOS system tweaks";
+
+    package = mkPackageOption pkgs "myTool" {};
 
     dockAutohide = mkOption {
       type = types.bool;
@@ -47,6 +49,9 @@ in
   };
 
   config = mkIf cfg.enable {
+    # Package installation (nix-darwin ships environment.systemPackages)
+    environment.systemPackages = [ cfg.package ];
+
     # macOS system defaults
     system.defaults = {
       dock = {

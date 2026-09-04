@@ -14,7 +14,10 @@ Cross-platform shared modules used by both NixOS and nix-darwin systems.
 - Do not place host identity, secret values, or concrete home paths in reusable
   modules.
 
-See `docs/decisions/0008-module-contract-v1.md` for the complete contract.
+See `docs/decisions/0008-module-contract-v1.md` for the complete contract. The
+canonical module template (per-class variants + style rules) lives in the
+**`dotfiles-coder` skill**
+(`modules/common/ai-tools/skills/dotfiles-coder/rules/patterns-module.md`).
 
 ## Module Categories
 
@@ -39,15 +42,18 @@ Code agents, slash commands, and skills for this repository.
   diverges from the on-disk tree (`skills/*/SKILL.md`, `commands/*/*.nix`,
   `agents/*/*.nix`), so the doc can never go stale silently.
 
-### Nix Utilities (`nix/`)
+### Nix (`nix/`)
 
-Nix language helpers, custom lib functions, and build utilities.
+A cross-platform capability module that configures the Nix daemon/install
+(not lib helpers). It owns `aytordev.nix`, gated on `mkIf cfg.enable`:
 
-**Patterns:**
+- `enable` — whether to apply the common Nix configuration.
+- `package` — the Nix instance to use (replaceable; defaults to nixpkgs
+  `nixVersions.latest`).
+- `extraTrustedUsers` — additional users allowed and trusted by the Nix daemon.
 
-- Pure functions for configuration generation
-- Reusable abstractions to reduce repetition
-- Use `lib.` prefix for all lib functions
+It applies `nix.settings` (sandbox, gc, optimise, trusted users, experimental
+features, etc.) and installs essential CLI packages.
 
 ### programs (`programs/`)
 

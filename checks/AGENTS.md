@@ -7,16 +7,19 @@ define checks run across the system and in CI.
 
 Checks are automatically discovered by `flake/dev/checks/default.nix`, which
 scans this directory for subdirectories containing a `default.nix` and imports
-them. The loader assigns a verification-level prefix based on the check name.
+them. The loader assigns the prefix from a hardcoded allow-list (unit/production);
+any other check directory becomes integration.
 
 ## Verification Levels
 
 - `unit-*`: Pure contracts, parsers, and architecture policies
-  (`ai-tools-inventory`, `architecture-layers`, `file-parsers`, `input-policy`,
-  `library-exports`, `library-overlay`, `lua-shell-quoting`,
-  `nix-unit`, `parse-lix`, `parse-nix`).
+  (`ai-tools-inventory`, `architecture-layers`, `file-parsers`,
+  `home-users-contract`, `input-policy`, `library-exports`,
+  `library-overlay`, `lua-shell-quoting`, `nix-unit`, `parse-lix`,
+  `parse-nix`).
 - `integration-*`: Synthetic Home Manager and system compositions
-  (`home-bitwarden`, `home-identity`, `home-module`, `home-portability`,
+  (`docs-generation`, `home-bitwarden`, `home-identity`, `home-module`,
+  `home-portability`,
   `module-contract`, `shell-init-uniqueness`, `shell-runtime-syntax`,
   `shell-history-privacy`, `shell-closure`, `activation-dry-run`,
   `shell-platform-consistency`, `synthetic-darwin`, `synthetic-home`,
@@ -55,6 +58,9 @@ nix flake check --override-input secrets path:./checks/fixtures/secrets
 1. Create a new directory for your check (e.g., `checks/security-audit/`).
 2. Add a `default.nix` file.
 3. Define your check derivation or module.
+4. To publish a check as `unit-*` or `production-*`, add its directory name to
+   `unitCheckNames`/`productionCheckNames` in `flake/dev/checks/default.nix`;
+   by default new checks are `integration-*`.
 
 ```nix
 { pkgs, ... }:
