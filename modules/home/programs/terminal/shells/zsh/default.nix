@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}: let
-  inherit
-    (lib)
+}:
+let
+  inherit (lib)
     mkIf
     mkEnableOption
     mkMerge
@@ -14,28 +14,28 @@
   cfg = config.aytordev.programs.terminal.shells.zsh;
   xdgDataHome = "${config.xdg.dataHome}";
   xdgCacheHome = "${config.xdg.cacheHome}";
-in {
+in
+{
   options.aytordev.programs.terminal.shells.zsh = {
     enable = mkEnableOption "Z shell with useful defaults";
-    package = mkPackageOption pkgs "zsh" {};
+    package = mkPackageOption pkgs "zsh" { };
   };
   config = mkIf cfg.enable (mkMerge [
     {
       home = {
         packages = with pkgs; [
-          cfg.package
           zsh-completions
         ];
         activation = {
-          zshDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+          zshDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
             $DRY_RUN_CMD mkdir -p "${config.xdg.configHome}/zsh"
             $DRY_RUN_CMD chmod 700 "${config.xdg.configHome}/zsh"
           '';
-          zshSessionDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+          zshSessionDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
             export ZSH_SESSION_DIR="${config.xdg.dataHome}/zsh/sessions"
             $DRY_RUN_CMD mkdir -p "$ZSH_SESSION_DIR"
             $DRY_RUN_CMD chmod 700 "$ZSH_SESSION_DIR"
-            if [ "$(uname -s)" = "Darwin" ]; then
+            ${lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
               OLD_SESSION_DIR="$HOME/.zsh_sessions"
               if [ -d "$OLD_SESSION_DIR" ] && [ ! -L "$OLD_SESSION_DIR" ]; then
                 $DRY_RUN_CMD echo "Migrando sesiones Zsh antiguas a directorio XDG..."
@@ -46,7 +46,7 @@ in {
                 $DRY_RUN_CMD ln -sf "$ZSH_SESSION_DIR" "$OLD_SESSION_DIR"
               fi
               unset OLD_SESSION_DIR STAMP
-            fi
+            ''}
           '';
         };
       };
