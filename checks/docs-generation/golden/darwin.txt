@@ -9,6 +9,8 @@
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.enable
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.logPaths\.stderr
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.logPaths\.stdout
+## aytordev\.programs\.terminal\.shells\.enable
+## aytordev\.programs\.terminal\.shells\.package
 ## aytordev\.programs\.terminal\.shells\.default
 ## aytordev\.programs\.terminal\.shells\.loginPackage
 ## aytordev\.programs\.terminal\.tools\.atuin\.enable
@@ -60,6 +62,7 @@
 ## aytordev\.tools\.homebrew\.enable
 ## aytordev\.tools\.homebrew\.idempotentActivation
 ## aytordev\.tools\.homebrew\.masEnable
+## aytordev\.user\.enable
 ## aytordev\.user\.email
 ## aytordev\.user\.fullName
 ## aytordev\.user\.name

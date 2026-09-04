@@ -307,6 +307,7 @@
 ## aytordev\.suites\.networking\.enable
 ## aytordev\.suites\.social\.enable
 ## aytordev\.system\.input\.enable
+## aytordev\.system\.xdg\.enable
 ## aytordev\.theme\.allVariantPalettes
 ## aytordev\.theme\.allVariantPalettes\.\<name>\.accent
 ## aytordev\.theme\.allVariantPalettes\.\<name>\.accent\.hex
