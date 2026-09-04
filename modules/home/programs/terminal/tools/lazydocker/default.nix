@@ -12,7 +12,10 @@ in {
     package = mkPackageOption pkgs "lazydocker" {};
   };
   config = mkIf cfg.enable {
-    home.packages = [cfg.package];
+    programs.lazydocker = {
+      enable = true;
+      inherit (cfg) package;
+    };
     home.shellAliases = {
       dcd = "docker-compose down";
       dcu = "docker-compose up -d";
