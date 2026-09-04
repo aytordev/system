@@ -9,12 +9,32 @@
   themeCfg = config.aytordev.theme;
   inherit (themeCfg) palette;
 
-  zns = "zellij -s $(basename $(pwd)) options --default-cwd $(pwd)";
-  zas = "zellij a $(basename $(pwd))";
-  zo = ''
-    session_name=$(basename "$(pwd)")
-    zellij attach --create "$session_name" options --default-cwd "$(pwd)"
-  '';
+  # zns/zas/zo need command substitution and a local variable; put the logic in
+  # a bin so it is shell-agnostic and `exec` preserves the TTY/signals for the
+  # interactive multiplexer. The aliases become thin, Nu-safe forwards.
+  zellijSession = pkgs.writeShellApplication {
+    name = "zellij-session";
+    runtimeInputs = [pkgs.zellij];
+    text = ''
+      mode="''${1:-}"
+      session_name="$(basename "$(pwd)")"
+      case "$mode" in
+        new)
+          exec ${lib.getExe cfg.package} -s "$session_name" options --default-cwd "$(pwd)"
+          ;;
+        attach)
+          exec ${lib.getExe cfg.package} a "$session_name"
+          ;;
+        open)
+          exec ${lib.getExe cfg.package} attach --create "$session_name" options --default-cwd "$(pwd)"
+          ;;
+        *)
+          echo "usage: zellij-session {new|attach|open}" >&2
+          exit 1
+          ;;
+      esac
+    '';
+  };
 in {
   imports = [
     ./keybinds.nix
@@ -26,13 +46,13 @@ in {
     package = lib.mkPackageOption pkgs "zellij" {};
   };
   config = mkIf cfg.enable {
+    home.packages = [zellijSession];
+    home.shellAliases = {
+      zns = "zellij-session new";
+      zas = "zellij-session attach";
+      zo = "zellij-session open";
+    };
     programs = {
-      bash.shellAliases = {
-        inherit zns zas zo;
-      };
-      zsh.shellAliases = {
-        inherit zns zas zo;
-      };
       zellij = {
         enable = true;
         inherit (cfg) package;

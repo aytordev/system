@@ -39,6 +39,7 @@
     "mkOpt'"
     "nested-default-attrs"
     "nested-force-attrs"
+    "shellIntegration"
   ];
   system = [
     "common"

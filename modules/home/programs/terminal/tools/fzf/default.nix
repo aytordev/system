@@ -26,7 +26,8 @@
     "--border=rounded"
   ];
   defaultCommand = "${pkgs.fd}/bin/fd --type=f --hidden --exclude=.git";
-  shellIntegration = import ./shell-integration.nix {inherit cfg pkgs;};
+  si = lib.aytordev.shellIntegration config;
+  shellIntegration = import ./shell-integration.nix {inherit cfg pkgs si;};
 in {
   options.aytordev.programs.terminal.tools.fzf = {
     enable = mkEnableOption "fuzzy finder";
@@ -49,17 +50,19 @@ in {
       pkgs.zsh-fzf-tab
     ];
     home.activation.createFzfDataDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      mkdir -p "${config.xdg.dataHome}/fzf"
+      $DRY_RUN_CMD mkdir -p "${config.xdg.dataHome}/fzf"
     '';
     programs =
       {
-        fzf = {
-          enable = true;
-          inherit (cfg) package;
-          inherit (cfg) defaultCommand;
-          defaultOptions = defaultOptions ++ cfg.extraOptions;
-          historyWidget.command = "";
-        };
+        fzf =
+          {
+            enable = true;
+            inherit (cfg) package;
+            inherit (cfg) defaultCommand;
+            defaultOptions = defaultOptions ++ cfg.extraOptions;
+            historyWidget.command = "";
+          }
+          // si.flags;
       }
       // shellIntegration;
   };

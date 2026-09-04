@@ -7,9 +7,6 @@
   cfg = config.aytordev.programs.terminal.tools.starship;
   themeCfg = config.aytordev.theme;
   inherit (themeCfg) palette;
-  xdgConfigHome = "${config.xdg.configHome}";
-  starshipConfigDir = "${xdgConfigHome}/starship";
-  starshipConfigFile = "${starshipConfigDir}/config.toml";
 
   # Helper: Create language module config
   mkLang = {
@@ -315,65 +312,62 @@
       };
     }
     // languageModules;
-  shellIntegration = import ./shell-integration.nix {
-    inherit
-      cfg
-      lib
-      starshipConfigDir
-      starshipConfigFile
-      ;
-    xdgCacheHome = "${config.xdg.cacheHome}";
-  };
 in {
-  options.aytordev.programs.terminal.tools.starship =
-    {
-      enable = lib.mkEnableOption "Starship prompt";
-      package = lib.mkPackageOption pkgs "starship" {};
+  options.aytordev.programs.terminal.tools.starship = {
+    enable = lib.mkEnableOption "Starship prompt";
+    package = lib.mkPackageOption pkgs "starship" {};
 
-      palette = lib.mkOption {
-        type = lib.types.str;
-        default = "kanagawa";
-        description = "Color palette to use for Starship prompt. Defaults to 'kanagawa' which adapts to the global theme variant.";
-      };
+    palette = lib.mkOption {
+      type = lib.types.str;
+      default = "kanagawa";
+      description = "Color palette to use for Starship prompt. Defaults to 'kanagawa' which adapts to the global theme variant.";
+    };
 
-      settings = lib.mkOption {
-        type = lib.types.attrs;
-        default =
-          starshipConfig
-          // {
-            inherit (cfg) palette;
-          };
-        description = "Starship configuration options";
-      };
-    }
-    // shellIntegration.options;
+    settings = lib.mkOption {
+      type = lib.types.attrs;
+      default =
+        starshipConfig
+        // {
+          inherit (cfg) palette;
+        };
+      description = "Starship configuration options";
+    };
 
-  config = lib.mkIf cfg.enable (
-    lib.mkMerge [
-      {
-        home.packages = [
-          (pkgs.writeShellScriptBin "starship" ''
-            export STARSHIP_CONFIG="${starshipConfigFile}"
-            export STARSHIP_CONFIG_DIR="${starshipConfigDir}"
-            unset STARSHIP_LOG
-            unset STARSHIP_CACHE
-            export TMPDIR="${config.xdg.cacheHome}/starship-tmp"
-            mkdir -p "$TMPDIR"
-            chmod 700 "$TMPDIR"
-            exec ${cfg.package}/bin/starship "$@"
-          '')
-        ];
+    enableBashIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "bash";
+      description = "Whether to enable Starship integration with Bash";
+    };
+    enableFishIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "fish";
+      description = "Whether to enable Starship integration with Fish";
+    };
+    enableZshIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "zsh";
+      description = "Whether to enable Starship integration with Zsh";
+    };
+    enableNushellIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "nushell";
+      description = "Whether to enable Starship integration with Nushell";
+    };
+  };
 
-        xdg.configFile."starship/config.toml".source =
-          (pkgs.formats.toml {}).generate "starship-config"
-          cfg.settings;
+  config = lib.mkIf cfg.enable {
+    # Upstream programs.starship owns the config file, STARSHIP_CONFIG, and
+    # every shell's init. No wrapper binary or manual init fragments.
+    home.packages = [cfg.package];
 
-        home.activation.createStarshipTmpDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
-          $DRY_RUN_CMD mkdir -p "${config.xdg.cacheHome}/starship-tmp"
-          $DRY_RUN_CMD chmod 700 "${config.xdg.cacheHome}/starship-tmp"
-        '';
-      }
-      shellIntegration.config
-    ]
-  );
+    programs.starship = {
+      enable = true;
+      inherit (cfg) package;
+      inherit (cfg) settings;
+      inherit (cfg) enableBashIntegration;
+      inherit (cfg) enableFishIntegration;
+      inherit (cfg) enableZshIntegration;
+      inherit (cfg) enableNushellIntegration;
+    };
+  };
 }

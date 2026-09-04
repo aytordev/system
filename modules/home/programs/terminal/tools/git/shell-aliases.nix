@@ -14,7 +14,4 @@ in {
   allAliases = lib.foldl' (acc: x: acc // x) {} [
     coreAliases
   ];
-  generateGitAliasesFile = aliases: ''
-    ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: value: "alias ${name}='${value}'") aliases)}
-  '';
 }

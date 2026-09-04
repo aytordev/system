@@ -45,14 +45,23 @@
           sudo systemctl restart nix-daemon.service
         fi
       '';
-      remove-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -delete";
-      print-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -print";
       usage = "${getExe' pkgs.coreutils "du"} -ah -d1 | sort -rn 2>/dev/null";
       psg = "${getExe pkgs.ps} aux | grep";
       hmvar-reload = ''unset __HM_SESS_VARS_SOURCED; source "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"'';
     }
     // lib.optionalAttrs fastfetchCfg.enable {
       clear = "clear; ${getExe fastfetchCfg.package}";
+    };
+  # POSIX-style aliases with ';' or 'command' would break Nushell (a ';' in the
+  # value executes a bare command at config.nu load time), so they live on the
+  # shells that understand them.
+  posixAliases =
+    {
+      cleanup = "sudo nix-collect-garbage --delete-older-than 3d; nix-collect-garbage -d";
+    }
+    // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+      # Prevent the shell alias from overriding the macOS log command.
+      log = "command log";
     };
 in {
   options.aytordev.suites.common = {
@@ -84,10 +93,11 @@ in {
         WGETRC = "${config.xdg.configHome}/wgetrc";
       };
 
-      # Only shell-agnostic aliases in home.shellAliases (applies to all shells including Nushell)
+      # Only shell-agnostic aliases in home.shellAliases. These fan out to all
+      # shells including Nushell, so each value must be a single command with
+      # no ';', '$(' or 'command' (which Nu parses differently).
       shellAliases =
         {
-          cleanup = "sudo nix-collect-garbage --delete-older-than 3d; nix-collect-garbage -d";
           bloat = "nix path-info -Sh /run/current-system";
           curgen = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
           repair = "nix-store --verify --check-contents --repair";
@@ -101,6 +111,8 @@ in {
           wget = "${getExe pkgs.wget} -c ";
           dfh = "${getExe' pkgs.coreutils "df"} -h";
           duh = "${getExe' pkgs.coreutils "du"} -h";
+          remove-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -delete";
+          print-empty = "${getExe' pkgs.findutils "find"} . -type d -empty -print";
           home = "cd ~";
           ".." = "cd ..";
           "..." = "cd ../..";
@@ -117,11 +129,7 @@ in {
           genpass = "${getExe pkgs.openssl} rand -base64 20";
           sha = "shasum -a 256";
         }
-        // lib.optionalAttrs (nhFlake != null) {nixcfg = "nvim ${nhFlake}/flake.nix";}
-        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
-          # Prevent the shell alias from overriding the macOS log command.
-          log = "command log";
-        };
+        // lib.optionalAttrs (nhFlake != null) {nixcfg = "nvim ${nhFlake}/flake.nix";};
     };
 
     home.packages = with pkgs;
@@ -206,8 +214,9 @@ in {
       home-manager.enable = mkDefault true;
       # FIXME: breaks zsh aliases
       # pay-respects = mkDefault enabled;
-      bash.shellAliases = bashAliases;
-      zsh.shellAliases = bashAliases;
+      bash.shellAliases = bashAliases // posixAliases;
+      zsh.shellAliases = bashAliases // posixAliases;
+      fish.shellAliases = posixAliases;
       readline = {
         enable = mkDefault true;
 

@@ -15,45 +15,38 @@
     programs.lazygit = {
       enable = true;
       package = config.aytordev.programs.terminal.tools.lazygit.package;
-      settings = {
-        customCommands = import ./custom-commands.nix;
-        gui = {
-          authorColors = {
-            "${config.aytordev.user.fullName}" = "#957fb8";
-            "dependabot[bot]" = "#c0a36e";
+      settings =
+        {
+          customCommands = import ./custom-commands.nix;
+          gui = {
+            authorColors = {
+              "${config.aytordev.user.fullName}" = "#957fb8";
+              "dependabot[bot]" = "#c0a36e";
+            };
+            branchColors = {
+              main = "#c34043";
+              master = "#c34043";
+              dev = "#7e9cd8";
+            };
+            nerdFontsVersion = "3";
+            showListFooter = false;
+            showRandomTip = false;
+            expandFocusedSidePanel = true;
           };
-          branchColors = {
-            main = "#c34043";
-            master = "#c34043";
-            dev = "#7e9cd8";
+          git = {
+            overrideGpg = true;
+            mainBranches = [
+              "main"
+              "master"
+            ];
           };
-          nerdFontsVersion = "3";
-          showListFooter = false;
-          showRandomTip = false;
-          expandFocusedSidePanel = true;
-        };
-        git = {
-          overrideGpg = true;
-          mainBranches = [
-            "main"
-            "master"
-          ];
-        };
-        os = {
-          editPreset = "nvim";
-        };
-      };
+          os = {
+            editPreset = "nvim";
+          };
+        }
+        // (lib.aytordev.shellIntegration config).flags;
     };
-    home.shellAliases = {
-      lg = "lazygit";
-    };
-    xdg.configFile."bash/conf.d/lazygit.sh" = {
-      text = ''
-        if command -v lazygit &> /dev/null; then
-          alias lg='lazygit'
-        fi
-      '';
-      executable = true;
-    };
+    # The shell-integration wrapper owns `lg` (lazygit + cd on exit). No manual
+    # alias/conf.d: a bare alias would shadow the wrapper in bash/fish/nushell.
   };
 }

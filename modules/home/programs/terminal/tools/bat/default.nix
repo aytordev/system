@@ -27,11 +27,10 @@ in {
         prettybat
       ];
     };
+    # cat is a drop-in for bat in every shell (nushell has no cat builtin, so
+    # no conflict). No --style override: let cat honor the configured style.
     home.shellAliases = {
-      cat = "${getExe cfg.package} --style=auto";
+      cat = "${getExe cfg.package}";
     };
-    xdg.configFile."bash/conf.d/bat.sh".text = ''
-      alias cat="${cfg.package}/bin/bat --style=auto"
-    '';
   };
 }

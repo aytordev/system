@@ -35,6 +35,7 @@ in {
       historyControl = [
         "ignoredups"
         "erasedups"
+        "ignorespace"
       ];
       historyFile = "${config.xdg.dataHome}/bash/history";
 
@@ -60,7 +61,6 @@ in {
         BASH_CONFIG_DIR = "${config.xdg.configHome}/bash";
         BASH_DATA_DIR = "${config.xdg.dataHome}/bash";
         BASH_CACHE_DIR = "${config.xdg.cacheHome}/bash";
-        INPUTRC = "${config.xdg.configHome}/readline/inputrc";
         # Bash 5.3: New GLOBSORT variable for completion sorting
         GLOBSORT = "name";
       };

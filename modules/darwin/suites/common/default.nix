@@ -12,8 +12,8 @@ in {
   imports = [(lib.getFile "modules/common/suites/common/default.nix")];
 
   config = mkIf cfg.enable {
-    programs.zsh.enable = mkDefault true;
-
+    # The shells platform adapter owns programs.<shell>.enable and the login
+    # shell; this suite no longer hard-wires system zsh.
     homebrew = {
       casks = [
         "keymapp"

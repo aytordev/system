@@ -41,6 +41,19 @@ macOS-specific desktop integration and logging.
 - User-facing desktop apps (aerospace, etc.) live in Home Manager under
   `modules/home/programs/desktop/`
 
+### Terminal shells (`programs/terminal/shells/`)
+
+Darwin platform adapter for the login shell. It owns `aytordev.programs.terminal.shells`:
+
+- `default` — the login shell (`bash`/`fish`/`zsh`, default `zsh`).
+- `loginPackage` — the package backing the login shell (read-only).
+
+It registers `users.knownUsers`, sets `users.users.<name>.shell` and
+`environment.shells`, enables the matching `programs.<shell>`, and turns OFF
+nix-darwin's global `compinit`/`bashcompinit` so Home Manager owns completion.
+`modules/darwin/user` only publishes identity metadata; it no longer hardcodes
+the login shell.
+
 ### Nix (`nix/`)
 
 Nix-specific macOS configuration.

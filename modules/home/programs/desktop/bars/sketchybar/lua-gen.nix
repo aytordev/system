@@ -6,7 +6,6 @@
   cfg,
   themeCfg,
 }: let
-  inherit (lib) getExe;
   inherit (themeCfg) palette;
 
   # ── Helpers ────────────────────────────────────────────────────────────
@@ -301,22 +300,6 @@
 
   allPackages = basePackages ++ conditionalPackages ++ cfg.extraPackages;
 
-  # ── Shell Integration ──────────────────────────────────────────────────
-
-  shellAliases = {
-    restart-sketchybar = ''launchctl kickstart -k gui/"$(id -u)"/org.nix-community.home.sketchybar'';
-  };
-
-  brewIntegration = ''
-    brew() {
-      command brew "$@" && ${getExe cfg.package} --trigger brew_update
-    }
-
-    mas() {
-      command mas "$@" && ${getExe cfg.package} --trigger brew_update
-    }
-  '';
-
   # ── Generated Constants ────────────────────────────────────────────────
 
   nixConstantsLua = let
@@ -413,8 +396,6 @@
 in {
   inherit
     allPackages
-    shellAliases
-    brewIntegration
     mainConfig
     configFiles
     ;

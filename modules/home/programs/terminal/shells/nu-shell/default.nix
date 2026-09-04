@@ -24,24 +24,24 @@ in {
     {
       home.packages = with pkgs; [
         cfg.package
-        nushellPlugins.query
-        nushellPlugins.formats
-        nushellPlugins.polars
       ];
       programs.nushell = {
         enable = true;
         inherit (cfg) package;
+        # Upstream owns the plugin registry (plugin add per package). The plugin
+        # binaries are registered absolute, so they need no PATH entry.
+        plugins = with pkgs; [
+          nushellPlugins.query
+          nushellPlugins.formats
+          nushellPlugins.polars
+        ];
         envFile = {
           text = ''
             $env.XDG_CONFIG_HOME = "${xdgConfigHome}"
             $env.XDG_DATA_HOME = "${xdgDataHome}"
             $env.XDG_CACHE_HOME = "${xdgCacheHome}"
-            $env.NU_HISTORY = "${xdgDataHome}/nu/history.txt"
             $env.NU_LIB_DIRS = [
               "${xdgConfigHome}/nushell"
-            ]
-            $env.NU_PLUGIN_DIRS = [
-              "${xdgConfigHome}/nushell/plugins"
             ]
           '';
         };
@@ -89,7 +89,10 @@ in {
       };
       home.activation = {
         createXdgDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
-          $DRY_RUN_CMD mkdir -p "${xdgConfigHome}/nushell/plugins"
+          # nushell ignores NU_HISTORY and stores history.txt under the config
+          # dir; seal that dir to keep plaintext history private.
+          $DRY_RUN_CMD mkdir -p "${xdgConfigHome}/nushell"
+          $DRY_RUN_CMD chmod 700 "${xdgConfigHome}/nushell"
           $DRY_RUN_CMD mkdir -p "${xdgDataHome}/nu"
           $DRY_RUN_CMD chmod 700 "${xdgDataHome}/nu"
           $DRY_RUN_CMD mkdir -p "${xdgCacheHome}/nu"

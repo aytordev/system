@@ -229,15 +229,29 @@ home.file.".gitconfig".source = ./gitconfig;
 
 ### Shell Integration
 
-Many tools integrate with shells:
+Many tools integrate with shells. The enabled shells are the single source of
+truth: `aytordev.programs.terminal.shells.enabledNames` (read-only, derived from
+each `shells.<name>.enable`). Tie a tool's integrations to it with the helper
+`lib.aytordev.shellIntegration config`, which exposes:
+
+- `flags` — `enable{Bash,Fish,Zsh,Nushell}Integration` booleans to merge into
+  `programs.<tool>` (so an integration only materializes when its shell is on).
+- `whenShellEnabled shell value` — `mkIf`-guard a config value (e.g. a bash
+  `conf.d` drop-in) so it only materializes when that shell is enabled.
 
 ```nix
-programs.zoxide.enable = true;
-programs.zoxide.enableZshIntegration = true;
-programs.zoxide.enableBashIntegration = true;
+programs.zoxide = {
+  enable = true;
+  options = ["--cmd cd"];
+} // (lib.aytordev.shellIntegration config).flags;
 ```
 
-**Pattern:** Always enable shell integrations when available.
+**Rules for shell aliases** (see `terminal/AGENTS.md`): aliases are shell-agnostic
+strings in `home.shellAliases`; values must not contain `;`, `$(`, `command `,
+`|`, `&&`, `||` or a newline (nushell renders them verbatim). Logic, pipelines,
+or command substitution belong in a `writeShellApplication`/`writeShellScriptBin`
+bin with a thin forward alias. Never duplicate an alias in a bash `conf.d`
+drop-in, and don't shadow a tool's own shell integration wrapper.
 
 ## Application-Specific Patterns
 

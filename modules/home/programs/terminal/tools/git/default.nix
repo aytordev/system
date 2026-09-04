@@ -78,7 +78,6 @@ in {
   };
   config = let
     cfg = config.aytordev.programs.terminal.tools.git;
-    bashConfigDir = "${config.xdg.configHome}/bash/conf.d";
   in
     lib.mkIf cfg.enable (
       lib.mkMerge [
@@ -91,11 +90,10 @@ in {
           ];
           programs.git = gitConfig;
         }
+        # Bare-command shorthands reach all shells via home.shellAliases. The
+        # old bash/conf.d/git-aliases.sh duplicate is gone: home.shellAliases
+        # already fans out to bash.
         (lib.mkIf (shell-aliases.allAliases != {}) {
-          home.file."${bashConfigDir}/git-aliases.sh" = {
-            text = shell-aliases.generateGitAliasesFile shell-aliases.allAliases;
-            executable = true;
-          };
           home.shellAliases = shell-aliases.allAliases;
         })
       ]

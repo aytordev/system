@@ -10,7 +10,6 @@
     mkOption
     mkEnableOption
     types
-    optionals
     ;
 
   cfg = config.aytordev.programs.terminal.tools.ollama;
@@ -104,7 +103,10 @@ in {
           [
             cfg.package
           ]
-          ++ optionals cfg.shellAliases [
+          # The status/restart/logs bins are referenced by opencode/claude-code
+          # permission allow-lists, so they must be present regardless of the
+          # alias toggle.
+          ++ [
             createStatusScript
             createRestartScript
             createLogsScript

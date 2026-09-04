@@ -55,6 +55,19 @@ commands, prefer shell-agnostic aliases there (one entry per alias behaves the
 same in bash/zsh/fish/nushell). For per-shell concerns, use the shell-specific
 integration options instead (see bitwarden-cli, ollama).
 
+Rules for `home.shellAliases` values (they fan out to every shell, and nushell
+renders them verbatim):
+
+- Must be a single, simple command. A value containing `;`, `$(`, `command `,
+  `|`, `&&`, `||`, or a newline breaks or silently misbehaves in nushell.
+- Never define the same alias again in a `bash/conf.d/*.sh` drop-in — it is
+  sourced first and then overridden, so it is dead (or diverges).
+- If the behavior needs command substitution, a pipeline, or args/logic, put it
+  in a `writeShellApplication`/`writeShellScriptBin` bin and make the alias a
+  thin forward (or skip the alias; the bin name can equal the command name).
+- If the shell integration for a tool already defines the command (e.g.
+  `programs.lazygit`'s `lg`), do not add a manual alias that would shadow it.
+
 ### Shell Integration
 
 When a tool offers shell integration, wrap it behind an option and pass owner
@@ -109,9 +122,13 @@ wrappers fail closed without real tokens in env.
 2. Define `aytordev.programs.terminal.tools.{tool}` with `enable` + `package`.
 3. Guard outputs with `mkIf`.
 4. If needed, split helpers into contiguous `*.nix` files and `import` them.
-5. Wire aliases/integrations through options so the tool stays reusable.
-   Add a check under `checks/` when the behavior deserves regression
-   coverage (example: `checks/home-module` covers ollama/litellm service wiring).
+5. Wire integrations through `lib.aytordev.shellIntegration config` (so they
+   follow `enabledNames`). Add shell aliases as shell-agnostic strings in
+   `home.shellAliases` — never duplicate them in a bash `conf.d` drop-in, and
+   put logic/pipelines in a `writeShellApplication`/`writeShellScriptBin` bin
+   with a thin forward. Add a check under `checks/` when the behavior deserves
+   regression coverage (example: `checks/home-module` covers ollama/litellm
+   service wiring).
 
 ## Testing Terminal Changes
 

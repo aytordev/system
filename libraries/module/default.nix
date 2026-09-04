@@ -10,6 +10,62 @@
     ;
 in rec {
   /**
+  Resolve which aytordev shells are enabled and guard shell integration values.
+
+  Upstream Home Manager programs.<tool>.*Integration options default to
+  `home.shell.*` (true), so a tool would integrate into shells that are not
+  even configured on the user. tie those integrations (and any tool that drops
+  a Bash `conf.d` file) to `aytordev.programs.terminal.shells.enabledNames`.
+
+  # Inputs
+
+  `config`
+
+  : 1\. Module config (the `config` argument of the importing module)
+
+  # Returns
+
+  `shellEnabled`
+
+  : shell -> bool; whether the shell is enabled.
+
+  `flags`
+
+  : attrset with `enable{Bash,Fish,Zsh,Nushell}Integration` booleans, ready to
+  merge into `programs.<tool>`.
+
+  `whenShellEnabled`
+
+  : shell -> value -> value; wraps a config value (e.g. `xdg.configFile`) with
+  `lib.mkIf` so it only materializes when the shell is enabled.
+
+  # Example
+
+  ```nix
+  let
+    inherit (lib.aytordev) shellIntegration;
+    si = shellIntegration config;
+  in
+    { programs.zoxide = { enable = true; options = ["--cmd cd"]; } // si.flags; }
+  ```
+  */
+  shellIntegration = config: let
+    enabledNames = config.aytordev.programs.terminal.shells.enabledNames or [];
+    shellEnabled = shell: builtins.elem shell enabledNames;
+  in {
+    inherit shellEnabled;
+
+    flags = {
+      enableBashIntegration = shellEnabled "bash";
+      enableFishIntegration = shellEnabled "fish";
+      enableZshIntegration = shellEnabled "zsh";
+      enableNushellIntegration = shellEnabled "nushell";
+    };
+
+    whenShellEnabled = shell: lib.mkIf (shellEnabled shell);
+  };
+
+  /**
   Enable a module with optional configuration.
 
   # Inputs

@@ -10,21 +10,15 @@
     clean.enable = true;
     flake = null;
   };
-  nixreAlias = "nh ${
+  platform =
     if pkgs.stdenv.hostPlatform.isLinux
     then "os"
-    else "darwin"
-  } switch";
-  nixrbAlias = "nh ${
-    if pkgs.stdenv.hostPlatform.isLinux
-    then "os"
-    else "darwin"
-  } boot";
-  nixrtAlias = "nh ${
-    if pkgs.stdenv.hostPlatform.isLinux
-    then "os"
-    else "darwin"
-  } test";
+    else "darwin";
+  nixAliases = lib.mapAttrs (_name: sub: "nh ${platform} ${sub}") {
+    nixre = "switch";
+    nixrb = "boot";
+    nixrt = "test";
+  };
 in {
   options.aytordev.programs.terminal.tools.nh = {
     enable = lib.mkEnableOption "nh";
@@ -53,11 +47,7 @@ in {
       sessionVariables = {
         NH_SEARCH_PLATFORM = 1;
       };
-      shellAliases = {
-        nixre = nixreAlias;
-        nixrb = nixrbAlias;
-        nixrt = nixrtAlias;
-      };
+      shellAliases = nixAliases;
     };
   };
 }

@@ -89,6 +89,7 @@
 ## aytordev\.programs\.terminal\.emulators\.ghostty\.theme
 ## aytordev\.programs\.terminal\.emulators\.warp\.enable
 ## aytordev\.programs\.terminal\.emulators\.warp\.package
+## aytordev\.programs\.terminal\.shells\.enabledNames
 ## aytordev\.programs\.terminal\.shells\.bash\.enable
 ## aytordev\.programs\.terminal\.shells\.bash\.package
 ## aytordev\.programs\.terminal\.shells\.fish\.enable
@@ -211,7 +212,6 @@
 ## aytordev\.programs\.terminal\.tools\.litellm\.service\.enable
 ## aytordev\.programs\.terminal\.tools\.litellm\.service\.autoStart
 ## aytordev\.programs\.terminal\.tools\.litellm\.settings
-## aytordev\.programs\.terminal\.tools\.litellm\.shellAliases
 ## aytordev\.programs\.terminal\.tools\.lsd\.enable
 ## aytordev\.programs\.terminal\.tools\.lsd\.package
 ## aytordev\.programs\.terminal\.tools\.mcp\.enable

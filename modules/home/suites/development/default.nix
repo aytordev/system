@@ -8,24 +8,9 @@
   inherit (lib) mkIf mkDefault;
   inherit (lib.aytordev) enabled;
 
-  # TODO: Requires home-manager sops.age.keyFile configuration
-  # See NOTE below sops.secrets for details on how to enable.
-  tokenExports = "";
-  # tokenExports = lib.optionalString (osConfig.aytordev.security.sops.enable or false) /* Bash */ ''
-  #   if [ -f ${config.sops.secrets.ANTHROPIC_API_KEY.path} ]; then
-  #     ANTHROPIC_API_KEY="$(cat ${config.sops.secrets.ANTHROPIC_API_KEY.path})"
-  #     export ANTHROPIC_API_KEY
-  #   fi
-  #   if [ -f ${config.sops.secrets.GEMINI_API_KEY.path} ]; then
-  #     GEMINI_API_KEY="$(cat ${config.sops.secrets.GEMINI_API_KEY.path})"
-  #     export GEMINI_API_KEY
-  #   fi
-  #   if [ -f ${config.sops.secrets.OPENAI_API_KEY.path} ]; then
-  #     OPENAI_API_KEY="$(cat ${config.sops.secrets.OPENAI_API_KEY.path})"
-  #     export OPENAI_API_KEY
-  #   fi
-  # '';
-
+  # TODO: Requires home-manager sops.age.keyFile configuration.
+  # If re-enabled, wire the token exports into bash/zsh only (the commented
+  # body uses bash syntax; fish needs `set -gx`/`(cat ...)`).
   cfg = config.aytordev.suites.development;
   isWSL = osConfig.aytordev.archetypes.wsl.enable or false;
 
@@ -115,16 +100,9 @@ in {
     };
 
     programs = {
-      bash = {
-        initExtra = tokenExports;
-        shellAliases = bashAliases;
-      };
-      fish.shellInit = tokenExports;
+      bash.shellAliases = bashAliases;
       nix-your-shell = mkDefault enabled;
-      zsh = {
-        initContent = tokenExports;
-        shellAliases = bashAliases;
-      };
+      zsh.shellAliases = bashAliases;
     };
 
     aytordev = {

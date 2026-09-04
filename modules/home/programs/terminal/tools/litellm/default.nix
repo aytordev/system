@@ -27,6 +27,27 @@
       ;
   };
 
+  # Status/query commands. As aliases they were pipelines with undeclared deps
+  # and wouldn't work in non-interactive shells (agents), so publish them as
+  # bins with their tools declared.
+  litellmHealth = pkgs.writeShellApplication {
+    name = "litellm-health";
+    runtimeInputs = [pkgs.curl];
+    text = ''
+      exec curl -s "http://${cfg.host}:${toString cfg.port}/health"
+    '';
+  };
+  litellmModels = pkgs.writeShellApplication {
+    name = "litellm-models";
+    runtimeInputs = [
+      pkgs.curl
+      pkgs.jq
+    ];
+    text = ''
+      exec curl -s "http://${cfg.host}:${toString cfg.port}/v1/models" | jq .
+    '';
+  };
+
   proxyConfig = {
     model_list =
       map (m: {
@@ -123,12 +144,6 @@ in {
       example.OPENAI_API_KEY = "/run/secrets/openai-api-key";
       description = "Environment variable names mapped to runtime secret files";
     };
-
-    shellAliases = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable shell aliases for LiteLLM";
-    };
   };
 
   config = mkIf cfg.enable {
@@ -143,17 +158,14 @@ in {
       packages = [
         cfg.package
         startPackage
+        litellmHealth
+        litellmModels
       ];
 
       sessionVariables = {
         LITELLM_CONFIG = "${configDir}/config.yaml";
         LITELLM_HOST = cfg.host;
         LITELLM_PORT = toString cfg.port;
-      };
-
-      shellAliases = mkIf cfg.shellAliases {
-        litellm-models = "curl -s http://${cfg.host}:${toString cfg.port}/v1/models | python3 -m json.tool";
-        litellm-health = "curl -s http://${cfg.host}:${toString cfg.port}/health";
       };
     };
 

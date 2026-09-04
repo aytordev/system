@@ -11,10 +11,26 @@ in {
     enable = mkEnableOption "atuin";
     package = lib.mkPackageOption pkgs "atuin" {};
     enableDebug = mkEnableOption "atuin daemon debug logging";
-    enableBashIntegration = mkEnableOption "atuin bash integration";
-    enableFishIntegration = mkEnableOption "atuin fish integration";
-    enableZshIntegration = mkEnableOption "atuin zsh integration";
-    enableNushellIntegration = mkEnableOption "atuin nushell integration";
+    enableBashIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "bash";
+      description = "atuin bash integration";
+    };
+    enableFishIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "fish";
+      description = "atuin fish integration";
+    };
+    enableZshIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "zsh";
+      description = "atuin zsh integration";
+    };
+    enableNushellIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = (lib.aytordev.shellIntegration config).shellEnabled "nushell";
+      description = "atuin nushell integration";
+    };
   };
   config = mkIf cfg.enable {
     programs.atuin = {
@@ -48,10 +64,10 @@ in {
     home.shellAliases = {
       atuin-prune-failed = "atuin search --exclude-exit 0 --delete";
     };
-    xdg.configFile."bash/conf.d/atuin.sh" = lib.mkIf cfg.enableBashIntegration {
-      text = ''
-        eval "$(atuin init bash)"
-      '';
-    };
+    # atuin writes a plaintext SQLite history database; seal its data dir.
+    home.activation.createAtuinDataDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      $DRY_RUN_CMD mkdir -p "${config.xdg.dataHome}/atuin"
+      $DRY_RUN_CMD chmod 700 "${config.xdg.dataHome}/atuin"
+    '';
   };
 }
