@@ -34,12 +34,14 @@ in
   ...
 }:
 let
-  inherit (lib) mkIf mkEnableOption mkOption types;
+  inherit (lib) mkIf mkEnableOption mkPackageOption mkOption types;
   cfg = config.services.myapp;
 in
 {
   options.services.myapp = {
     enable = mkEnableOption "My Application";
+
+    package = mkPackageOption pkgs "myapp" {};
 
     port = mkOption {
       type = types.port;
@@ -54,12 +56,12 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.myapp ];
+    environment.systemPackages = [ cfg.package ];
 
     systemd.services.myapp = {
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        ExecStart = "${pkgs.myapp}/bin/myapp --port ${toString cfg.port} --config ${cfg.configFile}";
+        ExecStart = "${cfg.package}/bin/myapp --port ${toString cfg.port} --config ${cfg.configFile}";
         Restart = "on-failure";
       };
     };
