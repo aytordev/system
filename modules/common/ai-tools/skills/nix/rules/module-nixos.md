@@ -32,12 +32,14 @@ in
   ...
 }:
 let
-  inherit (lib) mkIf mkEnableOption mkOption types;
+  inherit (lib) mkIf mkEnableOption mkPackageOption mkOption types;
   cfg = config.services.myService;
 in
 {
   options.services.myService = {
     enable = mkEnableOption "My Service";
+
+    package = mkPackageOption pkgs "myService" {};
 
     port = mkOption {
       type = types.port;
@@ -54,7 +56,7 @@ in
 
   config = mkIf cfg.enable {
     # System-level package installation
-    environment.systemPackages = [ pkgs.myService ];
+    environment.systemPackages = [ cfg.package ];
 
     # System user for the service
     users.users.myservice = {
@@ -76,7 +78,7 @@ in
         Type = "simple";
         User = "myservice";
         Group = "myservice";
-        ExecStart = "${pkgs.myService}/bin/myservice --port ${toString cfg.port}";
+        ExecStart = "${cfg.package}/bin/myservice --port ${toString cfg.port}";
         Restart = "on-failure";
         RestartSec = "10s";
         StateDirectory = "myservice";
