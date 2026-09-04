@@ -36,10 +36,12 @@ in
 {
   options.aytordev.programs.terminal.tools.git = {
     enable = lib.mkEnableOption "git";
+    package = lib.mkPackageOption pkgs "git" {};
   };
 
   config = lib.mkIf cfg.enable {
     programs.git.enable = true;
+    inherit (cfg) package;
   };
 }
 ```
