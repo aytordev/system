@@ -34,10 +34,12 @@ in
 {
   options.aytordev.services.yabai = {
     enable = lib.mkEnableOption "yabai window manager";
+    package = lib.mkPackageOption pkgs "yabai" {};
   };
 
   config = lib.mkIf cfg.enable {
     services.yabai.enable = true;
+    inherit (cfg) package;
   };
 }
 ```
