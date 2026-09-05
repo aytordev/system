@@ -45,7 +45,6 @@
     suite = "desktop";
     extraModule.aytordev = {
       theme.variant = "lotus";
-      programs.desktop.browsers.brave.enable = false;
       programs.desktop.bars.sketchybar.items.menus.enable = false;
     };
   };
@@ -109,7 +108,6 @@
     (!businessConfig.aytordev.programs.terminal.tools.bitwarden-cli.apiKey.enable)
     (!(businessConfig.home.file ? ".local/bin/bitwarden-login-sops"))
     (desktopOverrideConfig.aytordev.theme.variant == "lotus")
-    (!desktopOverrideConfig.aytordev.programs.desktop.browsers.brave.enable)
     (!desktopOverrideConfig.aytordev.programs.desktop.bars.sketchybar.items.menus.enable)
     (!developmentOverrideConfig.aytordev.programs.terminal.editors.neovim.enable)
     (!developmentOverrideConfig.aytordev.programs.terminal.editors.neovim.default)

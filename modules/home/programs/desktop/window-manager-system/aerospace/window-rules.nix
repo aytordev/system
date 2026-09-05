@@ -43,11 +43,6 @@
     check-further-callbacks = false;
   }
   {
-    "if".app-id = "com.brave.Browser";
-    run = "move-node-to-workspace B";
-    check-further-callbacks = false;
-  }
-  {
     "if".app-id = "com.apple.Safari";
     run = "move-node-to-workspace B";
     check-further-callbacks = false;

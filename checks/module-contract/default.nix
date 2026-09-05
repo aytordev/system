@@ -23,7 +23,6 @@
   };
   packageCapabilities = [
     "programs.desktop.bars.sketchybar"
-    "programs.desktop.browsers.brave"
     "programs.desktop.browsers.chromium"
     "programs.desktop.browsers.firefox"
     "programs.desktop.communications.discord"

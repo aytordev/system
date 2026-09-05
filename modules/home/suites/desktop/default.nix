@@ -31,7 +31,6 @@ in {
             };
           };
           browsers = {
-            brave.enable = mkDefault true;
             chromium.enable = mkDefault true;
             firefox.enable = mkDefault true;
           };
