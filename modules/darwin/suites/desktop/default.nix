@@ -27,6 +27,7 @@ in {
         "sf-symbols"
         "zen"
         "boosteroid"
+        "helium-browser"
       ];
 
       masApps = mkIf config.aytordev.tools.homebrew.masEnable {
