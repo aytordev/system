@@ -24,8 +24,6 @@
   packageCapabilities = [
     "programs.desktop.bars.sketchybar"
     "programs.desktop.browsers.brave"
-    "programs.desktop.browsers.chrome"
-    "programs.desktop.browsers.chrome-dev"
     "programs.desktop.browsers.chromium"
     "programs.desktop.browsers.firefox"
     "programs.desktop.communications.discord"

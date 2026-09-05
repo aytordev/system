@@ -32,8 +32,6 @@ in {
           };
           browsers = {
             brave.enable = mkDefault true;
-            chrome.enable = mkDefault true;
-            chrome-dev.enable = mkDefault pkgs.stdenv.hostPlatform.isDarwin;
             chromium.enable = mkDefault true;
             firefox.enable = mkDefault true;
           };

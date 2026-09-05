@@ -40,10 +40,6 @@
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.items\.workspaces\.deferredLoading
 ## aytordev\.programs\.desktop\.browsers\.brave\.enable
 ## aytordev\.programs\.desktop\.browsers\.brave\.package
-## aytordev\.programs\.desktop\.browsers\.chrome\.enable
-## aytordev\.programs\.desktop\.browsers\.chrome\.package
-## aytordev\.programs\.desktop\.browsers\.chrome-dev\.enable
-## aytordev\.programs\.desktop\.browsers\.chrome-dev\.package
 ## aytordev\.programs\.desktop\.browsers\.chromium\.enable
 ## aytordev\.programs\.desktop\.browsers\.chromium\.package
 ## aytordev\.programs\.desktop\.browsers\.firefox\.enable

@@ -181,7 +181,6 @@ in {
           "Plexamp"
           "Safari"
           "Firefox"
-          "Google Chrome"
         ];
         description = "Applications to show media playback info for.";
       };

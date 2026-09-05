@@ -33,16 +33,6 @@
 
   # ─── Workspace B (Browsers / 網) ─────────────────────────────────
   {
-    "if".app-id = "com.google.Chrome";
-    run = "move-node-to-workspace B";
-    check-further-callbacks = false;
-  }
-  {
-    "if".app-id = "com.google.Chrome.canary";
-    run = "move-node-to-workspace B";
-    check-further-callbacks = false;
-  }
-  {
     "if".app-id = "org.chromium.Chromium";
     run = "move-node-to-workspace B";
     check-further-callbacks = false;
