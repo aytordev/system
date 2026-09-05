@@ -163,7 +163,6 @@
       add_newline = true;
       command_timeout = 10000;
       scan_timeout = 30;
-      palette = "kanagawa_wave";
 
       format = concatStrings formatModules + "\n" + concatStrings promptModules;
 
@@ -327,9 +326,9 @@ in {
     package = mkPackageOption pkgs "starship" {};
 
     palette = mkOption {
-      type = types.str;
+      type = types.enum ["kanagawa"];
       default = "kanagawa";
-      description = "Color palette to use for Starship prompt. Defaults to 'kanagawa' which adapts to the global theme variant.";
+      description = "Starship palette name. Only 'kanagawa' is defined; its colors adapt to the global theme variant.";
     };
 
     settings = mkOption {
