@@ -11,23 +11,25 @@ const execAsync = promisify(exec);
 const PI_AGENT_DIR = join(os.homedir(), ".pi", "agent");
 const PI_NPM_DIR = join(PI_AGENT_DIR, "npm", "node_modules");
 
-type BannerColor = "pink" | "cyan" | "yellow" | "green";
+type BannerColor = "pink" | "cyan" | "yellow" | "green" | "kanagawa";
 interface BannerConfig {
   showRose: boolean;
   showTextLogo: boolean;
   color: BannerColor;
 }
 const DEFAULT_BANNER_CONFIG: BannerConfig = {
-  showRose: true,
+  showRose: false,
   showTextLogo: true,
-  color: "pink",
+  color: "kanagawa",
 };
-const BANNER_COLORS: BannerColor[] = ["pink", "cyan", "yellow", "green"];
+const BANNER_COLORS: BannerColor[] = ["pink", "cyan", "yellow", "green", "kanagawa"];
 const BANNER_PALETTES: Record<BannerColor, { rose: [number, number, number]; label: [number, number, number]; value: [number, number, number]; logoFresh: [number, number, number]; logoDim: [number, number, number] }> = {
   pink: { rose: [255, 118, 195], label: [200, 100, 160], value: [255, 140, 210], logoFresh: [255, 138, 206], logoDim: [95, 30, 60] },
   cyan: { rose: [95, 210, 255], label: [85, 170, 205], value: [130, 225, 255], logoFresh: [105, 220, 255], logoDim: [25, 80, 100] },
   yellow: { rose: [255, 210, 95], label: [210, 165, 65], value: [255, 225, 135], logoFresh: [255, 215, 105], logoDim: [105, 75, 25] },
   green: { rose: [110, 220, 145], label: [85, 175, 115], value: [145, 240, 170], logoFresh: [120, 230, 150], logoDim: [30, 95, 50] },
+  // Kanagawa palette (patched fork): accent #7e9cd8, heading #c8c093, text #dcd7ba, bg_gutter #2a2a37.
+  kanagawa: { rose: [126, 156, 216], label: [200, 192, 147], value: [220, 215, 186], logoFresh: [126, 156, 216], logoDim: [42, 42, 55] },
 };
 
 const TEXT_LOGO = [
