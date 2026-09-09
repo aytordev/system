@@ -21,5 +21,11 @@ replaced). It follows the same pi theme schema (`vars` / `colors` / `export`).
 with a hardcoded `pink` (`[255,118,195]`) palette (the rose flower). We set
 `showRose: false`, added a `kanagawa` palette (accent `#7e9cd8`, heading
 `#c8c093`, text `#dcd7ba`, `bg_gutter` `#2a2a37`), added it to `BannerColor`
-and `BANNER_COLORS`, and made it the default `color`. Re-derive this hunk when
-re-vendoring a newer gentle-pi.
+and `BANNER_COLORS`, and made it the default `color`. The banner's slash-command
+description is rebranded to "aytordev".
+
+Visible branding strings are rebranded to "aytordev" (instead of "gentle-pi"):
+- `lib/shell-bar.ts` — `SHELL_BAR_BRAND`.
+- `lib/shell-sidebar-banner.ts` — the sidebar header.
+
+Re-derive these hunks when re-vendoring a newer gentle-pi.

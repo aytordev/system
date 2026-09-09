@@ -545,7 +545,7 @@ export default function (pi: ExtensionAPI) {
 
   const registerBannerCommand = (name: string) => {
     pi.registerCommand(name, {
-      description: "Configure the Gentle Pi startup banner.",
+      description: "Configure the aytordev startup banner.",
       handler: async (_args, ctx) => {
         const config = await readBannerConfig();
         const selected = await ctx.ui.select("Startup banner", [
