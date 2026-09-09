@@ -243,6 +243,8 @@
 ## aytordev\.programs\.terminal\.tools\.opencode\.package
 ## aytordev\.programs\.terminal\.tools\.opencode\.model\.model
 ## aytordev\.programs\.terminal\.tools\.opencode\.model\.provider
+## aytordev\.programs\.terminal\.tools\.pi\.enable
+## aytordev\.programs\.terminal\.tools\.pi\.package
 ## aytordev\.programs\.terminal\.tools\.rclone\.enable
 ## aytordev\.programs\.terminal\.tools\.rclone\.package
 ## aytordev\.programs\.terminal\.tools\.rclone\.remotes

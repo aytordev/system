@@ -78,6 +78,7 @@
     "programs.terminal.tools.nix-search-tv"
     "programs.terminal.tools.ollama"
     "programs.terminal.tools.opencode"
+    "programs.terminal.tools.pi"
     "programs.terminal.tools.rclone"
     "programs.terminal.tools.ripgrep"
     "programs.terminal.tools.ssh"

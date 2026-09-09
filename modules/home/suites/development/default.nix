@@ -135,6 +135,7 @@ in {
             mcp.enable = mkDefault cfg.aiEnable;
             ollama.enable = mkDefault false;
             opencode.enable = mkDefault cfg.aiEnable;
+            pi.enable = mkDefault cfg.aiEnable;
             git-crypt = mkDefault enabled;
             gh = mkDefault enabled;
             hcloud = mkDefault enabled;
