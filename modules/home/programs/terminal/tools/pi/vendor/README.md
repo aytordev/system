@@ -18,11 +18,13 @@ replaced). It follows the same pi theme schema (`vars` / `colors` / `export`).
 ## Local patches (fork from upstream)
 
 `extensions/startup-banner.ts` is patched: upstream defaults to `showRose: true`
-with a hardcoded `pink` (`[255,118,195]`) palette (the rose flower). We set
-`showRose: false`, added a `kanagawa` palette (accent `#7e9cd8`, heading
-`#c8c093`, text `#dcd7ba`, `bg_gutter` `#2a2a37`), added it to `BannerColor`
-and `BANNER_COLORS`, and made it the default `color`. The banner's slash-command
-description is rebranded to "aytordev".
+with a hardcoded `pink` (`[255,118,195]`) palette (the rose flower) and a large
+`TEXT_LOGO` **wordmark**. We set `showRose: false` **and** `showTextLogo: false`
+(so no rose/flower and no big "gentle-pi" wordmark are drawn), added a
+`kanagawa` palette (accent `#7e9cd8`, heading `#c8c093`, text `#dcd7ba`,
+`bg_gutter` `#2a2a37`), added it to `BannerColor` and `BANNER_COLORS`, and made
+it the default `color`. The banner's slash-command description is rebranded to
+"aytordev".
 
 Visible branding strings are rebranded to "aytordev" (instead of "gentle-pi"):
 - `lib/shell-bar.ts` — `SHELL_BAR_BRAND`.

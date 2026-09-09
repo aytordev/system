@@ -19,7 +19,7 @@ interface BannerConfig {
 }
 const DEFAULT_BANNER_CONFIG: BannerConfig = {
   showRose: false,
-  showTextLogo: true,
+  showTextLogo: false,
   color: "kanagawa",
 };
 const BANNER_COLORS: BannerColor[] = ["pink", "cyan", "yellow", "green", "kanagawa"];
