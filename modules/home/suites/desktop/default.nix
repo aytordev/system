@@ -56,9 +56,14 @@ in {
       "Pictures/screenshots/.keep".text = "";
     };
 
+    # Deploy apps as read-only symlinks (linkApps) rather than writable copies
+    # (copyApps). Writable copies let apps like Raycast self-update past the
+    # nixpkgs version, migrate their DBs, then nix reverts the app → schema
+    # mismatch → "Failed to start". Immutable symlinks force updates to come
+    # from a nix rebuild, keeping DBs consistent with the installed version.
     targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-      copyApps.enable = mkDefault true;
-      linkApps.enable = mkDefault false;
+      copyApps.enable = mkDefault false;
+      linkApps.enable = mkDefault true;
     };
   };
 }
