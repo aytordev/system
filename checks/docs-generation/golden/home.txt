@@ -255,6 +255,7 @@
 ## aytordev\.programs\.terminal\.tools\.pi\.model\.defaultModel
 ## aytordev\.programs\.terminal\.tools\.pi\.model\.defaultProvider
 ## aytordev\.programs\.terminal\.tools\.pi\.model\.defaultThinkingLevel
+## aytordev\.programs\.terminal\.tools\.pi\.modelRouting
 ## aytordev\.programs\.terminal\.tools\.pi\.permissions\.enable
 ## aytordev\.programs\.terminal\.tools\.pi\.permissions\.config
 ## aytordev\.programs\.terminal\.tools\.pi\.piConfigDir

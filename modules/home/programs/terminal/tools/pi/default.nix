@@ -250,8 +250,8 @@ in {
           "fullscreen"
         ]
       );
-      default = null;
-      description = "TUI mode.";
+      default = "fullscreen";
+      description = "TUI mode (gentle-pi recommends fullscreen).";
     };
     compaction.enabled = mkOption {
       type = types.bool;
@@ -303,6 +303,12 @@ in {
       default = {};
       description = "Extra settings merged into settings.json (applied last, so it wins).";
     };
+
+    modelRouting = mkOption {
+      type = types.nullOr types.attrs;
+      default = null;
+      description = "Per-phase model routing written to ~/.pi/gentle-ai/models.json (consumed by the gentle-pi subagent extension, not stock pi).";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -332,6 +338,10 @@ in {
 
         "${absConfigDir}/extensions/pi-permission-system/config.json" = mkIf cfg.permissions.enable {
           text = lib.generators.toJSON {} cfg.permissions.config;
+        };
+
+        "${config.home.homeDirectory}/.pi/gentle-ai/models.json" = mkIf (cfg.modelRouting != null) {
+          text = lib.generators.toJSON {} cfg.modelRouting;
         };
       };
 
