@@ -262,6 +262,7 @@
 ## aytordev\.programs\.terminal\.tools\.pi\.providers
 ## aytordev\.programs\.terminal\.tools\.pi\.quietStartup
 ## aytordev\.programs\.terminal\.tools\.pi\.settings
+## aytordev\.programs\.terminal\.tools\.pi\.shell\.enable
 ## aytordev\.programs\.terminal\.tools\.pi\.showCacheMissNotices
 ## aytordev\.programs\.terminal\.tools\.pi\.skills\.enable
 ## aytordev\.programs\.terminal\.tools\.pi\.theme

@@ -134,6 +134,14 @@
   permissionPackage = "@gotgenes/pi-permission-system@29.1.0";
   piPackages = cfg.packages ++ lib.optionals cfg.permissions.enable [permissionPackage];
 
+  # Vendored gentle-pi aesthetic assets (MIT); see vendor/README.md. Deployed
+  # as sibling dirs under the pi agent dir so the extensions' `../lib/*.ts`
+  # relative imports resolve, and pi auto-discovers extensions/themes by path.
+  vendorExtensions = lib.getFile "modules/home/programs/terminal/tools/pi/vendor/extensions";
+  vendorLib = lib.getFile "modules/home/programs/terminal/tools/pi/vendor/lib";
+  vendorScripts = lib.getFile "modules/home/programs/terminal/tools/pi/vendor/scripts";
+  vendorThemes = lib.getFile "modules/home/programs/terminal/tools/pi/vendor/themes";
+
   # Build settings.json as a plain attrset (toJSON of a mkMerge marker would
   # serialize the marker, not the merged value).
   baseSettings =
@@ -240,8 +248,16 @@ in {
     };
     theme = mkOption {
       type = types.nullOr types.str;
-      default = null;
-      description = "TUI theme name.";
+      default =
+        if cfg.shell.enable
+        then "kanagawa"
+        else null;
+      description = "TUI theme name (defaults to the vendored kanagawa theme when the gentle shell is enabled).";
+    };
+    shell.enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Deploy the vendored gentle-pi aesthetic extensions + kanagawa theme.";
     };
     tuiMode = mkOption {
       type = types.nullOr (
@@ -342,6 +358,25 @@ in {
 
         "${config.home.homeDirectory}/.pi/gentle-ai/models.json" = mkIf (cfg.modelRouting != null) {
           text = lib.generators.toJSON {} cfg.modelRouting;
+        };
+
+        "${absConfigDir}/extensions/gentle-shell.ts" = mkIf cfg.shell.enable {
+          source = "${vendorExtensions}/gentle-shell.ts";
+        };
+        "${absConfigDir}/extensions/quiet-tools.ts" = mkIf cfg.shell.enable {
+          source = "${vendorExtensions}/quiet-tools.ts";
+        };
+        "${absConfigDir}/extensions/startup-banner.ts" = mkIf cfg.shell.enable {
+          source = "${vendorExtensions}/startup-banner.ts";
+        };
+        "${absConfigDir}/lib" = mkIf cfg.shell.enable {
+          source = vendorLib;
+        };
+        "${absConfigDir}/scripts" = mkIf cfg.shell.enable {
+          source = vendorScripts;
+        };
+        "${absConfigDir}/themes" = mkIf cfg.shell.enable {
+          source = vendorThemes;
         };
       };
 
