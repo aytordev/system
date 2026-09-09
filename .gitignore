@@ -32,6 +32,9 @@ downloads/
 eggs/
 .eggs/
 lib/
+# Vendored gentle-pi assets: the `lib/` ignore above must not drop them.
+!modules/home/programs/terminal/tools/pi/vendor/
+!modules/home/programs/terminal/tools/pi/vendor/lib/
 lib64/
 parts/
 sdist/

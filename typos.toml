@@ -1,6 +1,9 @@
 [default]
 extend-ignore-re = ["^flake/dev/checks/default\\.nix$"]
 
+[files]
+extend-exclude = ["modules/home/programs/terminal/tools/pi/vendor/**"]
+
 [default.extend-words]
 ags = "ags"
 ba = "ba"
