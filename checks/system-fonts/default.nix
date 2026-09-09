@@ -18,7 +18,9 @@
   };
 
   countSketchybarFonts = packages:
-    builtins.length (builtins.filter (package: package.name == pkgs.sketchybar-app-font.name) packages);
+    builtins.length (
+      builtins.filter (package: package.pname == pkgs.sketchybar-app-font.pname) packages
+    );
   commonFontCount = countSketchybarFonts darwin.config.aytordev.system.fonts.fonts;
   darwinFontCount = countSketchybarFonts darwin.config.fonts.packages;
 in
