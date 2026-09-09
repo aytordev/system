@@ -32,7 +32,6 @@ in {
         inherit (cfg) package;
         options = [
           "--cmd cd"
-          "--no-aliases"
         ];
       }
       // (lib.aytordev.shellIntegration config).flags;
