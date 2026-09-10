@@ -45,7 +45,7 @@ in
     '';
 
     meta = with lib; {
-      description = "HTTP API wrapper for AI coding agents (Claude Code, Aider, Gemini, etc.)";
+      description = "HTTP API wrapper for AI coding agents";
       homepage = "https://github.com/coder/agentapi";
       license = licenses.asl20;
       platforms = [

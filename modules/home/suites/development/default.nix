@@ -127,13 +127,8 @@ in {
             act = mkDefault enabled;
             # AI tools - use mkDefault so home config can override
             agentapi.enable = mkDefault cfg.aiEnable;
-            aider.enable = mkDefault cfg.aiEnable;
-            claude-code.enable = mkDefault cfg.aiEnable;
             engram.enable = mkDefault cfg.aiEnable;
-            gemini-cli.enable = mkDefault cfg.aiEnable;
-            litellm.enable = mkDefault false;
             mcp.enable = mkDefault cfg.aiEnable;
-            ollama.enable = mkDefault false;
             opencode.enable = mkDefault cfg.aiEnable;
             pi.enable = mkDefault cfg.aiEnable;
             git-crypt = mkDefault enabled;
@@ -149,10 +144,6 @@ in {
           };
         };
       };
-
-      # Ollama service managed separately:
-      # - macOS: darwin module (aytordev.services.ollama) via darwin dev suite
-      # - Linux: home-manager systemd service (ollama.service.enable)
     };
 
     # NOTE: Home-Manager Sops Configuration Required
@@ -176,10 +167,6 @@ in {
     #   AZURE_OPENAI_API_KEY = {
     #     sopsFile = lib.getFile "secrets/CORE/default.yaml";
     #     path = "${config.home.homeDirectory}/.AZURE_OPENAI_API_KEY";
-    #   };
-    #   GEMINI_API_KEY = {
-    #     sopsFile = lib.getFile "secrets/aytordev/default.yaml";
-    #     path = "${config.home.homeDirectory}/.GEMINI_API_KEY";
     #   };
     #   OPENAI_API_KEY = {
     #     sopsFile = lib.getFile "secrets/CORE/default.yaml";

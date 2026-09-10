@@ -1,6 +1,6 @@
 # AI Tools
 
-Agents, slash commands, and skills for enhancing AI coding tools. Consumed by Claude Code, OpenCode, and Gemini CLI through a multi-tool Nix pipeline.
+Agents, slash commands, and skills for enhancing AI coding tools. Consumed by OpenCode through a multi-tool Nix pipeline.
 
 ## Architecture
 

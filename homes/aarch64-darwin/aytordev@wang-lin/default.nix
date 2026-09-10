@@ -144,14 +144,6 @@ in {
 
           nh.flake = "${config.home.homeDirectory}/Developer/system";
 
-          # Ollama - M3 Ultra optimized; the user service remains opt-in.
-          ollama = {
-            acceleration = "metal";
-            modelPresets = ["m3-ultra"];
-            integrations.zed = true;
-            service.enable = false;
-          };
-
           # Host-specific SSH configuration
           ssh.hosts.github = {
             hostNames = ["github.com"];

@@ -26,7 +26,7 @@ in {
       common = enabled;
       development = {
         enable = true;
-        # Bring the AI coding agents (pi, opencode, aider, claude-code, ...) so
+        # Bring the AI coding agents (pi, opencode, ...) so
         # the host can be iterated on remotely; providers need a local /login or
         # API-key env for now (nan.builders is gated on SOPS, off on this host).
         aiEnable = true;

@@ -13,7 +13,7 @@ Auto-labels: `bug`, `status:needs-review`
 | **Expected Behavior** | What should have happened |
 | **Actual Behavior** | What happened instead (include errors/logs) |
 | **Operating System** | macOS, Linux variants, Windows, WSL |
-| **Agent / Client** | Claude Code, OpenCode, Gemini CLI, Cursor, Windsurf, Codex, Other |
+| **Agent / Client** | OpenCode, Cursor, Windsurf, Codex, Other |
 | **Shell** | bash, zsh, fish, Other |
 
 ## Optional Fields
@@ -51,7 +51,7 @@ Script crashes with glob error.
 macOS
 
 ### Agent / Client
-Claude Code
+OpenCode
 
 ### Shell
 zsh

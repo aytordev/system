@@ -19,9 +19,9 @@ terminal/
 `tools/{tool}/` (and `shells/{shell}/`, `emulators/{emulator}/`) owns the
 namespace `aytordev.programs.terminal.{category}.{tool}`.
 
-Large tools may use contained sibling files (see ollama, litellm, opencode,
-bitwarden-cli). The directory's `default.nix` remains the only auto-discovered
-module and owns the option namespace; containment files are `import`ed from it.
+Large tools may use contained sibling files (see opencode, pi, bitwarden-cli).
+The directory's `default.nix` remains the only auto-discovered module and owns
+the option namespace; containment files are `import`ed from it.
 
 ## Option Namespace
 
@@ -53,7 +53,7 @@ See `docs/decisions/0008-module-contract-v1.md`.
 Short aliases live in `home.shellAliases`. When a tool provides several
 commands, prefer shell-agnostic aliases there (one entry per alias behaves the
 same in bash/zsh/fish/nushell). For per-shell concerns, use the shell-specific
-integration options instead (see bitwarden-cli, ollama).
+integration options instead (see bitwarden-cli, opencode).
 
 Rules for `home.shellAliases` values (they fan out to every shell, and nushell
 renders them verbatim):
@@ -99,8 +99,8 @@ Long-running user daemons use Home Manager unit form:
 - `systemd.user.services` on Linux
 
 When a tool is service-capable, keep the service in the same directory
-(`service.nix`) and expose `cfg.service.enable`/`autoStart` (see ollama,
-litellm). Runtime cacheable services load secret files at start, not build
+(`service.nix`) and expose `cfg.service.enable`/`autoStart` (see opencode,
+pi). Runtime cacheable services load secret files at start, not build
 time.
 
 ### Runtime Secrets
@@ -131,8 +131,8 @@ wrappers fail closed without real tokens in env.
    `home.shellAliases` — never duplicate them in a bash `conf.d` drop-in, and
    put logic/pipelines in a `writeShellApplication`/`writeShellScriptBin` bin
    with a thin forward. Add a check under `checks/` when the behavior deserves
-   regression coverage (example: `checks/home-module` covers ollama/litellm
-   service wiring).
+   regression coverage (example: `checks/home-module` covers opencode/pi
+   wiring).
 
 ## Testing Terminal Changes
 

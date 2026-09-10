@@ -9,9 +9,7 @@
       if hasFrontmatter
       then lib.elemAt parts 1
       else "";
-    lines = lib.filter (l: l != "") (
-      builtins.map lib.trim (lib.splitString "\n" frontmatter)
-    );
+    lines = lib.filter (l: l != "") (builtins.map lib.trim (lib.splitString "\n" frontmatter));
     getField = prefix: let
       match = lib.findFirst (l: lib.hasPrefix prefix l) null lines;
     in
@@ -49,20 +47,6 @@
   normalizedCommands = lib.mapAttrs normalizeCommand commands;
 
   # Render functions for each tool format
-  renderClaudeFrontmatter = command: ''
-    ---
-    ${lib.optionalString (command.allowedTools != null) "allowed-tools: ${command.allowedTools}"}
-    ${lib.optionalString (command.argumentHint != null) "argument-hint: ${command.argumentHint}"}
-    ${lib.optionalString (command.description != null) "description: ${command.description}"}
-    ---
-  '';
-
-  renderClaudeMarkdown = command: ''
-    ${lib.trim (renderClaudeFrontmatter command)}
-
-    ${lib.trim command.prompt}
-  '';
-
   renderOpenCodeFrontmatter = command: ''
     ---
     ${lib.optionalString (command.description != null) "description: ${command.description}"}
@@ -76,23 +60,10 @@
     ${lib.trim command.prompt}
   '';
 
-  toClaudeMarkdown = lib.mapAttrs (_name: renderClaudeMarkdown) normalizedCommands;
-
   toOpenCodeMarkdown = lib.mapAttrs (_name: renderOpenCodeMarkdown) normalizedCommands;
-
-  toGeminiCommands =
-    lib.mapAttrs (
-      _name: command: {
-        inherit (command) prompt;
-        description = command.description or "AI command";
-      }
-    )
-    normalizedCommands;
 in {
   inherit
     normalizedCommands
-    toClaudeMarkdown
     toOpenCodeMarkdown
-    toGeminiCommands
     ;
 }

@@ -365,7 +365,7 @@ in {
 ```
 
 Use the manual `lib.mkOption` + `defaultText` form when the default is conditional
-(see ollama, bitwarden-cli). `mkOpt`/`mkBoolOpt` are for foundational modules;
+(see pi, bitwarden-cli). `mkOpt`/`mkBoolOpt` are for foundational modules;
 capabilities use `lib.mkOption`.
 
 Full canonical template, per-class variants, and style rules live in the

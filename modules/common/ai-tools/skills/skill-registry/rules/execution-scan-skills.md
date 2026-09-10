@@ -15,7 +15,6 @@ Glob for `*/SKILL.md` files across ALL known skill directories. Check every path
 
 - `~/.claude/skills/`
 - `~/.config/opencode/skills/`
-- `~/.gemini/skills/`
 - `~/.cursor/skills/`
 - `~/.copilot/skills/`
 - The parent directory of this skill file (catch-all)
@@ -23,7 +22,6 @@ Glob for `*/SKILL.md` files across ALL known skill directories. Check every path
 ### Project-level (workspace skills)
 
 - `{project-root}/.claude/skills/`
-- `{project-root}/.gemini/skills/`
 - `{project-root}/.agent/skills/`
 - `{project-root}/skills/`
 

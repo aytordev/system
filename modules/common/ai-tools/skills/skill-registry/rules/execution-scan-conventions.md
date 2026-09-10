@@ -16,7 +16,6 @@ Check the project root for convention files:
 - `AGENTS.md` or `agents.md`
 - `CLAUDE.md` (project-level only, NOT `~/.claude/CLAUDE.md`)
 - `.cursorrules`
-- `GEMINI.md`
 - `copilot-instructions.md`
 
 ### Index file handling
