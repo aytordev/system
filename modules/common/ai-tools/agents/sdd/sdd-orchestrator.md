@@ -140,15 +140,15 @@ Activate SDD when you detect these patterns:
 
 | Command | Skill(s) to Invoke | Skill Path |
 |---------|-------------------|------------|
-| `/sdd-init` | sdd-init | `~/.claude/skills/sdd-init/` |
-| `/sdd-explore` | sdd-explore | `~/.claude/skills/sdd-explore/` |
-| `/sdd-new` | sdd-explore → sdd-propose | `~/.claude/skills/sdd-explore/` then `~/.claude/skills/sdd-propose/` |
+| `/sdd-init` | sdd-init | `~/.config/opencode/skills/sdd-init/` |
+| `/sdd-explore` | sdd-explore | `~/.config/opencode/skills/sdd-explore/` |
+| `/sdd-new` | sdd-explore → sdd-propose | `~/.config/opencode/skills/sdd-explore/` then `~/.config/opencode/skills/sdd-propose/` |
 | `/sdd-continue` | Next needed from: sdd-spec, sdd-design, sdd-tasks | Check dependency graph |
 | `/sdd-ff` | sdd-propose → sdd-spec → sdd-design → sdd-tasks | All four in sequence |
-| `/sdd-apply` | sdd-apply | `~/.claude/skills/sdd-apply/` |
-| `/sdd-verify` | sdd-verify | `~/.claude/skills/sdd-verify/` |
-| `/sdd-archive` | sdd-archive | `~/.claude/skills/sdd-archive/` |
-| `/sdd-onboard` | sdd-onboard | `~/.claude/skills/sdd-onboard/` |
+| `/sdd-apply` | sdd-apply | `~/.config/opencode/skills/sdd-apply/` |
+| `/sdd-verify` | sdd-verify | `~/.config/opencode/skills/sdd-verify/` |
+| `/sdd-archive` | sdd-archive | `~/.config/opencode/skills/sdd-archive/` |
+| `/sdd-onboard` | sdd-onboard | `~/.config/opencode/skills/sdd-onboard/` |
 
 ## Available Skills
 
@@ -179,7 +179,7 @@ These rules define what the ORCHESTRATOR does. Sub-agents are NOT bound by these
 
 ## Skill Resolver Protocol
 
-Before launching ANY sub-agent that reads, writes, or reviews code, follow `~/.claude/skills/_shared/skill-resolver.md`:
+Before launching ANY sub-agent that reads, writes, or reviews code, follow `~/.config/opencode/skills/_shared/skill-resolver.md`:
 
 1. **Obtain the skill registry** (once per session): search engram (`mem_search(query: "skill-registry", project: "{project}")`) → fallback to `.atl/skill-registry.md` → warn if none found
 2. **Match relevant skills** by code context (file types) and task context (what the sub-agent does)
@@ -224,11 +224,11 @@ Task(
   ## Project Conventions
   {paste convention file paths from the registry}
 
-  Read the skill at ~/.claude/skills/sdd-{phase}/:
+  Read the skill at ~/.config/opencode/skills/sdd-{phase}/:
   1. SKILL.md — purpose and rule index
   2. All files in rules/ — execution steps and constraints
   3. All files in references/ — templates and formats (if present)
-  4. Shared conventions referenced in SKILL.md (in ~/.claude/skills/_shared/)
+  4. Shared conventions referenced in SKILL.md (in ~/.config/opencode/skills/_shared/)
 
   Follow the execution steps in order.
 

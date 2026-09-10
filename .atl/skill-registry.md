@@ -2,7 +2,7 @@
 
 Generated: 2026-05-28
 Project: aytordev/system (NixOS/nix-darwin dotfiles)
-Skill root: ~/.claude/skills/
+Skill root: ~/.config/opencode/skills/
 
 ---
 
@@ -10,27 +10,27 @@ Skill root: ~/.claude/skills/
 
 | Skill | Trigger | Path |
 |-------|---------|------|
-| `nix` | When writing or editing Nix expressions, modules, flakes, overlays, or options | `~/.claude/skills/nix/SKILL.md` |
-| `dotfiles-coder` | When modifying modules/, homes/, flake inputs, NixOS/darwin configs, or Home Manager programs | `~/.claude/skills/dotfiles-coder/SKILL.md` |
-| `branch-pr` | When creating, opening, or preparing PRs for review | `~/.claude/skills/branch-pr/SKILL.md` |
-| `chained-pr` | When PRs exceed 400 lines, or splitting stacked changes for review | `~/.claude/skills/chained-pr/SKILL.md` |
-| `cognitive-doc-design` | When writing guides, READMEs, RFCs, onboarding, or architecture docs | `~/.claude/skills/cognitive-doc-design/SKILL.md` |
-| `comment-writer` | When writing PR feedback, issue replies, reviews, or GitHub comments | `~/.claude/skills/comment-writer/SKILL.md` |
-| `issue-creation` | When creating GitHub issues, bug reports, or feature requests | `~/.claude/skills/issue-creation/SKILL.md` |
-| `judgment-day` | When performing adversarial code review, quality gate, or final verification before merge | `~/.claude/skills/judgment-day/SKILL.md` |
-| `work-unit-commits` | When planning commits, splitting changes, or preparing for review | `~/.claude/skills/work-unit-commits/SKILL.md` |
-| `skill-creator` | When creating or updating a skill (SKILL.md, rules/, references/) | `~/.claude/skills/skill-creator/SKILL.md` |
-| `skill-registry` | When regenerating or updating the skill registry | `~/.claude/skills/skill-registry/SKILL.md` |
-| `sdd-init` | When initializing SDD context in a project | `~/.claude/skills/sdd-init/SKILL.md` |
-| `sdd-explore` | When exploring ideas or investigating codebase before committing to a change | `~/.claude/skills/sdd-explore/SKILL.md` |
-| `sdd-propose` | When creating a structured change proposal | `~/.claude/skills/sdd-propose/SKILL.md` |
-| `sdd-spec` | When writing specifications with requirements and scenarios | `~/.claude/skills/sdd-spec/SKILL.md` |
-| `sdd-design` | When creating technical design documents for a change | `~/.claude/skills/sdd-design/SKILL.md` |
-| `sdd-tasks` | When breaking a change into an implementation task checklist | `~/.claude/skills/sdd-tasks/SKILL.md` |
-| `sdd-apply` | When implementing tasks from a change | `~/.claude/skills/sdd-apply/SKILL.md` |
-| `sdd-verify` | When validating that implementation matches specs and design | `~/.claude/skills/sdd-verify/SKILL.md` |
-| `sdd-archive` | When archiving a completed change and syncing delta specs | `~/.claude/skills/sdd-archive/SKILL.md` |
-| `sdd-onboard` | When onboarding a user through the full SDD cycle with narration | `~/.claude/skills/sdd-onboard/SKILL.md` |
+| `nix` | When writing or editing Nix expressions, modules, flakes, overlays, or options | `~/.config/opencode/skills/nix/SKILL.md` |
+| `dotfiles-coder` | When modifying modules/, homes/, flake inputs, NixOS/darwin configs, or Home Manager programs | `~/.config/opencode/skills/dotfiles-coder/SKILL.md` |
+| `branch-pr` | When creating, opening, or preparing PRs for review | `~/.config/opencode/skills/branch-pr/SKILL.md` |
+| `chained-pr` | When PRs exceed 400 lines, or splitting stacked changes for review | `~/.config/opencode/skills/chained-pr/SKILL.md` |
+| `cognitive-doc-design` | When writing guides, READMEs, RFCs, onboarding, or architecture docs | `~/.config/opencode/skills/cognitive-doc-design/SKILL.md` |
+| `comment-writer` | When writing PR feedback, issue replies, reviews, or GitHub comments | `~/.config/opencode/skills/comment-writer/SKILL.md` |
+| `issue-creation` | When creating GitHub issues, bug reports, or feature requests | `~/.config/opencode/skills/issue-creation/SKILL.md` |
+| `judgment-day` | When performing adversarial code review, quality gate, or final verification before merge | `~/.config/opencode/skills/judgment-day/SKILL.md` |
+| `work-unit-commits` | When planning commits, splitting changes, or preparing for review | `~/.config/opencode/skills/work-unit-commits/SKILL.md` |
+| `skill-creator` | When creating or updating a skill (SKILL.md, rules/, references/) | `~/.config/opencode/skills/skill-creator/SKILL.md` |
+| `skill-registry` | When regenerating or updating the skill registry | `~/.config/opencode/skills/skill-registry/SKILL.md` |
+| `sdd-init` | When initializing SDD context in a project | `~/.config/opencode/skills/sdd-init/SKILL.md` |
+| `sdd-explore` | When exploring ideas or investigating codebase before committing to a change | `~/.config/opencode/skills/sdd-explore/SKILL.md` |
+| `sdd-propose` | When creating a structured change proposal | `~/.config/opencode/skills/sdd-propose/SKILL.md` |
+| `sdd-spec` | When writing specifications with requirements and scenarios | `~/.config/opencode/skills/sdd-spec/SKILL.md` |
+| `sdd-design` | When creating technical design documents for a change | `~/.config/opencode/skills/sdd-design/SKILL.md` |
+| `sdd-tasks` | When breaking a change into an implementation task checklist | `~/.config/opencode/skills/sdd-tasks/SKILL.md` |
+| `sdd-apply` | When implementing tasks from a change | `~/.config/opencode/skills/sdd-apply/SKILL.md` |
+| `sdd-verify` | When validating that implementation matches specs and design | `~/.config/opencode/skills/sdd-verify/SKILL.md` |
+| `sdd-archive` | When archiving a completed change and syncing delta specs | `~/.config/opencode/skills/sdd-archive/SKILL.md` |
+| `sdd-onboard` | When onboarding a user through the full SDD cycle with narration | `~/.config/opencode/skills/sdd-onboard/SKILL.md` |
 
 ---
 

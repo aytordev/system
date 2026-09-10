@@ -13,7 +13,6 @@ Glob for `*/SKILL.md` files across ALL known skill directories. Check every path
 
 ### User-level (global skills)
 
-- `~/.claude/skills/`
 - `~/.config/opencode/skills/`
 - `~/.cursor/skills/`
 - `~/.copilot/skills/`
@@ -21,7 +20,7 @@ Glob for `*/SKILL.md` files across ALL known skill directories. Check every path
 
 ### Project-level (workspace skills)
 
-- `{project-root}/.claude/skills/`
+- `{project-root}/.opencode/skills/`
 - `{project-root}/.agent/skills/`
 - `{project-root}/skills/`
 

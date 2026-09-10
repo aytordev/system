@@ -20,9 +20,9 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow these shared protocols:
-- `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
-- `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
-- `~/.claude/skills/_shared/return-envelope.md` — return format (Section D)
+- `~/.config/opencode/skills/_shared/skill-loading.md` — how to load skills (Section A)
+- `~/.config/opencode/skills/_shared/persistence-contract.md` — mode resolution rules
+- `~/.config/opencode/skills/_shared/return-envelope.md` — return format (Section D)
 
 ## Rule Categories by Priority
 

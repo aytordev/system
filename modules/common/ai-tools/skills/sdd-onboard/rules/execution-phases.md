@@ -22,7 +22,7 @@ Behave inline as sdd-explore: read the relevant code, understand the current sta
  This becomes the contract for everything that follows."
 ```
 
-Create the change folder and write `proposal.md` following sdd-propose format (see `~/.claude/skills/sdd-propose/`). After writing it:
+Create the change folder and write `proposal.md` following sdd-propose format (see `~/.config/opencode/skills/sdd-propose/`). After writing it:
 
 ```
 "Here's the proposal. Notice the Capabilities section — it tells
