@@ -66,7 +66,7 @@ GUI programs and desktop programs.
 
 **Key categories:**
 
-- **Browsers:** chromium, firefox
+- **Browsers:** firefox
 - **Communication:** thunderbird, discord, vesktop
 - **Editors:** antigravity, vscode, zed
 - **Launchers:** raycast

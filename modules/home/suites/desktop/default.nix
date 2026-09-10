@@ -31,7 +31,6 @@ in {
             };
           };
           browsers = {
-            chromium.enable = mkDefault true;
             firefox.enable = mkDefault true;
           };
           launchers = {

@@ -6,7 +6,7 @@ Nixpkgs overlays. This directory contains overlays that modify or extend the pac
 
 ```
 overlays/
-├── google-chrome-dev/      # Example overlay
+├── chromaprint/            # Example overlay
 │   └── default.nix         # Overlay definition
 └── ...
 ```
