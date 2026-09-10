@@ -86,6 +86,10 @@ in {
       inherit (aiTools.opencode) agents commands;
 
       context = builtins.readFile (lib.getFile "modules/common/ai-tools/base.md");
+
+      # OpenCode is now the primary harness for the shared ai-tools skills
+      # (Claude Code/Gemini CLI were removed).
+      skills = lib.getFile "modules/common/ai-tools/skills";
     };
   };
 }

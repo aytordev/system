@@ -21,13 +21,13 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow these shared protocols:
-- `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
-- `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
-- `~/.claude/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
-- `~/.claude/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
+- `~/.config/opencode/skills/_shared/skill-loading.md` — how to load skills (Section A)
+- `~/.config/opencode/skills/_shared/persistence-contract.md` — mode resolution rules
+- `~/.config/opencode/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
+- `~/.config/opencode/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
 
-- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: project context (uses `sdd-init/{project-name}` as topic_key).
-- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Create `openspec/` bootstrap (config.yaml, specs/, changes/, changes/archive/).
+- If mode is `engram`: Read `~/.config/opencode/skills/_shared/engram-convention.md`. Artifact type: project context (uses `sdd-init/{project-name}` as topic_key).
+- If mode is `openspec`: Read `~/.config/opencode/skills/_shared/openspec-convention.md`. Create `openspec/` bootstrap (config.yaml, specs/, changes/, changes/archive/).
 - If mode is `hybrid`: Read and follow BOTH convention files. Run the full openspec bootstrap AND save project context to Engram. Both operations MUST succeed.
 - If mode is `none`: Return detected context only.
 

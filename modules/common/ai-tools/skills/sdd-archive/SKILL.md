@@ -27,13 +27,13 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow these shared protocols:
-- `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
-- `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
-- `~/.claude/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
-- `~/.claude/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
+- `~/.config/opencode/skills/_shared/skill-loading.md` — how to load skills (Section A)
+- `~/.config/opencode/skills/_shared/persistence-contract.md` — mode resolution rules
+- `~/.config/opencode/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
+- `~/.config/opencode/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
 
-- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `archive-report`. Depends on: all prior artifacts.
-- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Perform merge + archive moves.
+- If mode is `engram`: Read `~/.config/opencode/skills/_shared/engram-convention.md`. Artifact type: `archive-report`. Depends on: all prior artifacts.
+- If mode is `openspec`: Read `~/.config/opencode/skills/_shared/openspec-convention.md`. Perform merge + archive moves.
 - If mode is `hybrid`: Follow BOTH conventions — persist archive report to Engram (with all observation IDs) AND perform filesystem spec merge + archive folder moves.
 - If mode is `none`: Return closure summary only.
 

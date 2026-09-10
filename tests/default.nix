@@ -27,15 +27,6 @@
         })
       ];
     }).config;
-  claudeAuditCommand =
-    (import ../modules/home/programs/terminal/tools/claude-code/hooks/pre-tool-audit.nix {})
-    .PreToolUse;
-  claudeAuditScript = (builtins.head (builtins.head claudeAuditCommand).hooks).command;
-  claudeNotificationHook = builtins.readFile ../modules/home/programs/terminal/tools/claude-code/hooks/notification.nix;
-  ollamaServiceModule = builtins.readFile ../modules/home/programs/terminal/tools/ollama/service.nix;
-  ollamaScriptsModule = builtins.readFile ../modules/home/programs/terminal/tools/ollama/scripts.nix;
-  ollamaUtilsModule = builtins.readFile ../modules/home/programs/terminal/tools/ollama/utils.nix;
-  litellmStartModule = builtins.readFile ../modules/home/programs/terminal/tools/litellm/start.nix;
   archetypes = lib.evalModules {
     modules = [
       ../modules/darwin/archetypes/personal
@@ -118,45 +109,6 @@ in {
   testCapitalizeWord = {
     expr = module.capitalize "hello";
     expected = "Hello";
-  };
-
-  testClaudeAuditExcludesToolInput = {
-    expr = lib.hasInfix ".tool_input" claudeAuditScript;
-    expected = false;
-  };
-
-  testClaudeAuditUsesPrivatePermissions = {
-    expr = lib.hasInfix "umask 077" claudeAuditScript && lib.hasInfix "chmod 600" claudeAuditScript;
-    expected = true;
-  };
-
-  testClaudeNotificationUsesStoreTools = {
-    expr =
-      lib.hasInfix "command -v terminal-notifier" claudeNotificationHook
-      || lib.hasInfix "osascript" claudeNotificationHook;
-    expected = false;
-  };
-
-  testOllamaDoesNotAllowEveryBrowserOrigin = {
-    expr = lib.hasInfix ''OLLAMA_ORIGINS = "*"'' ollamaServiceModule;
-    expected = false;
-  };
-
-  testOllamaEscapesConfiguredModels = {
-    expr =
-      lib.hasInfix "escapeShellArg model" ollamaScriptsModule
-      && lib.hasInfix "escapeShellArg model" ollamaUtilsModule;
-    expected = true;
-  };
-
-  testLiteLLMStartForwardsArguments = {
-    expr = lib.hasInfix ''"$@"'' litellmStartModule;
-    expected = true;
-  };
-
-  testClaudeAuditLimitsRetention = {
-    expr = lib.hasInfix "tail -n 1000" claudeAuditScript;
-    expected = true;
   };
 
   testMergeAttrs = {

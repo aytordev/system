@@ -22,14 +22,14 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow these shared protocols:
-- `~/.claude/skills/_shared/skill-loading.md` — how to load skills (Section A)
-- `~/.claude/skills/_shared/persistence-contract.md` — mode resolution rules
-- `~/.claude/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
-- `~/.claude/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
+- `~/.config/opencode/skills/_shared/skill-loading.md` — how to load skills (Section A)
+- `~/.config/opencode/skills/_shared/persistence-contract.md` — mode resolution rules
+- `~/.config/opencode/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
+- `~/.config/opencode/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
 
-- If mode is `engram`: Read `~/.claude/skills/_shared/engram-convention.md`. Artifact type: `explore`.
-- If mode is `openspec`: Read `~/.claude/skills/_shared/openspec-convention.md`. Create `exploration.md` if change name provided.
-- If mode is `hybrid`: Read `~/.claude/skills/_shared/engram-convention.md` AND `~/.claude/skills/_shared/openspec-convention.md`. Persist to Engram AND write `exploration.md` to filesystem. Retrieve from Engram (primary) with filesystem fallback.
+- If mode is `engram`: Read `~/.config/opencode/skills/_shared/engram-convention.md`. Artifact type: `explore`.
+- If mode is `openspec`: Read `~/.config/opencode/skills/_shared/openspec-convention.md`. Create `exploration.md` if change name provided.
+- If mode is `hybrid`: Read `~/.config/opencode/skills/_shared/engram-convention.md` AND `~/.config/opencode/skills/_shared/openspec-convention.md`. Persist to Engram AND write `exploration.md` to filesystem. Retrieve from Engram (primary) with filesystem fallback.
 - If mode is `none`: Return analysis only.
 
 ## What to Do

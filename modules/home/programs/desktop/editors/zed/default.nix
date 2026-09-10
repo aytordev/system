@@ -89,20 +89,6 @@ in {
           };
           version = "2";
         };
-        # Uncomment below to use local AI with Ollama, refer https://zed.dev/docs/language-model-integration?highlight=ollama#using-ollama-on-macos
-        # "assistant": {
-        #   "default_model": {
-        #     "provider": "ollama",
-        #     "model": "llama3.1:latest"
-        #   },
-        #   "version": "2",
-        #   "provider": null
-        # },
-        language_models = {
-          ollama = {
-            api_url = "http://localhost:11434";
-          };
-        };
         # Inlay hints preconfigured by Zed: Go, Rust, Typescript and Svelte
         inlay_hints = {
           enabled = true;

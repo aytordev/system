@@ -30,7 +30,7 @@ gh issue create --template "feature_request.yml" \
 - [x] I understand this issue needs status:approved before a PR can be opened
 
 ### Problem Description
-The setup script only configures Claude Code, Gemini CLI, and OpenCode.
+The setup script only configures OpenCode.
 Codex users have to manually copy skills.
 
 ### Proposed Solution

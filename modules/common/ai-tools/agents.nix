@@ -13,22 +13,6 @@
   resolveContent = agent: agent // {content = stripFrontmatter agent.content;};
   resolvedAgents = lib.mapAttrs (_: resolveContent) agents;
 
-  # Claude Code: YAML frontmatter with name, description, tools, model
-  renderClaudeFrontmatter = agent: ''
-    ---
-    name: ${agent.name}
-    description: ${agent.description}
-    tools: ${lib.concatStringsSep ", " agent.tools}
-    model: ${agent.model.claude}
-    ---
-  '';
-
-  renderClaudeAgent = agent: ''
-    ${lib.trim (renderClaudeFrontmatter agent)}
-
-    ${lib.trim agent.content}
-  '';
-
   # OpenCode: YAML frontmatter with tools as boolean record
   renderOpenCodeFrontmatter = agent: let
     hasWrite = builtins.elem "Write" agent.tools;
@@ -64,16 +48,12 @@
     prompt = lib.trim agent.content;
   };
 
-  # Gemini CLI: just description + prompt
-  toGeminiAgent = agent: {
-    prompt = lib.trim agent.content;
-    inherit (agent) description;
-  };
-
-  toClaudeMarkdown = lib.mapAttrs (_: renderClaudeAgent) resolvedAgents;
   toOpenCodeMarkdown = lib.mapAttrs (_: renderOpenCodeMarkdownAgent) resolvedAgents;
   toOpenCodeAgents = lib.mapAttrs (_: toOpenCodeAgent) resolvedAgents;
-  toGeminiAgents = lib.mapAttrs (_: toGeminiAgent) resolvedAgents;
 in {
-  inherit agents toClaudeMarkdown toOpenCodeMarkdown toOpenCodeAgents toGeminiAgents;
+  inherit
+    agents
+    toOpenCodeMarkdown
+    toOpenCodeAgents
+    ;
 }

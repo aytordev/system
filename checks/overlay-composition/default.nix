@@ -8,12 +8,6 @@
   overlayNames = builtins.attrNames overlays;
   darwin = inputs.self.darwinConfigurations.wang-lin;
   appliedOverlays = darwin.config.nixpkgs.overlays;
-  devModule = import ../../flake/dev {
-    inherit inputs lib;
-    inherit (inputs) self;
-  };
-  devPkgs =
-    (devModule.perSystem {inherit (pkgs.stdenv.hostPlatform) system;})._module.args.pkgs.content;
   linuxSystem = "x86_64-linux";
   baseLinuxPkgs = import inputs.nixpkgs {
     system = linuxSystem;
@@ -34,7 +28,6 @@
     (builtins.hasAttr "google-chrome-dev" darwin.pkgs)
     (builtins.hasAttr "ungoogled-chromium-macos" darwin.pkgs)
     (lib.hasInfix "internal/updater/install_darwin.go" darwin.pkgs.protonmail-bridge.postPatch)
-    (builtins.seq devPkgs.aytordev.agentapi true)
     (overlaidLinuxPkgs.google-chrome.drvPath == baseLinuxPkgs.google-chrome.drvPath)
     (!(builtins.hasAttr "google-chrome-dev" overlaidLinuxPkgs))
     (!(builtins.hasAttr "ungoogled-chromium-macos" overlaidLinuxPkgs))

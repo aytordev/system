@@ -1,8 +1,8 @@
 # AI Tools
 
 Agents, slash commands, and skills for agentic coding workflows. Consumed by
-Claude Code, OpenCode, and Gemini CLI through a multi-tool Nix pipeline
-(`agents.nix` / `commands.nix` / `skills.nix` in `modules/common/ai-tools`).
+OpenCode through a Nix pipeline (`agents.nix` / `commands.nix` / `skills.nix` in
+`modules/common/ai-tools`).
 
 ## Architecture
 
@@ -13,13 +13,13 @@ ai-tools/
 ├── skills/         # Reusable knowledge + protocols (SKILL.md + rules/)
 ├── agents.nix      # Agent pipeline → per-tool output
 ├── commands.nix    # Command pipeline → per-tool output
-└── default.nix     # Entry point; exposes {claudeCode, geminiCli, opencode}
+└── default.nix     # Entry point; exposes the opencode adapters
 ```
 
 Each agent/command is a Nix attrset or directory. `agents.nix` /
-`commands.nix` render them into the format each tool expects (markdown for
-Claude Code, JSON for Gemini, markdown/agent-configs for OpenCode). Skills are
-consumed directly from the `skills/` tree by the tools' runtime.
+`commands.nix` render them into the format OpenCode expects
+(markdown/agent-configs). Skills are consumed directly from the `skills/` tree by
+the tool's runtime.
 
 ## Agents vs Commands vs Skills
 
@@ -45,13 +45,12 @@ protocols to follow when adding a new agent/command/skill.
 ## Adding a New Command / Agent / Skill
 
 1. Add the file under the matching `commands/`, `agents/`, or `skills/` tree.
-2. Export through the relevant `*.nix` loader so it reaches all three tools.
+2. Export through the relevant `*.nix` loader so it reaches the consuming tool.
 3. Run `nix fmt` and `nix flake check --no-build` to validate.
 4. Update the inventory table in `AGENTS.md`.
 
 ## Consumption
 
-The output is wired into each tool's config by the home modules
-(`opencode`, `claude-code`, `gemini-cli`). You do not normally touch
-`ai-tools` from a home config; you add content inside `ai-tools/` and let the
-loaders propagate it.
+The output is wired into OpenCode's config by the `opencode` home module. You do
+not normally touch `ai-tools` from a home config; you add content inside
+`ai-tools/` and let the loaders propagate it.

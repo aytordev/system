@@ -8,7 +8,6 @@ platform by `flake/packages/default.nix`.
 
 | Package | Description | Platforms |
 | --- | --- | --- |
-| `agentapi` | Coder's agent API binary (`agentapi` MCP/agent bridge) | linux + darwin (x86_64/aarch64) |
 | `engram` | Persistent memory MCP server for AI coding agents (Gentleman-Programming) | linux + darwin (x86_64/aarch64) |
 | `luaposix` | Lua 5.5-compatible `luaposix` build (upstream rockspec upper bound patched) | per nixpkgs |
 | `pencil-dev` | Pencil dev macOS app (dmg → `/Applications`) | aarch64-darwin only |

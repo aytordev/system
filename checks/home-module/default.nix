@@ -62,60 +62,6 @@
       }
     )
   ];
-  claudeHome = mkHome [
-    ../../modules/home/programs/terminal/tools/claude-code
-    {
-      aytordev.programs.terminal.tools.claude-code = {
-        enable = true;
-        permissionProfile = "autonomous";
-      };
-    }
-  ];
-  discoveredClaudeModules = builtins.filter (
-    modulePath: extendedLib.hasInfix "/claude-code" (toString modulePath)
-  ) (extendedLib.importModulesRecursive ../../modules/home);
-  ollamaHome = mkHome [
-    ../../modules/home/programs/terminal/tools/ollama
-    {
-      aytordev.programs.terminal.tools.ollama = {
-        enable = true;
-        advancedScripts.enable = true;
-        integrations.zed = false;
-        modelPresets = ["general"];
-        service.enable = true;
-      };
-    }
-  ];
-  litellmHome = mkHome [
-    ../../modules/home/programs/terminal/tools/litellm
-    {
-      aytordev.programs.terminal.tools.litellm = {
-        enable = true;
-        service.enable = true;
-        environmentFiles.OPENAI_API_KEY = "/run/secrets/openai-api-key";
-      };
-    }
-  ];
-  ollamaPackageNames = map extendedLib.getName ollamaHome.config.home.packages;
-  ollamaServiceConfig = ollamaHome.config.aytordev.programs.terminal.tools.ollama.service;
-  ollamaLaunchdConfig = ollamaHome.config.launchd.agents.ollama.config;
-  litellmLaunchdConfig = litellmHome.config.launchd.agents.litellm.config;
-  litellmPackageNames = map extendedLib.getName litellmHome.config.home.packages;
-  cudaPackageMatches =
-    if pkgs.stdenv.hostPlatform.isLinux
-    then let
-      cudaHome = mkHome [
-        ../../modules/home/programs/terminal/tools/ollama
-        {
-          aytordev.programs.terminal.tools.ollama.acceleration = "cuda";
-        }
-      ];
-    in
-      cudaHome.config.aytordev.programs.terminal.tools.ollama.package == pkgs.ollama-cuda
-    else true;
-  discoveredOllamaModules = builtins.filter (
-    modulePath: extendedLib.hasInfix "/ollama" (toString modulePath)
-  ) (extendedLib.importModulesRecursive ../../modules/home);
   injectedHome = inputs.self.lib.system.mkHome {
     system = pkgs.stdenv.hostPlatform.system;
     hostname = "injected-host";
@@ -143,51 +89,6 @@
     ];
   };
   tests = [
-    (claudeHome.config.programs.claude-code.settings.permissions.defaultMode == "acceptEdits")
-    (builtins.length discoveredClaudeModules == 1)
-    (extendedLib.hasSuffix "/claude-code" (toString (builtins.head discoveredClaudeModules)))
-    (
-      ollamaHome.config.aytordev.programs.terminal.tools.ollama.models
-      == [
-        "llama3.2"
-        "mistral"
-      ]
-    )
-    (ollamaHome.options.aytordev.programs.terminal.tools.ollama.integrations ? zed)
-    (builtins.elem "ollama-chat" ollamaPackageNames)
-    (
-      if pkgs.stdenv.hostPlatform.isDarwin
-      then
-        ollamaHome.config.launchd.agents ? ollama
-        && builtins.isString (builtins.head ollamaLaunchdConfig.ProgramArguments)
-        && !ollamaLaunchdConfig.RunAtLoad
-        && ollamaLaunchdConfig.KeepAlive == null
-        && ollamaHome.config.launchd.agents ? ollama-log-rotation
-      else
-        ollamaHome.config.systemd.user.services.ollama.Service.Type
-        == "exec"
-        && ollamaHome.config.systemd.user.services.ollama.Service.TimeoutStartSec == "infinity"
-        && ollamaServiceConfig.autoStart
-    )
-    (
-      if pkgs.stdenv.hostPlatform.isDarwin
-      then
-        litellmHome.config.launchd.agents ? litellm
-        && builtins.isString (builtins.head litellmLaunchdConfig.ProgramArguments)
-        && !litellmLaunchdConfig.RunAtLoad
-        && litellmLaunchdConfig.KeepAlive == null
-        && litellmHome.config.launchd.agents ? litellm-log-rotation
-      else litellmHome.config.systemd.user.services ? litellm
-    )
-    (!(litellmHome.options.aytordev.programs.terminal.tools.litellm ? environmentVariables))
-    (!(litellmHome.config.home.sessionVariables ? OPENAI_API_KEY))
-    (builtins.elem "litellm-start" litellmPackageNames)
-    cudaPackageMatches
-    (builtins.elem "ollama-rag" ollamaPackageNames)
-    (builtins.elem "ollama-validate" ollamaPackageNames)
-    (builtins.elem "ollama-status" ollamaPackageNames)
-    (builtins.length discoveredOllamaModules == 1)
-    (extendedLib.hasSuffix "/ollama" (toString (builtins.head discoveredOllamaModules)))
     injectedHome.config.testMarker
   ];
 in

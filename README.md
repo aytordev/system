@@ -122,7 +122,6 @@ inputs.system.packages."${system}".engram
 
 Available packages (built per platform in `packages/`):
 
-- `agentapi`
 - `engram`
 - `luaposix`
 - `pencil-dev`

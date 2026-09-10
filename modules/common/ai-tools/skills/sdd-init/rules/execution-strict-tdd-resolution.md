@@ -16,7 +16,7 @@ Determine whether Strict TDD Mode should be enabled. Resolution follows a priori
 ```
 1. System prompt / agent config (highest priority):
    ├── Search for "strict-tdd-mode" marker in the agent's system prompt
-   │   (CLAUDE.md, GEMINI.md, .cursorrules, opencode AGENTS.md)
+   │   (opencode AGENTS.md, .cursorrules)
    ├── If found and says "enabled" → strict_tdd: true
    ├── If found and says "disabled" → strict_tdd: false
    └── This is the preference set by the user
