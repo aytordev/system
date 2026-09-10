@@ -223,7 +223,7 @@ For alternate boot configurations:
 ```nix
 {
   specialisation.no-wayland.configuration = {
-    aytordev.programs.graphical.wms.hyprland.enable = lib.mkForce false;
+    aytordev.programs.desktop.window-manager-system.hyprland.enable = lib.mkForce false;
   };
 }
 ```

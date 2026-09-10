@@ -153,6 +153,11 @@ aytordev.user = {
 };
 ```
 
+### Host (`host/`)
+
+Foundational module publishing `aytordev.host.name` (the current hostname) so
+capabilities can read host identity without reaching into system config.
+
 ## Configuration Patterns
 
 ### Option Structure

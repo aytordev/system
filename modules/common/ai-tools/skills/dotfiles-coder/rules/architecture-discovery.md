@@ -12,7 +12,7 @@ Modules are automatically imported via `importModulesRecursive`. Never add manua
 {
   imports = [
     ../../modules/home/programs/terminal/tools/git/default.nix
-    ../../modules/home/programs/graphical/browsers/firefox/default.nix
+    ../../modules/home/programs/desktop/browsers/firefox/default.nix
   ];
 
   # These are already auto-discovered!
@@ -26,7 +26,7 @@ Modules are automatically imported via `importModulesRecursive`. Never add manua
 { ... }:
 {
   aytordev.programs.terminal.tools.git.enable = true;
-  aytordev.programs.graphical.browsers.firefox.enable = true;
+  aytordev.programs.desktop.browsers.firefox.enable = true;
 
   # Only use manual imports for modules/common/ from platform modules
 }
