@@ -126,7 +126,6 @@ in {
           tools = {
             act = mkDefault enabled;
             # AI tools - use mkDefault so home config can override
-            agentapi.enable = mkDefault cfg.aiEnable;
             engram.enable = mkDefault cfg.aiEnable;
             mcp.enable = mkDefault cfg.aiEnable;
             opencode.enable = mkDefault cfg.aiEnable;

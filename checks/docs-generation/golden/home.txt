@@ -94,9 +94,6 @@
 ## aytordev\.programs\.terminal\.shells\.zsh\.package
 ## aytordev\.programs\.terminal\.tools\.act\.enable
 ## aytordev\.programs\.terminal\.tools\.act\.package
-## aytordev\.programs\.terminal\.tools\.agentapi\.enable
-## aytordev\.programs\.terminal\.tools\.agentapi\.package
-## aytordev\.programs\.terminal\.tools\.agentapi\.defaultPort
 ## aytordev\.programs\.terminal\.tools\.atuin\.enable
 ## aytordev\.programs\.terminal\.tools\.atuin\.enableBashIntegration
 ## aytordev\.programs\.terminal\.tools\.atuin\.enableDebug

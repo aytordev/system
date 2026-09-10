@@ -42,7 +42,6 @@
     "programs.terminal.shells.nushell"
     "programs.terminal.shells.zsh"
     "programs.terminal.tools.act"
-    "programs.terminal.tools.agentapi"
     "programs.terminal.tools.atuin"
     "programs.terminal.tools.bat"
     "programs.terminal.tools.bitwarden-cli"
