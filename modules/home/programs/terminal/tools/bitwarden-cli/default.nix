@@ -124,6 +124,8 @@ in {
       description = "Package providing the selected Bitwarden client.";
     };
 
+    bw.enable = mkEnableOption "the official Bitwarden CLI alongside the selected client";
+
     server = mkOption {
       type = types.nullOr types.str;
       default = null;
@@ -196,7 +198,10 @@ in {
     ];
 
     home = {
-      packages = optionals isRbw [cfg.pinentry] ++ optionals (!isRbw) [cfg.package];
+      packages =
+        optionals isRbw [cfg.pinentry]
+        ++ optionals (!isRbw) [cfg.package]
+        ++ optionals (isRbw && cfg.bw.enable) [pkgs.bitwarden-cli];
 
       shellAliases = mkIf cfg.aliases.enable {
         bwl = "${clientCommand} login";

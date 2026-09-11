@@ -22,6 +22,7 @@
   }: let
     configPath = args.path;
     hostIdentity = self.lib.identity.fromSecretsFor username inputs.secrets;
+    ownerIdentity = self.lib.identity.fromSecrets inputs.secrets;
     validatedUsername = self.lib.identity.assertUsername hostIdentity.username username;
   in {
     name = userAtHost; # Use the full "username@hostname" as key
@@ -34,6 +35,7 @@
       username = validatedUsername;
       extraSpecialArgs = {
         identity = hostIdentity;
+        inherit ownerIdentity;
       };
       modules = [configPath];
       homeModules = allHomeModules;

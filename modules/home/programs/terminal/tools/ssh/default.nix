@@ -41,6 +41,11 @@ in {
               type = types.listOf types.str;
               description = "Host patterns for this connection profile";
             };
+            hostName = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Real hostname to connect to (HostName directive). Defaults to the first hostNames entry when null.";
+            };
             user = mkOption {
               type = types.nullOr types.str;
               default = null;
@@ -139,13 +144,17 @@ in {
             name = lib.concatStringsSep " " host.hostNames;
             value =
               lib.filterAttrs (_: v: v != null) {
+                HostName = host.hostName or null;
                 User = host.user or null;
                 Port = host.port or null;
                 IdentityFile = host.identityFile or null;
                 IdentitiesOnly = host.identitiesOnly or null;
               }
               // {
-                HostKeyAlias = lib.head host.hostNames;
+                HostKeyAlias =
+                  if host.hostName != null
+                  then host.hostName
+                  else lib.head host.hostNames;
               }
               // (host.extraOptions or {});
           })

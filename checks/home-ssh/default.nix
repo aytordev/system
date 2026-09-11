@@ -41,6 +41,38 @@
   };
   secureSshConfig = secureDarwin.config.services.openssh.extraConfig;
 
+  aliasHome = inputs.self.lib.system.mkHome {
+    inherit username;
+    system = pkgs.stdenv.hostPlatform.system;
+    hostname = "ssh-alias-host";
+    modules = [
+      {
+        aytordev = {
+          user = {
+            enable = true;
+            name = username;
+            email = "ssh-alias@example.test";
+            fullName = "SSH Alias User";
+            home = "/Users/${username}";
+          };
+          programs.terminal.tools.ssh = {
+            enable = true;
+            hosts.github-civislend = {
+              hostNames = ["github-civislend"];
+              hostName = "github.com";
+              user = "git";
+              identityFile = "/Users/${username}/.ssh/civislend_ed25519";
+              identitiesOnly = true;
+              port = 22;
+            };
+          };
+        };
+        home.stateVersion = "25.11";
+      }
+    ];
+  };
+  aliasSshConfig = aliasHome.config.home.file.".ssh/config".text;
+
   getKnownHosts = config: lib.attrByPath ["home" "file" ".ssh/known_hosts.d/aytordev" "text"] "" config;
   standaloneKnownHosts = getKnownHosts home;
   integratedKnownHosts = getKnownHosts integratedHome;
@@ -81,6 +113,10 @@
     (lib.hasInfix "PasswordAuthentication no" secureSshConfig)
     (lib.hasInfix "PermitRootLogin no" secureSshConfig)
     (secureDarwin.config.users.users.${testUsername}.openssh.authorizedKeys.keys == [testPublicKey])
+    (lib.hasInfix "Host github-civislend" aliasSshConfig)
+    (lib.hasInfix "HostName github.com" aliasSshConfig)
+    (lib.hasInfix "HostKeyAlias github.com" aliasSshConfig)
+    (lib.hasInfix "IdentityFile /Users/${username}/.ssh/civislend_ed25519" aliasSshConfig)
   ];
 in
   assert builtins.all (test: test) tests;

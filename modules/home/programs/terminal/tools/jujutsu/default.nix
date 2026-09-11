@@ -33,7 +33,7 @@ in {
     };
     userName = mkOption {
       type = types.str;
-      default = config.aytordev.user.name;
+      default = config.aytordev.user.fullName;
       description = "The name to configure jujutsu with.";
     };
     userEmail = mkOption {

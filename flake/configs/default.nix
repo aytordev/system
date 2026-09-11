@@ -21,6 +21,7 @@
   allDarwinModules = importModulesRecursive ../../modules/darwin;
   allHomeModules = importModulesRecursive ../../modules/home;
   identity = self.lib.identity.fromSecrets inputs.secrets;
+  ownerIdentity = identity;
   privateHostModule = path: moduleArgs:
     import path (
       moduleArgs
@@ -65,6 +66,7 @@ in {
           inherit (hostIdentity) username;
           extraSpecialArgs = {
             identity = hostIdentity;
+            inherit ownerIdentity;
           };
           hostModule = privateHostModule path;
           nixosModules = allNixOSModules;
@@ -89,6 +91,7 @@ in {
           inherit (hostIdentity) username;
           extraSpecialArgs = {
             identity = hostIdentity;
+            inherit ownerIdentity;
           };
           hostModule = privateHostModule path;
           darwinModules = allDarwinModules;

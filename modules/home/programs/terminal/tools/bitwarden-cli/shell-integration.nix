@@ -5,8 +5,8 @@
   ...
 }: let
   cfg = config.aytordev.programs.terminal.tools.bitwarden-cli;
-  enabled = cfg.enable && cfg.client == "bw" && cfg.shellIntegration.enable;
-  executable = lib.getExe cfg.package;
+  enabled = cfg.enable && (cfg.client == "bw" || cfg.bw.enable) && cfg.shellIntegration.enable;
+  executable = lib.getExe pkgs.bitwarden-cli;
   chmod = lib.getExe' pkgs.coreutils "chmod";
   id = lib.getExe' pkgs.coreutils "id";
   mkdir = lib.getExe' pkgs.coreutils "mkdir";

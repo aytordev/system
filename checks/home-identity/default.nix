@@ -40,7 +40,12 @@
             lazygit.enable = true;
             bitwarden-cli = {
               enable = true;
+              bw.enable = true;
               server = "https://bitwarden.example.test";
+              shellIntegration = {
+                enable = true;
+                bash = true;
+              };
               apiKey = {
                 enable = true;
                 clientIdFile = toString apiClientIdFile;
@@ -80,7 +85,16 @@
             };
             tools.gh = {
               enable = true;
-              auth.tokenPath = "/run/secrets/github-token";
+              auth = {
+                tokenPath = "/run/secrets/github-token";
+                accounts = {
+                  personal = {
+                    tokenPath = "/run/secrets/github-personal-token";
+                    command = "ghp";
+                  };
+                  work.tokenPath = "/run/secrets/github-work-token";
+                };
+              };
             };
             tools.hcloud = {
               enable = true;
@@ -110,13 +124,25 @@
     )
     null
     officialConfig.home.packages;
+  ghPersonalWrapper =
+    lib.findFirst (
+      package: lib.getName package == "ghp"
+    )
+    null
+    officialConfig.home.packages;
+  ghWorkWrapper =
+    lib.findFirst (
+      package: lib.getName package == "gh-work"
+    )
+    null
+    officialConfig.home.packages;
   bitwardenConfig = config.aytordev.programs.terminal.tools.bitwarden-cli;
   apiKeyScript = config.home.file.".local/bin/bitwarden-login-sops".text;
   rbwPinentry = config.programs.rbw.settings.pinentry;
   tests = [
-    (config.programs.git.settings.user.name == username)
+    (config.programs.git.settings.user.name == fullName)
     (config.programs.git.settings.user.email == email)
-    (config.programs.jujutsu.settings.user.name == username)
+    (config.programs.jujutsu.settings.user.name == fullName)
     (config.programs.jujutsu.settings.user.email == email)
     (config.programs.git.signing.signByDefault != true)
     (!(config.programs.jujutsu.settings ? signing))
@@ -130,6 +156,9 @@
     (officialConfig.aytordev.programs.terminal.tools.bitwarden-cli.package == pkgs.bitwarden-cli)
     (!officialConfig.programs.rbw.enable)
     (officialConfig.xdg.configFile ? "bitwarden-cli/session.bash")
+    (lib.any (p: lib.getName p == "bitwarden-cli") config.home.packages)
+    (config.xdg.configFile ? "bitwarden-cli/session.bash")
+    config.programs.rbw.enable
     (lib.hasInfix "bw completion --shell zsh" officialConfig.programs.zsh.initContent)
     (!(lib.hasInfix "export GH_TOKEN" zshInit))
     (!(lib.hasInfix "export HCLOUD_TOKEN" zshInit))
@@ -147,6 +176,8 @@
     (!(lib.hasInfix "TMPDIR" officialBitwardenFish))
     (lib.hasPrefix "gh-with-runtime-token" (lib.getName officialConfig.programs.gh.package))
     (hcloudWrappedPackage != null)
+    (ghPersonalWrapper != null)
+    (ghWorkWrapper != null)
     (lib.hasInfix "rbw-api-key-pinentry" rbwPinentry)
     (lib.hasInfix "PINENTRY_USER_DATA=aytordev-bitwarden-api-key" apiKeyScript)
     (!(lib.hasInfix "BW_CLIENTID" apiKeyScript))
@@ -177,6 +208,10 @@ in
       fi
       if ${lib.getExe hcloudWrappedPackage} version; then
         echo "Hetzner Cloud wrapper did not fail closed" >&2
+        exit 1
+      fi
+      if ${lib.getExe ghPersonalWrapper} --version; then
+        echo "ghp wrapper did not fail closed" >&2
         exit 1
       fi
       client_id_output="$(

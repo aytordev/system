@@ -40,6 +40,22 @@
     if hasToken
     then wrappedPackage
     else cfg.package;
+  accountWrappers = lib.mapAttrsToList (
+    name: account:
+      pkgs.writeShellScriptBin (
+        if account.command != null
+        then account.command
+        else "gh-${name}"
+      ) ''
+        set -euo pipefail
+        token_file=${lib.escapeShellArg account.tokenPath}
+        if [[ ! -r "$token_file" ]]; then
+          printf 'GitHub CLI token file is not readable: %s\n' "$token_file" >&2
+          exit 1
+        fi
+        ${account.tokenVariable}="$(<"$token_file")" exec ${executable} "$@"
+      ''
+  ) (lib.filterAttrs (_: account: account.tokenPath != null) cfg.auth.accounts);
 in {
   options.aytordev.programs.terminal.tools.gh = {
     enable = mkEnableOption "GitHub CLI tool";
@@ -64,6 +80,34 @@ in {
         default = "GH_TOKEN";
         description = "Environment variable used for GitHub CLI authentication.";
       };
+      accounts = mkOption {
+        type = types.attrsOf (
+          types.submodule {
+            options = {
+              tokenPath = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = "Path to the token file for this account.";
+              };
+              tokenVariable = mkOption {
+                type = types.enum [
+                  "GH_TOKEN"
+                  "GH_ENTERPRISE_TOKEN"
+                ];
+                default = cfg.auth.tokenVariable;
+                description = "Environment variable used for this account.";
+              };
+              command = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = "Command name for this account's wrapper. Defaults to `gh-<name>`.";
+              };
+            };
+          }
+        );
+        default = {};
+        description = "Additional GitHub accounts, each exposed as a `gh-<name>` wrapper.";
+      };
     };
 
     gitCredentialHelper = {
@@ -84,6 +128,8 @@ in {
     };
   };
   config = mkIf cfg.enable {
+    home.packages = accountWrappers;
+
     programs = {
       gh = {
         enable = true;

@@ -18,7 +18,8 @@
       settings = {
         alias = aliases;
         user = {
-          inherit (config.aytordev.user) name email;
+          name = config.aytordev.user.fullName;
+          inherit (config.aytordev.user) email;
         };
         branch.sort = "-committerdate";
         core.editor = "nano";
