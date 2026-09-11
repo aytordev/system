@@ -42,9 +42,11 @@ in {
         inherit (cfg) style;
         inherit (cfg) width;
         hidpi = "off";
-        # Use carpYellow for active (matches astronaut+jellyfish wallpaper), border color for inactive
+        # Active uses the bright yellow accent; inactive uses the border role.
+        # Using two distinct semantic roles keeps active/inactive distinguishable
+        # in every theme family (e.g. Kanagawa Dragon, where both yellows match).
         active_color = palette.yellow_bright.sketchybar;
-        inactive_color = palette.yellow.sketchybar;
+        inactive_color = palette.border.sketchybar;
       };
     };
   };

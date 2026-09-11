@@ -22,6 +22,7 @@ in {
       # Extensions - https://github.com/zed-industries/extensions/tree/main/extensions
       extensions = [
         "kanagawa-themes"
+        "catppuccin"
         "catppuccin-icons"
       ];
 

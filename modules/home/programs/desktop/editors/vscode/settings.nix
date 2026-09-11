@@ -165,7 +165,7 @@
   "workbench.editor.enablePreviewFromQuickOpen" = true;
   "workbench.editor.tabCloseButton" = "left";
   "workbench.colorTheme" = lib.mkDefault themeCfg.appTheme.capitalized;
-  "workbench.preferredDarkColorTheme" = lib.mkDefault themeCfg.appTheme.capitalized;
+  "workbench.preferredDarkColorTheme" = lib.mkDefault themeCfg.appThemeDark.capitalized;
   "workbench.preferredLightColorTheme" = lib.mkDefault themeCfg.appThemeLight.capitalized;
   "workbench.list.horizontalScrolling" = true;
   "workbench.panel.defaultLocation" = "right";

@@ -30,8 +30,9 @@ in {
         };
 
         commonExtensions = with pkgs.vscode-extensions; [
-          # Kanagawa theme
+          # Theme families supported by aytordev.theme
           kanagawa-theme
+          catppuccin.catppuccin-vsc
           catppuccin.catppuccin-vsc-icons
           github.copilot
           github.copilot-chat

@@ -69,9 +69,10 @@
     "$character"
   ];
 
-  # Palettes extracted for maintainability
+  # Palettes extracted for maintainability. Family-agnostic: the values follow
+  # aytordev.theme.palette, so the name must not imply a specific family.
   palettes = {
-    kanagawa = {
+    aytordev = {
       text = palette.fg.hex;
       red = palette.red.hex;
       green = palette.green.hex;
@@ -326,9 +327,9 @@ in {
     package = mkPackageOption pkgs "starship" {};
 
     palette = mkOption {
-      type = types.enum ["kanagawa"];
-      default = "kanagawa";
-      description = "Starship palette name. Only 'kanagawa' is defined; its colors adapt to the global theme variant.";
+      type = types.enum ["aytordev"];
+      default = "aytordev";
+      description = "Starship palette name. Colors adapt to the active aytordev.theme family/variant.";
     };
 
     settings = mkOption {

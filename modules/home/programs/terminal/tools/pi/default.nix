@@ -15,6 +15,10 @@
     types
     ;
   cfg = config.aytordev.programs.terminal.tools.pi;
+  themeCfg = config.aytordev.theme;
+
+  # Generated from the shared palette so the TUI follows aytordev.theme.
+  generatedTheme = lib.generators.toJSON {} (import ./theme.nix {inherit (themeCfg) palette;});
 
   # nan.builders is an OpenAI-compatible provider wired the same way as opencode:
   # the API key is read at runtime from a SOPS-managed file, so no secret lands
@@ -250,14 +254,14 @@ in {
       type = types.nullOr types.str;
       default =
         if cfg.shell.enable
-        then "kanagawa"
+        then "aytordev"
         else null;
-      description = "TUI theme name (defaults to the vendored kanagawa theme when the gentle shell is enabled).";
+      description = "TUI theme name (defaults to the palette-generated aytordev theme when the gentle shell is enabled).";
     };
     shell.enable = mkOption {
       type = types.bool;
       default = true;
-      description = "Deploy the vendored gentle-pi aesthetic extensions + kanagawa theme.";
+      description = "Deploy the vendored gentle-pi aesthetic extensions + generated theme.";
     };
     tuiMode = mkOption {
       type = types.nullOr (
@@ -375,8 +379,11 @@ in {
         "${absConfigDir}/scripts" = mkIf cfg.shell.enable {
           source = vendorScripts;
         };
-        "${absConfigDir}/themes" = mkIf cfg.shell.enable {
-          source = vendorThemes;
+        "${absConfigDir}/themes/kanagawa.json" = mkIf cfg.shell.enable {
+          source = vendorThemes + "/kanagawa.json";
+        };
+        "${absConfigDir}/themes/aytordev.json" = mkIf cfg.shell.enable {
+          text = generatedTheme;
         };
       };
 

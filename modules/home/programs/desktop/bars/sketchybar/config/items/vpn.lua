@@ -4,7 +4,7 @@ local settings = require("settings")
 
 -- VPN icon (shield/lock icon)
 local VPN_ICON = "󰒃" -- Nerd font VPN icon
-local VPN_CONNECTED_COLOR = 0xff9ed072 -- Green from colors.lua
+local VPN_CONNECTED_COLOR = colors.green
 local VPN_DISCONNECTED_COLOR = colors.with_alpha(colors.white, 0.3)
 
 local vpn = sbar.add("item", "vpn", {

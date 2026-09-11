@@ -8,6 +8,25 @@
   cfg = config.aytordev.programs.terminal.tools.yazi;
   themeCfg = config.aytordev.theme;
   si = lib.aytordev.shellIntegration config;
+
+  # Generate one Yazi flavor per registered family/variant from the semantic
+  # palette, so Yazi follows aytordev.theme instead of a vendored set.
+  mkFlavorToml = import ./flavor.nix;
+  generatedFlavors =
+    lib.concatMapAttrs (
+      family: provider:
+        lib.mapAttrs' (
+          variant: palette:
+            lib.nameValuePair "${family}-${variant}" (
+              pkgs.writeTextDir "flavor.toml" (mkFlavorToml {
+                inherit palette;
+              })
+            )
+        )
+        provider.variants
+    )
+    themeCfg.providers;
+  activeFlavor = "${themeCfg.name}-${themeCfg.variant}";
 in {
   options.aytordev.programs.terminal.tools.yazi = {
     enable = lib.mkEnableOption "yazi";
@@ -50,12 +69,13 @@ in {
         (import ./keymap/select.nix)
         (import ./keymap/tasks.nix)
       ];
-      flavors = {
-        kanagawa-wave = ./flavors/kanagawa-wave.yazi;
-        kanagawa-dragon = ./flavors/kanagawa-dragon.yazi;
-        kanagawa-lotus = ./flavors/kanagawa-lotus.yazi;
+      flavors = generatedFlavors;
+      # Yazi selects by detected background polarity; pin both to the active
+      # variant so the global selection wins.
+      theme.flavor = {
+        dark = activeFlavor;
+        light = activeFlavor;
       };
-      theme.flavor.use = themeCfg.appTheme.kebab;
       plugins = {
         "arrow-parent" = ./plugins/arrow-parent.yazi;
         inherit
