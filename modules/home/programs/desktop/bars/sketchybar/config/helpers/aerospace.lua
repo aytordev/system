@@ -42,6 +42,7 @@ local DEFAULT = {
 	MAX_BUF = 2048,
 	EXT_BUF = 4096,
 	TIMEOUT_MS = 5000, -- 5 second timeout for socket operations
+	PROTO_VERSION = 1, -- AeroSpace socket protocol version (UInt32 LE handshake)
 }
 
 -- Timeout explanation:
@@ -67,6 +68,44 @@ local ERR = {
 local AF_UNIX, SOCK_STREAM = socket.AF_UNIX, socket.SOCK_STREAM
 local write, read, close = unistd.write, unistd.read, unistd.close
 local encode = cjson.encode
+local pack = string.pack
+local unpack = string.unpack
+
+-- Write the whole buffer, handling partial writes on the Unix socket.
+local function write_all(fd, data)
+	local total = 1
+	local len = #data
+	while total <= len do
+		local written = write(fd, data:sub(total))
+		if not written or written <= 0 then
+			error("socket write failed")
+		end
+		total = total + written
+	end
+end
+
+-- Read exactly n bytes, blocking (with a timeout) until they arrive.
+local function read_exact(fd, n)
+	local chunks = {}
+	local remaining = n
+	while remaining > 0 do
+		if not wait_for_data(fd, DEFAULT.TIMEOUT_MS) then
+			error("timeout waiting for socket data")
+		end
+		local chunk = read(fd, remaining)
+		if not chunk or #chunk == 0 then
+			error("socket closed while reading")
+		end
+		table.insert(chunks, chunk)
+		remaining = remaining - #chunk
+	end
+	return table.concat(chunks)
+end
+
+-- Read a little-endian UInt32 (AeroSpace frames every message this way).
+local function read_u32(fd)
+	return (unpack("<I4", read_exact(fd, 4)))
+end
 
 local function decode(str)
 	if use_simd then
@@ -99,7 +138,29 @@ local function connect(path)
 		close(fd)
 		error("cannot connect to " .. path)
 	end
-	log.info("connected successfully, fd=%d", fd)
+
+	-- Protocol handshake: AeroSpace exchanges a little-endian UInt32 protocol
+	-- version before any request. Without it the server replies with its version
+	-- and closes, which surfaced as "empty response" errors.
+	local ok, handshake_err = pcall(function()
+		write_all(fd, pack("<I4", DEFAULT.PROTO_VERSION))
+		local server_version = read_u32(fd)
+		if server_version ~= DEFAULT.PROTO_VERSION then
+			error(
+				string.format(
+					"unsupported AeroSpace socket protocol version %d (expected %d)",
+					server_version,
+					DEFAULT.PROTO_VERSION
+				)
+			)
+		end
+	end)
+	if not ok then
+		close(fd)
+		error("AeroSpace handshake failed: " .. tostring(handshake_err))
+	end
+
+	log.info("connected successfully, fd=%d (protocol v%d)", fd, DEFAULT.PROTO_VERSION)
 	return fd
 end
 
@@ -162,8 +223,8 @@ function Aerospace:is_initialized()
 	return self.fd ~= nil
 end
 
-local PAYLOAD_TMPL = '{"command":"","args":%s,"stdin":""}\n'
-function Aerospace:_query(args, want_json, big)
+local PAYLOAD_TMPL = '{"args":%s,"stdin":"","windowId":null,"workspace":null}'
+function Aerospace:_query(args, want_json, _big)
 	if not self:is_initialized() then
 		log.error("query attempted but socket not initialized")
 		error(ERR.NOT_INIT)
@@ -172,70 +233,31 @@ function Aerospace:_query(args, want_json, big)
 	local cmd_name = args[1] or "unknown"
 	local start_time = os.clock()
 	local payload = PAYLOAD_TMPL:format(encode(args))
+	local raw = ""
 
 	log.debug("query start: %s (fd=%d)", cmd_name, self.fd)
-	log.blocking_start("write", string.format("cmd=%s bytes=%d", cmd_name, #payload))
-	local write_start = os.clock()
-	write(self.fd, payload)
-	log.blocking_end("write", (os.clock() - write_start) * 1000)
+	-- Request/response are framed as UInt32 little-endian length + JSON body.
+	local ok, query_err = pcall(function()
+		write_all(self.fd, pack("<I4", #payload) .. payload)
+		local length = read_u32(self.fd)
+		raw = length == 0 and "" or read_exact(self.fd, length)
+	end)
+	local elapsed_ms = (os.clock() - start_time) * 1000
 
-	-- Read all available data from socket in chunks
-	-- Uses poll() with timeout to avoid blocking forever if AeroSpace is unresponsive
-	local chunks = {}
-	local chunk_size = big and DEFAULT.EXT_BUF or DEFAULT.MAX_BUF
-	local attempts = 0
-	local max_attempts = 10
-	local total_bytes = 0
-	local timed_out = false
-
-	repeat
-		log.blocking_start("read", string.format("cmd=%s attempt=%d chunk_size=%d", cmd_name, attempts + 1, chunk_size))
-
-		-- Wait for data with timeout before attempting read
-		if not wait_for_data(self.fd, DEFAULT.TIMEOUT_MS) then
-			log.error(
-				"TIMEOUT waiting for data: cmd=%s after %dms (attempt %d)",
-				cmd_name,
-				DEFAULT.TIMEOUT_MS,
-				attempts + 1
-			)
-			timed_out = true
-			break
-		end
-
-		local read_start = os.clock()
-		local chunk = read(self.fd, chunk_size)
-		local read_elapsed = (os.clock() - read_start) * 1000
-		log.blocking_end("read", read_elapsed)
-
-		if chunk and #chunk > 0 then
-			table.insert(chunks, chunk)
-			total_bytes = total_bytes + #chunk
-			log.debug("read chunk: %d bytes (total=%d)", #chunk, total_bytes)
-		else
-			log.debug("read returned empty, breaking")
-			break
-		end
-		attempts = attempts + 1
-	until #chunk < chunk_size or attempts >= max_attempts
-
-	-- If we timed out, the socket is likely in a bad state - reconnect
-	if timed_out then
-		log.error("socket timeout, attempting reconnect")
-		self:reconnect()
+	if not ok then
+		log.error("query failed: %s: %s", cmd_name, tostring(query_err))
+		-- The persistent socket may be in a bad state; reconnect for next time.
+		pcall(function()
+			self:reconnect()
+		end)
 		return want_json and {} or ""
 	end
 
-	local elapsed_ms = (os.clock() - start_time) * 1000
-	log.socket("query_complete", self.fd, total_bytes, elapsed_ms)
-
+	log.socket("query_complete", self.fd, #raw, elapsed_ms)
 	if elapsed_ms > 500 then
-		log.warn("SLOW QUERY: %s took %.2fms, %d bytes", cmd_name, elapsed_ms, total_bytes)
+		log.warn("SLOW QUERY: %s took %.2fms, %d bytes", cmd_name, elapsed_ms, #raw)
 	end
 
-	local raw = table.concat(chunks)
-
-	-- Validate we got data
 	if raw == "" or raw:match("^%s*$") then
 		log.warn("empty response for: %s", cmd_name)
 		return want_json and {} or ""
