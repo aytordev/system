@@ -38,6 +38,14 @@ in {
       # currently 404s on .vsix downloads, so keep it off in the boilerplate.
       editors.vscode = disabled;
     };
+
+    programs.terminal.tools.ssh.hosts.github-aytordev = {
+      hostNames = ["github.com"];
+      user = "git";
+      identityFile = "/Users/${username}/.ssh/ssh_key_github_aytordev_ed25519";
+      identitiesOnly = true;
+      port = 22;
+    };
   };
 
   home.stateVersion = "26.11";

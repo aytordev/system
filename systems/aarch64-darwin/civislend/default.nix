@@ -32,6 +32,12 @@ in {
       defaultSopsFile = "${sopsFolder}/${username}.yaml";
       age.keyFile = "/Users/${username}/.config/sops/age/keys.txt";
       secrets = {
+        github_aytordev_ssh_private_key = {
+          key = "github_aytordev_ssh_private_key";
+          path = "/Users/${username}/.ssh/ssh_key_github_aytordev_ed25519";
+          mode = "0600";
+          owner = username;
+        };
         nan_builders_api_key = {
           key = "nan_builders_api_key";
           path = "/Users/${username}/.config/sops/nan_builders_api_key";
