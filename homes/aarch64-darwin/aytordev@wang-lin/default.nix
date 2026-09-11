@@ -139,25 +139,27 @@ in {
           nh.flake = "${config.home.homeDirectory}/Developer/system";
 
           # Host-specific SSH configuration
-          ssh.hosts.github = {
-            hostNames = ["github.com"];
-            user = "git";
-            identityFile = "/Users/${username}/.ssh/ssh_key_github_ed25519";
-            identitiesOnly = true;
-            port = 22;
-          };
+          ssh = {
+            hosts.github = {
+              hostNames = ["github.com"];
+              user = "git";
+              identityFile = "/Users/${username}/.ssh/ssh_key_github_ed25519";
+              identitiesOnly = true;
+              port = 22;
+            };
 
-          # Portfolio Hetzner VPS — update hostNames with the real IP in PR6.T3
-          ssh.hosts.hetzner-portfolio = {
-            hostNames = ["hetzner-portfolio-vps"]; # TODO PR6.T3: replace with actual VPS IP
-            user = "deploy";
-            identityFile = "/Users/${username}/.ssh/portfolio_hetzner_ed25519";
-            identitiesOnly = true;
-            port = 22;
-          };
-          ssh.knownHosts.wang-lin = {
-            hostNames = ["wang-lin.local"];
-            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILUV4bxRgp4WZX0MkVv7jg9q2i44yE6jUnnitMDGb0mO";
+            # Portfolio Hetzner VPS — update hostNames with the real IP in PR6.T3
+            hosts.hetzner-portfolio = {
+              hostNames = ["hetzner-portfolio-vps"]; # TODO PR6.T3: replace with actual VPS IP
+              user = "deploy";
+              identityFile = "/Users/${username}/.ssh/portfolio_hetzner_ed25519";
+              identitiesOnly = true;
+              port = 22;
+            };
+            knownHosts.wang-lin = {
+              hostNames = ["wang-lin.local"];
+              publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILUV4bxRgp4WZX0MkVv7jg9q2i44yE6jUnnitMDGb0mO";
+            };
           };
 
           # Custom starship integrations
