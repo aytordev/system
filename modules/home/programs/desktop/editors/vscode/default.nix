@@ -23,9 +23,9 @@ in {
         kanagawa-theme = pkgs.vscode-utils.buildVscodeMarketplaceExtension {
           mktplcRef = {
             name = "kanagawa-vscode-color-theme";
-            publisher = "metaphor";
+            publisher = "metaphore";
             version = "0.5.0";
-            sha256 = "1l2y5ch6im9qff15kqlxf4j0wxbzl354pqrbby5ybbz76pbjzkis";
+            sha256 = "sha256-Os4v1zXnr+WLXyvjS8qgf3UOJHGd4lmCczjVaCArXtA=";
           };
         };
 
