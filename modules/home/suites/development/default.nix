@@ -109,7 +109,6 @@ in {
       programs = {
         desktop = {
           editors = {
-            antigravity = mkDefault enabled;
             vscode.enable = mkDefault (!isWSL);
             zed = mkDefault enabled;
           };

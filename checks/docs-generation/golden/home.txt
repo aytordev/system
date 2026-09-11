@@ -49,10 +49,6 @@
 ## aytordev\.programs\.desktop\.communications\.thunderbird\.package
 ## aytordev\.programs\.desktop\.communications\.vesktop\.enable
 ## aytordev\.programs\.desktop\.communications\.vesktop\.package
-## aytordev\.programs\.desktop\.editors\.antigravity\.enable
-## aytordev\.programs\.desktop\.editors\.antigravity\.package
-## aytordev\.programs\.desktop\.editors\.antigravity\.extensions
-## aytordev\.programs\.desktop\.editors\.antigravity\.userSettings
 ## aytordev\.programs\.desktop\.editors\.vscode\.enable
 ## aytordev\.programs\.desktop\.editors\.vscode\.package
 ## aytordev\.programs\.desktop\.editors\.zed\.enable

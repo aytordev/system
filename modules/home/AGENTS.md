@@ -68,7 +68,7 @@ GUI programs and desktop programs.
 
 - **Browsers:** firefox
 - **Communication:** thunderbird, discord, vesktop
-- **Editors:** antigravity, vscode, zed
+- **Editors:** vscode, zed
 - **Launchers:** raycast
 - **Security:** bitwarden
 - **Bars / window management:** sketchybar, aerospace (macOS)

@@ -50,11 +50,6 @@
 
   # ─── Workspace C (Coding / 編) ──────────────────────────────────
   {
-    "if".app-id = "com.google.antigravity";
-    run = "move-node-to-workspace C";
-    check-further-callbacks = false;
-  }
-  {
     "if".app-id = "dev.zed.Zed";
     run = "move-node-to-workspace C";
     check-further-callbacks = false;

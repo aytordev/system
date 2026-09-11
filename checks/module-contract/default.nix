@@ -27,7 +27,6 @@
     "programs.desktop.communications.discord"
     "programs.desktop.communications.thunderbird"
     "programs.desktop.communications.vesktop"
-    "programs.desktop.editors.antigravity"
     "programs.desktop.editors.vscode"
     "programs.desktop.editors.zed"
     "programs.desktop.launchers.raycast"
