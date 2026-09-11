@@ -26,9 +26,9 @@ in {
       common = enabled;
       development = {
         enable = true;
-        # Bring the AI coding agents (pi, opencode, ...) so
-        # the host can be iterated on remotely; providers need a local /login or
-        # API-key env for now (nan.builders is gated on SOPS, off on this host).
+        # Bring the AI coding agents (pi, opencode, ...) so the host can be
+        # iterated on remotely. SOPS is enabled on this host, so opencode/pi
+        # wire the nan.builders provider from the SOPS-managed API key file.
         aiEnable = true;
       };
     };

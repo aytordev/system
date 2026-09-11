@@ -1,6 +1,7 @@
 {
   lib,
   identity,
+  secretsRoot,
   config,
   ...
 }: let
@@ -8,6 +9,8 @@
   inherit (identity) username;
 
   cfg = config.aytordev.user;
+
+  sopsFolder = builtins.toString secretsRoot + "/hard-secrets";
 in {
   aytordev = {
     user = {
@@ -21,9 +24,22 @@ in {
       workstation = enabled;
     };
 
-    # TODO(osb): enable security.sops after provisioning the machine's age key
-    # and adding `hard-secrets/${username}.yaml` to the private secrets flake.
-    security.sops.enable = false;
+    # SOPS is enabled so opencode/pi can wire the nan.builders provider from the
+    # SOPS-managed API key. Requires the machine's age key and a
+    # `hard-secrets/${username}.yaml` entry in the private secrets flake.
+    security.sops = {
+      enable = true;
+      defaultSopsFile = "${sopsFolder}/${username}.yaml";
+      age.keyFile = "/Users/${username}/.config/sops/age/keys.txt";
+      secrets = {
+        nan_builders_api_key = {
+          key = "nan_builders_api_key";
+          path = "/Users/${username}/.config/sops/nan_builders_api_key";
+          mode = "0600";
+          owner = username;
+        };
+      };
+    };
   };
 
   networking = {
