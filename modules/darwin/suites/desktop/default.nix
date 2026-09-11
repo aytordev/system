@@ -26,7 +26,6 @@ in {
       casks = [
         "sf-symbols"
         "zen"
-        "boosteroid"
         "helium-browser"
       ];
 
