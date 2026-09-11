@@ -3,13 +3,14 @@
 #
 # Usage:
 #   aytordev.theme = {
-#     name = "kanagawa";    # Theme to use
+#     name = "kanagawa";    # Theme family to use
 #     variant = "dragon";   # Theme-specific variant
 #   };
 #
 # Access colors in other modules:
 #   config.aytordev.theme.palette.accent.hex
 #   config.aytordev.theme.palette.bg.sketchybar
+#   config.aytordev.theme.appTheme.kebab
 {
   config,
   lib,
@@ -24,12 +25,22 @@
   themeLib = import ./lib.nix {inherit lib;};
 
   # ─── Theme Providers ─────────────────────────────────────────────────────
-  # Each provider is a data attrset (not a module) conforming to the contract.
-  # To add a new theme, import it here and add to this attrset.
+  # Each provider is a data attrset (not a module) conforming to the contract:
+  #   { name, displayName, defaultVariant, darkVariant, lightVariant, variants, appTheme }
+  # validateProvider throws if a provider is missing fields, references an
+  # unknown variant, or declares inconsistent light/dark polarity.
+  # To add a new theme, import it here and add it to this attrset.
   themeProviders = {
-    kanagawa = import ./kanagawa/provider.nix {
-      inherit (themeLib) mkColor transparent capitalize;
-    };
+    kanagawa = themeLib.validateProvider (
+      import ./kanagawa/provider.nix {
+        inherit (themeLib) mkColor transparent capitalize;
+      }
+    );
+    catppuccin = themeLib.validateProvider (
+      import ./catppuccin/provider.nix {
+        inherit (themeLib) mkColor transparent capitalize;
+      }
+    );
   };
 
   cfg = config.aytordev.theme;
@@ -89,13 +100,28 @@
       transparent = mkOption {type = colorType;};
     };
   };
+
+  # Provider metadata + every variant palette, keyed by family name.
+  # Enables runtime switching and introspection without forcing a family.
+  providerMetadata =
+    lib.mapAttrs (_: provider: {
+      inherit
+        (provider)
+        displayName
+        defaultVariant
+        darkVariant
+        lightVariant
+        ;
+      variants = lib.mapAttrs (_: variant: variant.palette) provider.variants;
+    })
+    themeProviders;
 in {
   options.aytordev.theme = {
     name = mkOption {
       type = types.enum (builtins.attrNames themeProviders);
       default = "kanagawa";
       description = ''
-        Which theme to use globally.
+        Which theme family to use globally.
         Available themes: ${toString (builtins.attrNames themeProviders)}
       '';
     };
@@ -106,10 +132,18 @@ in {
       description = ''
         Theme variant. Valid values depend on the selected theme.
         For Kanagawa: wave, dragon, lotus.
+        For Catppuccin: latte, frappe, macchiato, mocha.
       '';
     };
 
     # ─── Read-only Computed Values ──────────────────────────────────────────
+
+    displayName = mkOption {
+      type = types.str;
+      readOnly = true;
+      default = activeTheme.displayName;
+      description = "Human-readable name of the active theme family.";
+    };
 
     palette = mkOption {
       type = paletteType;
@@ -139,12 +173,22 @@ in {
       '';
     };
 
+    appThemeDark = mkOption {
+      type = types.attrsOf types.str;
+      readOnly = true;
+      default = activeTheme.appTheme activeTheme.darkVariant;
+      description = ''
+        Pre-formatted theme names for the dark variant of the active family.
+        Useful for apps that follow the system light/dark scheme.
+      '';
+    };
+
     appThemeLight = mkOption {
       type = types.attrsOf types.str;
       readOnly = true;
       default = activeTheme.appTheme activeTheme.lightVariant;
       description = ''
-        Pre-formatted theme names for the light variant.
+        Pre-formatted theme names for the light variant of the active family.
         Useful for apps that need both dark and light theme names.
       '';
     };
@@ -167,6 +211,27 @@ in {
         All variant palettes for the active theme.
         Useful for apps that support runtime theme switching.
         Example: config.aytordev.theme.allVariantPalettes.dragon.accent.hex
+      '';
+    };
+
+    providers = mkOption {
+      type = types.attrsOf (
+        types.submodule {
+          options = {
+            displayName = mkOption {type = types.str;};
+            defaultVariant = mkOption {type = types.str;};
+            darkVariant = mkOption {type = types.str;};
+            lightVariant = mkOption {type = types.str;};
+            variants = mkOption {type = types.attrsOf paletteType;};
+          };
+        }
+      );
+      readOnly = true;
+      default = providerMetadata;
+      description = ''
+        All registered theme families with their variant palettes.
+        Enables runtime switching across families.
+        Example: config.aytordev.theme.providers.catppuccin.variants.mocha.accent.hex
       '';
     };
   };
