@@ -1,6 +1,7 @@
--- Theme variant picker popup
--- Click to open a popup listing available theme variants.
--- Selecting a variant applies it immediately via sketchybar --reload.
+-- Theme picker popup
+-- Click to open a popup listing every registered family/variant plus a
+-- "Follow Nix" reset. Selecting one applies it immediately via
+-- sketchybar --reload; the choice is persisted until reset.
 local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
@@ -18,17 +19,19 @@ local icon_picker = sbar.add("item", "theme_picker", {
 	popup = { align = "right" },
 })
 
--- Build popup entries from available themes
-local variant_names = theme.list()
+-- Item ids cannot contain "/" or "."
+local function item_name(key)
+	return "theme_picker." .. key:gsub("[^%w]", "_")
+end
 
-for _, name in ipairs(variant_names) do
-	local is_active = (name == theme.current)
-	local display = is_active and ("✓ " .. name) or ("  " .. name)
+local function add_entry(key, label, is_active, is_follow)
+	local item_color = colors.accent
+	if not is_follow and theme.themes[key] and theme.themes[key].accent then
+		item_color = theme.themes[key].accent
+	end
 
-	local variant_colors = theme.variants[name]
-	local item_color = variant_colors and variant_colors.accent or colors.accent
-
-	local item = sbar.add("item", "theme_picker.variant." .. name, {
+	local display = is_active and ("✓ " .. label) or ("  " .. label)
+	local item = sbar.add("item", item_name(key), {
 		position = "popup.theme_picker",
 		label = {
 			string = display,
@@ -48,7 +51,11 @@ for _, name in ipairs(variant_names) do
 
 	item:subscribe("mouse.clicked", function()
 		icon_picker:set({ popup = { drawing = false } })
-		theme.apply(name)
+		if is_follow then
+			theme.follow_nix()
+		else
+			theme.apply(key)
+		end
 	end)
 
 	item:subscribe("mouse.entered", function()
@@ -58,6 +65,13 @@ for _, name in ipairs(variant_names) do
 	item:subscribe("mouse.exited", function()
 		item:set({ background = { drawing = false } })
 	end)
+end
+
+local following = theme.is_following_nix()
+add_entry("follow-nix", "Follow Nix", following, true)
+
+for _, name in ipairs(theme.list()) do
+	add_entry(name, name, (not following and name == theme.current), false)
 end
 
 -- Toggle popup on click
