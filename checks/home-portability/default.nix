@@ -41,6 +41,23 @@
   };
   desktopHome = mkPortableHome {suite = "desktop";};
   businessHome = mkPortableHome {suite = "business";};
+  catppuccinHome = mkPortableHome {
+    suite = "desktop";
+    extraModule.aytordev = {
+      theme = {
+        name = "catppuccin";
+        variant = "mocha";
+      };
+      programs.terminal.tools.yazi.enable = true;
+    };
+  };
+  catppuccinDevHome = mkPortableHome {
+    suite = "development";
+    extraModule.aytordev.theme = {
+      name = "catppuccin";
+      variant = "mocha";
+    };
+  };
   desktopOverrideHome = mkPortableHome {
     suite = "desktop";
     extraModule.aytordev = {
@@ -59,6 +76,8 @@
   commonNoFastfetchConfig = commonNoFastfetchHome.config;
   desktopConfig = desktopHome.config;
   businessConfig = businessHome.config;
+  catppuccinConfig = catppuccinHome.config;
+  catppuccinDevConfig = catppuccinDevHome.config;
   desktopOverrideConfig = desktopOverrideHome.config;
   developmentOverrideConfig = developmentOverrideHome.config;
   developmentOptions = developmentOverrideHome.options.aytordev.suites.development;
@@ -99,6 +118,55 @@
     (!(desktopConfig.aytordev.programs.desktop.bars.sketchybar ? themeOverride))
     (!(desktopConfig.aytordev.services.jankyborders ? themeOverride))
     (desktopConfig.aytordev.services.jankyborders.enable == isDarwin)
+    (desktopConfig.aytordev.theme.providers ? kanagawa)
+    (desktopConfig.aytordev.theme.providers ? catppuccin)
+    (catppuccinConfig.aytordev.theme.palette.accent.hex == "#89b4fa")
+    (catppuccinConfig.aytordev.theme.appTheme.capitalized == "Catppuccin Mocha")
+    (catppuccinConfig.aytordev.theme.appThemeDark.capitalized == "Catppuccin Mocha")
+    (catppuccinConfig.aytordev.theme.appThemeLight.capitalized == "Catppuccin Latte")
+    (!catppuccinConfig.aytordev.theme.isLight)
+    (catppuccinConfig.aytordev.programs.terminal.emulators.ghostty.theme == "catppuccin-mocha")
+    (desktopConfig.aytordev.programs.terminal.emulators.ghostty.theme == "kanagawa-dragon")
+    (desktopConfig.aytordev.programs.terminal.tools.pi.theme == "aytordev")
+    (config.programs.yazi.theme.flavor.dark == "kanagawa-dragon")
+    (catppuccinConfig.programs.yazi.theme.flavor.dark == "catppuccin-mocha")
+    (
+      if isDarwin
+      then
+        desktopConfig.services.jankyborders.settings.active_color
+        != desktopConfig.services.jankyborders.settings.inactive_color
+      else true
+    )
+    (
+      if isDarwin
+      then let
+        constants = desktopConfig.xdg.configFile."sketchybar/nix_constants.lua".text;
+      in
+        lib.hasInfix "catppuccin/mocha" constants
+        && lib.hasInfix "kanagawa/dragon" constants
+        && lib.hasInfix "active_theme" constants
+      else true
+    )
+    (config.aytordev.programs.terminal.tools.starship.palette == "aytordev")
+    (
+      catppuccinDevConfig.programs.vscode.profiles.default.userSettings."workbench.colorTheme"
+      == "Catppuccin Mocha"
+    )
+    (
+      catppuccinDevConfig.programs.vscode.profiles.default.userSettings."workbench.preferredDarkColorTheme"
+      == "Catppuccin Mocha"
+    )
+    (
+      catppuccinDevConfig.programs.vscode.profiles.default.userSettings."workbench.preferredLightColorTheme"
+      == "Catppuccin Latte"
+    )
+    (
+      developmentOverrideConfig.programs.vscode.profiles.default.userSettings."workbench.preferredDarkColorTheme"
+      == "Kanagawa Dragon"
+    )
+    (lib.elem "catppuccin" catppuccinDevConfig.programs.zed-editor.extensions)
+    (catppuccinDevConfig.programs.zed-editor.userSettings.theme == "Catppuccin Mocha")
+    (developmentOverrideConfig.programs.zed-editor.userSettings.theme == "Kanagawa Dragon")
     ((desktopConfig.home.file ? "Pictures/screenshots/.keep") == isDarwin)
     (desktopConfig.programs.firefox.configPath == ".mozilla/firefox")
     (

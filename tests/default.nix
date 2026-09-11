@@ -88,6 +88,30 @@
   };
   runAsServiceModule = builtins.readFile ../modules/home/programs/terminal/tools/run-as-service/default.nix;
   warpModule = builtins.readFile ../modules/home/programs/terminal/emulators/warp/default.nix;
+
+  themeLib = import ../modules/home/theme/lib.nix {inherit lib;};
+  evalTheme = extra:
+    lib.evalModules {
+      modules = [
+        ../modules/home/theme
+        {
+          options.assertions = lib.mkOption {
+            type = lib.types.listOf lib.types.attrs;
+            default = [];
+          };
+        }
+        extra
+      ];
+    };
+  themeConfig = extra: (evalTheme extra).config.aytordev.theme;
+  themeAssertionsHold = extra: builtins.all (assertion: assertion.assertion) (evalTheme extra).config.assertions;
+  activeThemePalette = (themeConfig {}).palette;
+  yaziFlavor = import ../modules/home/programs/terminal/tools/yazi/flavor.nix {
+    palette = activeThemePalette;
+  };
+  piTheme = import ../modules/home/programs/terminal/tools/pi/theme.nix {
+    palette = activeThemePalette;
+  };
 in {
   testBoolToNumTrue = {
     expr = module.boolToNum true;
@@ -357,5 +381,348 @@ in {
   testGeneratedModuleCustomOptions = {
     expr = (evaluateGeneratedModule true).aytordev.example.message;
     expected = "custom";
+  };
+
+  testThemeDefaultIsKanagawaDragon = {
+    expr = let
+      theme = themeConfig {};
+    in {
+      inherit
+        (theme)
+        name
+        variant
+        isLight
+        displayName
+        ;
+      appThemeLight = theme.appThemeLight.capitalized;
+      appThemeDark = theme.appThemeDark.capitalized;
+    };
+    expected = {
+      name = "kanagawa";
+      variant = "dragon";
+      isLight = false;
+      displayName = "Kanagawa";
+      appThemeLight = "Kanagawa Lotus";
+      appThemeDark = "Kanagawa Dragon";
+    };
+  };
+
+  testThemeCatppuccinLatte = {
+    expr = let
+      theme = themeConfig {
+        aytordev.theme = {
+          name = "catppuccin";
+          variant = "latte";
+        };
+      };
+    in {
+      inherit
+        (theme)
+        name
+        variant
+        isLight
+        displayName
+        ;
+      accent = theme.palette.accent.hex;
+      appTheme = theme.appTheme.capitalized;
+      appThemeDark = theme.appThemeDark.capitalized;
+      appThemeLight = theme.appThemeLight.capitalized;
+    };
+    expected = {
+      name = "catppuccin";
+      variant = "latte";
+      isLight = true;
+      displayName = "Catppuccin";
+      accent = "#1e66f5";
+      appTheme = "Catppuccin Latte";
+      appThemeDark = "Catppuccin Mocha";
+      appThemeLight = "Catppuccin Latte";
+    };
+  };
+
+  testThemeExposesEveryProvider = {
+    expr = builtins.attrNames (themeConfig {}).providers;
+    expected = [
+      "catppuccin"
+      "kanagawa"
+    ];
+  };
+
+  testThemeActivePaletteMatchesVariant = {
+    expr = let
+      theme = themeConfig {aytordev.theme.variant = "wave";};
+    in {
+      matches = theme.palette == theme.allVariantPalettes.${theme.variant};
+      transparent = theme.palette.transparent.sketchybar;
+    };
+    expected = {
+      matches = true;
+      transparent = "0x00000000";
+    };
+  };
+
+  testThemeRejectsUnknownVariant = {
+    expr = themeAssertionsHold {aytordev.theme.variant = "does-not-exist";};
+    expected = false;
+  };
+
+  testThemeAcceptsEveryVariant = {
+    expr = map themeAssertionsHold [
+      {aytordev.theme.variant = "wave";}
+      {aytordev.theme.variant = "dragon";}
+      {aytordev.theme.variant = "lotus";}
+      {aytordev.theme.name = "catppuccin";}
+    ];
+    expected = [
+      true
+      true
+      true
+      true
+    ];
+  };
+
+  testThemeComputedOptionsAreReadOnly = {
+    expr =
+      (builtins.tryEval (
+        builtins.deepSeq (themeConfig {aytordev.theme.palette.accent.hex = "#ffffff";}) true
+      )).success;
+    expected = false;
+  };
+
+  testMkColorOpaque = {
+    expr = themeLib.mkColor "#dcd7ba";
+    expected = {
+      hex = "#dcd7ba";
+      raw = "dcd7ba";
+      rgb = "rgb(220, 215, 186)";
+      sketchybar = "0xffdcd7ba";
+    };
+  };
+
+  testMkColorAlphaReordersSketchybarChannel = {
+    expr = themeLib.mkColor "#12345678";
+    expected = {
+      hex = "#12345678";
+      raw = "12345678";
+      rgb = "rgba(18, 52, 86, 0.470588)";
+      sketchybar = "0x78123456";
+    };
+  };
+
+  testTransparentMatchesMkColor = {
+    expr = themeLib.transparent == themeLib.mkColor "#00000000";
+    expected = true;
+  };
+
+  testMkColorRejectsMalformedInput = {
+    expr = map (value: (builtins.tryEval (builtins.deepSeq (themeLib.mkColor value) true)).success) [
+      "#123"
+      "123456"
+      "#12345g"
+      "#123456789"
+    ];
+    expected = [
+      false
+      false
+      false
+      false
+    ];
+  };
+
+  testValidateProviderAcceptsKanagawa = {
+    expr =
+      (themeLib.validateProvider (
+        import ../modules/home/theme/kanagawa/provider.nix {
+          inherit (themeLib) mkColor transparent capitalize;
+        }
+      )).name;
+    expected = "kanagawa";
+  };
+
+  testValidateProviderRejectsMissingContract = {
+    expr =
+      (builtins.tryEval (builtins.deepSeq (themeLib.validateProvider {name = "broken";}) true)).success;
+    expected = false;
+  };
+
+  testValidateProviderRejectsUnknownVariantReference = {
+    expr =
+      (builtins.tryEval (
+        builtins.deepSeq (themeLib.validateProvider {
+          name = "broken";
+          displayName = "Broken";
+          defaultVariant = "missing";
+          darkVariant = "missing";
+          lightVariant = "missing";
+          variants = {};
+          appTheme = _: {};
+        })
+        true
+      )).success;
+    expected = false;
+  };
+
+  testValidateProviderRejectsInconsistentPolarity = {
+    expr =
+      (builtins.tryEval (
+        builtins.deepSeq (themeLib.validateProvider {
+          name = "broken";
+          displayName = "Broken";
+          defaultVariant = "dark";
+          darkVariant = "dark";
+          lightVariant = "light";
+          variants = {
+            dark = {
+              isLight = true;
+            };
+            light = {
+              isLight = true;
+            };
+          };
+          appTheme = _: {};
+        })
+        true
+      )).success;
+    expected = false;
+  };
+
+  testThemeCatppuccinExposesEveryVariant = {
+    expr = let
+      theme = themeConfig {aytordev.theme.name = "catppuccin";};
+      latte = themeConfig {
+        aytordev.theme = {
+          name = "catppuccin";
+          variant = "latte";
+        };
+      };
+    in {
+      variants = builtins.attrNames theme.allVariantPalettes;
+      inherit (theme.providers.catppuccin) darkVariant lightVariant;
+      latteIsLight = latte.isLight;
+      mochaIsLight = theme.isLight;
+    };
+    expected = {
+      variants = [
+        "frappe"
+        "latte"
+        "macchiato"
+        "mocha"
+      ];
+      darkVariant = "mocha";
+      lightVariant = "latte";
+      latteIsLight = true;
+      mochaIsLight = false;
+    };
+  };
+
+  testKanagawaDragonBrightYellowStaysBrighterThanYellow = {
+    expr = let
+      theme = themeConfig {aytordev.theme.variant = "dragon";};
+    in {
+      yellow = theme.palette.yellow.hex;
+      yellow_bright = theme.palette.yellow_bright.hex;
+    };
+    expected = {
+      yellow = "#c4b28a";
+      yellow_bright = "#e6c384";
+    };
+  };
+
+  testYaziFlavorCoversAllSections = {
+    expr = map (section: lib.hasInfix section yaziFlavor) [
+      "[mgr]"
+      "[tabs]"
+      "[mode]"
+      "[status]"
+      "[pick]"
+      "[input]"
+      "[cmp]"
+      "[tasks]"
+      "[which]"
+      "[help]"
+      "[spot]"
+      "[notify]"
+      "[filetype]"
+    ];
+    expected = [
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+    ];
+  };
+
+  testYaziFlavorHasNoUnresolvedInterpolationOrNulls = {
+    expr = {
+      hasPlaceholder = lib.hasInfix "\${" yaziFlavor;
+      hasNull = lib.hasInfix "null" yaziFlavor;
+    };
+    expected = {
+      hasPlaceholder = false;
+      hasNull = false;
+    };
+  };
+
+  testYaziFlavorUsesActiveFamilyAccent = {
+    expr = let
+      inherit ((themeConfig {aytordev.theme.name = "catppuccin";})) palette;
+      flavor = import ../modules/home/programs/terminal/tools/yazi/flavor.nix {inherit palette;};
+    in
+      lib.hasInfix palette.accent.hex flavor;
+    expected = true;
+  };
+
+  testPiThemeIsValidJsonFollowingPalette = {
+    expr = let
+      parsed = builtins.fromJSON (builtins.toJSON piTheme);
+    in {
+      inherit (parsed) name;
+      accent = parsed.vars.accent;
+      hasColors = parsed.colors ? accent;
+      hasExport = parsed.export ? pageBg;
+    };
+    expected = {
+      name = "aytordev";
+      accent = activeThemePalette.accent.hex;
+      hasColors = true;
+      hasExport = true;
+    };
+  };
+
+  testPiThemeFollowsActiveFamily = {
+    expr = let
+      inherit ((themeConfig {aytordev.theme.name = "catppuccin";})) palette;
+    in
+      (import ../modules/home/programs/terminal/tools/pi/theme.nix {inherit palette;}).vars.bg;
+    expected = "#1e1e2e";
+  };
+
+  testThemeProvidersAgreeWithComputedPalette = {
+    expr = let
+      theme = themeConfig {
+        aytordev.theme = {
+          name = "catppuccin";
+          variant = "frappe";
+        };
+      };
+    in {
+      activeMatches = theme.palette == theme.allVariantPalettes.frappe;
+      providerMatches = theme.palette == theme.providers.catppuccin.variants.frappe;
+      transparent = theme.providers.catppuccin.variants.latte.transparent.sketchybar;
+    };
+    expected = {
+      activeMatches = true;
+      providerMatches = true;
+      transparent = "0x00000000";
+    };
   };
 }
