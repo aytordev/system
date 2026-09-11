@@ -4,7 +4,7 @@ moduleArgs @ {
   identity,
   ...
 }: let
-  inherit (lib.aytordev) enabled disabled;
+  inherit (lib.aytordev) enabled;
   inherit (identity) username;
 in {
   assertions = [
@@ -41,9 +41,6 @@ in {
     # Host-specific overrides and custom configurations only
     programs = {
       desktop = {
-        # Override: disable vscode (suite enables it by default)
-        editors.vscode = disabled;
-
         # Custom bitwarden desktop settings
         security.bitwarden = {
           enable = true;
