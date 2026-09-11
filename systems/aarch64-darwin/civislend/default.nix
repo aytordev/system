@@ -84,6 +84,14 @@ in {
     };
   };
 
+  homebrew.casks = [
+    "microsoft-excel"
+    "microsoft-teams"
+    "microsoft-word"
+    "onedrive"
+    "slack"
+  ];
+
   networking = {
     hostName = "civislend";
     localHostName = "civislend";
