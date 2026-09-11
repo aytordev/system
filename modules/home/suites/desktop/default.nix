@@ -43,22 +43,39 @@ in {
       };
     };
 
-    home.packages = with pkgs; [
-      # TODO: Add more packages
-    ];
+    home = {
+      packages = with pkgs; [
+        # TODO: Add more packages
+      ];
 
-    home.file = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-      "Pictures/screenshots/.keep".text = "";
+      file = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+        "Pictures/screenshots/.keep".text = "";
+      };
+
+      # copyApps writes the bundles but does not register them with LaunchServices,
+      # so "open -a" / default-app associations can lag. Re-register as the user on
+      # every activation so new apps are discoverable immediately.
+      activation.registerMacApps = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin (
+        lib.hm.dag.entryAfter ["writeBoundary"] ''
+          apps_dir="${config.home.homeDirectory}/Applications/Home Manager Apps"
+          if [ -d "$apps_dir" ]; then
+            /usr/bin/find "$apps_dir" -maxdepth 1 -name '*.app' \
+              -exec /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f {} + >/dev/null 2>&1 || true
+          fi
+        ''
+      );
     };
 
-    # Deploy apps as read-only symlinks (linkApps) rather than writable copies
-    # (copyApps). Writable copies let apps like Raycast self-update past the
-    # nixpkgs version, migrate their DBs, then nix reverts the app → schema
-    # mismatch → "Failed to start". Immutable symlinks force updates to come
-    # from a nix rebuild, keeping DBs consistent with the installed version.
+    # Deploy apps as real copies (copyApps), not symlinks. Symlinked bundles
+    # resolve into /nix/store, which Spotlight/Launchpad/Raycast do not index,
+    # so new apps stayed invisible until launched once. copyApps writes real
+    # bundles into "~/Applications/Home Manager Apps" (home-manager's default
+    # for stateVersion >= 25.11). Tradeoff: copies are writable, so an app that
+    # self-updates can drift from the nixpkgs version until the next switch;
+    # disable per-app auto-update (e.g. Raycast) to avoid the schema mismatch.
     targets.darwin = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-      copyApps.enable = mkDefault false;
-      linkApps.enable = mkDefault true;
+      copyApps.enable = mkDefault true;
+      linkApps.enable = mkDefault false;
     };
   };
 }
