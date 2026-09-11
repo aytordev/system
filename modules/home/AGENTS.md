@@ -124,10 +124,32 @@ aytordev.suites.development.enable = true;
 
 Theming and visual customization.
 
-The pure-data theme module publishes the active Kanagawa palette and application
-theme names. Select `aytordev.theme.variant`; there is no `theme.enable` switch.
-Capabilities consume the shared palette and may expose a module-specific
-override when an application needs one.
+The pure-data theme module publishes the active family palette and application
+theme names. Select the family with `aytordev.theme.name` (Kanagawa or
+Catppuccin) and the variant with `aytordev.theme.variant`; there is no
+`theme.enable` switch.
+
+- `palette` — active semantic colors (`hex`, `rgb`, `sketchybar`, `raw`).
+- `appTheme` / `appThemeDark` / `appThemeLight` — formatted names for the
+  active, dark, and light variants.
+- `providers` — every registered family/variant palette; the Sketchybar runtime
+  picker uses it to switch families without a rebuild.
+
+Providers are plain data validated by `validateProvider` against the contract
+(`name`, `displayName`, `defaultVariant`, `darkVariant`, `lightVariant`,
+`variants`, `appTheme`). Each family keeps one file per variant:
+
+```
+theme/<family>/provider.nix           # registry: variant imports, naming, polarity
+theme/<family>/variants/<variant>.nix # { isLight, rawColors, palette }
+theme/<family>/palette.nix            # shared role mapping (only when variants share it)
+```
+
+Capabilities consume the shared palette; apps with native theme files resolve
+the family name through `appTheme` and must ship the matching resource
+(extension/flavor/plugin). Runtime switching is Sketchybar-scoped; other apps
+re-read their theme on restart. See
+`docs/decisions/0010-multi-family-theme-providers.md`.
 
 ### System (`system/`)
 
@@ -306,7 +328,8 @@ aytordev.programs.desktop.bars.sketchybar.enable = true;
 
 Terminal emulators (ghostty, etc.) should:
 
-- Use theme from `aytordev.theme.appTheme`
+- Use `aytordev.theme.appTheme` (or `appThemeDark` / `appThemeLight`) for the
+  native theme name, and ship the theme resource for each supported family.
 - Configure fonts from the shared palette
 - Enable shell integration via `lib.aytordev.shellIntegration config` so it
   follows `enabledNames`.

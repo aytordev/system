@@ -22,7 +22,8 @@ any other check directory becomes integration.
   `home-portability`,
   `module-contract`, `shell-init-uniqueness`, `shell-runtime-syntax`,
   `shell-history-privacy`, `shell-closure`, `activation-dry-run`,
-  `shell-platform-consistency`, `synthetic-darwin`, `synthetic-home`,
+  `shell-platform-consistency`, `sketchybar-theme`, `synthetic-darwin`,
+  `synthetic-home`,
   `synthetic-nixos`, `system-common-suite`, `system-env`, `system-fonts`,
   `system-logging`, `system-nix-platforms`).
 - `production-*`: Discovered real homes and systems; the loader also emits

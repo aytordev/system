@@ -40,7 +40,7 @@ in
       development.enable = true;
     };
 
-    theme.variant = "dragon"; # kanagawa theme variant
+    theme.variant = "dragon"; # optional; theme.name defaults to kanagawa
   };
 
   home.stateVersion = "25.11";
@@ -135,7 +135,7 @@ aytordev.programs.desktop = {
       social = enabled;
     };
 
-    theme.variant = "dragon"; # kanagawa theme variant
+    theme.variant = "dragon"; # optional; theme.name defaults to kanagawa
   };
 
   home.stateVersion = "25.11";

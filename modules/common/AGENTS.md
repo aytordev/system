@@ -96,13 +96,18 @@ System-level shared configuration (fonts, localization, etc.).
 
 **Prefer module-specific theme customizations over default application themes.**
 
-When adding themed elements:
+The pure-data theme module (`modules/home/theme`) is the single source of
+truth. When adding themed elements:
 
-1. Check the pure-data theme module (`modules/home/theme`) for the palette and
-   variant helpers first.
-2. Use conditional paths based on the active theme variant:
-   `if config.aytordev.theme.variant == "wave" then ...`
-3. Fallback to an application default only when no aytordev theme option exists.
+1. Generate colors from the semantic palette (`config.aytordev.theme.palette`)
+   so the app follows every family and variant automatically.
+2. Use `appTheme` / `appThemeDark` / `appThemeLight` for named native themes;
+   never branch on variant names or hardcode hex values.
+3. If the app needs a native theme resource (extension, flavor, plugin), ship it
+   for each supported family; otherwise fall back to a documented default.
+
+See `modules/common/ai-tools/skills/dotfiles-coder/rules/specialization-themes.md`
+and [ADR-0010](docs/decisions/0010-multi-family-theme-providers.md).
 
 ## Option Design
 

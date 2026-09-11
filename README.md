@@ -60,8 +60,9 @@ sudo nixos-rebuild switch --flake .#<hostname>
   ([ADR-0002](docs/decisions/0002-development-partition.md)).
 - **Verification**: unit, integration, and production checks validate the
   configuration; see [ADR-0005](docs/decisions/0005-verification-levels.md).
-- **Theme system**: pure-data Kanagawa palette (`aytordev.theme`) consumed by
-  themed applications.
+- **Theme system**: pure-data multi-family palette (`aytordev.theme`; Kanagawa
+  and Catppuccin) consumed by themed applications
+  ([ADR-0010](docs/decisions/0010-multi-family-theme-providers.md)).
 - **Custom packages and overlays**: portable nixpkgs-compatible derivations and
   overlays.
 - **Project templates**: `nix flake init -t .#node`.

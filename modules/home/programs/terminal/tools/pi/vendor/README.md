@@ -11,9 +11,10 @@ tool rendering, startup banner) plus their `lib/` closure and the
 extension is deliberately **omitted** because it hard-requires a runtime npm
 package; the remaining three resolve entirely from pi + pi-tui + Node builtins.
 
-`themes/kanagawa.json` is a custom Kanagawa palette re-mapping of the pi theme
-roles (the rose/champagne palette from gentle-pi's `themes/Gentle*.json` is
-replaced). It follows the same pi theme schema (`vars` / `colors` / `export`).
+`themes/kanagawa.json` is a vendored custom Kanagawa palette kept as a
+selectable fallback. The default `aytordev` theme is generated at build time
+from `aytordev.theme.palette` (see `../theme.nix`) and follows the active theme
+family/variant. It uses the same pi theme schema (`vars` / `colors` / `export`).
 
 ## Local patches (fork from upstream)
 
