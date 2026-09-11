@@ -58,12 +58,6 @@ in {
       };
 
       terminal = {
-        # Custom ghostty theme
-        emulators.ghostty = {
-          theme = "kanagawa-wave";
-          enableThemes = true;
-        };
-
         tools = {
           # Custom shell integrations
           atuin = {

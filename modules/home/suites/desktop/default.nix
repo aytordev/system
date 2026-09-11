@@ -14,10 +14,6 @@ in {
 
   config = mkIf cfg.enable {
     aytordev = {
-      theme = {
-        variant = mkDefault "wave";
-      };
-
       programs = {
         desktop = {
           bars = {

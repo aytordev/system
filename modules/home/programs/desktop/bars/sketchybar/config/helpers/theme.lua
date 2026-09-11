@@ -29,7 +29,7 @@ function M.init()
 		end
 	end
 
-	M.current = constants.active_variant or "wave"
+	M.current = constants.active_variant or M.list()[1]
 	log.info("using default theme: %s", M.current)
 end
 

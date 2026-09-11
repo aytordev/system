@@ -14,7 +14,7 @@ in {
   name = "kanagawa";
   displayName = "Kanagawa";
 
-  defaultVariant = "wave";
+  defaultVariant = "dragon";
   lightVariant = "lotus";
 
   variants = {

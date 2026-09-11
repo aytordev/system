@@ -4,7 +4,7 @@
 # Usage:
 #   aytordev.theme = {
 #     name = "kanagawa";    # Theme to use
-#     variant = "wave";     # Theme-specific variant
+#     variant = "dragon";   # Theme-specific variant
 #   };
 #
 # Access colors in other modules:
