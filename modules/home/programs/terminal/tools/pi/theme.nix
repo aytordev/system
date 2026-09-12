@@ -1,7 +1,21 @@
 # Pi theme adapter
 # Maps the shared semantic palette onto the Pi theme schema (vars/colors/export)
 # so the TUI follows aytordev.theme instead of a vendored Kanagawa JSON.
-{palette}: let
+#
+# The schema's ANSI-named slots (brightBlack/brightGreen/brightYellow/
+# brightPurple/brightMagenta/brightBlue plus green/red) are filled from the
+# active variant's retained ANSI table so generated themes stay faithful to
+# upstream terminal colors. Callers that render without an ANSI table (e.g.
+# palette-only unit tests) fall back to the semantic palette.
+{
+  palette,
+  ansi ? null,
+}: let
+  ansiColor = group: slot: fallback:
+    if ansi == null
+    then fallback
+    else ansi.${group}.${slot}.hex;
+
   vars = {
     bg = palette.bg.hex;
     bgPanel = palette.bg.hex;
@@ -25,15 +39,15 @@
     syntaxNumber = palette.blue_bright.hex;
     syntaxType = palette.blue_bright.hex;
     syntaxPunctuation = palette.fg_dim.hex;
-    green = palette.green.hex;
+    green = ansiColor "normal" "green" palette.green.hex;
     warning = palette.orange.hex;
-    red = palette.red.hex;
-    brightBlack = palette.fg_dim.hex;
-    brightGreen = palette.green.hex;
-    brightYellow = palette.yellow.hex;
-    brightPurple = palette.violet.hex;
-    brightMagenta = palette.pink.hex;
-    brightBlue = palette.accent.hex;
+    red = ansiColor "normal" "red" palette.red.hex;
+    brightBlack = ansiColor "bright" "black" palette.fg_dim.hex;
+    brightGreen = ansiColor "bright" "green" palette.green.hex;
+    brightYellow = ansiColor "bright" "yellow" palette.yellow.hex;
+    brightPurple = ansiColor "bright" "magenta" palette.violet.hex;
+    brightMagenta = ansiColor "bright" "magenta" palette.pink.hex;
+    brightBlue = ansiColor "bright" "blue" palette.accent.hex;
     selection = palette.selection.hex;
     toolSuccessBg = palette.bg.hex;
     toolPendingBg = palette.bg_float.hex;

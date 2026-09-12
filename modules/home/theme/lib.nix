@@ -171,7 +171,7 @@
         then "integrations.${app}.source.ref.hash is required for a vendored resource"
         else null;
 
-    checkIntegrationVariant = app: vendored: variant: data:
+    checkIntegrationVariant = app: variant: data:
       if !(builtins.isAttrs data)
       then "integrations.${app}.variants.${variant} must be an attrset"
       else if !(data ? id)
@@ -180,8 +180,6 @@
       then "integrations.${app}.variants.${variant}.id must be a non-empty string"
       else if (data ? hash) && (!(builtins.isString data.hash) || data.hash == "")
       then "integrations.${app}.variants.${variant}.hash must be a non-empty SRI string when present"
-      else if vendored && !(data ? hash)
-      then "integrations.${app}.variants.${variant}.hash is required for a vendored resource"
       else if (data ? variantProvenance) && !(builtins.elem data.variantProvenance variantProvenanceValues)
       then "integrations.${app}.variants.${variant}.variantProvenance '${toString data.variantProvenance}' is not one of [${lib.concatStringsSep " " variantProvenanceValues}]"
       else null;
@@ -209,7 +207,7 @@
           entry: "integrations.${app}.variants.${entry.name} is not a provider variant"
         ) (builtins.filter (entry: !(builtins.elem entry.name variantNames)) variantEntries);
         variantFieldErrors = builtins.filter (error: error != null) (
-          lib.map (entry: checkIntegrationVariant app vendored entry.name entry.data) variantEntries
+          lib.map (entry: checkIntegrationVariant app entry.name entry.data) variantEntries
         );
         vendoredEmptyError =
           if vendored && variantEntries == []

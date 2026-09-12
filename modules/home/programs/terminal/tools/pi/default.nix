@@ -17,8 +17,51 @@
   cfg = config.aytordev.programs.terminal.tools.pi;
   themeCfg = config.aytordev.theme;
 
-  # Generated from the shared palette so the TUI follows aytordev.theme.
-  generatedTheme = lib.generators.toJSON {} (import ./theme.nix {inherit (themeCfg) palette;});
+  # Hybrid theme resolution: explicit override > official exact > generated
+  # fallback. Pi ships no official resource today, so the generated theme is the
+  # effective path; routing through `resolveApp` keeps the override contract
+  # consistent and leaves room for a future integration.
+  piTheme = import ./config.nix {
+    inherit lib;
+    inherit (lib.aytordev) resolveApp;
+  };
+  piIntegration = themeCfg.integrations.${themeCfg.name}.pi or null;
+  themeResolution = piTheme.resolve {
+    inherit (themeCfg) variant;
+    override = cfg.theme;
+    integration = piIntegration;
+    # The generated JSON is only deployed with the gentle shell, so it must not
+    # be selectable otherwise.
+    generated =
+      if cfg.shell.enable
+      then piTheme.generatedId
+      else null;
+  };
+
+  # Generated from the shared palette (and ANSI table) so the TUI follows
+  # aytordev.theme.
+  generatedTheme = lib.generators.toJSON {} (piTheme.render {inherit (themeCfg) palette ansi;});
+
+  # Per-app theme override: a bare theme name or {mode, id}. `resolveApp`
+  # validates the modes and ids.
+  themeOverrideType = types.submodule {
+    options = {
+      mode = mkOption {
+        type = types.enum [
+          "auto"
+          "manual"
+          "none"
+        ];
+        default = "auto";
+        description = "auto follows the palette-generated theme, manual pins id, none leaves Pi's own default.";
+      };
+      id = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Theme name to pin when mode = \"manual\".";
+      };
+    };
+  };
 
   # nan.builders is an OpenAI-compatible provider wired the same way as opencode:
   # the API key is read at runtime from a SOPS-managed file, so no secret lands
@@ -177,7 +220,7 @@
       defaultThinkingLevel = cfg.model.defaultThinkingLevel;
     }
     // optionalAttrs (cfg.model.enabledModels != []) {enabledModels = cfg.model.enabledModels;}
-    // optionalAttrs (cfg.theme != null) {inherit (cfg) theme;}
+    // piTheme.themeEntry themeResolution
     // optionalAttrs (cfg.tuiMode != null) {inherit (cfg) tuiMode;}
     // optionalAttrs (piPackages != []) {packages = piPackages;}
     // optionalAttrs cfg.skills.enable {skills = ["${absConfigDir}/skills"];};
@@ -261,12 +304,12 @@ in {
       description = "Project trust policy (pi: defaultProjectTrust).";
     };
     theme = mkOption {
-      type = types.nullOr types.str;
+      type = types.nullOr (types.either types.str themeOverrideType);
       default =
         if cfg.shell.enable
         then "aytordev"
         else null;
-      description = "TUI theme name (defaults to the palette-generated aytordev theme when the gentle shell is enabled).";
+      description = "Pi TUI theme override. Null resolves to the palette-generated aytordev theme when the gentle shell is enabled. A bare theme name, or `{ mode = \"manual\"; id = ...; }`, pins a theme; `{ mode = \"none\"; }` leaves Pi's own default.";
     };
     shell.enable = mkOption {
       type = types.bool;

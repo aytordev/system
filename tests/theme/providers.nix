@@ -206,12 +206,10 @@ in {
       builtins.filter (i: i.source.vendored or false) (builtins.attrValues provider.integrations);
     allVendored = lib.concatMap vendoredOf (builtins.attrValues theme.providers);
     checks =
-      map (integration: (integration.source.ref.hash or "") != "") allVendored
-      ++ lib.concatMap (
-        integration:
-          builtins.map (variant: (variant.hash or "") != "") (builtins.attrValues integration.variants)
-      )
-      allVendored;
+      # A vendored integration must pin its artifact with a source-level hash.
+      # Per-variant hashes are optional (they add precision only when the
+      # vendored resource is split per variant).
+      map (integration: (integration.source.ref.hash or "") != "") allVendored;
   in {
     expr = checks;
     expected = builtins.genList (_: true) (builtins.length checks);

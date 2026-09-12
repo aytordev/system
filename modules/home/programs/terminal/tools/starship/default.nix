@@ -15,7 +15,45 @@
     ;
   cfg = config.aytordev.programs.terminal.tools.starship;
   themeCfg = config.aytordev.theme;
-  inherit (themeCfg) palette;
+
+  # Hybrid theme resolution: exact official palette when the active family
+  # ships a Starship integration for the active variant, otherwise the palette
+  # generated from the shared semantic palette and ANSI table.
+  starshipTheme = import ./config.nix {
+    inherit lib;
+    inherit (lib.aytordev) resolveApp;
+  };
+  themeResolution = starshipTheme.resolve {
+    inherit (themeCfg) variant;
+    override = cfg.theme;
+    integration = themeCfg.integrations.${themeCfg.name}.starship or null;
+  };
+  paletteSelection = starshipTheme.paletteSelection {
+    resolution = themeResolution;
+    inherit (themeCfg) palette ansi;
+  };
+  paletteName = paletteSelection.palette or starshipTheme.generatedId;
+
+  # Per-app override shape. `manual` pins a palette id; `none` emits no palette
+  # selection; `auto` (the default) follows the hybrid resolver.
+  themeOverrideType = types.submodule {
+    options = {
+      mode = mkOption {
+        type = types.enum [
+          "auto"
+          "manual"
+          "none"
+        ];
+        default = "auto";
+        description = "auto follows the family resource/generated palette, manual pins id, none emits no palette selection.";
+      };
+      id = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Palette id to pin when mode = \"manual\".";
+      };
+    };
+  };
 
   # Helper: Create language module config
   mkLang = {
@@ -68,38 +106,6 @@
     "$jobs"
     "$character"
   ];
-
-  # Palettes extracted for maintainability. Family-agnostic: the values follow
-  # aytordev.theme.palette, so the name must not imply a specific family.
-  palettes = {
-    aytordev = {
-      text = palette.fg.hex;
-      red = palette.red.hex;
-      green = palette.green.hex;
-      yellow = palette.yellow.hex;
-      blue = palette.accent.hex;
-      magenta = palette.violet.hex;
-      teal = palette.cyan.hex;
-      peach = palette.orange.hex;
-      mauve = palette.accent_dim.hex;
-      pink = palette.pink.hex;
-      subtext0 = palette.fg_dim.hex;
-      subtext1 = palette.fg_reverse.hex;
-      overlay0 = palette.bg_gutter.hex;
-      overlay1 = palette.bg_visual.hex;
-      overlay2 = palette.overlay.hex;
-      surface0 = palette.bg_dim.hex;
-      surface1 = palette.bg.hex;
-      surface2 = palette.bg_gutter.hex;
-      base = palette.bg.hex;
-      mantle = palette.bg_dim.hex;
-      crust = palette.bg_float.hex;
-      lavender = palette.blue_bright.hex;
-      rosewater = palette.yellow_bright.hex;
-      flamingo = palette.red_bright.hex;
-      maroon = palette.red_dim.hex;
-    };
-  };
 
   # Language module configs using mkLang helper
   languageModules = {
@@ -166,8 +172,6 @@
       scan_timeout = 30;
 
       format = concatStrings formatModules + "\n" + concatStrings promptModules;
-
-      inherit palettes;
 
       fill.symbol = " ";
 
@@ -327,19 +331,27 @@ in {
     package = mkPackageOption pkgs "starship" {};
 
     palette = mkOption {
-      type = types.enum ["aytordev"];
-      default = "aytordev";
-      description = "Starship palette name. Colors adapt to the active aytordev.theme family/variant.";
+      type = types.str;
+      readOnly = true;
+      default = paletteName;
+      description = "Resolved Starship palette name. Colors adapt to the active aytordev.theme family/variant: the official palette id when the family ships a Starship integration for the active variant, otherwise `aytordev`.";
+    };
+
+    theme = mkOption {
+      type = types.nullOr (types.either types.str themeOverrideType);
+      default = null;
+      description = ''
+        Starship palette override. Null follows `aytordev.theme` through the
+        hybrid resolver (explicit override > official exact > generated
+        fallback). A bare palette id, or `{ mode = "manual"; id = ...; }`, pins
+        a palette; `{ mode = "none"; }` emits no palette selection.
+      '';
     };
 
     settings = mkOption {
       type = types.attrs;
-      default =
-        starshipConfig
-        // {
-          inherit (cfg) palette;
-        };
-      description = "Starship configuration options";
+      default = starshipConfig // paletteSelection;
+      description = "Starship configuration options. Setting this replaces the resolved palette selection.";
     };
 
     enableBashIntegration = mkOption {

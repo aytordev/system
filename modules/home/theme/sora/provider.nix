@@ -7,20 +7,37 @@
   transparent,
   ...
 }: let
-  # Official Sora extras, all pinned to the single upstream commit that ships
-  # `extras/`. They are reference-pinned, not vendored in this repo, so they
-  # declare no SRI hash; the consuming adapter fetches or resolves its own
-  # artifact from `source.ref`. Sora ships only a dark resource, so every
-  # integration stays incomplete for the synthetic `light` companion.
+  # Official Sora extras, pinned to the single upstream commit that ships
+  # `extras/`. Most are reference-pinned (the adapter resolves its own artifact
+  # from `source.ref`); the ones copied into this repo (`yazi`) set
+  # `vendored = true` and pin the vendored artifact with a hash. Sora ships only
+  # a dark resource, so every integration stays incomplete for the synthetic
+  # `light` companion.
   soraRev = "504df4913c55dd9ad658e331b172f86b0537b439";
-  mkSoraDark = id: {
-    source = {
-      provenance = "official-upstream";
-      ref = {
-        url = "https://github.com/Aejkatappaja/sora";
-        rev = soraRev;
-      };
-    };
+  mkSoraDark = {
+    id,
+    vendored ? false,
+    hash ? null,
+  }: {
+    source =
+      {
+        provenance = "official-upstream";
+        ref =
+          {
+            url = "https://github.com/Aejkatappaja/sora";
+            rev = soraRev;
+          }
+          // (
+            if hash != null
+            then {inherit hash;}
+            else {}
+          );
+      }
+      // (
+        if vendored
+        then {vendored = true;}
+        else {}
+      );
     complete = false;
     variants.dark.id = id;
   };
@@ -81,15 +98,19 @@ in {
     # Reference-pinned official extras. Each `id` is the name the app expects:
     # Starship palette, Yazi theme stem, bat tmTheme name, btop theme name, fzf
     # / eza / lazygit / opencode resource stem, Firefox Color manifest name.
-    starship = mkSoraDark "sora";
-    yazi = mkSoraDark "sora";
-    bat = mkSoraDark "Sora";
-    btop = mkSoraDark "sora";
-    fzf = mkSoraDark "sora";
-    eza = mkSoraDark "sora";
-    lazygit = mkSoraDark "sora";
-    opencode = mkSoraDark "sora";
-    firefox = mkSoraDark "Sora";
+    starship = mkSoraDark {id = "sora";};
+    yazi = mkSoraDark {
+      id = "sora";
+      vendored = true;
+      hash = "sha256-i7PMvLhpQ+JPIXsV53xU/TVCox/Q+jJQkmOx6T0SCjw=";
+    };
+    bat = mkSoraDark {id = "Sora";};
+    btop = mkSoraDark {id = "sora";};
+    fzf = mkSoraDark {id = "sora";};
+    eza = mkSoraDark {id = "sora";};
+    lazygit = mkSoraDark {id = "sora";};
+    opencode = mkSoraDark {id = "sora";};
+    firefox = mkSoraDark {id = "Sora";};
   };
 
   variants = {

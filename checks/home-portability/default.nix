@@ -187,7 +187,7 @@
     )
     (desktopConfig.aytordev.programs.terminal.tools.pi.theme == "aytordev")
     (config.programs.yazi.theme.flavor.dark == "kanagawa-dragon")
-    (catppuccinConfig.programs.yazi.theme.flavor.dark == "catppuccin-mocha")
+    (catppuccinConfig.programs.yazi.theme.flavor.dark == "catppuccin-mocha-mauve")
     (
       if isDarwin
       then

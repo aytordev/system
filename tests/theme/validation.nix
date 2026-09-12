@@ -411,35 +411,36 @@ in {
     expected = true;
   };
 
-  testValidateProviderRejectsVendoredIntegrationWithoutVariantHash = {
-    expr = throws (
-      themeLib.validateProvider (
-        withIntegration (
-          validIntegration
-          // {
-            source =
-              validSource
-              // {
-                vendored = true;
-                ref =
-                  validSource.ref
-                  // {
-                    hash = "sha256-SRC";
-                  };
+  testValidateProviderAcceptsVendoredIntegrationWithoutVariantHash = {
+    expr =
+      !(throws (
+        themeLib.validateProvider (
+          withIntegration (
+            validIntegration
+            // {
+              source =
+                validSource
+                // {
+                  vendored = true;
+                  ref =
+                    validSource.ref
+                    // {
+                      hash = "sha256-SRC";
+                    };
+                };
+              variants = {
+                dark = {
+                  id = "broken-dark";
+                  hash = "sha256-AAAA";
+                };
+                light = {
+                  id = "broken-light";
+                };
               };
-            variants = {
-              dark = {
-                id = "broken-dark";
-                hash = "sha256-AAAA";
-              };
-              light = {
-                id = "broken-light";
-              };
-            };
-          }
+            }
+          )
         )
-      )
-    );
+      ));
     expected = true;
   };
 

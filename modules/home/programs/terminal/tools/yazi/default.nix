@@ -9,28 +9,60 @@
   themeCfg = config.aytordev.theme;
   si = lib.aytordev.shellIntegration config;
 
-  # Generate one Yazi flavor per registered family/variant from the semantic
-  # palette, so Yazi follows aytordev.theme instead of a vendored set.
-  mkFlavorToml = import ./flavor.nix;
-  generatedFlavors =
-    lib.concatMapAttrs (
-      family: provider:
-        lib.mapAttrs' (
-          variant: palette:
-            lib.nameValuePair "${family}-${variant}" (
-              pkgs.writeTextDir "flavor.toml" (mkFlavorToml {
-                inherit palette;
-              })
-            )
-        )
-        provider.variants
-    )
-    themeCfg.providers;
-  activeFlavor = "${themeCfg.name}-${themeCfg.variant}";
+  # Hybrid theme resolution: exact official resource when the active family
+  # ships one for the active variant, otherwise the palette-generated flavor.
+  yaziTheme = import ./config.nix {
+    inherit lib;
+    inherit (lib.aytordev) resolveApp;
+  };
+  yaziIntegration = themeCfg.integrations.${themeCfg.name}.yazi or null;
+  # Preserve the previous naming (`<family>-<variant>`) for the generated
+  # flavor so the active selection is stable across the hybrid resolver.
+  generatedFlavorId = "${themeCfg.name}-${themeCfg.variant}";
+  generatedFlavor = pkgs.writeTextDir "flavor.toml" (
+    yaziTheme.generatedFlavor {inherit (themeCfg) palette;}
+  );
+  themeResolution = yaziTheme.resolve {
+    inherit (themeCfg) variant;
+    generated = generatedFlavorId;
+    override = cfg.theme;
+    integration = yaziIntegration;
+  };
+
+  # Per-app theme override shape. `manual` pins a flavor id; `none` emits no
+  # flavor selection; `auto` (the default) follows the hybrid resolver.
+  themeOverrideType = lib.types.submodule {
+    options = {
+      mode = lib.mkOption {
+        type = lib.types.enum [
+          "auto"
+          "manual"
+          "none"
+        ];
+        default = "auto";
+        description = "auto follows the family resource/generated flavor, manual pins id, none emits no flavor selection.";
+      };
+      id = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "Flavor id to pin when mode = \"manual\".";
+      };
+    };
+  };
 in {
   options.aytordev.programs.terminal.tools.yazi = {
     enable = lib.mkEnableOption "yazi";
     package = lib.mkPackageOption pkgs "yazi" {nullable = true;};
+
+    theme = lib.mkOption {
+      type = lib.types.nullOr (lib.types.either lib.types.str themeOverrideType);
+      default = null;
+      description = ''
+        Yazi theme override. Null follows `aytordev.theme` through the hybrid
+        resolver. A bare flavor id, or `{ mode = "manual"; id = ...; }`, pins a
+        flavor; `{ mode = "none"; }` emits no flavor selection.
+      '';
+    };
   };
   config = mkIf cfg.enable {
     home.packages = let
@@ -69,13 +101,11 @@ in {
         (import ./keymap/select.nix)
         (import ./keymap/tasks.nix)
       ];
-      flavors = generatedFlavors;
-      # Yazi selects by detected background polarity; pin both to the active
-      # variant so the global selection wins.
-      theme.flavor = {
-        dark = activeFlavor;
-        light = activeFlavor;
+      flavors = yaziTheme.flavorEntries {
+        resolution = themeResolution;
+        inherit generatedFlavor;
       };
+      theme = yaziTheme.themeSelection {resolution = themeResolution;};
       plugins = {
         "arrow-parent" = ./plugins/arrow-parent.yazi;
         inherit

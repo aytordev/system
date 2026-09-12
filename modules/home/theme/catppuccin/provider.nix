@@ -8,23 +8,37 @@
   capitalize,
 }: let
   # Official `catppuccin/*` port resources at concrete upstream revisions.
-  # They are reference-pinned, not vendored in this repo, so they declare no
-  # SRI hash; the consuming adapter fetches or resolves its own artifact from
-  # `source.ref`. Accent-taking ports use `mauve`, catppuccin/nix's global
-  # default accent, and the id is the exact upstream artifact or name the app
-  # expects for that flavor.
+  # Reference-pinned ports declare no SRI hash (the adapter resolves its own
+  # artifact from `source.ref`); ports whose artifact is copied into this repo
+  # set `vendored = true` and pin the vendored artifact with a source-level hash.
+  # Accent-taking ports use `mauve`, catppuccin/nix's global default accent, and
+  # the id is the exact upstream artifact or name the app expects for that flavor.
   mkOfficial = {
     port,
     rev,
     variants,
+    vendored ? false,
+    hash ? null,
   }: {
-    source = {
-      provenance = "official-upstream";
-      ref = {
-        url = "https://github.com/catppuccin/${port}";
-        inherit rev;
-      };
-    };
+    source =
+      {
+        provenance = "official-upstream";
+        ref =
+          {
+            url = "https://github.com/catppuccin/${port}";
+            inherit rev;
+          }
+          // (
+            if hash != null
+            then {inherit hash;}
+            else {}
+          );
+      }
+      // (
+        if vendored
+        then {vendored = true;}
+        else {}
+      );
     complete = true;
     inherit variants;
   };
@@ -174,6 +188,8 @@ in {
     yazi = mkOfficial {
       port = "yazi";
       rev = "d62802be39210ea10e54b3e3b09735c6cb9e57c1";
+      vendored = true;
+      hash = "sha256-g7kT58o1Wl0zxnGqOFiXFNeKdrhOtytMJcYI08+T0Yo=";
       variants = {
         latte.id = "catppuccin-latte-mauve";
         frappe.id = "catppuccin-frappe-mauve";
@@ -262,6 +278,8 @@ in {
     zellij = mkOfficial {
       port = "zellij";
       rev = "be841efbfb0b914daecdc4d1cde242fee53781b2";
+      vendored = true;
+      hash = "sha256-ypGLYcz43vb7veND21OHMKrisUVldD+opOW8RQ8AANQ=";
       variants = {
         latte.id = "catppuccin-latte";
         frappe.id = "catppuccin-frappe";

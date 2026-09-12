@@ -15,9 +15,10 @@ never be hand-authored. Each entry carries:
   `community-port` (a genuine third-party port). Do not label a community port
   official.
 - `source.ref.{url,rev}` — a concrete pinned revision, never a moving `HEAD`.
-- `source.ref.hash` / `variants.<v>.hash` — an SRI `sha256`, required when the
-  resource is `vendored` (shipped in this repo); optional for a non-vendored
-  official resource referenced by URL/release.
+- `source.ref.hash` — an SRI `sha256` required when the resource is `vendored`
+  (shipped in this repo); optional for a non-vendored official resource
+  referenced by URL/release. `variants.<v>.hash` is optional and adds
+  per-variant precision only when the vendored resource is split per variant.
 - `variants.<provider-variant>.id` — the exact theme/flavor/variant name or
   artifact stem the app expects, and `complete` — `true` only when every
   provider variant is covered, `false` otherwise (with the uncovered variants
@@ -49,5 +50,5 @@ emit".
   by default nothing is written and the app keeps its own theme.
 - Synthetic variants (for example Sora light) are explicitly unofficial and may
   not match upstream.
-- Each integration pins its origin (`source.ref.rev`); vendored artifacts
-  additionally pin every variant with an SRI `hash`.
+- Each integration pins its origin (`source.ref.rev`); a vendored artifact
+  additionally pins the vendored resource with an SRI `hash`.

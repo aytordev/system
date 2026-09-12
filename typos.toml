@@ -2,7 +2,15 @@
 extend-ignore-re = ["^flake/dev/checks/default\\.nix$"]
 
 [files]
-extend-exclude = ["modules/home/programs/terminal/tools/pi/vendor/**"]
+extend-exclude = [
+  "modules/home/programs/terminal/tools/pi/vendor/**",
+  # Vendored upstream theme assets contain file-type icon identifiers
+  # (styl, odf, cpy, edn, ...) that are not spelling errors.
+  "modules/home/programs/terminal/tools/yazi/flavors/**",
+  "modules/home/programs/terminal/tools/yazi/official/**",
+  "modules/home/programs/terminal/tools/zellij/themes/**",
+  "modules/home/programs/terminal/emulators/ghostty/themes/**",
+]
 
 [default.extend-words]
 ags = "ags"
