@@ -8,11 +8,11 @@
   ...
 }: let
   # Official Sora extras, pinned to the single upstream commit that ships
-  # `extras/`. Most are reference-pinned (the adapter resolves its own artifact
-  # from `source.ref`); the ones copied into this repo (`yazi`) set
-  # `vendored = true` and pin the vendored artifact with a hash. Sora ships only
-  # a dark resource, so every integration stays incomplete for the synthetic
-  # `light` companion.
+  # `extras/`. Integrations whose adapter copies the artifact into this repo
+  # (`yazi`, `tmux`, `bat`, `btop`, `opencode`) set `vendored = true` and pin it
+  # with a hash; the rest are reference-pinned (the adapter resolves its own
+  # artifact from `source.ref`). Sora ships only a dark resource, so every
+  # integration stays incomplete for the synthetic `light` companion.
   soraRev = "504df4913c55dd9ad658e331b172f86b0537b439";
   mkSoraDark = {
     id,
@@ -106,12 +106,24 @@ in {
       vendored = true;
       hash = "sha256-i7PMvLhpQ+JPIXsV53xU/TVCox/Q+jJQkmOx6T0SCjw=";
     };
-    bat = mkSoraDark {id = "Sora";};
-    btop = mkSoraDark {id = "sora";};
+    bat = mkSoraDark {
+      id = "Sora";
+      vendored = true;
+      hash = "sha256-vqlNSPIS30z0U0oXZ/neJm2WkGrDz30wrHoBSZBSooE=";
+    };
+    btop = mkSoraDark {
+      id = "sora";
+      vendored = true;
+      hash = "sha256-CcHi7rRHnbQWHMcD/GVTy1CaiytVjFf6tpo/nBbSM4g=";
+    };
     fzf = mkSoraDark {id = "sora";};
     eza = mkSoraDark {id = "sora";};
     lazygit = mkSoraDark {id = "sora";};
-    opencode = mkSoraDark {id = "sora";};
+    opencode = mkSoraDark {
+      id = "sora";
+      vendored = true;
+      hash = "sha256-bMx6/tgeJSzmyD0RRLS0tzAeHertEy9h/1sWSYVXa+4=";
+    };
     tmux = mkSoraDark {
       id = "sora";
       vendored = true;

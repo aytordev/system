@@ -188,6 +188,8 @@ in {
     bat = mkOfficial {
       port = "bat";
       rev = "6810349b28055dce54076712fc05fc68da4b8ec0";
+      vendored = true;
+      hash = "sha256-OVVm8IzrMBuTa5HAd2kO+U9662UbEhVT8gHJnCvUqnc=";
       variants = {
         latte.id = "Catppuccin Latte";
         frappe.id = "Catppuccin Frappé";
@@ -199,6 +201,8 @@ in {
     btop = mkOfficial {
       port = "btop";
       rev = "f437574b600f1c6d932627050b15ff5153b58fa3";
+      vendored = true;
+      hash = "sha256-THRpq5vaKCwf9gaso3ycC4TNDLZtBB5Ofh/tOXkfRkQ=";
       variants = {
         latte.id = "catppuccin_latte";
         frappe.id = "catppuccin_frappe";
@@ -221,6 +225,8 @@ in {
     eza = mkOfficial {
       port = "eza";
       rev = "70f805f6cc27fa5b91750b75afb4296a0ec7fec9";
+      vendored = true;
+      hash = "sha256-2NRBZxzWunhDGGxGyT9riW5BdunoRJi9Q2yD76FsG9U=";
       variants = {
         latte.id = "catppuccin-latte-mauve";
         frappe.id = "catppuccin-frappe-mauve";
@@ -243,6 +249,8 @@ in {
     opencode = mkOfficial {
       port = "opencode";
       rev = "d5f409632e6294762925fae869ad0c96dc17cd8e";
+      vendored = true;
+      hash = "sha256-HMpDzaASeLa31tdXURCOBjcik/240TuBRePz4ps5Yrg=";
       variants = {
         latte.id = "catppuccin-latte-mauve";
         frappe.id = "catppuccin-frappe-mauve";
@@ -254,6 +262,8 @@ in {
     warp = mkOfficial {
       port = "warp";
       rev = "b6891cc339b3a1bb70a5c3063add4bdbd0455603";
+      vendored = true;
+      hash = "sha256-PAm04AiYoOvb53dk+vMUrd4HJUHziBtMIJLccBjpVOs=";
       variants = {
         latte.id = "catppuccin_latte";
         frappe.id = "catppuccin_frappe";

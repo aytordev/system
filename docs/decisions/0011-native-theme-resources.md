@@ -19,12 +19,12 @@ never be hand-authored. Each entry carries:
   (shipped in this repo); optional for a non-vendored official resource
   referenced by URL/release. `variants.<v>.hash` is optional and adds
   per-variant precision only when the vendored resource is split per variant.
-- `source.vendored` — `true` when the integration itself owns a content-pinned
-  artifact. An adapter that copies upstream resources into the app directory
-  while the integration stays reference-pinned is intentional: the copied files
-  are already content-addressed as Nix store paths, so a provider-level hash
-  would be redundant. The two categories are `vendored` and `reference-pinned`,
-  not an inconsistency.
+- `source.vendored` — `true` when the adapter copies the upstream artifact
+  verbatim into the repo; the integration then pins the copied artifact with a
+  `source.ref.hash`. Integrations whose adapter transcribes or adapts upstream
+  data into Nix (for example the Starship/LazyGit/fzf palettes and the adapted
+  Sora eza theme) stay reference-pinned: they pin the origin with
+  `source.ref.rev` and rely on Nix content addressing for the derived data.
 - `variants.<provider-variant>.id` — the exact theme/flavor/variant name or
   artifact stem the app expects, and `complete` — `true` only when every
   provider variant is covered, `false` otherwise (with the uncovered variants

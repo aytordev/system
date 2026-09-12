@@ -109,14 +109,16 @@
     # Official bat tmTheme, `extras/tmTheme/kanagawa.tmTheme`, pinned to the
     # same upstream commit the vendored ghostty confs originate from. It
     # declares the single name "Kanagawa" and covers only the wave palette, so
-    # the integration is incomplete for dragon/lotus. Reference-pinned, not
-    # vendored here: no SRI hash.
+    # the integration is incomplete for dragon/lotus. The adapter vendors the
+    # artifact, so it is `vendored` and hash-pinned.
     bat = {
       source = {
         provenance = "official-upstream";
+        vendored = true;
         ref = {
           url = "https://github.com/rebelot/kanagawa.nvim";
           rev = "bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3";
+          hash = "sha256-ohgKjj83XzUD/FmnAtQm9rJ2DXwsXJfbRxDbrUYyYcI=";
         };
       };
       complete = false;
