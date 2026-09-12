@@ -31,8 +31,33 @@
     mantle = mkColor "#292c3c";
     crust = mkColor "#232634";
   };
+  # Upstream ansiColors (catppuccin/palette palette.json). Bright entries are
+  # upstream-only, so they are created here rather than taken from `raw`.
+  ansi = {
+    normal = {
+      black = raw.surface1;
+      inherit (raw) red;
+      inherit (raw) green;
+      inherit (raw) yellow;
+      inherit (raw) blue;
+      magenta = raw.pink;
+      cyan = raw.teal;
+      white = raw.subtext0;
+    };
+    bright = {
+      black = raw.surface2;
+      red = mkColor "#e67172";
+      green = mkColor "#8ec772";
+      yellow = mkColor "#d9ba73";
+      blue = mkColor "#7b9ef0";
+      magenta = mkColor "#f2a4db";
+      cyan = mkColor "#5abfb5";
+      white = raw.subtext1;
+    };
+  };
 in {
   isLight = false;
   rawColors = raw;
-  palette = (import ../palette.nix {inherit transparent;}) raw;
+  inherit ansi;
+  palette = (import ../palette.nix {inherit transparent;}) raw ansi;
 }

@@ -14,6 +14,10 @@
     sumiInk5 = mkColor "#363646";
     sumiInk6 = mkColor "#54546d";
 
+    # ─── Popup and Floats ──────────────────────────────────────────────────
+    waveBlue1 = mkColor "#223249";
+    waveBlue2 = mkColor "#2d4f67";
+
     # ─── Foreground Colors ─────────────────────────────────────────────────
     fujiWhite = mkColor "#dcd7ba";
     oldWhite = mkColor "#c8c093";
@@ -57,24 +61,47 @@
 in {
   isLight = false;
   rawColors = raw;
+  # Upstream term[] order from rebelot/kanagawa.nvim themes.lua.
+  ansi = {
+    normal = {
+      black = raw.sumiInk0;
+      red = raw.autumnRed;
+      green = raw.autumnGreen;
+      yellow = raw.boatYellow2;
+      blue = raw.crystalBlue;
+      magenta = raw.oniViolet;
+      cyan = raw.waveAqua1;
+      white = raw.oldWhite;
+    };
+    bright = {
+      black = raw.fujiGray;
+      red = raw.samuraiRed;
+      green = raw.springGreen;
+      yellow = raw.carpYellow;
+      blue = raw.springBlue;
+      magenta = raw.springViolet1;
+      cyan = raw.waveAqua2;
+      white = raw.fujiWhite;
+    };
+  };
   palette = {
     # ─── Backgrounds ──────────────────────────────────────────────────
     bg = raw.sumiInk3;
-    bg_dim = raw.sumiInk0;
+    bg_dim = raw.sumiInk1;
     bg_gutter = raw.sumiInk4;
-    bg_float = raw.sumiInk1;
-    bg_visual = raw.sumiInk5;
+    bg_float = raw.sumiInk0;
+    bg_visual = raw.waveBlue1;
 
     # ─── Foregrounds ──────────────────────────────────────────────────
     fg = raw.fujiWhite;
-    fg_dim = raw.fujiGray;
-    fg_reverse = raw.oldWhite;
+    fg_dim = raw.oldWhite;
+    fg_reverse = raw.waveBlue1;
 
     # ─── UI Elements ──────────────────────────────────────────────────
     accent = raw.crystalBlue;
     accent_dim = raw.springViolet2;
     border = raw.sumiInk4;
-    selection = raw.sumiInk5;
+    selection = raw.waveBlue1;
     overlay = raw.sumiInk6;
 
     # ─── Semantic Colors ──────────────────────────────────────────────

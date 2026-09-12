@@ -34,38 +34,66 @@
     dragonYellow = mkColor "#c4b28a";
 
     # ─── Shared with Wave ──────────────────────────────────────────────────
+    waveBlue1 = mkColor "#223249";
+    waveBlue2 = mkColor "#2d4f67";
     waveRed = mkColor "#e46876";
+    waveAqua2 = mkColor "#7aa89f";
     springBlue = mkColor "#7fb4ca";
+    springViolet1 = mkColor "#938aa9";
     carpYellow = mkColor "#e6c384";
+    oldWhite = mkColor "#c8c093";
   };
 in {
   isLight = false;
   rawColors = raw;
+  # Upstream term[] order from rebelot/kanagawa.nvim themes.lua.
+  ansi = {
+    normal = {
+      black = raw.dragonBlack0;
+      red = raw.dragonRed;
+      green = raw.dragonGreen2;
+      yellow = raw.dragonYellow;
+      blue = raw.dragonBlue2;
+      magenta = raw.dragonPink;
+      cyan = raw.dragonAqua;
+      white = raw.oldWhite;
+    };
+    bright = {
+      black = raw.dragonGray;
+      red = raw.waveRed;
+      green = raw.dragonGreen;
+      yellow = raw.carpYellow;
+      blue = raw.springBlue;
+      magenta = raw.springViolet1;
+      cyan = raw.waveAqua2;
+      white = raw.dragonWhite;
+    };
+  };
   palette = {
     # ─── Backgrounds ──────────────────────────────────────────────────
     bg = raw.dragonBlack3;
-    bg_dim = raw.dragonBlack0;
+    bg_dim = raw.dragonBlack1;
     bg_gutter = raw.dragonBlack4;
-    bg_float = raw.dragonBlack1;
-    bg_visual = raw.dragonBlack5;
+    bg_float = raw.dragonBlack0;
+    bg_visual = raw.waveBlue1;
 
     # ─── Foregrounds ──────────────────────────────────────────────────
     fg = raw.dragonWhite;
-    fg_dim = raw.dragonGray;
-    fg_reverse = raw.dragonGray;
+    fg_dim = raw.oldWhite;
+    fg_reverse = raw.waveBlue1;
 
     # ─── UI Elements ──────────────────────────────────────────────────
     accent = raw.dragonBlue2;
     accent_dim = raw.dragonViolet;
     border = raw.dragonBlack4;
-    selection = raw.dragonBlack5;
+    selection = raw.waveBlue1;
     overlay = raw.dragonBlack6;
 
     # ─── Semantic Colors ──────────────────────────────────────────────
     red = raw.dragonRed;
-    red_bright = raw.dragonRed;
+    red_bright = raw.waveRed;
     red_dim = raw.waveRed;
-    green = raw.dragonGreen;
+    green = raw.dragonGreen2;
     yellow = raw.dragonYellow;
     # Dragon has no dedicated bright yellow; reuse Wave's carpYellow so the
     # bright role stays brighter than `yellow` (find highlight, active border).
@@ -73,7 +101,7 @@ in {
     blue = raw.dragonBlue2;
     blue_bright = raw.springBlue;
     orange = raw.dragonOrange;
-    violet = raw.dragonPink;
+    violet = raw.dragonViolet;
     pink = raw.dragonPink;
     cyan = raw.dragonAqua;
 

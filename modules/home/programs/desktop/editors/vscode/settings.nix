@@ -1,7 +1,10 @@
 {
   lib,
-  themeCfg,
-}: {
+  themeName,
+  themeDark,
+  themeLight,
+}:
+{
   # Breadcrumbs
   "breadcrumbs.filePath" = "off";
   "breadcrumbs.enabled" = true;
@@ -164,9 +167,6 @@
   # Workbench
   "workbench.editor.enablePreviewFromQuickOpen" = true;
   "workbench.editor.tabCloseButton" = "left";
-  "workbench.colorTheme" = lib.mkDefault themeCfg.appTheme.capitalized;
-  "workbench.preferredDarkColorTheme" = lib.mkDefault themeCfg.appThemeDark.capitalized;
-  "workbench.preferredLightColorTheme" = lib.mkDefault themeCfg.appThemeLight.capitalized;
   "workbench.list.horizontalScrolling" = true;
   "workbench.panel.defaultLocation" = "right";
   "workbench.fontAliasing" = "antialiased";
@@ -177,4 +177,13 @@
   "workbench.settings.enableNaturalLanguageSearch" = false; # formatting only supports LF line endings
   "workbench.sideBar.location" = "right";
   "workbench.iconTheme" = "catppuccin-mocha";
+}
+// lib.optionalAttrs (themeName != null) {
+  "workbench.colorTheme" = lib.mkDefault themeName;
+}
+// lib.optionalAttrs (themeDark != null) {
+  "workbench.preferredDarkColorTheme" = lib.mkDefault themeDark;
+}
+// lib.optionalAttrs (themeLight != null) {
+  "workbench.preferredLightColorTheme" = lib.mkDefault themeLight;
 }

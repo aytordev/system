@@ -14,6 +14,14 @@
   darkVariant = "mocha";
   lightVariant = "latte";
 
+  # Native apps with a Catppuccin resource.
+  nativeApps = [
+    "ghostty"
+    "zed"
+    "vscode"
+    "tmux"
+  ];
+
   variants = {
     latte = import ./variants/latte.nix {inherit mkColor transparent;};
     frappe = import ./variants/frappe.nix {inherit mkColor transparent;};

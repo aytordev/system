@@ -74,8 +74,22 @@
     "appTheme"
   ];
 
+  # Allowed provenance markers for a declared app integration source.
+  integrationProvenanceValues = [
+    "official-upstream"
+    "community-port"
+  ];
+
+  # Allowed provenance markers for a declared integration variant.
+  variantProvenanceValues = [
+    "official"
+    "synthetic"
+  ];
+
   # Validate a provider attrset against the shared contract.
-  # Returns the provider unchanged or throws with every discovered problem.
+  # Returns the provider unchanged, except that `nativeApps` is projected from
+  # the keys of `integrations` when an integration registry is declared.
+  # Throws with every discovered problem otherwise.
   validateProvider = provider: let
     missingFields = builtins.filter (field: !(provider ? ${field})) requiredProviderFields;
     variants = provider.variants or {};
@@ -100,11 +114,116 @@
       then "'${field}' must have isLight = ${lib.boolToString expected}"
       else null;
 
+    # Optional list of native app ids the family ships a theme resource for.
+    nativeApps = provider.nativeApps or [];
+    nativeAppsError =
+      if !(builtins.isList nativeApps)
+      then "'nativeApps' must be a list of app ids"
+      else if !(builtins.all builtins.isString nativeApps)
+      then "'nativeApps' entries must be strings"
+      else null;
+
+    # ─── Per-app integration contract ─────────────────────────────────────
+    # integrations.<app> = {
+    #   source = { provenance; ref = {url; rev; hash?;}; };
+    #   complete ?= true;
+    #   variants.<variant> = { id; variantProvenance ?= "official"|"synthetic"; };
+    # }
+    checkIntegrationSource = app: source:
+      if !(builtins.isAttrs source)
+      then "integrations.${app}.source must be an attrset"
+      else if !(source ? provenance)
+      then "integrations.${app}.source is missing 'provenance'"
+      else if !(builtins.elem source.provenance integrationProvenanceValues)
+      then "integrations.${app}.source.provenance '${toString source.provenance}' is not one of [${lib.concatStringsSep " " integrationProvenanceValues}]"
+      else let
+        ref = source.ref or null;
+      in
+        if !(builtins.isAttrs ref)
+        then "integrations.${app}.source.ref must be an attrset"
+        else if !(ref ? url) || !(builtins.isString ref.url) || ref.url == ""
+        then "integrations.${app}.source.ref.url must be a non-empty string"
+        else if !(ref ? rev) || !(builtins.isString ref.rev) || ref.rev == ""
+        then "integrations.${app}.source.ref.rev must be a non-empty string"
+        else if (ref ? hash) && !(builtins.isString ref.hash)
+        then "integrations.${app}.source.ref.hash must be a string when present"
+        else if (source.provenance == "community-port" || (source.vendored or false)) && !(ref ? hash)
+        then "integrations.${app}.source.ref.hash is required for a ${source.provenance} source"
+        else null;
+
+    checkIntegrationVariant = app: variant: data:
+      if !(builtins.isAttrs data)
+      then "integrations.${app}.variants.${variant} must be an attrset"
+      else if !(data ? id)
+      then "integrations.${app}.variants.${variant} is missing 'id'"
+      else if !(builtins.isString data.id) || data.id == ""
+      then "integrations.${app}.variants.${variant}.id must be a non-empty string"
+      else if (data ? variantProvenance) && !(builtins.elem data.variantProvenance variantProvenanceValues)
+      then "integrations.${app}.variants.${variant}.variantProvenance '${toString data.variantProvenance}' is not one of [${lib.concatStringsSep " " variantProvenanceValues}]"
+      else null;
+
+    checkIntegration = app: integration:
+      if !(builtins.isAttrs integration)
+      then ["integrations.${app} must be an attrset"]
+      else let
+        integrationVariants = integration.variants or null;
+        sourceError = checkIntegrationSource app (integration.source or null);
+        variantsError =
+          if !(builtins.isAttrs integrationVariants)
+          then "integrations.${app}.variants must be an attrset"
+          else null;
+        variantEntries =
+          if builtins.isAttrs integrationVariants
+          then lib.mapAttrsToList (name: data: {inherit name data;}) integrationVariants
+          else [];
+        unknownVariantErrors = lib.map (
+          entry: "integrations.${app}.variants.${entry.name} is not a provider variant"
+        ) (builtins.filter (entry: !(builtins.elem entry.name variantNames)) variantEntries);
+        variantFieldErrors = builtins.filter (error: error != null) (
+          lib.map (entry: checkIntegrationVariant app entry.name entry.data) variantEntries
+        );
+        complete = integration.complete or true;
+        completeError =
+          if !(builtins.isBool complete)
+          then "integrations.${app}.complete must be a boolean"
+          else if complete && builtins.isAttrs integrationVariants
+          then let
+            missingVariants = builtins.filter (name: !(integrationVariants ? ${name})) variantNames;
+          in
+            if missingVariants != []
+            then "integrations.${app} is incomplete; missing variants: [${lib.concatStringsSep " " missingVariants}]"
+            else null
+          else null;
+      in
+        lib.optional (sourceError != null) sourceError
+        ++ lib.optional (variantsError != null) variantsError
+        ++ unknownVariantErrors
+        ++ variantFieldErrors
+        ++ lib.optional (completeError != null) completeError;
+
+    integrations = provider.integrations or null;
+    integrationsErrors =
+      if integrations == null
+      then []
+      else if !(builtins.isAttrs integrations)
+      then ["'integrations' must be an attrset keyed by app id"]
+      else lib.concatLists (lib.mapAttrsToList checkIntegration integrations);
+
+    # When integrations are declared, `nativeApps` must keep the same app set.
+    # Compare as sets: ordering in the hand-written list is not significant.
+    nativeAppsDesyncError =
+      if !(builtins.isAttrs integrations) || nativeAppsError != null
+      then null
+      else if (provider ? nativeApps) && builtins.sort (a: b: a < b) nativeApps != builtins.attrNames integrations
+      then "'nativeApps' must equal the keys of 'integrations' ([${lib.concatStringsSep " " (builtins.attrNames integrations)}])"
+      else null;
+
     errors =
       lib.optional (
         missingFields != []
       ) "missing required fields: [${lib.concatStringsSep " " missingFields}]"
       ++ lib.optional (variantNames == []) "no variants defined"
+      ++ lib.optional (nativeAppsError != null) nativeAppsError
       ++ lib.optionals (missingFields == []) (
         lib.filter (error: error != null) (
           map checkVariantRef [
@@ -117,11 +236,17 @@
             (checkPolarity "lightVariant" true)
           ]
         )
-      );
+      )
+      ++ integrationsErrors
+      ++ lib.optional (nativeAppsDesyncError != null) nativeAppsDesyncError;
   in
     if errors != []
     then throw "theme provider '${provider.name or "<unnamed>"}' is invalid: ${lib.concatStringsSep "; " errors}"
-    else provider;
+    else
+      provider
+      // lib.optionalAttrs (integrations != null && builtins.isAttrs integrations) {
+        nativeApps = builtins.attrNames integrations;
+      };
 in {
   inherit validateProvider;
 

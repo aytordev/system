@@ -4,14 +4,44 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf mkPackageOption;
+  inherit
+    (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    mkPackageOption
+    types
+    ;
 
   themeCfg = config.aytordev.theme;
   cfg = config.aytordev.programs.desktop.editors.vscode;
+
+  nativeTheme = builtins.elem "vscode" themeCfg.nativeApps;
+
+  # Explicit override wins; otherwise only select a theme for a supported family.
+  themeName =
+    if cfg.theme != null
+    then cfg.theme
+    else if nativeTheme
+    then themeCfg.appTheme.capitalized
+    else null;
+  themeDark =
+    if nativeTheme
+    then themeCfg.appThemeDark.capitalized
+    else null;
+  themeLight =
+    if nativeTheme
+    then themeCfg.appThemeLight.capitalized
+    else null;
 in {
   options.aytordev.programs.desktop.editors.vscode = {
     enable = mkEnableOption "Whether or not to enable vscode";
     package = mkPackageOption pkgs "vscode" {};
+    theme = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Explicit VS Code color theme override. Use when the active family is not natively supported.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -38,7 +68,14 @@ in {
           github.copilot-chat
         ];
 
-        commonSettings = import ./settings.nix {inherit lib themeCfg;};
+        commonSettings = import ./settings.nix {
+          inherit
+            lib
+            themeName
+            themeDark
+            themeLight
+            ;
+        };
       in {
         default = {
           extensions = commonExtensions;

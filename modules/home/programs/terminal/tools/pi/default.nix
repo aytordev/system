@@ -146,6 +146,16 @@
   vendorScripts = lib.getFile "modules/home/programs/terminal/tools/pi/vendor/scripts";
   vendorThemes = lib.getFile "modules/home/programs/terminal/tools/pi/vendor/themes";
 
+  # One directory holding both the vendored fallback and the generated theme, so
+  # Home Manager deploys themes/ as a single symlink. Declaring individual files
+  # inside a store-backed symlink is not possible (the store is read-only).
+  generatedThemeFile = pkgs.writeText "aytordev.json" generatedTheme;
+  piThemes = pkgs.runCommand "pi-themes" {} ''
+    mkdir -p $out
+    cp ${vendorThemes}/kanagawa.json $out/kanagawa.json
+    cp ${generatedThemeFile} $out/aytordev.json
+  '';
+
   # Build settings.json as a plain attrset (toJSON of a mkMerge marker would
   # serialize the marker, not the merged value).
   baseSettings =
@@ -379,11 +389,8 @@ in {
         "${absConfigDir}/scripts" = mkIf cfg.shell.enable {
           source = vendorScripts;
         };
-        "${absConfigDir}/themes/kanagawa.json" = mkIf cfg.shell.enable {
-          source = vendorThemes + "/kanagawa.json";
-        };
-        "${absConfigDir}/themes/aytordev.json" = mkIf cfg.shell.enable {
-          text = generatedTheme;
+        "${absConfigDir}/themes" = mkIf cfg.shell.enable {
+          source = piThemes;
         };
       };
 

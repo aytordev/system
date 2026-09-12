@@ -13,6 +13,9 @@
     lotusWhite4 = mkColor "#e7dba0";
     lotusWhite5 = mkColor "#e4d794";
 
+    # ─── Shared with Wave ──────────────────────────────────────────────────
+    sumiInk3 = mkColor "#1f1f28";
+
     # ─── Ink (Foreground shades) ───────────────────────────────────────────
     lotusInk1 = mkColor "#545464";
     lotusInk2 = mkColor "#43436c";
@@ -30,9 +33,9 @@
     lotusBlue3 = mkColor "#9fb5c9";
     lotusBlue4 = mkColor "#4d699b";
     lotusBlue5 = mkColor "#5d57a3";
-    lotusCyan = mkColor "#6693bf";
+    lotusCyan = mkColor "#d7e3d8";
     lotusGreen = mkColor "#6f894e";
-    lotusGreen2 = mkColor "#5e857a";
+    lotusGreen2 = mkColor "#6e915f";
     lotusGreen3 = mkColor "#b7d0ae";
     lotusPink = mkColor "#b35b79";
     lotusOrange = mkColor "#cc6d00";
@@ -54,39 +57,62 @@
 in {
   isLight = true;
   rawColors = raw;
+  # Upstream term[] order from rebelot/kanagawa.nvim themes.lua.
+  ansi = {
+    normal = {
+      black = raw.sumiInk3;
+      red = raw.lotusRed;
+      green = raw.lotusGreen;
+      yellow = raw.lotusYellow;
+      blue = raw.lotusBlue4;
+      magenta = raw.lotusPink;
+      cyan = raw.lotusAqua;
+      white = raw.lotusInk1;
+    };
+    bright = {
+      black = raw.lotusGray3;
+      red = raw.lotusRed2;
+      green = raw.lotusGreen2;
+      yellow = raw.lotusYellow2;
+      blue = raw.lotusTeal2;
+      magenta = raw.lotusViolet4;
+      cyan = raw.lotusAqua2;
+      white = raw.lotusInk2;
+    };
+  };
   palette = {
     # ─── Backgrounds ──────────────────────────────────────────────────
     bg = raw.lotusWhite3;
-    bg_dim = raw.lotusWhite2;
+    bg_dim = raw.lotusWhite1;
     bg_gutter = raw.lotusWhite4;
-    bg_float = raw.lotusWhite1;
-    bg_visual = raw.lotusWhite5;
+    bg_float = raw.lotusWhite0;
+    bg_visual = raw.lotusViolet3;
 
     # ─── Foregrounds ──────────────────────────────────────────────────
     fg = raw.lotusInk1;
-    fg_dim = raw.lotusGray3;
-    fg_reverse = raw.lotusGray2;
+    fg_dim = raw.lotusInk2;
+    fg_reverse = raw.lotusGray;
 
     # ─── UI Elements ──────────────────────────────────────────────────
     accent = raw.lotusBlue4;
     accent_dim = raw.lotusBlue5;
     border = raw.lotusWhite4;
-    selection = raw.lotusWhite5;
-    overlay = raw.lotusBlue3;
+    selection = raw.lotusViolet3;
+    overlay = raw.lotusViolet1;
 
     # ─── Semantic Colors ──────────────────────────────────────────────
     red = raw.lotusRed;
-    red_bright = raw.lotusRed3;
+    red_bright = raw.lotusRed2;
     red_dim = raw.lotusRed2;
     green = raw.lotusGreen;
     yellow = raw.lotusYellow;
-    yellow_bright = raw.lotusYellow4;
+    yellow_bright = raw.lotusYellow2;
     blue = raw.lotusBlue4;
-    blue_bright = raw.lotusBlue2;
+    blue_bright = raw.lotusTeal2;
     orange = raw.lotusOrange;
-    violet = raw.lotusViolet1;
+    violet = raw.lotusViolet4;
     pink = raw.lotusPink;
-    cyan = raw.lotusTeal1;
+    cyan = raw.lotusAqua;
 
     # ─── Special ──────────────────────────────────────────────────────
     inherit transparent;

@@ -34,6 +34,7 @@ in {
     mkOpt'
     mkBoolOpt
     mkBoolOpt'
+    resolveApp
     shellIntegration
     enabled
     disabled

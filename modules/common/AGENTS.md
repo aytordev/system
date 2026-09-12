@@ -103,11 +103,14 @@ truth. When adding themed elements:
    so the app follows every family and variant automatically.
 2. Use `appTheme` / `appThemeDark` / `appThemeLight` for named native themes;
    never branch on variant names or hardcode hex values.
-3. If the app needs a native theme resource (extension, flavor, plugin), ship it
-   for each supported family; otherwise fall back to a documented default.
+3. If the app needs a native theme resource (extension, flavor, plugin), declare
+   it in the provider's `nativeApps` and only select a name when the active
+   family supports it. Otherwise leave the app default and expose a nullable
+   `theme` override.
 
-See `modules/common/ai-tools/skills/dotfiles-coder/rules/specialization-themes.md`
-and [ADR-0010](docs/decisions/0010-multi-family-theme-providers.md).
+See `modules/common/ai-tools/skills/dotfiles-coder/rules/specialization-themes.md`,
+[ADR-0010](docs/decisions/0010-multi-family-theme-providers.md) and
+[ADR-0011](docs/decisions/0011-native-theme-resources.md).
 
 ## Option Design
 

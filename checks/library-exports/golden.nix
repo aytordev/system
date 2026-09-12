@@ -39,6 +39,7 @@
     "mkOpt'"
     "nested-default-attrs"
     "nested-force-attrs"
+    "resolveApp"
     "shellIntegration"
   ];
   system = [

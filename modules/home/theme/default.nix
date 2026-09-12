@@ -41,6 +41,11 @@
         inherit (themeLib) mkColor transparent capitalize;
       }
     );
+    sora = themeLib.validateProvider (
+      import ./sora/provider.nix {
+        inherit (themeLib) mkColor transparent capitalize;
+      }
+    );
   };
 
   cfg = config.aytordev.theme;
@@ -58,6 +63,38 @@
       rgb = mkOption {type = types.str;};
       sketchybar = mkOption {type = types.str;};
       raw = mkOption {type = types.str;};
+    };
+  };
+
+  # The 16 ANSI terminal slots, grouped into the eight normal and eight bright
+  # colors an ANSI palette defines. Kept faithful to upstream (Kanagawa's
+  # `term[]`, Catppuccin's `ansiColors`, Sora's `terminal_*`) so generated
+  # terminal fallbacks do not have to guess from the semantic `palette`.
+  ansiSlotNames = [
+    "black"
+    "red"
+    "green"
+    "yellow"
+    "blue"
+    "magenta"
+    "cyan"
+    "white"
+  ];
+
+  ansiSlotType = types.submodule {
+    options = lib.genAttrs ansiSlotNames (_name: mkOption {type = colorType;});
+  };
+
+  ansiType = types.submodule {
+    options = {
+      normal = mkOption {type = ansiSlotType;};
+      bright = mkOption {type = ansiSlotType;};
+      # Only providers whose upstream defines a dimmed ANSI set publish this
+      # (Sora). Absent upstream, it stays empty rather than being invented.
+      dim = mkOption {
+        type = types.attrsOf colorType;
+        default = {};
+      };
     };
   };
 
@@ -112,7 +149,10 @@
         darkVariant
         lightVariant
         ;
+      nativeApps = provider.nativeApps or [];
+      integrations = provider.integrations or {};
       variants = lib.mapAttrs (_: variant: variant.palette) provider.variants;
+      ansi = lib.mapAttrs (_: variant: variant.ansi) provider.variants;
     })
     themeProviders;
 in {
@@ -203,6 +243,21 @@ in {
       '';
     };
 
+    ansi = mkOption {
+      type = ansiType;
+      readOnly = true;
+      default = activeVariant.ansi;
+      description = ''
+        The active variant's ANSI terminal table, retained verbatim from
+        upstream. `normal` and `bright` each carry the eight ANSI slots
+        (black, red, green, yellow, blue, magenta, cyan, white); `dim` carries
+        the extra dimmed slots where upstream defines them (Sora).
+        Use this for generated terminal fallbacks instead of approximating
+        terminal colors from the semantic palette.
+        Example: config.aytordev.theme.ansi.bright.red.hex
+      '';
+    };
+
     allVariantPalettes = mkOption {
       type = types.attrsOf paletteType;
       readOnly = true;
@@ -222,16 +277,47 @@ in {
             defaultVariant = mkOption {type = types.str;};
             darkVariant = mkOption {type = types.str;};
             lightVariant = mkOption {type = types.str;};
+            nativeApps = mkOption {type = types.listOf types.str;};
+            integrations = mkOption {
+              type = types.attrsOf types.anything;
+              default = {};
+            };
             variants = mkOption {type = types.attrsOf paletteType;};
+            ansi = mkOption {type = types.attrsOf ansiType;};
           };
         }
       );
       readOnly = true;
       default = providerMetadata;
       description = ''
-        All registered theme families with their variant palettes.
+        All registered theme families with their variant palettes, ANSI tables
+        and the native apps they ship a resource for.
         Enables runtime switching across families.
         Example: config.aytordev.theme.providers.catppuccin.variants.mocha.accent.hex
+        Example: config.aytordev.theme.providers.catppuccin.ansi.mocha.bright.red.hex
+      '';
+    };
+
+    nativeApps = mkOption {
+      type = types.listOf types.str;
+      readOnly = true;
+      default = activeTheme.nativeApps or [];
+      description = ''
+        Native app ids the active family ships a theme resource for
+        (for example "ghostty", "zed", "vscode", "tmux"). An app not listed here
+        does not receive a generated theme name unless the user sets an explicit
+        per-app override.
+      '';
+    };
+
+    integrations = mkOption {
+      type = types.attrsOf (types.attrsOf types.anything);
+      readOnly = true;
+      default = lib.mapAttrs (_: provider: provider.integrations or {}) themeProviders;
+      description = ''
+        Declared per-app integrations for every registered family, keyed by
+        family and then app id.
+        Example: config.aytordev.theme.integrations.kanagawa.ghostty
       '';
     };
   };

@@ -58,6 +58,14 @@
       variant = "mocha";
     };
   };
+  soraHome = mkPortableHome {
+    suite = "common";
+    extraModule.aytordev = {
+      theme.name = "sora";
+      programs.desktop.editors.vscode.enable = true;
+      programs.desktop.editors.zed.enable = true;
+    };
+  };
   desktopOverrideHome = mkPortableHome {
     suite = "desktop";
     extraModule.aytordev = {
@@ -78,6 +86,7 @@
   businessConfig = businessHome.config;
   catppuccinConfig = catppuccinHome.config;
   catppuccinDevConfig = catppuccinDevHome.config;
+  soraConfig = soraHome.config;
   desktopOverrideConfig = desktopOverrideHome.config;
   developmentOverrideConfig = developmentOverrideHome.config;
   developmentOptions = developmentOverrideHome.options.aytordev.suites.development;
@@ -167,6 +176,31 @@
     (lib.elem "catppuccin" catppuccinDevConfig.programs.zed-editor.extensions)
     (catppuccinDevConfig.programs.zed-editor.userSettings.theme == "Catppuccin Mocha")
     (developmentOverrideConfig.programs.zed-editor.userSettings.theme == "Kanagawa Dragon")
+    (soraConfig.aytordev.theme.palette.accent.hex == "#80c8e0")
+    (soraConfig.aytordev.theme.appTheme.capitalized == "Sora")
+    (
+      soraConfig.aytordev.theme.nativeApps
+      == [
+        "ghostty"
+        "zed"
+      ]
+    )
+    (soraConfig.aytordev.programs.terminal.emulators.ghostty.theme == "sora")
+    (lib.elem "sora-theme" soraConfig.programs.zed-editor.extensions)
+    (soraConfig.programs.zed-editor.userSettings.theme == "Sora")
+    (!(soraConfig.programs.vscode.profiles.default.userSettings ? "workbench.colorTheme"))
+    (soraConfig.aytordev.programs.terminal.tools.tmux.theme == null)
+    (
+      let
+        ukiyoPlugin =
+          lib.findFirst (
+            plugin: plugin ? extraConfig && lib.hasInfix "@ukiyo-plugins" (plugin.extraConfig or "")
+          )
+          null
+          soraConfig.programs.tmux.plugins;
+      in
+        ukiyoPlugin != null && !(lib.hasInfix "@ukiyo-theme" ukiyoPlugin.extraConfig)
+    )
     ((desktopConfig.home.file ? "Pictures/screenshots/.keep") == isDarwin)
     (desktopConfig.programs.firefox.configPath == ".mozilla/firefox")
     (

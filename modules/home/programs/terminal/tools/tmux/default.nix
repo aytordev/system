@@ -8,10 +8,26 @@
   themeCfg = config.aytordev.theme;
 
   cfg = config.aytordev.programs.terminal.tools.tmux;
+
+  nativeTheme = builtins.elem "tmux" themeCfg.nativeApps;
+
+  # Explicit override wins; otherwise only set a ukiyo theme for a supported
+  # family. Null leaves ukiyo on its own default.
+  tmuxTheme =
+    if cfg.theme != null
+    then cfg.theme
+    else if nativeTheme
+    then themeCfg.appTheme.raw
+    else null;
 in {
   options.aytordev.programs.terminal.tools.tmux = {
     enable = lib.mkEnableOption "tmux";
     package = lib.mkPackageOption pkgs "tmux" {nullable = true;};
+    theme = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Explicit ukiyo theme override (e.g. \"kanagawa/dragon\"). Use when the active family is not natively supported.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -77,7 +93,7 @@ in {
             Bash
             */
             ''
-              set -g @ukiyo-theme '${themeCfg.appTheme.raw}'
+              ${lib.optionalString (tmuxTheme != null) "set -g @ukiyo-theme '${tmuxTheme}'"}
               set -g @ukiyo-plugins "git cpu-usage ram-usage"
               set -g @ukiyo-ignore-window-colors true
             '';

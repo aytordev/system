@@ -14,6 +14,14 @@
   darkVariant = "dragon";
   lightVariant = "lotus";
 
+  # Native apps with a Kanagawa resource.
+  nativeApps = [
+    "ghostty"
+    "zed"
+    "vscode"
+    "tmux"
+  ];
+
   variants = {
     wave = import ./variants/wave.nix {inherit mkColor transparent;};
     dragon = import ./variants/dragon.nix {inherit mkColor transparent;};

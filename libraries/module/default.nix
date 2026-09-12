@@ -66,6 +66,159 @@ in rec {
   };
 
   /**
+  Resolve the effective theme integration for one application.
+
+  Precedence: explicit override > declared (official) integration > generated
+  fallback > none. A declared integration that does not cover the requested
+  variant is treated as broken and throws instead of silently falling back to
+  the generated resource.
+
+  # Inputs
+
+  `app`
+
+  : 1\. App id used in error messages.
+
+  `variant`
+
+  : 2\. Active variant name; selects the declared integration variant.
+
+  `override`
+
+  : Per-app override: `null` or `{mode = "auto";}` (auto), `{mode = "manual";
+  id = "...";}` or a bare string (explicit), `{mode = "none";}` (opt out).
+
+  `official`
+
+  : Declared integration attrset for the app, or `null`.
+
+  `generated`
+
+  : Generated fallback id, or `null`.
+
+  # Returns
+
+  `{ kind, id, provenance?, variantProvenance?, source }`
+
+  : `kind` is `explicit` | `official` | `generated` | `none`; `source` is
+  `user` | `official` | `generated` | `none`. `provenance` and
+  `variantProvenance` are present only for the `official` kind.
+
+  # Example
+
+  ```nix
+  lib.aytordev.resolveApp {
+    app = "ghostty";
+    variant = "dragon";
+    official = config.aytordev.theme.integrations.kanagawa.ghostty or null;
+    generated = null;
+  }
+  ```
+  */
+  resolveApp = {
+    app ? null,
+    variant ? null,
+    override ? null,
+    official ? null,
+    generated ? null,
+  }: let
+    label =
+      if app == null
+      then "app"
+      else app;
+    invalid = message: throw "theme integration '${label}': ${message}";
+
+    resolution =
+      if override == null
+      then {mode = "auto";}
+      else if lib.isString override
+      then
+        if override == ""
+        then invalid "explicit override is an empty string"
+        else {
+          mode = "manual";
+          id = override;
+        }
+      else if lib.isAttrs override
+      then let
+        mode = override.mode or "auto";
+      in
+        if mode == "auto"
+        then {mode = "auto";}
+        else if mode == "none"
+        then {mode = "none";}
+        else if mode == "manual"
+        then let
+          id = override.id or null;
+        in
+          if !(lib.isString id) || id == ""
+          then invalid "manual override requires a non-empty string 'id'"
+          else {
+            mode = "manual";
+            inherit id;
+          }
+        else invalid "unknown override mode (expected auto, manual or none), got '${toString mode}'"
+      else invalid "override must be null, a string or an attrset";
+
+    resolveOfficial = integration: let
+      source = integration.source or null;
+      variants = integration.variants or null;
+      variantData =
+        if lib.isAttrs variants && variant != null && lib.hasAttr variant variants
+        then variants.${variant}
+        else null;
+      id =
+        if lib.isAttrs variantData
+        then variantData.id or null
+        else null;
+    in
+      if !(lib.isAttrs integration)
+      then invalid "declared integration is not an attrset"
+      else if source == null
+      then invalid "declared integration is missing 'source'"
+      else if !(lib.isAttrs source) || !(source ? provenance)
+      then invalid "declared integration is missing 'source.provenance'"
+      else if !(lib.isAttrs variants)
+      then invalid "declared integration is missing 'variants'"
+      else if variantData == null
+      then invalid "declared integration has no variant '${toString variant}'"
+      else if !(lib.isString id) || id == ""
+      then invalid "declared integration variant '${toString variant}' has no valid 'id'"
+      else {
+        kind = "official";
+        inherit id;
+        inherit (source) provenance;
+        variantProvenance = variantData.variantProvenance or "official";
+        source = "official";
+      };
+  in
+    if resolution.mode == "manual"
+    then {
+      kind = "explicit";
+      inherit (resolution) id;
+      source = "user";
+    }
+    else if resolution.mode == "none"
+    then {
+      kind = "none";
+      id = null;
+      source = "none";
+    }
+    else if official != null
+    then resolveOfficial official
+    else if generated != null
+    then {
+      kind = "generated";
+      id = generated;
+      source = "generated";
+    }
+    else {
+      kind = "none";
+      id = null;
+      source = "none";
+    };
+
+  /**
   Enable a module with optional configuration.
 
   # Inputs

@@ -4,12 +4,13 @@
 
 `aytordev.theme` is the single source of truth for all theming. Use the semantic palette API (`cfg.palette.accent.hex`, `cfg.palette.red.rgb`). Never hardcode colors or use variant-specific color names. Use `appTheme` accessors for named themes.
 
-Two families are registered (`kanagawa`, `catppuccin`) and more can be added by
-importing a provider that satisfies `themeLib.validateProvider`. Apps that
-generate their config from `palette` support every family for free. Apps that
-select a native theme must resolve the name through `appTheme` (or
-`appThemeDark` / `appThemeLight`) **and ship the matching resource** for each
-supported family.
+Three families are registered (`kanagawa`, `catppuccin`, `sora`) and more can be
+added by importing a provider that satisfies `themeLib.validateProvider`. Apps
+that generate their config from `palette` support every family for free. Apps
+that select a native theme must declare the app id in the provider's
+`nativeApps`, resolve the name through `appTheme` (or `appThemeDark` /
+`appThemeLight`), and **ship the matching resource** for each family listed
+there; otherwise leave the app default and expose a nullable `theme` override.
 
 **Incorrect (Hardcoded Colors):**
 

@@ -125,8 +125,8 @@ aytordev.suites.development.enable = true;
 Theming and visual customization.
 
 The pure-data theme module publishes the active family palette and application
-theme names. Select the family with `aytordev.theme.name` (Kanagawa or
-Catppuccin) and the variant with `aytordev.theme.variant`; there is no
+theme names. Select the family with `aytordev.theme.name` (Kanagawa, Catppuccin
+or Sora) and the variant with `aytordev.theme.variant`; there is no
 `theme.enable` switch.
 
 - `palette` — active semantic colors (`hex`, `rgb`, `sketchybar`, `raw`).
@@ -134,22 +134,29 @@ Catppuccin) and the variant with `aytordev.theme.variant`; there is no
   active, dark, and light variants.
 - `providers` — every registered family/variant palette; the Sketchybar runtime
   picker uses it to switch families without a rebuild.
+- `nativeApps` — app ids the active family ships a native resource for.
 
 Providers are plain data validated by `validateProvider` against the contract
 (`name`, `displayName`, `defaultVariant`, `darkVariant`, `lightVariant`,
-`variants`, `appTheme`). Each family keeps one file per variant:
+`variants`, `appTheme`, optional `nativeApps`). Each family keeps one file per
+variant:
 
 ```
-theme/<family>/provider.nix           # registry: variant imports, naming, polarity
+theme/<family>/provider.nix           # registry: variant imports, naming, polarity, nativeApps
 theme/<family>/variants/<variant>.nix # { isLight, rawColors, palette }
 theme/<family>/palette.nix            # shared role mapping (only when variants share it)
 ```
 
-Capabilities consume the shared palette; apps with native theme files resolve
-the family name through `appTheme` and must ship the matching resource
-(extension/flavor/plugin). Runtime switching is Sketchybar-scoped; other apps
-re-read their theme on restart. See
-`docs/decisions/0010-multi-family-theme-providers.md`.
+Capabilities consume the shared palette. Apps whose theme is a generated
+resource (Yazi, Pi, Zellij, Starship, Sketchybar, JankyBorders) support every
+family automatically. Apps that need a shipped native resource (Ghostty, Zed,
+VS Code, tmux) select a name through `appTheme` **only when the family lists
+them in `nativeApps`**; otherwise they leave the app default and expose a
+nullable `theme` override. Sora is dark-only with a synthetic light companion,
+and supports Ghostty and Zed only. Runtime switching is Sketchybar-scoped;
+other apps re-read their theme on restart. See
+`docs/decisions/0010-multi-family-theme-providers.md` and
+`docs/decisions/0011-native-theme-resources.md`.
 
 ### System (`system/`)
 

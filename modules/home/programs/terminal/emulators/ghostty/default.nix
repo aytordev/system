@@ -131,10 +131,12 @@ in {
     theme = mkOption {
       type = types.nullOr (types.enum availableThemes);
       default =
-        if availableThemes != []
+        if
+          builtins.elem "ghostty" config.aytordev.theme.nativeApps
+          && builtins.elem config.aytordev.theme.appTheme.kebab availableThemes
         then config.aytordev.theme.appTheme.kebab
         else null;
-      description = "Theme to use for Ghostty. Available themes: ${builtins.concatStringsSep ", " availableThemes}";
+      description = "Theme to use for Ghostty. Null leaves Ghostty's own default. Available themes: ${builtins.concatStringsSep ", " availableThemes}";
     };
 
     enableThemes = mkOption {
