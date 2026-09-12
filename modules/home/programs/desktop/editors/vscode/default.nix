@@ -62,6 +62,13 @@
     then lightResolution.id
     else null;
 
+  # Only Catppuccin ships a file-icon theme among the installed extensions;
+  # the other families fall back to VS Code's built-in icons.
+  iconTheme =
+    if themeCfg.name == "catppuccin"
+    then "catppuccin-${themeCfg.variant}"
+    else null;
+
   # Every generated resolution the active family needs a theme for.
   generatedVariants = lib.unique (
     map (pair: pair.variant) (
@@ -224,6 +231,7 @@ in {
             themeName
             themeDark
             themeLight
+            iconTheme
             ;
         };
       in {
@@ -233,8 +241,13 @@ in {
           enableExtensionUpdateCheck = false;
           userSettings = commonSettings;
         };
+        # Same settings as the default profile so the theme, fonts and
+        # formatters apply here too — VS Code profiles do not inherit settings.
         Nix = {
           extensions = mkExtensions (commonExtensions ++ nixExtensions);
+          enableUpdateCheck = false;
+          enableExtensionUpdateCheck = false;
+          userSettings = commonSettings;
         };
       };
     };

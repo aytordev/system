@@ -3,6 +3,7 @@
   themeName,
   themeDark,
   themeLight,
+  iconTheme ? null,
 }:
 {
   # Breadcrumbs
@@ -176,7 +177,9 @@
   "workbench.editor.showTabs" = "single";
   "workbench.settings.enableNaturalLanguageSearch" = false; # formatting only supports LF line endings
   "workbench.sideBar.location" = "right";
-  "workbench.iconTheme" = "catppuccin-mocha";
+}
+// lib.optionalAttrs (iconTheme != null) {
+  "workbench.iconTheme" = lib.mkDefault iconTheme;
 }
 // lib.optionalAttrs (themeName != null) {
   "workbench.colorTheme" = lib.mkDefault themeName;

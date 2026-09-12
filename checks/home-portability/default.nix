@@ -224,6 +224,17 @@
       soraConfig.programs.vscode.profiles.default.userSettings."workbench.colorTheme"
       == "Aytordev Sora Dark"
     )
+    # VS Code profiles do not inherit settings: the Nix profile must carry the
+    # resolved theme too.
+    (
+      soraConfig.programs.vscode.profiles.Nix.userSettings."workbench.colorTheme" == "Aytordev Sora Dark"
+    )
+    # Sora ships no file-icon theme; only Catppuccin sets one.
+    (!(soraConfig.programs.vscode.profiles.default.userSettings ? "workbench.iconTheme"))
+    (
+      catppuccinDevConfig.programs.vscode.profiles.default.userSettings."workbench.iconTheme"
+      == "catppuccin-mocha"
+    )
     (soraConfig.aytordev.programs.terminal.tools.tmux.theme == null)
     (
       let
