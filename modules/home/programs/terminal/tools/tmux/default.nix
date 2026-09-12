@@ -9,24 +9,62 @@
 
   cfg = config.aytordev.programs.terminal.tools.tmux;
 
-  nativeTheme = builtins.elem "tmux" themeCfg.nativeApps;
-
-  # Explicit override wins; otherwise only set a ukiyo theme for a supported
-  # family. Null leaves ukiyo on its own default.
-  tmuxTheme =
-    if cfg.theme != null
-    then cfg.theme
-    else if nativeTheme
-    then themeCfg.appTheme.raw
+  # Only hand `resolveApp` an integration that covers the active variant; Sora
+  # declares no tmux integration, so ukiyo keeps its own default (null).
+  selectOfficial = integration:
+    if !(lib.isAttrs integration)
+    then integration
+    else if !(integration ? variants)
+    then integration
+    else if (integration.variants or {}) ? ${themeCfg.variant}
+    then integration
     else null;
+
+  themeResolution = lib.aytordev.resolveApp {
+    app = "tmux";
+    inherit (themeCfg) variant;
+    override = cfg.theme;
+    official = selectOfficial (themeCfg.integrations.${themeCfg.name}.tmux or null);
+    generated = null;
+  };
+
+  # Official selection uses the ukiyo `theme/variant` id; no generated resource.
+  tmuxTheme =
+    if themeResolution.kind == "none"
+    then null
+    else themeResolution.id;
+
+  themeOverrideType = lib.types.submodule {
+    options = {
+      mode = lib.mkOption {
+        type = lib.types.enum [
+          "auto"
+          "manual"
+          "none"
+        ];
+        default = "auto";
+        description = "auto follows the family integration, manual pins id, none leaves ukiyo's default.";
+      };
+      id = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "ukiyo `theme/variant` id to pin when mode = \"manual\".";
+      };
+    };
+  };
 in {
   options.aytordev.programs.terminal.tools.tmux = {
     enable = lib.mkEnableOption "tmux";
     package = lib.mkPackageOption pkgs "tmux" {nullable = true;};
     theme = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
+      type = lib.types.nullOr (lib.types.either lib.types.str themeOverrideType);
       default = null;
-      description = "Explicit ukiyo theme override (e.g. \"kanagawa/dragon\"). Use when the active family is not natively supported.";
+      description = ''
+        ukiyo theme override (e.g. "kanagawa/dragon"). Null follows
+        `aytordev.theme` through the integration resolver. A bare
+        `theme/variant` string, or `{ mode = "manual"; id = ...; }`, pins a
+        theme; `{ mode = "none"; }` leaves ukiyo's own default.
+      '';
     };
   };
 

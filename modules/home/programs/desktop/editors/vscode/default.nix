@@ -15,32 +15,80 @@
 
   themeCfg = config.aytordev.theme;
   cfg = config.aytordev.programs.desktop.editors.vscode;
+  providerMeta = themeCfg.providers.${themeCfg.name};
 
-  nativeTheme = builtins.elem "vscode" themeCfg.nativeApps;
+  vscodeIntegration = themeCfg.integrations.${themeCfg.name}.vscode or null;
 
-  # Explicit override wins; otherwise only select a theme for a supported family.
+  # Hand `resolveApp` the integration only when it covers the requested variant;
+  # a dark-only family (Sora) therefore yields "none" for its light companion.
+  selectOfficial = variant:
+    if !(lib.isAttrs vscodeIntegration)
+    then vscodeIntegration
+    else if !(vscodeIntegration ? variants)
+    then vscodeIntegration
+    else if (vscodeIntegration.variants or {}) ? ${variant}
+    then vscodeIntegration
+    else null;
+
+  resolve = variant: override:
+    lib.aytordev.resolveApp {
+      app = "vscode";
+      inherit variant override;
+      official = selectOfficial variant;
+      generated = null;
+    };
+
+  # The active variant drives `workbench.colorTheme` and honours the override;
+  # the preferred dark/light themes follow the family integration regardless of
+  # the override, matching the previous behaviour.
+  activeResolution = resolve themeCfg.variant cfg.theme;
+  darkResolution = resolve providerMeta.darkVariant null;
+  lightResolution = resolve providerMeta.lightVariant null;
+
   themeName =
-    if cfg.theme != null
-    then cfg.theme
-    else if nativeTheme
-    then themeCfg.appTheme.capitalized
-    else null;
+    if activeResolution.kind == "none"
+    then null
+    else activeResolution.id;
   themeDark =
-    if nativeTheme
-    then themeCfg.appThemeDark.capitalized
-    else null;
+    if darkResolution.kind == "none"
+    then null
+    else darkResolution.id;
   themeLight =
-    if nativeTheme
-    then themeCfg.appThemeLight.capitalized
-    else null;
+    if lightResolution.kind == "none"
+    then null
+    else lightResolution.id;
+
+  themeOverrideType = types.submodule {
+    options = {
+      mode = mkOption {
+        type = types.enum [
+          "auto"
+          "manual"
+          "none"
+        ];
+        default = "auto";
+        description = "auto follows the family integration, manual pins id, none leaves VS Code's default.";
+      };
+      id = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Color theme label to pin when mode = \"manual\".";
+      };
+    };
+  };
 in {
   options.aytordev.programs.desktop.editors.vscode = {
     enable = mkEnableOption "Whether or not to enable vscode";
     package = mkPackageOption pkgs "vscode" {};
     theme = mkOption {
-      type = types.nullOr types.str;
+      type = types.nullOr (types.either types.str themeOverrideType);
       default = null;
-      description = "Explicit VS Code color theme override. Use when the active family is not natively supported.";
+      description = ''
+        VS Code color theme override. Null follows `aytordev.theme` through the
+        integration resolver. A bare theme label, or
+        `{ mode = "manual"; id = ...; }`, pins a theme; `{ mode = "none"; }`
+        leaves VS Code's own default.
+      '';
     };
   };
 

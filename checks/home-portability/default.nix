@@ -35,11 +35,25 @@
       ];
     };
   commonHome = mkPortableHome {suite = "common";};
+  ghosttyDisabledHome = mkPortableHome {
+    suite = "common";
+    extraModule.aytordev.programs.terminal.emulators.ghostty.enable = false;
+  };
   commonNoFastfetchHome = mkPortableHome {
     suite = "common";
     extraModule.aytordev.programs.terminal.tools.fastfetch.enable = false;
   };
-  desktopHome = mkPortableHome {suite = "desktop";};
+  desktopHome = mkPortableHome {
+    suite = "desktop";
+    extraModule.aytordev.programs.terminal.emulators.ghostty.enable = true;
+  };
+  ghosttyNoThemesHome = mkPortableHome {
+    suite = "desktop";
+    extraModule.aytordev.programs.terminal.emulators.ghostty = {
+      enable = true;
+      enableThemes = false;
+    };
+  };
   businessHome = mkPortableHome {suite = "business";};
   catppuccinHome = mkPortableHome {
     suite = "desktop";
@@ -49,6 +63,7 @@
         variant = "mocha";
       };
       programs.terminal.tools.yazi.enable = true;
+      programs.terminal.emulators.ghostty.enable = true;
     };
   };
   catppuccinDevHome = mkPortableHome {
@@ -64,6 +79,13 @@
       theme.name = "sora";
       programs.desktop.editors.vscode.enable = true;
       programs.desktop.editors.zed.enable = true;
+    };
+  };
+  soraLightHome = mkPortableHome {
+    suite = "common";
+    extraModule.aytordev.theme = {
+      name = "sora";
+      variant = "light";
     };
   };
   desktopOverrideHome = mkPortableHome {
@@ -83,10 +105,13 @@
   inherit (commonHome) config;
   commonNoFastfetchConfig = commonNoFastfetchHome.config;
   desktopConfig = desktopHome.config;
+  ghosttyDisabledConfig = ghosttyDisabledHome.config;
+  ghosttyNoThemesConfig = ghosttyNoThemesHome.config;
   businessConfig = businessHome.config;
   catppuccinConfig = catppuccinHome.config;
   catppuccinDevConfig = catppuccinDevHome.config;
   soraConfig = soraHome.config;
+  soraLightConfig = soraLightHome.config;
   desktopOverrideConfig = desktopOverrideHome.config;
   developmentOverrideConfig = developmentOverrideHome.config;
   developmentOptions = developmentOverrideHome.options.aytordev.suites.development;
@@ -98,6 +123,10 @@
     null
     config.programs.yazi.keymap.mgr.prepend_keymap;
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+  # Home Manager stores ghostty settings values as scalar-or-list; flatten the
+  # resolved `theme` path for comparison.
+  ghosttyTheme = cfg: lib.concatStrings (lib.toList (cfg.programs.ghostty.settings.theme or ""));
+  ghosttySetting = cfg: key: lib.concatStrings (lib.toList (cfg.programs.ghostty.settings.${key} or ""));
   tests = [
     (config.programs.bash.package == pkgs.bashInteractive)
     (config.programs.fish.package == config.aytordev.programs.terminal.shells.fish.package)
@@ -134,8 +163,27 @@
     (catppuccinConfig.aytordev.theme.appThemeDark.capitalized == "Catppuccin Mocha")
     (catppuccinConfig.aytordev.theme.appThemeLight.capitalized == "Catppuccin Latte")
     (!catppuccinConfig.aytordev.theme.isLight)
-    (catppuccinConfig.aytordev.programs.terminal.emulators.ghostty.theme == "catppuccin-mocha")
-    (desktopConfig.aytordev.programs.terminal.emulators.ghostty.theme == "kanagawa-dragon")
+    (lib.hasSuffix "ghostty/themes/catppuccin-mocha.conf" (ghosttyTheme catppuccinConfig))
+    (lib.hasSuffix "ghostty/themes/kanagawa-dragon.conf" (ghosttyTheme desktopConfig))
+    (!(catppuccinConfig.xdg.configFile ? "ghostty/themes/aytordev.conf"))
+    (!(desktopConfig.xdg.configFile ? "ghostty/themes/aytordev.conf"))
+    # The cursor-smear shader deploys with ghostty, its setting points at it,
+    # and `enableThemes = false` removes both (no dangling custom-shader).
+    (desktopConfig.xdg.configFile ? "ghostty/shaders/cursor_smear.glsl")
+    (ghosttySetting desktopConfig "custom-shader" == "shaders/cursor_smear.glsl")
+    (!(ghosttyNoThemesConfig.xdg.configFile ? "ghostty/shaders/cursor_smear.glsl"))
+    (!(ghosttyNoThemesConfig.programs.ghostty.settings ? "custom-shader"))
+    (!ghosttyDisabledConfig.aytordev.programs.terminal.emulators.ghostty.enable)
+    (!(ghosttyDisabledConfig.xdg.configFile ? "ghostty/shaders/cursor_smear.glsl"))
+    (
+      desktopConfig.aytordev.theme.nativeApps
+      == [
+        "ghostty"
+        "tmux"
+        "vscode"
+        "zed"
+      ]
+    )
     (desktopConfig.aytordev.programs.terminal.tools.pi.theme == "aytordev")
     (config.programs.yazi.theme.flavor.dark == "kanagawa-dragon")
     (catppuccinConfig.programs.yazi.theme.flavor.dark == "catppuccin-mocha")
@@ -185,7 +233,11 @@
         "zed"
       ]
     )
-    (soraConfig.aytordev.programs.terminal.emulators.ghostty.theme == "sora")
+    (lib.hasSuffix "ghostty/themes/sora.conf" (ghosttyTheme soraConfig))
+    (!(soraConfig.xdg.configFile ? "ghostty/themes/aytordev.conf"))
+    (soraLightConfig.xdg.configFile ? "ghostty/themes/aytordev.conf")
+    (lib.hasSuffix "ghostty/themes/aytordev.conf" (ghosttyTheme soraLightConfig))
+    (!(lib.hasSuffix "ghostty/themes/sora.conf" (ghosttyTheme soraLightConfig)))
     (lib.elem "sora-theme" soraConfig.programs.zed-editor.extensions)
     (soraConfig.programs.zed-editor.userSettings.theme == "Sora")
     (!(soraConfig.programs.vscode.profiles.default.userSettings ? "workbench.colorTheme"))

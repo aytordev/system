@@ -134,15 +134,18 @@ or Sora) and the variant with `aytordev.theme.variant`; there is no
   active, dark, and light variants.
 - `providers` — every registered family/variant palette; the Sketchybar runtime
   picker uses it to switch families without a rebuild.
-- `nativeApps` — app ids the active family ships a native resource for.
+- `nativeApps` — app ids the active family ships a native resource for, derived
+  from the family's `integrations` keys (never hand-authored).
+- `integrations` — the per-app native-resource registry (ids, provenance,
+  vendored hashes) that native apps resolve through.
 
 Providers are plain data validated by `validateProvider` against the contract
 (`name`, `displayName`, `defaultVariant`, `darkVariant`, `lightVariant`,
-`variants`, `appTheme`, optional `nativeApps`). Each family keeps one file per
+`variants`, `appTheme`, optional `integrations`). Each family keeps one file per
 variant:
 
 ```
-theme/<family>/provider.nix           # registry: variant imports, naming, polarity, nativeApps
+theme/<family>/provider.nix           # registry: variant imports, naming, polarity, integrations
 theme/<family>/variants/<variant>.nix # { isLight, rawColors, palette }
 theme/<family>/palette.nix            # shared role mapping (only when variants share it)
 ```
@@ -150,11 +153,13 @@ theme/<family>/palette.nix            # shared role mapping (only when variants 
 Capabilities consume the shared palette. Apps whose theme is a generated
 resource (Yazi, Pi, Zellij, Starship, Sketchybar, JankyBorders) support every
 family automatically. Apps that need a shipped native resource (Ghostty, Zed,
-VS Code, tmux) select a name through `appTheme` **only when the family lists
-them in `nativeApps`**; otherwise they leave the app default and expose a
-nullable `theme` override. Sora is dark-only with a synthetic light companion,
-and supports Ghostty and Zed only. Runtime switching is Sketchybar-scoped;
-other apps re-read their theme on restart. See
+VS Code, tmux) resolve a name through `lib.aytordev.resolveApp` against the
+family's `integrations.<app>` entry; an unsupported variant falls back to a
+generated resource where one exists (Ghostty) or to none. Otherwise they leave
+the app default and expose a nullable `theme` override (a bare id or
+`{ mode = "auto"|"manual"|"none"; id = ...; }`). Sora is dark-only with a
+synthetic light companion, and supports Ghostty and Zed only. Runtime switching
+is Sketchybar-scoped; other apps re-read their theme on restart. See
 `docs/decisions/0010-multi-family-theme-providers.md` and
 `docs/decisions/0011-native-theme-resources.md`.
 

@@ -30,6 +30,45 @@
   availableThemes = map (file: builtins.replaceStrings [".conf"] [""] file) themeFiles;
 
   cfg = config.aytordev.programs.terminal.emulators.ghostty;
+  themeCfg = config.aytordev.theme;
+
+  # Hybrid theme resolution: exact official resource when the active family
+  # ships one for the active variant, otherwise the palette-generated conf.
+  ghosttyTheme = import ./config.nix {
+    inherit lib;
+    inherit (lib.aytordev) resolveApp;
+  };
+  ghosttyIntegration = themeCfg.integrations.${themeCfg.name}.ghostty or null;
+  generatedTheme = ghosttyTheme.render {
+    inherit (themeCfg) palette ansi;
+  };
+  themeResolution = ghosttyTheme.resolve {
+    inherit (themeCfg) variant;
+    override = cfg.theme;
+    integration = ghosttyIntegration;
+  };
+
+  # Manual override validation: the generated conf is the only theme not
+  # vendored, so a bare override (or submodule id) must name a vendored conf.
+  themeOverrideType = types.submodule {
+    options = {
+      mode = mkOption {
+        type = types.enum [
+          "auto"
+          "manual"
+          "none"
+        ];
+        default = "auto";
+        description = "auto follows the family resource/generated conf, manual pins id, none leaves Ghostty's default.";
+      };
+      id = mkOption {
+        type = types.nullOr (types.enum availableThemes);
+        default = null;
+        description = "Vendored theme basename to pin when mode = \"manual\".";
+      };
+    };
+  };
+
   mapleMono =
     if pkgs.stdenv.hostPlatform.isDarwin
     then "Maple Mono"
@@ -94,7 +133,6 @@
     "window-step-resize" = false;
     "window-width" = 100;
     "window-height" = 100;
-    "custom-shader" = "shaders/cursor_smear.glsl";
     "keybind" = [
       "alt+left=unbind"
       "alt+right=unbind"
@@ -129,14 +167,14 @@ in {
     };
 
     theme = mkOption {
-      type = types.nullOr (types.enum availableThemes);
-      default =
-        if
-          builtins.elem "ghostty" config.aytordev.theme.nativeApps
-          && builtins.elem config.aytordev.theme.appTheme.kebab availableThemes
-        then config.aytordev.theme.appTheme.kebab
-        else null;
-      description = "Theme to use for Ghostty. Null leaves Ghostty's own default. Available themes: ${builtins.concatStringsSep ", " availableThemes}";
+      type = types.nullOr (types.either (types.enum availableThemes) themeOverrideType);
+      default = null;
+      description = ''
+        Ghostty theme override. Null follows `aytordev.theme` through the hybrid
+        resolver. A bare vendored basename, or `{ mode = "manual"; id = ...; }`,
+        pins a theme; `{ mode = "none"; }` leaves Ghostty's own default.
+        Vendored themes: ${builtins.concatStringsSep ", " availableThemes}
+      '';
     };
 
     enableThemes = mkOption {
@@ -148,19 +186,48 @@ in {
 
   config = mkIf cfg.enable (
     let
-      # Combine all settings including theme if specified
-      finalSettings =
-        baseSettings
-        // (
-          if cfg.enableThemes && cfg.theme != null
-          then {
-            "theme" = "${config.xdg.configHome}/ghostty/themes/${cfg.theme}.conf";
+      # Point the `theme` setting at the resolved conf. Official confs are the
+      # vendored symlinks; a generated conf is materialized below.
+      themeSettings =
+        if cfg.enableThemes && themeResolution.kind != "none"
+        then {
+          "theme" = "${config.xdg.configHome}/ghostty/themes/${themeResolution.id}.conf";
+        }
+        else {};
+
+      # The cursor-smear shader ships under the same master switch as themes, so
+      # `enableThemes = false` removes both the file and its `custom-shader`
+      # setting instead of leaving a dangling reference.
+      shaderSettings =
+        if cfg.enableThemes
+        then {
+          "custom-shader" = "shaders/${ghosttyTheme.cursorShader}";
+        }
+        else {};
+
+      finalSettings = baseSettings // themeSettings // shaderSettings;
+
+      # Materialize the generated conf only when the resolver selected it.
+      generatedFiles =
+        if cfg.enableThemes
+        then
+          ghosttyTheme.generatedFile {
+            resolution = themeResolution;
+            text = generatedTheme;
           }
-          else {}
-        );
+        else {};
     in {
-      # Add theme symlinks to XDG config if themes are enabled
-      xdg.configFile = (lib.mkIf cfg.enableThemes themeSymlinks) // shaderSymlinks;
+      # Vendored theme symlinks, generated conf and shaders. Composition is a
+      # plain attrset merge via `ghosttyTheme.xdgEntries`; the earlier
+      # `lib.mkIf condition attrs // shaderSymlinks` dropped the shader entries.
+      xdg.configFile = lib.mkMerge [
+        (ghosttyTheme.xdgEntries {
+          inherit (cfg) enableThemes;
+          themeEntries = themeSymlinks;
+          generated = generatedFiles;
+          shaderEntries = shaderSymlinks;
+        })
+      ];
 
       programs.ghostty = {
         enable = true;

@@ -5,12 +5,12 @@ Status: Accepted
 ## Decision
 
 A theme family only supplies a native theme name for apps it ships a resource
-for. Providers declare those apps in an optional `nativeApps` list; the theme
-module exposes it as `aytordev.theme.nativeApps`. Native-theme apps (Ghostty,
-Zed, VS Code, tmux) select a name from `appTheme` / `appThemeDark` /
-`appThemeLight` **only** when the active family lists them in `nativeApps`.
-Otherwise they leave the application's own default and expose a nullable `theme`
-option for an explicit override.
+for. Providers declare one entry per supported app in `integrations`; the theme
+module derives `aytordev.theme.nativeApps` (and `providers.<family>.nativeApps`)
+as `builtins.attrNames integrations`. `nativeApps` is therefore read-only and
+must never be hand-authored. Native-theme apps (Ghostty, Zed, VS Code, tmux)
+resolve their theme through `lib.aytordev.resolveApp` against the active
+family's integration, which carries the exact per-variant resource id.
 
 This prevents an unsupported combination from silently emitting a theme name
 the app cannot resolve, without failing the whole build. It narrows the "fail
@@ -23,12 +23,14 @@ variant so light/dark-following apps still have a counterpart.
 
 ## Consequences
 
-- Adding a family is provider data plus, optionally, `nativeApps` and shipped
-  resources.
+- Adding a family is provider data plus, optionally, `integrations` and shipped
+  resources. `nativeApps` follows automatically from the integration keys; a
+  hand-written list that disagrees with them is a validation error.
 - Generated-resource apps (Yazi, Pi, Zellij, Starship, Sketchybar,
-  JankyBorders) support every family and ignore `nativeApps`.
+  JankyBorders) support every family and ignore `integrations`.
 - Unsupported native combinations require an explicit per-app `theme` override;
   by default nothing is written and the app keeps its own theme.
 - Synthetic variants (for example Sora light) are explicitly unofficial and may
   not match upstream.
-- Apps must keep `nativeApps` in sync with the resources they actually ship.
+- Each integration pins its origin (`source.ref.rev`); vendored artifacts
+  additionally pin every variant with an SRI `hash`.

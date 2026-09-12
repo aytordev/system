@@ -104,9 +104,10 @@ truth. When adding themed elements:
 2. Use `appTheme` / `appThemeDark` / `appThemeLight` for named native themes;
    never branch on variant names or hardcode hex values.
 3. If the app needs a native theme resource (extension, flavor, plugin), declare
-   it in the provider's `nativeApps` and only select a name when the active
-   family supports it. Otherwise leave the app default and expose a nullable
-   `theme` override.
+   it in the provider's `integrations`, resolve the name through
+   `lib.aytordev.resolveApp` only when the active family/variant is covered, and
+   otherwise leave the app default and expose a nullable `theme` override.
+   `aytordev.theme.nativeApps` is derived from the integration keys.
 
 See `modules/common/ai-tools/skills/dotfiles-coder/rules/specialization-themes.md`,
 [ADR-0010](docs/decisions/0010-multi-family-theme-providers.md) and

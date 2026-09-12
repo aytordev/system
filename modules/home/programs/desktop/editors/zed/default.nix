@@ -16,23 +16,62 @@
 
   cfg = config.aytordev.programs.desktop.editors.zed;
 
-  nativeTheme = builtins.elem "zed" themeCfg.nativeApps;
-
-  # Explicit override wins; otherwise only select a theme for a supported family.
-  effectiveTheme =
-    if cfg.theme != null
-    then cfg.theme
-    else if nativeTheme
-    then themeCfg.appTheme.capitalized
+  # Hand `resolveApp` the integration only when it covers the active variant, so
+  # a dark-only family (Sora) falls through to "none" instead of reusing a dark
+  # resource. A malformed integration passes through so it fails loudly.
+  selectOfficial = integration:
+    if !(lib.isAttrs integration)
+    then integration
+    else if !(integration ? variants)
+    then integration
+    else if (integration.variants or {}) ? ${themeCfg.variant}
+    then integration
     else null;
+
+  themeResolution = lib.aytordev.resolveApp {
+    app = "zed";
+    inherit (themeCfg) variant;
+    override = cfg.theme;
+    official = selectOfficial (themeCfg.integrations.${themeCfg.name}.zed or null);
+    generated = null;
+  };
+
+  # Official selection uses the integration id; no generated Zed resource exists.
+  effectiveTheme =
+    if themeResolution.kind == "none"
+    then null
+    else themeResolution.id;
+
+  themeOverrideType = types.submodule {
+    options = {
+      mode = mkOption {
+        type = types.enum [
+          "auto"
+          "manual"
+          "none"
+        ];
+        default = "auto";
+        description = "auto follows the family integration, manual pins id, none leaves Zed's default.";
+      };
+      id = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Theme name to pin when mode = \"manual\".";
+      };
+    };
+  };
 in {
   options.aytordev.programs.desktop.editors.zed = {
     enable = mkEnableOption "Whether or not to enable zed-editor";
     package = mkPackageOption pkgs "zed-editor" {};
     theme = mkOption {
-      type = types.nullOr types.str;
+      type = types.nullOr (types.either types.str themeOverrideType);
       default = null;
-      description = "Explicit Zed theme name override. Use when the active family is not natively supported.";
+      description = ''
+        Zed theme override. Null follows `aytordev.theme` through the integration
+        resolver. A bare theme name, or `{ mode = "manual"; id = ...; }`, pins a
+        theme; `{ mode = "none"; }` leaves Zed's own default.
+      '';
     };
   };
 

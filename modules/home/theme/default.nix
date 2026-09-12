@@ -149,7 +149,7 @@
         darkVariant
         lightVariant
         ;
-      nativeApps = provider.nativeApps or [];
+      nativeApps = builtins.attrNames (provider.integrations or {});
       integrations = provider.integrations or {};
       variants = lib.mapAttrs (_: variant: variant.palette) provider.variants;
       ansi = lib.mapAttrs (_: variant: variant.ansi) provider.variants;
@@ -301,12 +301,12 @@ in {
     nativeApps = mkOption {
       type = types.listOf types.str;
       readOnly = true;
-      default = activeTheme.nativeApps or [];
+      default = builtins.attrNames (activeTheme.integrations or {});
       description = ''
         Native app ids the active family ships a theme resource for
-        (for example "ghostty", "zed", "vscode", "tmux"). An app not listed here
-        does not receive a generated theme name unless the user sets an explicit
-        per-app override.
+        (for example "ghostty", "zed", "vscode", "tmux"), derived from the
+        family's `integrations` keys. An app not listed here does not receive a
+        generated theme name unless the user sets an explicit per-app override.
       '';
     };
 

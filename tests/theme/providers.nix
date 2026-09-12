@@ -80,21 +80,134 @@ in {
     ];
   };
 
-  testThemeIntegrationsDefaultToEmpty = {
+  testThemeIntegrationsDeclareEveryNativeApp = {
     expr = let
       theme = themeConfig {};
     in {
-      inherit (theme.providers.kanagawa) integrations;
+      integrations = builtins.attrNames theme.providers.kanagawa.integrations;
       nativeApps = theme.providers.kanagawa.nativeApps;
     };
     expected = {
-      integrations = {};
+      integrations = [
+        "ghostty"
+        "tmux"
+        "vscode"
+        "zed"
+      ];
       nativeApps = [
         "ghostty"
-        "zed"
-        "vscode"
         "tmux"
+        "vscode"
+        "zed"
       ];
+    };
+  };
+
+  testThemeNativeAppsAreDerivedFromIntegrations = {
+    expr = let
+      theme = themeConfig {aytordev.theme.name = "catppuccin";};
+    in {
+      activeNativeApps = theme.nativeApps;
+      catppuccinNativeApps = theme.providers.catppuccin.nativeApps;
+      integrationsMatch = builtins.attrNames theme.providers.catppuccin.integrations;
+    };
+    expected = {
+      activeNativeApps = [
+        "ghostty"
+        "tmux"
+        "vscode"
+        "zed"
+      ];
+      catppuccinNativeApps = [
+        "ghostty"
+        "tmux"
+        "vscode"
+        "zed"
+      ];
+      integrationsMatch = [
+        "ghostty"
+        "tmux"
+        "vscode"
+        "zed"
+      ];
+    };
+  };
+
+  # Every declared integration must carry a pinned provenance reference; a
+  # vendored integration must additionally pin each artifact with an SRI hash.
+  testEveryIntegrationHasProvenanceAndPinnedRev = {
+    expr = let
+      theme = themeConfig {};
+      integrationsOf = provider: builtins.attrValues provider.integrations;
+      allIntegrations = lib.concatLists (map integrationsOf (builtins.attrValues theme.providers));
+    in
+      map (
+        integration: let
+          inherit (integration) source;
+        in {
+          hasProvenance =
+            source ? provenance
+            && builtins.elem source.provenance [
+              "official-upstream"
+              "community-port"
+            ];
+          hasUrl = (source.ref.url or "") != "";
+          hasRev = (source.ref.rev or "") != "";
+        }
+      )
+      allIntegrations;
+    expected =
+      builtins.genList (_: {
+        hasProvenance = true;
+        hasUrl = true;
+        hasRev = true;
+      })
+      10;
+  };
+
+  testEveryVendoredIntegrationPinsEveryArtifact = {
+    expr = let
+      theme = themeConfig {};
+      vendoredOf = provider:
+        builtins.filter (i: i.source.vendored or false) (builtins.attrValues provider.integrations);
+      allVendored =
+        vendoredOf theme.providers.kanagawa
+        ++ vendoredOf theme.providers.catppuccin
+        ++ vendoredOf theme.providers.sora;
+    in
+      map (integration: (integration.source.ref.hash or "") != "") allVendored
+      ++ lib.concatMap (
+        integration:
+          builtins.map (variant: (variant.hash or "") != "") (builtins.attrValues integration.variants)
+      )
+      allVendored;
+    expected = [
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+    ];
+  };
+
+  testSoraGhosttyIntegrationIsDarkOnly = {
+    expr = let
+      integration = (themeConfig {}).providers.sora.integrations.ghostty;
+    in {
+      inherit (integration) complete;
+      variants = builtins.attrNames integration.variants;
+      darkId = integration.variants.dark.id;
+    };
+    expected = {
+      complete = false;
+      variants = ["dark"];
+      darkId = "sora";
     };
   };
 
@@ -170,15 +283,15 @@ in {
     expected = {
       kanagawa = [
         "ghostty"
-        "zed"
-        "vscode"
         "tmux"
+        "vscode"
+        "zed"
       ];
       catppuccin = [
         "ghostty"
-        "zed"
-        "vscode"
         "tmux"
+        "vscode"
+        "zed"
       ];
       sora = [
         "ghostty"
@@ -287,6 +400,26 @@ in {
       activeMatches = true;
       providerMatches = true;
       transparent = "0x00000000";
+    };
+  };
+
+  testCatppuccinFrappeLabelIsAccented = {
+    expr = let
+      theme = themeConfig {
+        aytordev.theme = {
+          name = "catppuccin";
+          variant = "frappe";
+        };
+      };
+    in {
+      appTheme = theme.appTheme.capitalized;
+      zed = theme.providers.catppuccin.integrations.zed.variants.frappe.id;
+      vscode = theme.providers.catppuccin.integrations.vscode.variants.frappe.id;
+    };
+    expected = {
+      appTheme = "Catppuccin Frappé";
+      zed = "Catppuccin Frappé";
+      vscode = "Catppuccin Frappé";
     };
   };
 }

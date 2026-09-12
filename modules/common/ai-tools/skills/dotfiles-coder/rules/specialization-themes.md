@@ -8,9 +8,11 @@ Three families are registered (`kanagawa`, `catppuccin`, `sora`) and more can be
 added by importing a provider that satisfies `themeLib.validateProvider`. Apps
 that generate their config from `palette` support every family for free. Apps
 that select a native theme must declare the app id in the provider's
-`nativeApps`, resolve the name through `appTheme` (or `appThemeDark` /
-`appThemeLight`), and **ship the matching resource** for each family listed
-there; otherwise leave the app default and expose a nullable `theme` override.
+`integrations`, resolve the name through `lib.aytordev.resolveApp`, and **ship
+the matching resource** for each family declared there; otherwise leave the app
+default and expose a nullable `theme` override.
+`config.aytordev.theme.nativeApps` is derived from the integration keys, so it
+is read-only and must never be hand-authored.
 
 **Incorrect (Hardcoded Colors):**
 

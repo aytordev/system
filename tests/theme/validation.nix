@@ -180,6 +180,50 @@ in {
     expected = true;
   };
 
+  # ─── nativeApps is a strict, derived projection of integrations ────────────
+
+  testValidateProviderRejectsNativeAppsSuperset = {
+    expr = throws (
+      themeLib.validateProvider (
+        baseProvider {ghostty = validIntegration;}
+        // {
+          nativeApps = [
+            "ghostty"
+            "zed"
+          ];
+        }
+      )
+    );
+    expected = true;
+  };
+
+  testValidateProviderRejectsNativeAppsSubset = {
+    expr = throws (
+      themeLib.validateProvider (
+        baseProvider {
+          ghostty = validIntegration;
+          zed = validIntegration;
+        }
+        // {
+          nativeApps = ["ghostty"];
+        }
+      )
+    );
+    expected = true;
+  };
+
+  testValidateProviderOmittingNativeAppsIsDerived = {
+    expr =
+      (themeLib.validateProvider (baseProvider {
+        ghostty = validIntegration;
+        zed = validIntegration;
+      })).nativeApps;
+    expected = [
+      "ghostty"
+      "zed"
+    ];
+  };
+
   # ─── Integration validation, one independent fault per test ───────────────
 
   testValidateProviderRejectsIntegrationsNotAttrset = {
@@ -286,20 +330,24 @@ in {
     expected = true;
   };
 
-  testValidateProviderRejectsCommunityPortWithoutHash = {
-    expr = throws (
-      themeLib.validateProvider (
-        withIntegration (
-          validIntegration
-          // {
-            source = {
-              provenance = "community-port";
-              inherit (validSource) ref;
-            };
-          }
-        )
-      )
-    );
+  # A non-vendored community port pins a rev; a content hash is not applicable
+  # (the consumer fetches the artifact through its own package manager).
+  testValidateProviderAllowsCommunityPortWithoutHash = {
+    expr =
+      (builtins.tryEval (
+        builtins.deepSeq (themeLib.validateProvider (
+          withIntegration (
+            validIntegration
+            // {
+              source = {
+                provenance = "community-port";
+                inherit (validSource) ref;
+              };
+            }
+          )
+        ))
+        true
+      )).success;
     expected = true;
   };
 
@@ -323,6 +371,121 @@ in {
         ))
         true
       )).success;
+    expected = true;
+  };
+
+  # ─── Vendored resources must pin every artifact with an SRI hash ──────────
+
+  testValidateProviderAcceptsVendoredIntegrationWithHashes = {
+    expr =
+      (builtins.tryEval (
+        builtins.deepSeq (themeLib.validateProvider (
+          withIntegration (
+            validIntegration
+            // {
+              source =
+                validSource
+                // {
+                  vendored = true;
+                  ref =
+                    validSource.ref
+                    // {
+                      hash = "sha256-SRC";
+                    };
+                };
+              variants = {
+                dark = {
+                  id = "broken-dark";
+                  hash = "sha256-AAAA";
+                };
+                light = {
+                  id = "broken-light";
+                  hash = "sha256-BBBB";
+                };
+              };
+            }
+          )
+        ))
+        true
+      )).success;
+    expected = true;
+  };
+
+  testValidateProviderRejectsVendoredIntegrationWithoutVariantHash = {
+    expr = throws (
+      themeLib.validateProvider (
+        withIntegration (
+          validIntegration
+          // {
+            source =
+              validSource
+              // {
+                vendored = true;
+                ref =
+                  validSource.ref
+                  // {
+                    hash = "sha256-SRC";
+                  };
+              };
+            variants = {
+              dark = {
+                id = "broken-dark";
+                hash = "sha256-AAAA";
+              };
+              light = {
+                id = "broken-light";
+              };
+            };
+          }
+        )
+      )
+    );
+    expected = true;
+  };
+
+  testValidateProviderRejectsVendoredIntegrationWithoutSourceHash = {
+    expr = throws (
+      themeLib.validateProvider (
+        withIntegration (
+          validIntegration
+          // {
+            source =
+              validSource
+              // {
+                vendored = true;
+              };
+            variants = {
+              dark = {
+                id = "broken-dark";
+                hash = "sha256-AAAA";
+              };
+              light = {
+                id = "broken-light";
+                hash = "sha256-BBBB";
+              };
+            };
+          }
+        )
+      )
+    );
+    expected = true;
+  };
+
+  testValidateProviderRejectsNonBooleanVendored = {
+    expr = throws (
+      themeLib.validateProvider (
+        withIntegration (
+          validIntegration
+          // {
+            source =
+              validSource
+              // {
+                vendored = "yes";
+              };
+          }
+        )
+      )
+    );
     expected = true;
   };
 
