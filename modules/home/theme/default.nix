@@ -10,7 +10,6 @@
 # Access colors in other modules:
 #   config.aytordev.theme.palette.accent.hex
 #   config.aytordev.theme.palette.bg.sketchybar
-#   config.aytordev.theme.appTheme.kebab
 {
   config,
   lib,
@@ -26,24 +25,24 @@
 
   # ─── Theme Providers ─────────────────────────────────────────────────────
   # Each provider is a data attrset (not a module) conforming to the contract:
-  #   { name, displayName, defaultVariant, darkVariant, lightVariant, variants, appTheme }
+  #   { name, displayName, defaultVariant, darkVariant, lightVariant, variants }
   # validateProvider throws if a provider is missing fields, references an
   # unknown variant, or declares inconsistent light/dark polarity.
   # To add a new theme, import it here and add it to this attrset.
   themeProviders = {
     kanagawa = themeLib.validateProvider (
       import ./kanagawa/provider.nix {
-        inherit (themeLib) mkColor transparent capitalize;
+        inherit (themeLib) mkColor transparent;
       }
     );
     catppuccin = themeLib.validateProvider (
       import ./catppuccin/provider.nix {
-        inherit (themeLib) mkColor transparent capitalize;
+        inherit (themeLib) mkColor transparent;
       }
     );
     sora = themeLib.validateProvider (
       import ./sora/provider.nix {
-        inherit (themeLib) mkColor transparent capitalize;
+        inherit (themeLib) mkColor transparent;
       }
     );
   };
@@ -149,7 +148,6 @@
         darkVariant
         lightVariant
         ;
-      nativeApps = builtins.attrNames (provider.integrations or {});
       integrations = provider.integrations or {};
       variants = lib.mapAttrs (_: variant: variant.palette) provider.variants;
       ansi = lib.mapAttrs (_: variant: variant.ansi) provider.variants;
@@ -203,46 +201,6 @@ in {
       description = "Whether the current variant is a light theme.";
     };
 
-    appTheme = mkOption {
-      type = types.attrsOf types.str;
-      readOnly = true;
-      default = activeTheme.appTheme cfg.variant;
-      description = ''
-        Pre-formatted theme names for application configs.
-        Available formats: capitalized, kebab, underscore, raw.
-      '';
-    };
-
-    appThemeDark = mkOption {
-      type = types.attrsOf types.str;
-      readOnly = true;
-      default = activeTheme.appTheme activeTheme.darkVariant;
-      description = ''
-        Pre-formatted theme names for the dark variant of the active family.
-        Useful for apps that follow the system light/dark scheme.
-      '';
-    };
-
-    appThemeLight = mkOption {
-      type = types.attrsOf types.str;
-      readOnly = true;
-      default = activeTheme.appTheme activeTheme.lightVariant;
-      description = ''
-        Pre-formatted theme names for the light variant of the active family.
-        Useful for apps that need both dark and light theme names.
-      '';
-    };
-
-    raw = mkOption {
-      type = types.attrsOf types.anything;
-      readOnly = true;
-      default = activeVariant.rawColors;
-      description = ''
-        Theme-specific raw colors for advanced use.
-        Prefer palette for standard consumption.
-      '';
-    };
-
     ansi = mkOption {
       type = ansiType;
       readOnly = true;
@@ -258,17 +216,6 @@ in {
       '';
     };
 
-    allVariantPalettes = mkOption {
-      type = types.attrsOf paletteType;
-      readOnly = true;
-      default = lib.mapAttrs (_: v: v.palette) activeTheme.variants;
-      description = ''
-        All variant palettes for the active theme.
-        Useful for apps that support runtime theme switching.
-        Example: config.aytordev.theme.allVariantPalettes.dragon.accent.hex
-      '';
-    };
-
     providers = mkOption {
       type = types.attrsOf (
         types.submodule {
@@ -277,7 +224,6 @@ in {
             defaultVariant = mkOption {type = types.str;};
             darkVariant = mkOption {type = types.str;};
             lightVariant = mkOption {type = types.str;};
-            nativeApps = mkOption {type = types.listOf types.str;};
             integrations = mkOption {
               type = types.attrsOf types.anything;
               default = {};
@@ -295,18 +241,6 @@ in {
         Enables runtime switching across families.
         Example: config.aytordev.theme.providers.catppuccin.variants.mocha.accent.hex
         Example: config.aytordev.theme.providers.catppuccin.ansi.mocha.bright.red.hex
-      '';
-    };
-
-    nativeApps = mkOption {
-      type = types.listOf types.str;
-      readOnly = true;
-      default = builtins.attrNames (activeTheme.integrations or {});
-      description = ''
-        Native app ids the active family ships a theme resource for
-        (for example "ghostty", "zed", "vscode", "tmux"), derived from the
-        family's `integrations` keys. An app not listed here does not receive a
-        generated theme name unless the user sets an explicit per-app override.
       '';
     };
 

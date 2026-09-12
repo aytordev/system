@@ -111,12 +111,6 @@
       path = ../../modules/home/programs/desktop/editors/vscode/config.nix;
     }
     {
-      id = "warp";
-      generated = "aytordev";
-      note = "Exception: resources are deployed but the theme is selected in Warp's UI only.";
-      path = ../../modules/home/programs/terminal/emulators/warp/config.nix;
-    }
-    {
       id = "yazi";
       generated = "<family>-<variant>";
       note = "Palette-generated flavor.";

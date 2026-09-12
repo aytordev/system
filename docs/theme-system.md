@@ -39,9 +39,8 @@ switch — the module is pure data.
 | --- | --- |
 | `palette.<role>.{hex,rgb,sketchybar,raw}` | 26 semantic colors (works in every family/variant) |
 | `ansi.{normal,bright,dim}.<slot>` | upstream ANSI table; use for terminal fallbacks |
-| `appTheme`, `appThemeDark`, `appThemeLight` | formatted names: `capitalized`, `kebab`, `underscore`, `raw` |
 | `isLight` | active variant polarity |
-| `providers`, `integrations`, `nativeApps` | registry introspection (see below) |
+| `providers`, `integrations` | registry introspection (see below) |
 
 ## Per-app overrides
 
@@ -86,7 +85,7 @@ selects nothing the app can resolve, so prefer the discovered `id` values in the
    `variants/<variant>.nix` per variant, each exporting
    `{ isLight, rawColors, palette }`.
 2. Provider fields: `name`, `displayName`, `defaultVariant`, `darkVariant`,
-   `lightVariant`, `variants`, `appTheme`, optional `integrations`.
+   `lightVariant`, `variants`, optional `integrations`.
 3. Register it in the `themeProviders` attrset in
    `modules/home/theme/default.nix`.
 4. `validateProvider` rejects missing fields, unknown variant references, and
@@ -106,8 +105,9 @@ selects nothing the app can resolve, so prefer the discovered `id` values in the
    resolve their own artifact and omit the hash.
 5. `complete = true` only when every provider variant is covered; otherwise list
    the covered `variants` and set `complete = false`.
-6. The adapter resolves through `lib.aytordev.resolveApp`; `nativeApps` is
-   derived from the integration keys and must never be hand-authored.
+6. The adapter resolves through `lib.aytordev.resolveApp`; `integrations` is the
+   single source of native-resource truth and must never be hand-authored
+   elsewhere.
 
 ## Provenance and pinning
 
@@ -134,7 +134,6 @@ promised.
 | App / case | Behavior |
 | --- | --- |
 | Firefox | `userChrome` is generated from the palette for **every** family. The declared id is a Firefox Color theme title, not a UI selection. |
-| Warp | Theme files (official + generated) are deployed, but the active theme is chosen in **Settings → Appearance**; the adapter writes no selection. |
 | Pi | No upstream resource; the generated theme and vendored gentle-pi banner deploy with `shell.enable`. With the shell off, the generated file is not deployed and resolution is `none`. |
 | Sora `light` | Synthetic, unofficial companion. Sora resources are `dark`-only (`complete = false`), so `light` resolves to generated where the app has a fallback, otherwise `none`. |
 | Neovim | Built from the `aytordev-nvim` distribution with the family/variant from `aytordev.theme` (through its `lib.mkAytordevNeovim` builder). Sora is dark-only, so the synthetic `light` companion uses the editor default (`none`). |

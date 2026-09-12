@@ -22,7 +22,6 @@
     "starship"
     "tmux"
     "vscode"
-    "warp"
     "yazi"
     "zed"
     "zellij"
@@ -41,7 +40,6 @@
     starship = "official-upstream";
     tmux = "official-upstream";
     vscode = "official-upstream";
-    warp = "official-upstream";
     yazi = "official-upstream";
     zed = "official-upstream";
     zellij = "official-upstream";
@@ -60,14 +58,13 @@
     starship = "catppuccin_mocha";
     tmux = "mocha";
     vscode = "Catppuccin Mocha";
-    warp = "catppuccin_mocha";
     yazi = "catppuccin-mocha-mauve";
     zed = "Catppuccin Mocha";
     zellij = "catppuccin-mocha";
   };
 
   provider = import ../../modules/home/theme/catppuccin/provider.nix {
-    inherit (themeLib) mkColor transparent capitalize;
+    inherit (themeLib) mkColor transparent;
   };
 in {
   testCatppuccinDeclaresEveryOfficialApp = {

@@ -16,16 +16,12 @@ in {
         isLight
         displayName
         ;
-      appThemeLight = theme.appThemeLight.capitalized;
-      appThemeDark = theme.appThemeDark.capitalized;
     };
     expected = {
       name = "kanagawa";
       variant = "dragon";
       isLight = false;
       displayName = "Kanagawa";
-      appThemeLight = "Kanagawa Lotus";
-      appThemeDark = "Kanagawa Dragon";
     };
   };
 
@@ -46,9 +42,6 @@ in {
         displayName
         ;
       accent = theme.palette.accent.hex;
-      appTheme = theme.appTheme.capitalized;
-      appThemeDark = theme.appThemeDark.capitalized;
-      appThemeLight = theme.appThemeLight.capitalized;
     };
     expected = {
       name = "catppuccin";
@@ -56,9 +49,6 @@ in {
       isLight = true;
       displayName = "Catppuccin";
       accent = "#1e66f5";
-      appTheme = "Catppuccin Latte";
-      appThemeDark = "Catppuccin Mocha";
-      appThemeLight = "Catppuccin Latte";
     };
   };
 
@@ -83,36 +73,28 @@ in {
   testThemeIntegrationsDeclareEveryNativeApp = {
     expr = let
       theme = themeConfig {};
-    in {
-      integrations = builtins.attrNames theme.providers.kanagawa.integrations;
-      nativeApps = theme.providers.kanagawa.nativeApps;
-    };
-    expected = {
-      integrations = [
-        "bat"
-        "ghostty"
-        "vscode"
-        "zed"
-      ];
-      nativeApps = [
-        "bat"
-        "ghostty"
-        "vscode"
-        "zed"
-      ];
-    };
+    in
+      builtins.attrNames theme.providers.kanagawa.integrations;
+    expected = [
+      "bat"
+      "ghostty"
+      "vscode"
+      "zed"
+    ];
   };
 
-  testThemeNativeAppsAreDerivedFromIntegrations = {
+  testThemeIntegrationsArePerFamily = {
     expr = let
       theme = themeConfig {aytordev.theme.name = "catppuccin";};
     in {
-      activeNativeApps = theme.nativeApps;
-      catppuccinNativeApps = theme.providers.catppuccin.nativeApps;
-      integrationsMatch = builtins.attrNames theme.providers.catppuccin.integrations;
+      matches =
+        builtins.attrNames theme.integrations.catppuccin
+        == builtins.attrNames theme.providers.catppuccin.integrations;
+      catppuccin = builtins.attrNames theme.providers.catppuccin.integrations;
     };
     expected = {
-      activeNativeApps = [
+      matches = true;
+      catppuccin = [
         "bat"
         "btop"
         "eza"
@@ -124,41 +106,6 @@ in {
         "starship"
         "tmux"
         "vscode"
-        "warp"
-        "yazi"
-        "zed"
-        "zellij"
-      ];
-      catppuccinNativeApps = [
-        "bat"
-        "btop"
-        "eza"
-        "firefox"
-        "fzf"
-        "ghostty"
-        "lazygit"
-        "opencode"
-        "starship"
-        "tmux"
-        "vscode"
-        "warp"
-        "yazi"
-        "zed"
-        "zellij"
-      ];
-      integrationsMatch = [
-        "bat"
-        "btop"
-        "eza"
-        "firefox"
-        "fzf"
-        "ghostty"
-        "lazygit"
-        "opencode"
-        "starship"
-        "tmux"
-        "vscode"
-        "warp"
         "yazi"
         "zed"
         "zellij"
@@ -237,37 +184,18 @@ in {
         name
         variant
         isLight
-        nativeApps
         displayName
         ;
       accent = theme.palette.accent.hex;
-      appTheme = theme.appTheme.capitalized;
-      appThemeLight = theme.appThemeLight.capitalized;
-      providerNativeApps = theme.providers.sora.nativeApps;
+      providerIntegrations = builtins.attrNames theme.providers.sora.integrations;
     };
     expected = {
       name = "sora";
       variant = "dark";
       isLight = false;
-      nativeApps = [
-        "bat"
-        "btop"
-        "eza"
-        "firefox"
-        "fzf"
-        "ghostty"
-        "lazygit"
-        "opencode"
-        "starship"
-        "tmux"
-        "yazi"
-        "zed"
-      ];
       displayName = "Sora";
       accent = "#80c8e0";
-      appTheme = "Sora";
-      appThemeLight = "Sora";
-      providerNativeApps = [
+      providerIntegrations = [
         "bat"
         "btop"
         "eza"
@@ -296,7 +224,7 @@ in {
       inherit (theme) isLight;
       bg = theme.palette.bg.hex;
       fg = theme.palette.fg.hex;
-      variants = builtins.attrNames theme.allVariantPalettes;
+      variants = builtins.attrNames theme.providers.${theme.name}.variants;
     };
     expected = {
       isLight = true;
@@ -313,9 +241,9 @@ in {
     expr = let
       theme = themeConfig {};
     in {
-      kanagawa = theme.providers.kanagawa.nativeApps;
-      catppuccin = theme.providers.catppuccin.nativeApps;
-      sora = theme.providers.sora.nativeApps;
+      kanagawa = builtins.attrNames theme.providers.kanagawa.integrations;
+      catppuccin = builtins.attrNames theme.providers.catppuccin.integrations;
+      sora = builtins.attrNames theme.providers.sora.integrations;
     };
     expected = {
       kanagawa = [
@@ -336,7 +264,6 @@ in {
         "starship"
         "tmux"
         "vscode"
-        "warp"
         "yazi"
         "zed"
         "zellij"
@@ -362,7 +289,7 @@ in {
     expr = let
       theme = themeConfig {aytordev.theme.variant = "wave";};
     in {
-      matches = theme.palette == theme.allVariantPalettes.${theme.variant};
+      matches = theme.palette == theme.providers.${theme.name}.variants.${theme.variant};
       transparent = theme.palette.transparent.sketchybar;
     };
     expected = {
@@ -409,7 +336,7 @@ in {
         };
       };
     in {
-      variants = builtins.attrNames theme.allVariantPalettes;
+      variants = builtins.attrNames theme.providers.${theme.name}.variants;
       inherit (theme.providers.catppuccin) darkVariant lightVariant;
       latteIsLight = latte.isLight;
       mochaIsLight = theme.isLight;
@@ -450,7 +377,7 @@ in {
         };
       };
     in {
-      activeMatches = theme.palette == theme.allVariantPalettes.frappe;
+      activeMatches = theme.palette == theme.providers.${theme.name}.variants.frappe;
       providerMatches = theme.palette == theme.providers.catppuccin.variants.frappe;
       transparent = theme.providers.catppuccin.variants.latte.transparent.sketchybar;
     };
@@ -470,12 +397,10 @@ in {
         };
       };
     in {
-      appTheme = theme.appTheme.capitalized;
       zed = theme.providers.catppuccin.integrations.zed.variants.frappe.id;
       vscode = theme.providers.catppuccin.integrations.vscode.variants.frappe.id;
     };
     expected = {
-      appTheme = "Catppuccin Frappé";
       zed = "Catppuccin Frappé";
       vscode = "Catppuccin Frappé";
     };

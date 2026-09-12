@@ -5,7 +5,7 @@
 {
   mkColor,
   transparent,
-  capitalize,
+  ...
 }: let
   # Official `catppuccin/*` port resources at concrete upstream revisions.
   # Reference-pinned ports declare no SRI hash (the adapter resolves its own
@@ -51,7 +51,6 @@ in {
   lightVariant = "latte";
 
   # Exact native resources the hybrid resolver can select, keyed by app id.
-  # `nativeApps` is derived from these keys (never hand-written).
   integrations = {
     # Vendored Ghostty confs (adapted from `themes/catppuccin-*.conf`). Each
     # variant's `hash` pins the in-repo artifact; `source.ref.rev` pins the
@@ -259,19 +258,6 @@ in {
       };
     };
 
-    warp = mkOfficial {
-      port = "warp";
-      rev = "b6891cc339b3a1bb70a5c3063add4bdbd0455603";
-      vendored = true;
-      hash = "sha256-PAm04AiYoOvb53dk+vMUrd4HJUHziBtMIJLccBjpVOs=";
-      variants = {
-        latte.id = "catppuccin_latte";
-        frappe.id = "catppuccin_frappe";
-        macchiato.id = "catppuccin_macchiato";
-        mocha.id = "catppuccin_mocha";
-      };
-    };
-
     zellij = mkOfficial {
       port = "zellij";
       rev = "be841efbfb0b914daecdc4d1cde242fee53781b2";
@@ -304,18 +290,5 @@ in {
     frappe = import ./variants/frappe.nix {inherit mkColor transparent;};
     macchiato = import ./variants/macchiato.nix {inherit mkColor transparent;};
     mocha = import ./variants/mocha.nix {inherit mkColor transparent;};
-  };
-
-  # App theme name formatting per variant
-  appTheme = variant: {
-    # Upstream ships the accented "Frappé" label in Zed and VS Code.
-    capitalized = "Catppuccin ${
-      if variant == "frappe"
-      then "Frappé"
-      else capitalize variant
-    }";
-    kebab = "catppuccin-${variant}";
-    underscore = "catppuccin_${variant}";
-    raw = "catppuccin/${variant}";
   };
 }

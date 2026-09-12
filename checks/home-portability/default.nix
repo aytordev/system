@@ -159,9 +159,6 @@
     (desktopConfig.aytordev.theme.providers ? kanagawa)
     (desktopConfig.aytordev.theme.providers ? catppuccin)
     (catppuccinConfig.aytordev.theme.palette.accent.hex == "#89b4fa")
-    (catppuccinConfig.aytordev.theme.appTheme.capitalized == "Catppuccin Mocha")
-    (catppuccinConfig.aytordev.theme.appThemeDark.capitalized == "Catppuccin Mocha")
-    (catppuccinConfig.aytordev.theme.appThemeLight.capitalized == "Catppuccin Latte")
     (!catppuccinConfig.aytordev.theme.isLight)
     (lib.hasSuffix "ghostty/themes/catppuccin-mocha.conf" (ghosttyTheme catppuccinConfig))
     (lib.hasSuffix "ghostty/themes/kanagawa-dragon.conf" (ghosttyTheme desktopConfig))
@@ -175,15 +172,6 @@
     (!(ghosttyNoThemesConfig.programs.ghostty.settings ? "custom-shader"))
     (!ghosttyDisabledConfig.aytordev.programs.terminal.emulators.ghostty.enable)
     (!(ghosttyDisabledConfig.xdg.configFile ? "ghostty/shaders/cursor_smear.glsl"))
-    (
-      desktopConfig.aytordev.theme.nativeApps
-      == [
-        "bat"
-        "ghostty"
-        "vscode"
-        "zed"
-      ]
-    )
     (desktopConfig.aytordev.programs.terminal.tools.pi.theme == "aytordev")
     (config.programs.yazi.theme.flavor.dark == "kanagawa-dragon")
     (catppuccinConfig.programs.yazi.theme.flavor.dark == "catppuccin-mocha-mauve")
@@ -225,24 +213,6 @@
     (catppuccinDevConfig.programs.zed-editor.userSettings.theme == "Catppuccin Mocha")
     (developmentOverrideConfig.programs.zed-editor.userSettings.theme == "Kanagawa Dragon")
     (soraConfig.aytordev.theme.palette.accent.hex == "#80c8e0")
-    (soraConfig.aytordev.theme.appTheme.capitalized == "Sora")
-    (
-      soraConfig.aytordev.theme.nativeApps
-      == [
-        "bat"
-        "btop"
-        "eza"
-        "firefox"
-        "fzf"
-        "ghostty"
-        "lazygit"
-        "opencode"
-        "starship"
-        "tmux"
-        "yazi"
-        "zed"
-      ]
-    )
     (lib.hasSuffix "ghostty/themes/sora.conf" (ghosttyTheme soraConfig))
     (!(soraConfig.xdg.configFile ? "ghostty/themes/aytordev.conf"))
     (soraLightConfig.xdg.configFile ? "ghostty/themes/aytordev.conf")

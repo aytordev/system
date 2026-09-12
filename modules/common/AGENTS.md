@@ -101,8 +101,8 @@ truth. When adding themed elements:
 
 1. Generate colors from the semantic palette (`config.aytordev.theme.palette`)
    so the app follows every family and variant automatically.
-2. Use `appTheme` / `appThemeDark` / `appThemeLight` for named native themes;
-   never branch on variant names or hardcode hex values.
+2. Resolve named native themes through `lib.aytordev.resolveApp`; never branch
+   on variant names or hardcode hex values.
 3. If the app needs a native theme resource (extension, flavor, plugin),
    declare it once in the provider's `integrations` (the single source of
    native resources) with `source.provenance`
@@ -112,8 +112,6 @@ truth. When adding themed elements:
    `lib.aytordev.resolveApp` with the policy **explicit override > official
    exact (app + family + variant) > generated fallback > none**, otherwise
    leave the app default and expose a nullable `theme` override.
-   `aytordev.theme.nativeApps` is derived from the integration keys and must
-   never be hand-authored.
 
 See `modules/common/ai-tools/skills/dotfiles-coder/rules/specialization-themes.md`,
 the [theme guide](docs/theme-system.md), the generated

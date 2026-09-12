@@ -2,7 +2,7 @@
 
 **Impact:** HIGH
 
-`aytordev.theme` is the single source of truth for all theming. Use the semantic palette API (`cfg.palette.accent.hex`, `cfg.palette.red.rgb`). Never hardcode colors or use variant-specific color names. Use `appTheme` accessors for named themes.
+`aytordev.theme` is the single source of truth for all theming. Use the semantic palette API (`cfg.palette.accent.hex`, `cfg.palette.red.rgb`). Never hardcode colors or use variant-specific color names. Native themes resolve through `lib.aytordev.resolveApp`.
 
 Three families are registered (`kanagawa`, `catppuccin`, `sora`) and more can be
 added by importing a provider that satisfies `themeLib.validateProvider`.
@@ -14,8 +14,7 @@ from `palette` support every family for free. Apps that select a native theme
 resolve the name through `lib.aytordev.resolveApp` with the policy **explicit
 override > official exact (app + family + variant) > generated fallback > none**;
 otherwise leave the app default and expose a nullable `theme` override.
-`config.aytordev.theme.nativeApps` is derived from the integration keys, so it
-is read-only and must never be hand-authored. A per-app override is a bare id,
+A per-app override is a bare id,
 `{ mode = "manual"; id = ...; }`, or `{ mode = "none"; }`; `null` / `auto`
 follows the policy. The derived family × app matrix and its provenance live in
 `docs/theme-support-matrix.md` (regenerate with
@@ -60,12 +59,12 @@ in
       errorColor = theme.palette.red.hex;
       bgColor = theme.palette.bg.hex;
 
-      # Pre-calculated theme name formats
-      theme = theme.appTheme.capitalized;  # "Kanagawa Wave"
-
-      # Dark/light pair for apps that follow the system appearance
-      themeDark = theme.appThemeDark.capitalized;   # "Kanagawa Dragon"
-      themeLight = theme.appThemeLight.capitalized; # "Kanagawa Lotus"
+      # Named native theme resolved through the hybrid policy
+      theme = lib.aytordev.resolveApp {
+        app = "myApp";
+        inherit (theme) variant;
+        official = theme.integrations.${theme.name}.myApp or null;
+      };
 
       # Polarity detection
       lightMode = theme.isLight;

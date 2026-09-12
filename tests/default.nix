@@ -90,7 +90,6 @@
   };
 
   runAsServiceModule = builtins.readFile ../modules/home/programs/terminal/tools/run-as-service/default.nix;
-  warpModule = builtins.readFile ../modules/home/programs/terminal/emulators/warp/default.nix;
 
   # Import every top-level suite file in a partition directory. Support files
   # live under `<dir>/fixtures/` (a subdirectory), so future app tasks can add
@@ -149,11 +148,6 @@ in
     testRunAsServiceUsesHomeManagerEnvironment = {
       expr = lib.hasInfix "sessionVariablesPackage" runAsServiceModule;
       expected = true;
-    };
-
-    testWarpHasNoDestructiveMigration = {
-      expr = lib.hasInfix "rm -rf" warpModule;
-      expected = false;
     };
 
     testConfigurationDirectoriesRequireDefault = {

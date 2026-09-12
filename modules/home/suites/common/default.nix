@@ -155,7 +155,6 @@ in {
         terminal = {
           emulators = {
             ghostty = mkDefault enabled;
-            warp = mkDefault disabled;
           };
 
           shells = {

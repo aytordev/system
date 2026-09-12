@@ -50,7 +50,7 @@ CLI tools and terminal programs.
 - **Multiplexers:** tmux, zellij
 - **Editors:** neovim
 - **Tools:** git, gh, lazygit, lazydocker, fzf, ripgrep, bat, eza, zoxide, jujutsu, k9s, etc.
-- **Emulators:** ghostty, warp
+- **Emulators:** ghostty
 
 **Pattern:**
 
@@ -130,12 +130,10 @@ or Sora) and the variant with `aytordev.theme.variant`; there is no
 `theme.enable` switch.
 
 - `palette` — active semantic colors (`hex`, `rgb`, `sketchybar`, `raw`).
-- `appTheme` / `appThemeDark` / `appThemeLight` — formatted names for the
-  active, dark, and light variants.
-- `providers` — every registered family/variant palette; the Sketchybar runtime
-  picker uses it to switch families without a rebuild.
-- `nativeApps` — app ids the active family ships a native resource for, derived
-  from the family's `integrations` keys (never hand-authored).
+- `ansi` — the active variant's upstream ANSI terminal table.
+- `providers` — every registered family/variant palette, ANSI table and
+  integrations; the Sketchybar runtime picker uses it to switch families
+  without a rebuild.
 - `integrations` — the single source of native-resource truth per app:
   `source.provenance` (`official-upstream` | `community-port`), a concrete
   pinned `source.ref.{url,rev}`, an optional SRI `hash` (required only when the
@@ -144,8 +142,7 @@ or Sora) and the variant with `aytordev.theme.variant`; there is no
 
 Providers are plain data validated by `validateProvider` against the contract
 (`name`, `displayName`, `defaultVariant`, `darkVariant`, `lightVariant`,
-`variants`, `appTheme`, optional `integrations`). Each family keeps one file per
-variant:
+`variants`, optional `integrations`). Each family keeps one file per variant:
 
 ```
 theme/<family>/provider.nix           # registry: variant imports, naming, polarity, integrations
@@ -348,8 +345,9 @@ aytordev.programs.desktop.bars.sketchybar.enable = true;
 
 Terminal emulators (ghostty, etc.) should:
 
-- Use `aytordev.theme.appTheme` (or `appThemeDark` / `appThemeLight`) for the
-  native theme name, and ship the theme resource for each supported family.
+- Declare each native theme in the family provider's `integrations` and resolve
+  it with `lib.aytordev.resolveApp` (override > official exact > generated
+  fallback > none); otherwise generate from the shared `palette`.
 - Configure fonts from the shared palette
 - Enable shell integration via `lib.aytordev.shellIntegration config` so it
   follows `enabledNames`.

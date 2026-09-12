@@ -1,6 +1,7 @@
 # ADR 0010: Multi-Family Theme Providers
 
-Status: Accepted
+Status: Accepted — native-theme name accessors (`appTheme*`) superseded by
+[ADR-0013](0013-theme-integrations-are-the-only-native-registry.md).
 
 ## Decision
 

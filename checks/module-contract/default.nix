@@ -34,7 +34,6 @@
     "programs.desktop.window-manager-system.aerospace"
     "programs.terminal.editors.neovim"
     "programs.terminal.emulators.ghostty"
-    "programs.terminal.emulators.warp"
     "programs.terminal.shells.bash"
     "programs.terminal.shells.fish"
     "programs.terminal.shells.nushell"

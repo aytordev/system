@@ -1,7 +1,9 @@
 # ADR 0011: Native Theme Resources and Per-App Overrides
 
 Status: Accepted — resolution wording superseded in part by
-[ADR-0012](0012-theme-resolution-policy.md).
+[ADR-0012](0012-theme-resolution-policy.md); derived `nativeApps` projection
+superseded by
+[ADR-0013](0013-theme-integrations-are-the-only-native-registry.md).
 
 ## Decision
 
@@ -50,8 +52,8 @@ emit".
   hand-written list that disagrees with them is a validation error.
 - Registered integrations cover the upstream resources for the active family,
   including generated-config apps whose upstream ships a native resource (for
-  example Starship, Yazi, bat, btop, fzf, eza, lazygit, OpenCode, Zellij,
-  Warp and Firefox). Apps without any upstream resource (Pi, Sketchybar,
+  example Starship, Yazi, bat, btop, fzf, eza, lazygit, OpenCode, Zellij and
+  Firefox). Apps without any upstream resource (Pi, Sketchybar,
   JankyBorders) rely entirely on the generated palette.
 - Unsupported native combinations require an explicit per-app `theme` override;
   by default nothing is written and the app keeps its own theme.

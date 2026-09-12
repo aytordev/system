@@ -10,7 +10,7 @@ has the most conventions.
 terminal/
 ├── tools/       # CLI tools and utilities (largest; ~50 entries)
 ├── shells/      # bash, fish, nu-shell, zsh
-├── emulators/   # ghostty, warp
+├── emulators/   # ghostty
 └── editors/     # neovim
 ```
 

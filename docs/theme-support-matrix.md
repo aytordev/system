@@ -14,25 +14,25 @@ override.
 
 ## Family × app (default variant)
 
-| Family | bat | btop | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | warp | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Catppuccin (mocha) | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O | O |
-| Kanagawa (dragon) | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | G | O | G |
-| Sora (dark) | O | O | O | O | O | O | G | O | O | G | G | O | O | G | G | O | O | G |
+| Family | bat | btop | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Catppuccin (mocha) | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
+| Kanagawa (dragon) | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Sora (dark) | O | O | O | O | O | O | G | O | O | G | G | O | O | G | O | O | G |
 
 ## Variant coverage
 
-| Family / variant | bat | btop | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | warp | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Catppuccin frappe | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O | O |
-| Catppuccin latte | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O | O |
-| Catppuccin macchiato | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O | O |
-| Catppuccin mocha | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O | O |
-| Kanagawa dragon | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | G | O | G |
-| Kanagawa lotus | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | G | O | G |
-| Kanagawa wave | O | G | G | G | G | O | G | G | G | G | G | G | G | O | G | G | O | G |
-| Sora dark | O | O | O | O | O | O | G | O | O | G | G | O | O | G | G | O | O | G |
-| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
+| Family / variant | bat | btop | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Catppuccin frappe | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
+| Catppuccin latte | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
+| Catppuccin macchiato | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
+| Catppuccin mocha | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
+| Kanagawa dragon | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa lotus | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa wave | O | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Sora dark | O | O | O | O | O | O | G | O | O | G | G | O | O | G | O | O | G |
+| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
 
 ## Official resources and provenance
 
@@ -49,7 +49,6 @@ override.
 | Catppuccin | starship | official-upstream | no | frappe, latte, macchiato, mocha | https://github.com/catppuccin/starship @ 5906cc369dd8207e063c0e6e2d27bd0c0b567cb8 |
 | Catppuccin | tmux | official-upstream | no | frappe, latte, macchiato, mocha | https://github.com/catppuccin/tmux @ b2f219c00609ea1772bcfbdae0697807184743e4 |
 | Catppuccin | vscode | official-upstream | no | frappe, latte, macchiato, mocha | https://github.com/catppuccin/vscode @ 55b3e5d6248eb201c0e16424ce6f345757e94bad |
-| Catppuccin | warp | official-upstream | yes | frappe, latte, macchiato, mocha | https://github.com/catppuccin/warp @ b6891cc339b3a1bb70a5c3063add4bdbd0455603 |
 | Catppuccin | yazi | official-upstream | yes | frappe, latte, macchiato, mocha | https://github.com/catppuccin/yazi @ d62802be39210ea10e54b3e3b09735c6cb9e57c1 |
 | Catppuccin | zed | official-upstream | no | frappe, latte, macchiato, mocha | https://github.com/catppuccin/zed @ 9e24b02f32ca6bba7ac0cfb1bf758b1ccd8ee5cb |
 | Catppuccin | zellij | official-upstream | yes | frappe, latte, macchiato, mocha | https://github.com/catppuccin/zellij @ be841efbfb0b914daecdc4d1cde242fee53781b2 |
@@ -93,7 +92,6 @@ adapter.
 | starship | aytordev | Palette-generated palette. |
 | tmux | aytordev | Palette-generated conf; catppuccin selects via @catppuccin_flavor. |
 | vscode | aytordev-<family>-<variant> | Palette-generated extension. |
-| warp | aytordev | Exception: resources are deployed but the theme is selected in Warp's UI only. |
 | yazi | <family>-<variant> | Palette-generated flavor. |
 | zed | aytordev | Palette-generated theme JSON. |
 | zellij | aytordev | Palette-generated theme. |

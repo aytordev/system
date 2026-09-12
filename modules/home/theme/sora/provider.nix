@@ -52,7 +52,7 @@ in {
   # Exact native resources the hybrid resolver can select, keyed by app id.
   # Sora is dark-only, so every integration is `complete = false` with a single
   # `dark` variant. Consumers fall through to generated (Ghostty) or none (Zed)
-  # for the synthetic `light` companion. `nativeApps` is derived, not authored.
+  # for the synthetic `light` companion.
   integrations = {
     # Vendored `themes/sora.conf` (adapted from `extras/ghostty/sora`). The
     # variant `hash` pins the in-repo artifact; the rev pins the upstream origin.
@@ -135,13 +135,5 @@ in {
   variants = {
     dark = import ./variants/dark.nix {inherit mkColor transparent;};
     light = import ./variants/light.nix {inherit mkColor transparent;};
-  };
-
-  # Sora ships a single native theme name, independent of the (synthetic) variant.
-  appTheme = _: {
-    capitalized = "Sora";
-    kebab = "sora";
-    underscore = "sora";
-    raw = "sora";
   };
 }

@@ -5,7 +5,7 @@
 {
   mkColor,
   transparent,
-  capitalize,
+  ...
 }: {
   name = "kanagawa";
   displayName = "Kanagawa";
@@ -15,7 +15,6 @@
   lightVariant = "lotus";
 
   # Exact native resources the hybrid resolver can select, keyed by app id.
-  # `nativeApps` is derived from these keys (never hand-written).
   integrations = {
     # Vendored Ghostty confs, adapted from `extras/ghostty/kanagawa-*`. Each
     # variant's `hash` pins the in-repo artifact; `source.ref.rev` pins the
@@ -130,13 +129,5 @@
     wave = import ./variants/wave.nix {inherit mkColor transparent;};
     dragon = import ./variants/dragon.nix {inherit mkColor transparent;};
     lotus = import ./variants/lotus.nix {inherit mkColor transparent;};
-  };
-
-  # App theme name formatting per variant
-  appTheme = variant: {
-    capitalized = "Kanagawa ${capitalize variant}";
-    kebab = "kanagawa-${variant}";
-    underscore = "kanagawa_${variant}";
-    raw = "kanagawa/${variant}";
   };
 }

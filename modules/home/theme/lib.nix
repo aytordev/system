@@ -71,7 +71,6 @@
     "darkVariant"
     "lightVariant"
     "variants"
-    "appTheme"
   ];
 
   # Allowed provenance markers for a declared app integration source.
@@ -87,9 +86,7 @@
   ];
 
   # Validate a provider attrset against the shared contract.
-  # Returns the provider unchanged, except that `nativeApps` is always projected
-  # from the keys of `integrations` (the single source of native-resource truth).
-  # A hand-authored `nativeApps`, if present, must equal those keys exactly.
+  # Returns the provider unchanged.
   # Throws with every discovered problem otherwise.
   validateProvider = provider: let
     missingFields = builtins.filter (field: !(provider ? ${field})) requiredProviderFields;
@@ -127,25 +124,8 @@
     #   };
     # }
 
-    # `nativeApps` is a read-only projection of the integration keys. A provider
-    # must not hand-author it; if present it must equal the keys exactly. This
-    # is the strict invariant: no subset/superset/union relaxation.
+    # `integrations` is the single source of native-resource truth.
     integrations = provider.integrations or null;
-    nativeAppsDerived =
-      if builtins.isAttrs integrations
-      then builtins.attrNames integrations
-      else [];
-    declaredNativeApps = provider.nativeApps or null;
-    nativeAppsError =
-      if declaredNativeApps == null
-      then null
-      else if !(builtins.isList declaredNativeApps)
-      then "'nativeApps' must be a list of app ids, or omitted (it is derived from 'integrations')"
-      else if !(builtins.all builtins.isString declaredNativeApps)
-      then "'nativeApps' entries must be strings"
-      else if builtins.sort (a: b: a < b) declaredNativeApps != builtins.sort (a: b: a < b) nativeAppsDerived
-      then "'nativeApps' is derived from 'integrations' and must equal [${lib.concatStringsSep " " nativeAppsDerived}] exactly"
-      else null;
 
     checkIntegrationSource = app: source:
       if !(builtins.isAttrs source)
@@ -245,7 +225,6 @@
         missingFields != []
       ) "missing required fields: [${lib.concatStringsSep " " missingFields}]"
       ++ lib.optional (variantNames == []) "no variants defined"
-      ++ lib.optional (nativeAppsError != null) nativeAppsError
       ++ lib.optionals (missingFields == []) (
         lib.filter (error: error != null) (
           map checkVariantRef [
@@ -263,11 +242,7 @@
   in
     if errors != []
     then throw "theme provider '${provider.name or "<unnamed>"}' is invalid: ${lib.concatStringsSep "; " errors}"
-    else
-      provider
-      // {
-        nativeApps = nativeAppsDerived;
-      };
+    else provider;
 in {
   inherit validateProvider;
 
@@ -298,12 +273,4 @@ in {
     sketchybar = "0x00000000";
     raw = "00000000";
   };
-
-  # Capitalize first letter of a string
-  capitalize = s: let
-    len = lib.stringLength s;
-  in
-    if len == 0
-    then ""
-    else (lib.toUpper (builtins.substring 0 1 s)) + (builtins.substring 1 len s);
 }

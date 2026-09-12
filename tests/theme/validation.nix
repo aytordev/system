@@ -41,7 +41,6 @@
         isLight = true;
       };
     };
-    appTheme = _: {};
     inherit integrations;
   };
 
@@ -51,36 +50,11 @@
 in {
   # ─── Existing contract tests ──────────────────────────────────────────────
 
-  testValidateProviderRejectsNonListNativeApps = {
-    expr =
-      (builtins.tryEval (
-        builtins.deepSeq (themeLib.validateProvider {
-          name = "broken";
-          displayName = "Broken";
-          defaultVariant = "dark";
-          darkVariant = "dark";
-          lightVariant = "light";
-          variants = {
-            dark = {
-              isLight = false;
-            };
-            light = {
-              isLight = true;
-            };
-          };
-          appTheme = _: {};
-          nativeApps = "ghostty";
-        })
-        true
-      )).success;
-    expected = false;
-  };
-
   testValidateProviderAcceptsKanagawa = {
     expr =
       (themeLib.validateProvider (
         import ../../modules/home/theme/kanagawa/provider.nix {
-          inherit (themeLib) mkColor transparent capitalize;
+          inherit (themeLib) mkColor transparent;
         }
       )).name;
     expected = "kanagawa";
@@ -102,7 +76,6 @@ in {
           darkVariant = "missing";
           lightVariant = "missing";
           variants = {};
-          appTheme = _: {};
         })
         true
       )).success;
@@ -126,102 +99,20 @@ in {
               isLight = true;
             };
           };
-          appTheme = _: {};
         })
         true
       )).success;
     expected = false;
   };
 
-  # ─── Integration acceptance and projection ────────────────────────────────
+  # ─── Integration acceptance ───────────────────────────────────────────────
 
   testValidateProviderAcceptsIntegration = {
     expr = let
       provider = themeLib.validateProvider (withIntegration validIntegration);
-    in {
-      inherit (provider) nativeApps;
-      inherit (provider) name;
-    };
-    expected = {
-      nativeApps = ["ghostty"];
-      name = "broken";
-    };
-  };
-
-  testValidateProviderProjectsNativeAppsFromIntegrations = {
-    expr =
-      (themeLib.validateProvider (baseProvider {
-        ghostty = validIntegration;
-        zed = validIntegration;
-      })).nativeApps;
-    expected = [
-      "ghostty"
-      "zed"
-    ];
-  };
-
-  testValidateProviderAcceptsNativeAppsSameSetDifferentOrder = {
-    expr =
-      (builtins.tryEval (
-        builtins.deepSeq (themeLib.validateProvider (
-          baseProvider {
-            ghostty = validIntegration;
-            zed = validIntegration;
-          }
-          // {
-            nativeApps = [
-              "zed"
-              "ghostty"
-            ];
-          }
-        ))
-        true
-      )).success;
-    expected = true;
-  };
-
-  # ─── nativeApps is a strict, derived projection of integrations ────────────
-
-  testValidateProviderRejectsNativeAppsSuperset = {
-    expr = throws (
-      themeLib.validateProvider (
-        baseProvider {ghostty = validIntegration;}
-        // {
-          nativeApps = [
-            "ghostty"
-            "zed"
-          ];
-        }
-      )
-    );
-    expected = true;
-  };
-
-  testValidateProviderRejectsNativeAppsSubset = {
-    expr = throws (
-      themeLib.validateProvider (
-        baseProvider {
-          ghostty = validIntegration;
-          zed = validIntegration;
-        }
-        // {
-          nativeApps = ["ghostty"];
-        }
-      )
-    );
-    expected = true;
-  };
-
-  testValidateProviderOmittingNativeAppsIsDerived = {
-    expr =
-      (themeLib.validateProvider (baseProvider {
-        ghostty = validIntegration;
-        zed = validIntegration;
-      })).nativeApps;
-    expected = [
-      "ghostty"
-      "zed"
-    ];
+    in
+      provider.name;
+    expected = "broken";
   };
 
   # ─── Integration validation, one independent fault per test ───────────────
@@ -625,21 +516,6 @@ in {
         ))
         true
       )).success;
-    expected = true;
-  };
-
-  testValidateProviderRejectsNativeAppsDesync = {
-    expr = throws (
-      themeLib.validateProvider (
-        baseProvider {
-          ghostty = validIntegration;
-          zed = validIntegration;
-        }
-        // {
-          nativeApps = ["ghostty"];
-        }
-      )
-    );
     expected = true;
   };
 }

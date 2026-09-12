@@ -5,7 +5,7 @@
   context = import ./fixtures/context.nix {inherit self lib;};
   inherit (context) themeLib themeConfig;
 
-  mkProvider = path: import path {inherit (themeLib) mkColor transparent capitalize;};
+  mkProvider = path: import path {inherit (themeLib) mkColor transparent;};
 
   providers = {
     kanagawa = mkProvider ../../modules/home/theme/kanagawa/provider.nix;
