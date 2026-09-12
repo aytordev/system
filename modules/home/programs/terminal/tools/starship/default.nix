@@ -71,7 +71,7 @@
     {
       inherit symbol;
       style = color;
-      format = "[[ $symbol ($version) ]]($style)";
+      format = "[ $symbol ($version) ]($style)";
       version_format = "\${raw}";
     }
     // extraAttrs;
@@ -278,7 +278,7 @@
         disabled = false;
         time_format = "%R";
         style = "subtext0";
-        format = "[[   $time ]]($style)";
+        format = "[   $time ]($style)";
       };
 
       battery = {
