@@ -15,16 +15,17 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1789163138,
-        "narHash": "sha256-05o0qjn5x98Ln33eUmzRB7fCPXjbW3eeK8zqH3C3VrY=",
+        "lastModified": 1789238396,
+        "narHash": "sha256-Vcav8wK9OMULTvv0w7NQ+IPhTorI2RWHcb2qJ5sRW54=",
         "owner": "aytordev",
         "repo": "aytordev.nvim",
-        "rev": "d8f811dea6e9371d950e5d8fcb2a5bbc231c9288",
+        "rev": "580611fb5be78e46e677df8595572f0ad7f78640",
         "type": "github"
       },
       "original": {
         "owner": "aytordev",
         "repo": "aytordev.nvim",
+        "rev": "580611fb5be78e46e677df8595572f0ad7f78640",
         "type": "github"
       }
     },
