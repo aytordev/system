@@ -118,6 +118,7 @@
 ## aytordev\.programs\.terminal\.tools\.bottom\.package
 ## aytordev\.programs\.terminal\.tools\.btop\.enable
 ## aytordev\.programs\.terminal\.tools\.btop\.package
+## aytordev\.programs\.terminal\.tools\.btop\.theme
 ## aytordev\.programs\.terminal\.tools\.carapace\.enable
 ## aytordev\.programs\.terminal\.tools\.carapace\.package
 ## aytordev\.programs\.terminal\.tools\.comma\.enable
@@ -132,6 +133,7 @@
 ## aytordev\.programs\.terminal\.tools\.engram\.package
 ## aytordev\.programs\.terminal\.tools\.eza\.enable
 ## aytordev\.programs\.terminal\.tools\.eza\.package
+## aytordev\.programs\.terminal\.tools\.eza\.theme
 ## aytordev\.programs\.terminal\.tools\.fastfetch\.enable
 ## aytordev\.programs\.terminal\.tools\.fastfetch\.package
 ## aytordev\.programs\.terminal\.tools\.ffmpeg\.enable
@@ -202,6 +204,7 @@
 ## aytordev\.programs\.terminal\.tools\.opencode\.package
 ## aytordev\.programs\.terminal\.tools\.opencode\.model\.model
 ## aytordev\.programs\.terminal\.tools\.opencode\.model\.provider
+## aytordev\.programs\.terminal\.tools\.opencode\.theme
 ## aytordev\.programs\.terminal\.tools\.pi\.enable
 ## aytordev\.programs\.terminal\.tools\.pi\.enableInstallTelemetry
 ## aytordev\.programs\.terminal\.tools\.pi\.enableSkillCommands

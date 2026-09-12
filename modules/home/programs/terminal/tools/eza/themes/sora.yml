@@ -1,0 +1,62 @@
+# Sora theme for eza, adapted from the official `extras/eza/sora.sh` fragment
+# (Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439). The shell
+# fragment exports `EZA_COLORS` two-letter codes; this file expands the codes
+# present there into their `theme.yml` fields. Fields eza's `EZA_COLORS` does
+# not set are omitted so eza keeps its built-in defaults (partial theme files
+# overlay the defaults). Do not hand-edit a value: re-derive from the URL above
+# at the integration's `source.ref.rev`.
+filekinds:
+  normal: {foreground: "#c8d0e0"}
+  directory: {foreground: "#80c8e0", is_bold: true}
+  symlink: {foreground: "#b0a0d8"}
+  pipe: {foreground: "#78b8b0"}
+  block_device: {foreground: "#d4b878"}
+  char_device: {foreground: "#d0a888"}
+  socket: {foreground: "#b0a0d8"}
+  executable: {foreground: "#90c8a0"}
+perms:
+  user_read: {foreground: "#d4b878"}
+  user_write: {foreground: "#d0909c"}
+  user_execute_file: {foreground: "#90c8a0"}
+  user_execute_other: {foreground: "#90c8a0"}
+  group_read: {foreground: "#d4b878"}
+  group_write: {foreground: "#d0909c"}
+  group_execute: {foreground: "#90c8a0"}
+  other_read: {foreground: "#d4b878"}
+  other_write: {foreground: "#d0909c"}
+  other_execute: {foreground: "#90c8a0"}
+  special_user_file: {foreground: "#d0a888"}
+  special_other: {foreground: "#d0a888"}
+  attribute: {foreground: "#8898b8"}
+size:
+  number_byte: {foreground: "#c8d0e0"}
+  number_kilo: {foreground: "#c8d0e0"}
+  number_mega: {foreground: "#c8d0e0"}
+  number_giga: {foreground: "#c8d0e0"}
+  number_huge: {foreground: "#c8d0e0"}
+  unit_byte: {foreground: "#9aa4b8"}
+  unit_kilo: {foreground: "#9aa4b8"}
+  unit_mega: {foreground: "#9aa4b8"}
+  unit_giga: {foreground: "#9aa4b8"}
+  unit_huge: {foreground: "#9aa4b8"}
+users:
+  user_you: {foreground: "#d4b878"}
+  user_other: {foreground: "#9aa4b8"}
+  group_yours: {foreground: "#d0a888"}
+  group_other: {foreground: "#9aa4b8"}
+links:
+  normal: {foreground: "#8898b8"}
+git:
+  new: {foreground: "#68b080"}
+  modified: {foreground: "#6898b8"}
+  deleted: {foreground: "#b86068"}
+  renamed: {foreground: "#b0a0d8"}
+  typechange: {foreground: "#d4b878"}
+  ignored: {foreground: "#586478"}
+  conflicted: {foreground: "#d0909c"}
+punctuation: {foreground: "#586478"}
+date: {foreground: "#8898b8"}
+inode: {foreground: "#586478"}
+header: {foreground: "#dce4f0", is_bold: true}
+symlink_path: {foreground: "#b0a0d8"}
+broken_symlink: {foreground: "#b86068"}

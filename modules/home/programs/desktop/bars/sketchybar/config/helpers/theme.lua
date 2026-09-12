@@ -30,6 +30,49 @@ local function read_persisted()
 	return name
 end
 
+-- Persist the override. Returns false (and reports) on any I/O failure so the
+-- caller never turns a failed write into a successful switch.
+local function write_persisted(name)
+	local f, open_err = io.open(PERSIST_FILE, "w")
+	if not f then
+		log.error("cannot open theme override for writing: %s", tostring(open_err))
+		return false
+	end
+
+	local written, write_err = f:write(name)
+	if not written then
+		f:close()
+		log.error("cannot write theme override '%s': %s", name, tostring(write_err))
+		return false
+	end
+
+	local closed, close_err = f:close()
+	if not closed then
+		log.error("cannot close theme override after writing '%s': %s", name, tostring(close_err))
+		return false
+	end
+
+	return true
+end
+
+-- Drop the persisted override. An already-absent file is the desired end
+-- state, so only a file that still exists after a failed remove is an error.
+local function clear_persisted()
+	local removed, remove_err = os.remove(PERSIST_FILE)
+	if removed then
+		return true
+	end
+
+	local f = io.open(PERSIST_FILE, "r")
+	if f then
+		f:close()
+		log.error("cannot remove theme override: %s", tostring(remove_err))
+		return false
+	end
+
+	return true
+end
+
 -- Resolve the persisted override, falling back to the declarative selection.
 function M.init()
 	if M.current then
@@ -39,13 +82,13 @@ function M.init()
 	local persisted = read_persisted()
 	if is_known(persisted) then
 		M.current = persisted
-		log.info("loaded persisted theme: %s", persisted)
+		log.info("loaded persisted theme: %s", tostring(persisted))
 	else
 		if persisted ~= nil then
 			log.warn("ignoring unknown persisted theme: %s", tostring(persisted))
 		end
 		M.current = is_known(M.active) and M.active or M.list()[1]
-		log.info("using declarative theme: %s", M.current)
+		log.info("using declarative theme: %s", tostring(M.current))
 	end
 end
 
@@ -65,13 +108,9 @@ function M.apply(name)
 		return false
 	end
 
-	local f, err = io.open(PERSIST_FILE, "w")
-	if not f then
-		log.error("cannot persist theme '%s': %s", name, tostring(err))
+	if not write_persisted(name) then
 		return false
 	end
-	f:write(name)
-	f:close()
 
 	M.current = name
 	sbar.exec("sketchybar --reload")
@@ -81,10 +120,13 @@ end
 
 -- Drop the persisted override so the declarative Nix selection wins again.
 function M.follow_nix()
-	os.remove(PERSIST_FILE)
+	if not clear_persisted() then
+		return false
+	end
+
 	M.current = is_known(M.active) and M.active or M.list()[1]
 	sbar.exec("sketchybar --reload")
-	log.info("following declarative theme: %s", M.current)
+	log.info("following declarative theme: %s", tostring(M.current))
 	return true
 end
 

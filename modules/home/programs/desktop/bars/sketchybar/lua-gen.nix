@@ -6,67 +6,20 @@
   cfg,
   themeCfg,
 }: let
-  inherit (themeCfg) palette;
-
   # ── Helpers ────────────────────────────────────────────────────────────
-
   toLua = import ./to-lua.nix {inherit lib;};
 
-  # ── Color Mapping ──────────────────────────────────────────────────────
+  # ── Theme Constants ────────────────────────────────────────────────────
 
-  # Maps a semantic palette to the flat structure expected by Lua config.
-  # Reusable for both the active palette and all variant palettes.
-  mkSketchybarColors = p: {
-    default = p.fg.sketchybar;
-    black = p.bg_dim.sketchybar;
-    white = p.fg.sketchybar;
-    red = p.red.sketchybar;
-    red_bright = p.red_bright.sketchybar;
-    green = p.green.sketchybar;
-    blue = p.accent.sketchybar;
-    blue_bright = p.blue_bright.sketchybar;
-    yellow = p.yellow.sketchybar;
-    orange = p.orange.sketchybar;
-    magenta = p.violet.sketchybar;
-    grey = p.fg_dim.sketchybar;
-    transparent = p.transparent.sketchybar;
+  # Sketchybar is palette-generated (no upstream resource), so the adapter maps
+  # the active family palette plus its ANSI table, and every registered
+  # family/variant for runtime switching. Keeping one source of truth guarantees
+  # the active colors match the corresponding `themes` entry.
+  themeAdapter = import ./theme.nix {inherit lib;};
 
-    bar = {
-      bg = builtins.replaceStrings ["0xff"] ["0xf0"] p.bg.sketchybar;
-      border = p.border.sketchybar;
-    };
+  sketchybarColors = themeAdapter.colors {inherit (themeCfg) palette ansi;};
 
-    popup = {
-      bg = p.bg.sketchybar;
-      border = p.border.sketchybar;
-    };
-
-    bg1 = p.bg.sketchybar;
-    bg2 = p.border.sketchybar;
-
-    accent = p.accent.sketchybar;
-    accent_bright = p.accent_dim.sketchybar;
-
-    pink = p.pink.sketchybar;
-    cyan = p.cyan.sketchybar;
-
-    spotify_green = p.green.sketchybar;
-  };
-
-  # Active palette colors
-  sketchybarColors = mkSketchybarColors palette;
-
-  # Every registered family/variant, keyed "<family>/<variant>", so the runtime
-  # picker can switch across families without a Nix rebuild.
-  allThemeVariants =
-    lib.concatMapAttrs (
-      family: provider:
-        lib.mapAttrs' (
-          variant: palette: lib.nameValuePair "${family}/${variant}" (mkSketchybarColors palette)
-        )
-        provider.variants
-    )
-    themeCfg.providers;
+  allThemeVariants = themeAdapter.themes themeCfg.providers;
 
   # ── Items Registry ─────────────────────────────────────────────────────
 
