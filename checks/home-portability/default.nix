@@ -178,6 +178,7 @@
     (
       desktopConfig.aytordev.theme.nativeApps
       == [
+        "bat"
         "ghostty"
         "tmux"
         "vscode"
@@ -229,7 +230,16 @@
     (
       soraConfig.aytordev.theme.nativeApps
       == [
+        "bat"
+        "btop"
+        "eza"
+        "firefox"
+        "fzf"
         "ghostty"
+        "lazygit"
+        "opencode"
+        "starship"
+        "yazi"
         "zed"
       ]
     )

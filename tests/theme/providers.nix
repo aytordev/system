@@ -89,12 +89,14 @@ in {
     };
     expected = {
       integrations = [
+        "bat"
         "ghostty"
         "tmux"
         "vscode"
         "zed"
       ];
       nativeApps = [
+        "bat"
         "ghostty"
         "tmux"
         "vscode"
@@ -113,34 +115,69 @@ in {
     };
     expected = {
       activeNativeApps = [
+        "bat"
+        "btop"
+        "eza"
+        "firefox"
+        "fzf"
         "ghostty"
+        "lazygit"
+        "opencode"
+        "starship"
         "tmux"
         "vscode"
+        "warp"
+        "yazi"
         "zed"
+        "zellij"
       ];
       catppuccinNativeApps = [
+        "bat"
+        "btop"
+        "eza"
+        "firefox"
+        "fzf"
         "ghostty"
+        "lazygit"
+        "opencode"
+        "starship"
         "tmux"
         "vscode"
+        "warp"
+        "yazi"
         "zed"
+        "zellij"
       ];
       integrationsMatch = [
+        "bat"
+        "btop"
+        "eza"
+        "firefox"
+        "fzf"
         "ghostty"
+        "lazygit"
+        "opencode"
+        "starship"
         "tmux"
         "vscode"
+        "warp"
+        "yazi"
         "zed"
+        "zellij"
       ];
     };
   };
 
   # Every declared integration must carry a pinned provenance reference; a
   # vendored integration must additionally pin each artifact with an SRI hash.
-  testEveryIntegrationHasProvenanceAndPinnedRev = {
-    expr = let
-      theme = themeConfig {};
-      integrationsOf = provider: builtins.attrValues provider.integrations;
-      allIntegrations = lib.concatLists (map integrationsOf (builtins.attrValues theme.providers));
-    in
+  # Both tests derive their expectation from the live registry, so adding an
+  # integration never leaves a stale hardcoded count behind.
+  testEveryIntegrationHasProvenanceAndPinnedRev = let
+    theme = themeConfig {};
+    integrationsOf = provider: builtins.attrValues provider.integrations;
+    allIntegrations = lib.concatLists (map integrationsOf (builtins.attrValues theme.providers));
+  in {
+    expr =
       map (
         integration: let
           inherit (integration) source;
@@ -156,44 +193,28 @@ in {
         }
       )
       allIntegrations;
-    expected =
-      builtins.genList (_: {
-        hasProvenance = true;
-        hasUrl = true;
-        hasRev = true;
-      })
-      10;
+    expected = builtins.genList (_: {
+      hasProvenance = true;
+      hasUrl = true;
+      hasRev = true;
+    }) (builtins.length allIntegrations);
   };
 
-  testEveryVendoredIntegrationPinsEveryArtifact = {
-    expr = let
-      theme = themeConfig {};
-      vendoredOf = provider:
-        builtins.filter (i: i.source.vendored or false) (builtins.attrValues provider.integrations);
-      allVendored =
-        vendoredOf theme.providers.kanagawa
-        ++ vendoredOf theme.providers.catppuccin
-        ++ vendoredOf theme.providers.sora;
-    in
+  testEveryVendoredIntegrationPinsEveryArtifact = let
+    theme = themeConfig {};
+    vendoredOf = provider:
+      builtins.filter (i: i.source.vendored or false) (builtins.attrValues provider.integrations);
+    allVendored = lib.concatMap vendoredOf (builtins.attrValues theme.providers);
+    checks =
       map (integration: (integration.source.ref.hash or "") != "") allVendored
       ++ lib.concatMap (
         integration:
           builtins.map (variant: (variant.hash or "") != "") (builtins.attrValues integration.variants)
       )
       allVendored;
-    expected = [
-      true
-      true
-      true
-      true
-      true
-      true
-      true
-      true
-      true
-      true
-      true
-    ];
+  in {
+    expr = checks;
+    expected = builtins.genList (_: true) (builtins.length checks);
   };
 
   testSoraGhosttyIntegrationIsDarkOnly = {
@@ -233,7 +254,16 @@ in {
       variant = "dark";
       isLight = false;
       nativeApps = [
+        "bat"
+        "btop"
+        "eza"
+        "firefox"
+        "fzf"
         "ghostty"
+        "lazygit"
+        "opencode"
+        "starship"
+        "yazi"
         "zed"
       ];
       displayName = "Sora";
@@ -241,7 +271,16 @@ in {
       appTheme = "Sora";
       appThemeLight = "Sora";
       providerNativeApps = [
+        "bat"
+        "btop"
+        "eza"
+        "firefox"
+        "fzf"
         "ghostty"
+        "lazygit"
+        "opencode"
+        "starship"
+        "yazi"
         "zed"
       ];
     };
@@ -282,19 +321,40 @@ in {
     };
     expected = {
       kanagawa = [
+        "bat"
         "ghostty"
         "tmux"
         "vscode"
         "zed"
       ];
       catppuccin = [
+        "bat"
+        "btop"
+        "eza"
+        "firefox"
+        "fzf"
         "ghostty"
+        "lazygit"
+        "opencode"
+        "starship"
         "tmux"
         "vscode"
+        "warp"
+        "yazi"
         "zed"
+        "zellij"
       ];
       sora = [
+        "bat"
+        "btop"
+        "eza"
+        "firefox"
+        "fzf"
         "ghostty"
+        "lazygit"
+        "opencode"
+        "starship"
+        "yazi"
         "zed"
       ];
     };

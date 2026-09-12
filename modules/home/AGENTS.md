@@ -136,8 +136,11 @@ or Sora) and the variant with `aytordev.theme.variant`; there is no
   picker uses it to switch families without a rebuild.
 - `nativeApps` — app ids the active family ships a native resource for, derived
   from the family's `integrations` keys (never hand-authored).
-- `integrations` — the per-app native-resource registry (ids, provenance,
-  vendored hashes) that native apps resolve through.
+- `integrations` — the single source of native-resource truth per app:
+  `source.provenance` (`official-upstream` | `community-port`), a concrete
+  pinned `source.ref.{url,rev}`, an optional SRI `hash` (required only when the
+  resource is `vendored`), the exact per-variant `id`, and a `complete` flag.
+  Native apps resolve through it.
 
 Providers are plain data validated by `validateProvider` against the contract
 (`name`, `displayName`, `defaultVariant`, `darkVariant`, `lightVariant`,
@@ -150,16 +153,17 @@ theme/<family>/variants/<variant>.nix # { isLight, rawColors, palette }
 theme/<family>/palette.nix            # shared role mapping (only when variants share it)
 ```
 
-Capabilities consume the shared palette. Apps whose theme is a generated
-resource (Yazi, Pi, Zellij, Starship, Sketchybar, JankyBorders) support every
-family automatically. Apps that need a shipped native resource (Ghostty, Zed,
-VS Code, tmux) resolve a name through `lib.aytordev.resolveApp` against the
-family's `integrations.<app>` entry; an unsupported variant falls back to a
-generated resource where one exists (Ghostty) or to none. Otherwise they leave
-the app default and expose a nullable `theme` override (a bare id or
-`{ mode = "auto"|"manual"|"none"; id = ...; }`). Sora is dark-only with a
-synthetic light companion, and supports Ghostty and Zed only. Runtime switching
-is Sketchybar-scoped; other apps re-read their theme on restart. See
+Capabilities consume the shared palette. An app whose upstream ships a native
+resource for the active family/variant resolves it through
+`lib.aytordev.resolveApp` using the policy **explicit override > official exact
+(app + family + variant) > generated fallback > none**: an unsupported variant
+falls back to a generated resource where one exists (Ghostty) or to none.
+Otherwise the app leaves its default and exposes a nullable `theme` override (a
+bare id or `{ mode = "auto"|"manual"|"none"; id = ...; }`). Apps with no
+upstream resource (Pi, Sketchybar, JankyBorders) generate from the palette for
+every family. Sora is dark-only with a synthetic light companion, so its
+integrations cover only `dark`. Runtime switching is Sketchybar-scoped; other
+apps re-read their theme on restart. See
 `docs/decisions/0010-multi-family-theme-providers.md` and
 `docs/decisions/0011-native-theme-resources.md`.
 

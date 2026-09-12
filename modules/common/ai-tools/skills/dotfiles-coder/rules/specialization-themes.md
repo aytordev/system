@@ -5,12 +5,15 @@
 `aytordev.theme` is the single source of truth for all theming. Use the semantic palette API (`cfg.palette.accent.hex`, `cfg.palette.red.rgb`). Never hardcode colors or use variant-specific color names. Use `appTheme` accessors for named themes.
 
 Three families are registered (`kanagawa`, `catppuccin`, `sora`) and more can be
-added by importing a provider that satisfies `themeLib.validateProvider`. Apps
-that generate their config from `palette` support every family for free. Apps
-that select a native theme must declare the app id in the provider's
-`integrations`, resolve the name through `lib.aytordev.resolveApp`, and **ship
-the matching resource** for each family declared there; otherwise leave the app
-default and expose a nullable `theme` override.
+added by importing a provider that satisfies `themeLib.validateProvider`.
+`integrations` is the single source of native-resource truth: each app entry
+declares `source.provenance` (`official-upstream`/`community-port`), a concrete
+pinned `source.ref.{url,rev}`, an SRI `hash` when the resource is `vendored`, the
+exact per-variant `id` and `complete` coverage. Apps that generate their config
+from `palette` support every family for free. Apps that select a native theme
+resolve the name through `lib.aytordev.resolveApp` with the policy **explicit
+override > official exact (app + family + variant) > generated fallback > none**;
+otherwise leave the app default and expose a nullable `theme` override.
 `config.aytordev.theme.nativeApps` is derived from the integration keys, so it
 is read-only and must never be hand-authored.
 

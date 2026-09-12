@@ -6,7 +6,25 @@
   mkColor,
   transparent,
   ...
-}: {
+}: let
+  # Official Sora extras, all pinned to the single upstream commit that ships
+  # `extras/`. They are reference-pinned, not vendored in this repo, so they
+  # declare no SRI hash; the consuming adapter fetches or resolves its own
+  # artifact from `source.ref`. Sora ships only a dark resource, so every
+  # integration stays incomplete for the synthetic `light` companion.
+  soraRev = "504df4913c55dd9ad658e331b172f86b0537b439";
+  mkSoraDark = id: {
+    source = {
+      provenance = "official-upstream";
+      ref = {
+        url = "https://github.com/Aejkatappaja/sora";
+        rev = soraRev;
+      };
+    };
+    complete = false;
+    variants.dark.id = id;
+  };
+in {
   name = "sora";
   displayName = "Sora";
 
@@ -15,7 +33,7 @@
   lightVariant = "light";
 
   # Exact native resources the hybrid resolver can select, keyed by app id.
-  # Sora is dark-only, so both integrations are `complete = false` with a single
+  # Sora is dark-only, so every integration is `complete = false` with a single
   # `dark` variant. Consumers fall through to generated (Ghostty) or none (Zed)
   # for the synthetic `light` companion. `nativeApps` is derived, not authored.
   integrations = {
@@ -47,7 +65,9 @@
         provenance = "official-upstream";
         ref = {
           url = "https://github.com/Aejkatappaja/sora";
-          rev = "823a786dfea9f2b04e729cdd9ad7f33ecec621c7";
+          # Registry-pinned `sora-theme` release commit. (A prior revision had a
+          # typo -- `...33ecec621c7` -- which resolved to no upstream commit.)
+          rev = "823a786dfea9f2b04e729cdd9ad7f33ecee621c7";
         };
       };
       complete = false;
@@ -57,6 +77,19 @@
         };
       };
     };
+
+    # Reference-pinned official extras. Each `id` is the name the app expects:
+    # Starship palette, Yazi theme stem, bat tmTheme name, btop theme name, fzf
+    # / eza / lazygit / opencode resource stem, Firefox Color manifest name.
+    starship = mkSoraDark "sora";
+    yazi = mkSoraDark "sora";
+    bat = mkSoraDark "Sora";
+    btop = mkSoraDark "sora";
+    fzf = mkSoraDark "sora";
+    eza = mkSoraDark "sora";
+    lazygit = mkSoraDark "sora";
+    opencode = mkSoraDark "sora";
+    firefox = mkSoraDark "Sora";
   };
 
   variants = {
