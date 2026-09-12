@@ -19,6 +19,7 @@
     "lazygit"
     "opencode"
     "starship"
+    "tmux"
     "yazi"
     "zed"
   ];
@@ -34,6 +35,7 @@
     lazygit = "sora";
     opencode = "sora";
     starship = "sora";
+    tmux = "sora";
     yazi = "sora";
     zed = "Sora";
   };

@@ -28,8 +28,7 @@
     "zellij"
   ];
 
-  # `tmux` is the only community port in the registry (ukiyo); every other app
-  # resolves an official `catppuccin/*` resource.
+  # Every declared app resolves an official `catppuccin/*` resource.
   provenance = {
     bat = "official-upstream";
     btop = "official-upstream";
@@ -40,7 +39,7 @@
     lazygit = "official-upstream";
     opencode = "official-upstream";
     starship = "official-upstream";
-    tmux = "community-port";
+    tmux = "official-upstream";
     vscode = "official-upstream";
     warp = "official-upstream";
     yazi = "official-upstream";
@@ -59,7 +58,7 @@
     lazygit = "catppuccin-mocha-mauve";
     opencode = "catppuccin-mocha-mauve";
     starship = "catppuccin_mocha";
-    tmux = "catppuccin/mocha";
+    tmux = "mocha";
     vscode = "Catppuccin Mocha";
     warp = "catppuccin_mocha";
     yazi = "catppuccin-mocha-mauve";

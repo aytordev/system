@@ -101,30 +101,10 @@
       };
     };
 
-    # tmux via the ukiyo plugin, which parses `theme/variant`. `rev` and `hash`
-    # are the nixpkgs-pinned ukiyo source (see pkgs/misc/tmux-plugins).
-    tmux = {
-      source = {
-        provenance = "community-port";
-        ref = {
-          url = "https://github.com/Nybkox/tmux-ukiyo";
-          rev = "dd8730a2a41da79425c11c0cea69e0bd81545e19";
-          hash = "sha256-jOcGNKb8QrIgT7l3D3RiJOPIC9JU1rOy8tk0x5ULrdc=";
-        };
-      };
-      complete = true;
-      variants = {
-        wave = {
-          id = "kanagawa/wave";
-        };
-        dragon = {
-          id = "kanagawa/dragon";
-        };
-        lotus = {
-          id = "kanagawa/lotus";
-        };
-      };
-    };
+    # tmux: no upstream Kanagawa tmux resource exists, so no integration is
+    # declared here. The tmux adapter generates a theme from the shared palette
+    # (`modules/home/programs/terminal/tools/tmux/config.nix`, `renderConfig`),
+    # which is the documented community/generated fallback for this family.
 
     # Official bat tmTheme, `extras/tmTheme/kanagawa.tmTheme`, pinned to the
     # same upstream commit the vendored ghostty confs originate from. It

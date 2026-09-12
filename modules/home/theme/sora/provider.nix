@@ -97,7 +97,9 @@ in {
 
     # Reference-pinned official extras. Each `id` is the name the app expects:
     # Starship palette, Yazi theme stem, bat tmTheme name, btop theme name, fzf
-    # / eza / lazygit / opencode resource stem, Firefox Color manifest name.
+    # / eza / lazygit / opencode resource stem, Firefox Color manifest name. The
+    # tmux conf is vendored (`extras/tmux/sora.tmux.conf`) and its hash pins the
+    # in-repo artifact; the adapter sources it.
     starship = mkSoraDark {id = "sora";};
     yazi = mkSoraDark {
       id = "sora";
@@ -110,6 +112,11 @@ in {
     eza = mkSoraDark {id = "sora";};
     lazygit = mkSoraDark {id = "sora";};
     opencode = mkSoraDark {id = "sora";};
+    tmux = mkSoraDark {
+      id = "sora";
+      vendored = true;
+      hash = "sha256-ePb+D4kuHHOFMyS795BMkAxswpFz/1scIvf+B4x7JLs=";
+    };
     firefox = mkSoraDark {id = "Sora";};
   };
 

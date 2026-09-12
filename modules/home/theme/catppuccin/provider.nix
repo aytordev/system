@@ -144,30 +144,17 @@ in {
       };
     };
 
-    # tmux via ukiyo `theme/variant`, pinned to the nixpkgs ukiyo source.
-    tmux = {
-      source = {
-        provenance = "community-port";
-        ref = {
-          url = "https://github.com/Nybkox/tmux-ukiyo";
-          rev = "dd8730a2a41da79425c11c0cea69e0bd81545e19";
-          hash = "sha256-jOcGNKb8QrIgT7l3D3RiJOPIC9JU1rOy8tk0x5ULrdc=";
-        };
-      };
-      complete = true;
+    # Official `catppuccin/tmux` plugin, pinned to the v2.1.3 release commit
+    # (matching nixpkgs' `tmuxPlugins.catppuccin` 2.1.3). The plugin reads
+    # `@catppuccin_flavor`, so each id is the lower-case flavour name.
+    tmux = mkOfficial {
+      port = "tmux";
+      rev = "b2f219c00609ea1772bcfbdae0697807184743e4";
       variants = {
-        latte = {
-          id = "catppuccin/latte";
-        };
-        frappe = {
-          id = "catppuccin/frappe";
-        };
-        macchiato = {
-          id = "catppuccin/macchiato";
-        };
-        mocha = {
-          id = "catppuccin/mocha";
-        };
+        latte.id = "latte";
+        frappe.id = "frappe";
+        macchiato.id = "macchiato";
+        mocha.id = "mocha";
       };
     };
 

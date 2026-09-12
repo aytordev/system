@@ -180,7 +180,6 @@
       == [
         "bat"
         "ghostty"
-        "tmux"
         "vscode"
         "zed"
       ]
@@ -239,6 +238,7 @@
         "lazygit"
         "opencode"
         "starship"
+        "tmux"
         "yazi"
         "zed"
       ]
@@ -257,14 +257,9 @@
     (soraConfig.aytordev.programs.terminal.tools.tmux.theme == null)
     (
       let
-        ukiyoPlugin =
-          lib.findFirst (
-            plugin: plugin ? extraConfig && lib.hasInfix "@ukiyo-plugins" (plugin.extraConfig or "")
-          )
-          null
-          soraConfig.programs.tmux.plugins;
+        tmuxConf = soraConfig.programs.tmux.extraConfig;
       in
-        ukiyoPlugin != null && !(lib.hasInfix "@ukiyo-theme" ukiyoPlugin.extraConfig)
+        lib.hasInfix "source-file" tmuxConf && lib.hasInfix "sora.tmux.conf" tmuxConf
     )
     ((desktopConfig.home.file ? "Pictures/screenshots/.keep") == isDarwin)
     (desktopConfig.programs.firefox.configPath == ".mozilla/firefox")

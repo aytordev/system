@@ -6,7 +6,10 @@
 }: let
   inherit (lib) mkEnableOption mkIf mkPackageOption;
 
+  chrome = import ./chrome.nix {inherit lib;};
+
   cfg = config.aytordev.programs.desktop.browsers.firefox;
+  theme = config.aytordev.theme;
 in {
   options.aytordev.programs.desktop.browsers.firefox = {
     enable = mkEnableOption "Whether or not to enable Firefox";
@@ -100,18 +103,9 @@ in {
           "gfx.font_rendering.directwrite.use_gdi_table_loading" = false;
         };
 
-        userChrome = ''
-          /* Hide tab bar when only one tab is open */
-          #tabbrowser-tabs[tabscount="1"] {
-            visibility: collapse !important;
-          }
-
-          /* Compact UI */
-          :root {
-            --tab-min-height: 32px !important;
-            --toolbarbutton-border-radius: 3px !important;
-          }
-        '';
+        userChrome = chrome.userChrome {
+          inherit (theme) palette ansi isLight;
+        };
 
         userContent = ''
           /* Dark theme for websites that don't have one */

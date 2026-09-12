@@ -91,14 +91,12 @@ in {
       integrations = [
         "bat"
         "ghostty"
-        "tmux"
         "vscode"
         "zed"
       ];
       nativeApps = [
         "bat"
         "ghostty"
-        "tmux"
         "vscode"
         "zed"
       ];
@@ -261,6 +259,7 @@ in {
         "lazygit"
         "opencode"
         "starship"
+        "tmux"
         "yazi"
         "zed"
       ];
@@ -278,6 +277,7 @@ in {
         "lazygit"
         "opencode"
         "starship"
+        "tmux"
         "yazi"
         "zed"
       ];
@@ -321,7 +321,6 @@ in {
       kanagawa = [
         "bat"
         "ghostty"
-        "tmux"
         "vscode"
         "zed"
       ];
@@ -352,6 +351,7 @@ in {
         "lazygit"
         "opencode"
         "starship"
+        "tmux"
         "yazi"
         "zed"
       ];

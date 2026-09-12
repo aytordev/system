@@ -12,7 +12,6 @@
   expectedApps = [
     "bat"
     "ghostty"
-    "tmux"
     "vscode"
     "zed"
   ];
