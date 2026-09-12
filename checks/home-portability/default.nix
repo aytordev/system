@@ -262,7 +262,11 @@
         lib.hasInfix "source-file" tmuxConf && lib.hasInfix "sora.tmux.conf" tmuxConf
     )
     ((desktopConfig.home.file ? "Pictures/screenshots/.keep") == isDarwin)
-    (desktopConfig.programs.firefox.configPath == ".mozilla/firefox")
+    (
+      if isDarwin
+      then desktopConfig.programs.firefox.configPath == "Library/Application Support/Firefox"
+      else true
+    )
     (
       desktopConfig.programs.firefox.profiles.default.settings."browser.download.dir"
       == "${homeDirectory}/Downloads"

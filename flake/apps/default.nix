@@ -24,7 +24,6 @@
         description = "Applications & packages";
         inputs = [
           "nix-index-database"
-          "yazi-flavors"
         ];
       };
     };

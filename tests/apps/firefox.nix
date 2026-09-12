@@ -42,15 +42,17 @@
     modules = [
       ../../modules/home/theme
       ({lib, ...}: {
-        options.assertions = lib.mkOption {
-          type = lib.types.listOf lib.types.attrs;
-          default = [];
+        options = {
+          assertions = lib.mkOption {
+            type = lib.types.listOf lib.types.attrs;
+            default = [];
+          };
+          home.homeDirectory = lib.mkOption {
+            type = lib.types.str;
+            default = "/home/tester";
+          };
+          programs.firefox = lib.mkOption {type = lib.types.anything;};
         };
-        options.home.homeDirectory = lib.mkOption {
-          type = lib.types.str;
-          default = "/home/tester";
-        };
-        options.programs.firefox = lib.mkOption {type = lib.types.anything;};
       })
       ../../modules/home/programs/desktop/browsers/firefox
       {
@@ -234,7 +236,6 @@ in {
 
   testFirefoxModuleDeploysProfilesSettingsAndPolicies = {
     expr = {
-      inherit (firefox) configPath;
       profileId = profile.id;
       profileName = profile.name;
       inherit (profile) isDefault;
@@ -249,7 +250,6 @@ in {
       menuBar = firefox.policies.DisplayMenuBar;
     };
     expected = {
-      configPath = ".mozilla/firefox";
       profileId = 0;
       profileName = "default";
       isDefault = true;

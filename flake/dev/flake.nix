@@ -8,7 +8,6 @@
         # Disable inputs not needed for development environment
         secrets.follows = "";
         sops-nix.follows = "";
-        yazi-flavors.follows = "";
         nix-rosetta-builder.follows = "";
         home-manager.follows = "";
         nix-darwin.follows = "";

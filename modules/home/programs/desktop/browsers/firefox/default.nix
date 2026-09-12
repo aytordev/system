@@ -20,7 +20,9 @@ in {
     programs.firefox = {
       enable = true;
       inherit (cfg) package;
-      configPath = ".mozilla/firefox";
+      # Let Home Manager pick the platform-correct profile directory: on Darwin
+      # `Library/Application Support/Firefox` (or `.../org.nixos.firefox` for the
+      # nixpkgs package from stateVersion 26.11), on Linux the XDG config home.
 
       profiles.default = {
         id = 0;

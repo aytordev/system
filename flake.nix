@@ -44,10 +44,6 @@
       url = "github:mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    yazi-flavors = {
-      url = "github:yazi-rs/flavors";
-      flake = false;
-    };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -66,9 +62,11 @@
     };
     aytordev-nvim = {
       url = "github:aytordev/aytordev.nvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
-      inputs.nvf.follows = "nvf";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        nvf.follows = "nvf";
+      };
     };
   };
 }
