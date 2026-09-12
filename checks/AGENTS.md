@@ -25,7 +25,8 @@ any other check directory becomes integration.
   `shell-platform-consistency`, `sketchybar-theme`, `synthetic-darwin`,
   `synthetic-home`,
   `synthetic-nixos`, `system-common-suite`, `system-env`, `system-fonts`,
-  `system-logging`, `system-nix-platforms`).
+  `system-logging`, `system-nix-platforms`, `theme-catalog`,
+  `theme-migration`).
 - `production-*`: Discovered real homes and systems; the loader also emits
   `production-home-*` and `production-darwin-*` for each discovered host
   (`home-integration`, `home-ssh`, `overlay-composition`).
@@ -38,6 +39,11 @@ behavior they test, not the level.
 > `integration-docs-generation` additionally **builds `packages.docs-html`**
 > (the searchable mdbook of the `aytordev.*` surface) on darwin, so CI
 > validates both the committed option-index snapshot and the mdbook build.
+
+> `integration-theme-catalog` derives the family × app theme matrix from the
+> provider registry plus the consuming-adapter inventory and fails if
+> `docs/theme-support-matrix.md` drifts. Regenerate with
+> `bash checks/theme-catalog/regenerate.sh`.
 
 ## Secrets Handling
 

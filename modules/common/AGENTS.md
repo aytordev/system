@@ -116,8 +116,11 @@ truth. When adding themed elements:
    never be hand-authored.
 
 See `modules/common/ai-tools/skills/dotfiles-coder/rules/specialization-themes.md`,
-[ADR-0010](docs/decisions/0010-multi-family-theme-providers.md) and
-[ADR-0011](docs/decisions/0011-native-theme-resources.md).
+the [theme guide](docs/theme-system.md), the generated
+[support matrix](docs/theme-support-matrix.md),
+[ADR-0010](docs/decisions/0010-multi-family-theme-providers.md),
+[ADR-0011](docs/decisions/0011-native-theme-resources.md) and
+[ADR-0012](docs/decisions/0012-theme-resolution-policy.md).
 
 ## Option Design
 

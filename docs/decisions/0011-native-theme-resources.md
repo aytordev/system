@@ -1,6 +1,7 @@
 # ADR 0011: Native Theme Resources and Per-App Overrides
 
-Status: Accepted
+Status: Accepted — resolution wording superseded in part by
+[ADR-0012](0012-theme-resolution-policy.md).
 
 ## Decision
 

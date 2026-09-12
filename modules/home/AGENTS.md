@@ -156,16 +156,20 @@ theme/<family>/palette.nix            # shared role mapping (only when variants 
 Capabilities consume the shared palette. An app whose upstream ships a native
 resource for the active family/variant resolves it through
 `lib.aytordev.resolveApp` using the policy **explicit override > official exact
-(app + family + variant) > generated fallback > none**: an unsupported variant
-falls back to a generated resource where one exists (Ghostty) or to none.
-Otherwise the app leaves its default and exposes a nullable `theme` override (a
-bare id or `{ mode = "auto"|"manual"|"none"; id = ...; }`). Apps with no
-upstream resource (Pi, Sketchybar, JankyBorders) generate from the palette for
-every family. Sora is dark-only with a synthetic light companion, so its
-integrations cover only `dark`. Runtime switching is Sketchybar-scoped; other
-apps re-read their theme on restart. See
-`docs/decisions/0010-multi-family-theme-providers.md` and
-`docs/decisions/0011-native-theme-resources.md`.
+(app + family + variant) > generated fallback > none**: a variant the family does
+not cover falls back to the app's generated resource when it has one (most
+adapters do, e.g. Ghostty) or resolves to `none`. Otherwise the app leaves its
+default and exposes a nullable `theme` override (a bare id or
+`{ mode = "auto"|"manual"|"none"; id = ...; }`). Apps with no upstream resource
+(Pi, Sketchybar, JankyBorders) generate from the palette for every family. Sora
+is dark-only with a synthetic light companion, so its integrations cover only
+`dark`. Runtime switching is Sketchybar-scoped; other apps re-read their theme on
+restart. The full human guide is `docs/theme-system.md`; the derived per-family
+and per-variant matrix is `docs/theme-support-matrix.md` (checked by
+`integration-theme-catalog`). See
+`docs/decisions/0010-multi-family-theme-providers.md`,
+`docs/decisions/0011-native-theme-resources.md` and
+`docs/decisions/0012-theme-resolution-policy.md`.
 
 ### System (`system/`)
 

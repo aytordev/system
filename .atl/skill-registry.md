@@ -68,7 +68,7 @@ Skill root: ~/.config/opencode/skills/
 - Shared logic belongs in `modules/common/`
 - Secrets use sops-nix, never hardcoded
 - AI tools live in `modules/common/ai-tools/` — agents, commands, skills, Nix pipeline
-- Theming: use semantic `aytordev.theme.palette` / `appTheme`; gate native themes with `nativeApps`; never variant conditionals or hardcoded colors
+- Theming: use semantic `aytordev.theme.palette` / `appTheme`; resolve native themes through `resolveApp` (explicit override > official exact > generated > none) with the provider `integrations` registry; never variant conditionals or hardcoded colors; keep `docs/theme-support-matrix.md` in sync
 - Build check: `nix build .#homeConfigurations.aytordev.activationPackage --dry-run`
 - Full rebuild: `sudo nixos-rebuild switch --flake .#${host}` (NixOS) or `darwin-rebuild switch --flake .#${host}` (macOS)
 

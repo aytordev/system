@@ -15,7 +15,13 @@ resolve the name through `lib.aytordev.resolveApp` with the policy **explicit
 override > official exact (app + family + variant) > generated fallback > none**;
 otherwise leave the app default and expose a nullable `theme` override.
 `config.aytordev.theme.nativeApps` is derived from the integration keys, so it
-is read-only and must never be hand-authored.
+is read-only and must never be hand-authored. A per-app override is a bare id,
+`{ mode = "manual"; id = ...; }`, or `{ mode = "none"; }`; `null` / `auto`
+follows the policy. The derived family × app matrix and its provenance live in
+`docs/theme-support-matrix.md` (regenerate with
+`bash checks/theme-catalog/regenerate.sh`); the human guide is
+`docs/theme-system.md` and the policy is
+[ADR-0012](../../../../../../docs/decisions/0012-theme-resolution-policy.md).
 
 **Incorrect (Hardcoded Colors):**
 
