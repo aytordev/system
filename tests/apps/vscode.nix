@@ -44,6 +44,10 @@
       ansi = theme.providers.${family}.ansi.${variant};
       isLight = variant == theme.providers.${family}.lightVariant;
     };
+
+  tokenFor = name:
+    (lib.findFirst (rule: (rule.name or "") == name) null (mkThemeFor "sora" "dark").json.tokenColors)
+    .settings;
 in {
   # ─── Official resources for covered families ─────────────────────────────
 
@@ -185,7 +189,65 @@ in {
       background = theme.providers.sora.variants.light.bg.hex;
       foreground = theme.providers.sora.variants.light.fg.hex;
       hasTokenColors = true;
-      tokenColorCount = 14;
+      tokenColorCount = 30;
+    };
+  };
+
+  # ─── Generated syntax mirrors the official Sora (Zed) mapping ────────────
+
+  testVscodeGeneratedSyntaxCommentUsesOverlay = {
+    expr = tokenFor "Comment";
+    expected = {
+      foreground = theme.providers.sora.variants.dark.overlay.hex;
+      fontStyle = "italic";
+    };
+  };
+
+  testVscodeGeneratedSyntaxStringUsesAnsiGreen = {
+    expr = (tokenFor "String").foreground;
+    expected = theme.providers.sora.ansi.dark.normal.green.hex;
+  };
+
+  testVscodeGeneratedSyntaxNumberUsesGold = {
+    expr = (tokenFor "Number").foreground;
+    expected = theme.providers.sora.variants.dark.yellow.hex;
+  };
+
+  testVscodeGeneratedSyntaxBooleanUsesRoseItalic = {
+    expr = tokenFor "Boolean";
+    expected = {
+      foreground = theme.providers.sora.variants.dark.pink.hex;
+      fontStyle = "italic";
+    };
+  };
+
+  testVscodeGeneratedSyntaxKeywordUsesPurpleItalic = {
+    expr = tokenFor "Keyword";
+    expected = {
+      foreground = theme.providers.sora.variants.dark.violet.hex;
+      fontStyle = "italic";
+    };
+  };
+
+  testVscodeGeneratedSyntaxPropertyUsesSteel = {
+    expr = (tokenFor "Property").foreground;
+    expected = theme.providers.sora.variants.dark.accent_dim.hex;
+  };
+
+  testVscodeGeneratedSyntaxHasSemanticTokens = {
+    expr = let
+      rendered = (mkThemeFor "sora" "dark").json;
+    in {
+      inherit (rendered) semanticHighlighting;
+      function = rendered.semanticTokenColors.function;
+      keywordStyle = rendered.semanticTokenColors.keyword.fontStyle;
+      property = rendered.semanticTokenColors.property;
+    };
+    expected = {
+      semanticHighlighting = true;
+      function = theme.providers.sora.variants.dark.accent.hex;
+      keywordStyle = "italic";
+      property = theme.providers.sora.variants.dark.accent_dim.hex;
     };
   };
 

@@ -220,6 +220,46 @@ in rec {
         "gitDecoration.ignoredResourceForeground" = color "fg_dim";
       }
       // lib.foldl' (acc: entry: acc // entry) {} ansiEntries;
+    # Force VS Code to prefer LSP semantic tokens over TextMate where the
+    # language server provides them; the categories mirror Zed's syntax so the
+    # two editors agree.
+    semanticHighlighting = true;
+    semanticTokenColors = {
+      comment = {
+        foreground = color "overlay";
+        fontStyle = "italic";
+      };
+      keyword = {
+        foreground = color "violet";
+        fontStyle = "italic";
+      };
+      modifier = color "violet";
+      macro = color "violet";
+      string = ansiColor "normal" "green";
+      number = color "yellow";
+      regexp = color "cyan";
+      operator = color "accent_dim";
+      namespace = color "orange";
+      type = color "orange";
+      typeParameter = color "orange";
+      class = color "orange";
+      struct = color "orange";
+      interface = color "orange";
+      enum = color "orange";
+      enumMember = color "orange";
+      parameter = color "orange";
+      decorator = color "orange";
+      variable = color "fg";
+      "variable.readonly" = color "fg";
+      property = color "accent_dim";
+      "property.readonly" = color "accent_dim";
+      function = color "accent";
+      method = color "accent";
+      event = color "accent";
+    };
+
+    # TextMate fallback for languages without semantic tokens. The categories
+    # and colors are the Zed Sora `syntax` block translated to VS Code scopes.
     tokenColors = [
       {
         settings.foreground = color "fg";
@@ -231,7 +271,7 @@ in rec {
           "punctuation.definition.comment"
         ];
         settings = {
-          foreground = color "fg_dim";
+          foreground = color "overlay";
           fontStyle = "italic";
         };
       }
@@ -239,85 +279,266 @@ in rec {
         name = "Keyword";
         scope = [
           "keyword"
+          "keyword.control"
           "storage"
           "storage.type"
           "storage.modifier"
         ];
+        settings = {
+          foreground = color "violet";
+          fontStyle = "italic";
+        };
+      }
+      {
+        name = "Preprocessor";
+        scope = [
+          "meta.preprocessor"
+          "keyword.control.import"
+          "keyword.control.directive"
+        ];
         settings.foreground = color "violet";
-      }
-      {
-        name = "String";
-        scope = [
-          "string"
-          "constant.other.symbol"
-        ];
-        settings.foreground = color "green";
-      }
-      {
-        name = "Number";
-        scope = [
-          "constant.numeric"
-          "constant.language"
-          "constant.character"
-        ];
-        settings.foreground = color "orange";
       }
       {
         name = "Function";
         scope = [
           "entity.name.function"
+          "entity.name.function.method"
           "support.function"
           "meta.function-call"
+          "meta.method-call"
         ];
-        settings.foreground = color "blue";
+        settings.foreground = color "accent";
+      }
+      {
+        name = "Function builtin";
+        scope = [
+          "support.function.builtin"
+          "support.function.magic"
+        ];
+        settings = {
+          foreground = color "accent";
+          fontStyle = "italic";
+        };
+      }
+      {
+        name = "Constructor";
+        scope = [
+          "entity.name.function.constructor"
+          "meta.constructor"
+        ];
+        settings = {
+          foreground = color "orange";
+          fontStyle = "bold";
+        };
       }
       {
         name = "Type";
         scope = [
           "entity.name.type"
           "entity.name.class"
+          "entity.name.struct"
+          "entity.name.enum"
+          "entity.name.union"
+          "entity.name.trait"
+          "entity.name.interface"
+          "entity.name.namespace"
           "support.type"
           "support.class"
         ];
+        settings.foreground = color "orange";
+      }
+      {
+        name = "Type builtin";
+        scope = [
+          "support.type.builtin"
+          "support.class.builtin"
+        ];
+        settings = {
+          foreground = color "orange";
+          fontStyle = "italic";
+        };
+      }
+      {
+        name = "Enum / variant";
+        scope = [
+          "entity.name.enum"
+          "entity.name.variant"
+          "constant.other.enum"
+        ];
+        settings.foreground = color "orange";
+      }
+      {
+        name = "Number";
+        scope = [
+          "constant.numeric"
+          "constant.character"
+          "constant.other"
+        ];
         settings.foreground = color "yellow";
+      }
+      {
+        name = "Boolean";
+        scope = [
+          "constant.language"
+          "constant.language.boolean"
+        ];
+        settings = {
+          foreground = color "pink";
+          fontStyle = "italic";
+        };
+      }
+      {
+        name = "Constant";
+        scope = ["constant"];
+        settings.foreground = color "yellow";
+      }
+      {
+        name = "String";
+        scope = [
+          "string"
+          "string.quoted"
+          "string.template"
+          "constant.other.symbol"
+        ];
+        settings.foreground = ansiColor "normal" "green";
+      }
+      {
+        name = "String escape / special";
+        scope = [
+          "string.regexp"
+          "string.escape"
+          "constant.character.escape"
+          "string.special"
+        ];
+        settings.foreground = color "cyan";
+      }
+      {
+        name = "String symbol";
+        scope = ["string.special.symbol"];
+        settings.foreground = color "yellow";
+      }
+      {
+        name = "Markup raw / literal";
+        scope = [
+          "markup.raw"
+          "markup.inline.raw"
+          "text.literal"
+        ];
+        settings.foreground = ansiColor "normal" "green";
+      }
+      {
+        name = "Operator";
+        scope = ["keyword.operator"];
+        settings.foreground = color "accent_dim";
+      }
+      {
+        name = "Punctuation";
+        scope = [
+          "punctuation"
+          "punctuation.separator"
+          "punctuation.terminator"
+          "punctuation.definition"
+          "punctuation.section"
+          "meta.brace"
+        ];
+        settings.foreground = color "fg_dim";
+      }
+      {
+        name = "Tag";
+        scope = [
+          "entity.name.tag"
+          "meta.tag"
+        ];
+        settings.foreground = color "cyan";
+      }
+      {
+        name = "Tag attribute";
+        scope = ["entity.other.attribute-name"];
+        settings = {
+          foreground = color "orange";
+          fontStyle = "italic";
+        };
+      }
+      {
+        name = "Property";
+        scope = [
+          "variable.other.member"
+          "variable.other.property"
+          "support.type.property-name"
+          "meta.object-literal.key"
+          "entity.name.tag.yaml"
+        ];
+        settings.foreground = color "accent_dim";
+      }
+      {
+        name = "Variable parameter";
+        scope = ["variable.parameter"];
+        settings.foreground = color "orange";
+      }
+      {
+        name = "Variable language";
+        scope = [
+          "variable.language"
+          "variable.language.this"
+          "variable.language.self"
+          "variable.language.super"
+        ];
+        settings = {
+          foreground = color "pink";
+          fontStyle = "italic";
+        };
       }
       {
         name = "Variable";
         scope = [
           "variable"
-          "variable.parameter"
+          "variable.other"
           "meta.definition.variable"
         ];
         settings.foreground = color "fg";
       }
       {
-        name = "Constant";
-        scope = ["constant"];
-        settings.foreground = color "orange";
+        name = "Link";
+        scope = [
+          "markup.underline.link"
+          "string.other.link"
+          "constant.other.reference.link"
+        ];
+        settings.foreground = color "accent";
       }
       {
-        name = "Operator";
-        scope = ["keyword.operator"];
-        settings.foreground = color "pink";
+        name = "Heading";
+        scope = [
+          "markup.heading"
+          "entity.name.section"
+        ];
+        settings = {
+          foreground = color "accent";
+          fontStyle = "bold";
+        };
       }
       {
-        name = "Tag";
-        scope = ["entity.name.tag"];
-        settings.foreground = color "red";
+        name = "Emphasis";
+        scope = ["markup.italic"];
+        settings = {
+          foreground = color "fg_reverse";
+          fontStyle = "italic";
+        };
       }
       {
-        name = "Attribute";
-        scope = ["entity.other.attribute-name"];
-        settings.foreground = color "yellow_bright";
-      }
-      {
-        name = "Regexp";
-        scope = ["string.regexp"];
-        settings.foreground = color "cyan";
+        name = "Strong";
+        scope = ["markup.bold"];
+        settings = {
+          foreground = color "fg_reverse";
+          fontStyle = "bold";
+        };
       }
       {
         name = "Invalid";
-        scope = ["invalid"];
+        scope = [
+          "invalid"
+          "invalid.illegal"
+        ];
         settings.foreground = color "red";
       }
     ];
