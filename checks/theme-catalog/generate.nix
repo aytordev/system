@@ -39,6 +39,12 @@
       path = ../../modules/home/programs/terminal/tools/btop/config.nix;
     }
     {
+      id = "delta";
+      generated = "aytordev";
+      note = "Palette-generated git-delta styles.";
+      path = ../../modules/home/programs/terminal/tools/git/delta-theme.nix;
+    }
+    {
       id = "eza";
       generated = "aytordev";
       note = "Palette-generated theme.";

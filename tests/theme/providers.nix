@@ -198,6 +198,7 @@ in {
       providerIntegrations = [
         "bat"
         "btop"
+        "delta"
         "eza"
         "firefox"
         "fzf"
@@ -271,6 +272,7 @@ in {
       sora = [
         "bat"
         "btop"
+        "delta"
         "eza"
         "firefox"
         "fzf"

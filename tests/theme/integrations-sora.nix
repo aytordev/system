@@ -12,6 +12,7 @@
   expectedApps = [
     "bat"
     "btop"
+    "delta"
     "eza"
     "firefox"
     "fzf"
@@ -28,6 +29,7 @@
   defaultIds = {
     bat = "Sora";
     btop = "sora";
+    delta = "sora";
     eza = "sora";
     firefox = "Sora";
     fzf = "sora";

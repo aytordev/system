@@ -35,133 +35,136 @@
     ansi,
     isLight ? false,
   }: ''
-    /* aytordev theme — generated from the active palette; do not edit. */
-    :root {
-      color-scheme: ${
+          /* aytordev theme — generated from the active palette; do not edit. */
+          :root {
+            color-scheme: ${
       if isLight
       then "light"
       else "dark"
     };
 
-      --aytordev-bg: ${palette.bg.hex};
-      --aytordev-bg-dim: ${palette.bg_dim.hex};
-      --aytordev-bg-float: ${palette.bg_float.hex};
-      --aytordev-bg-visual: ${palette.bg_visual.hex};
-      --aytordev-fg: ${palette.fg.hex};
-      --aytordev-fg-dim: ${palette.fg_dim.hex};
-      --aytordev-accent: ${palette.accent.hex};
-      --aytordev-accent-dim: ${palette.accent_dim.hex};
-      --aytordev-border: ${palette.border.hex};
-      --aytordev-selection: ${palette.selection.hex};
+            --aytordev-bg: ${palette.bg.hex};
+            --aytordev-bg-dim: ${palette.bg_dim.hex};
+            --aytordev-bg-float: ${palette.bg_float.hex};
+            --aytordev-bg-visual: ${palette.bg_visual.hex};
+            --aytordev-fg: ${palette.fg.hex};
+            --aytordev-fg-dim: ${palette.fg_dim.hex};
+            --aytordev-accent: ${palette.accent.hex};
+            --aytordev-accent-dim: ${palette.accent_dim.hex};
+            --aytordev-border: ${palette.border.hex};
+            --aytordev-selection: ${palette.selection.hex};
+            --aytordev-bg-gutter: ${palette.bg_gutter.hex};
+            --aytordev-fg-reverse: ${palette.fg_reverse.hex};
 
-      /* Lightweight-theme variables Firefox reads across chrome. */
-      --lwt-accent-color: var(--aytordev-bg-dim) !important;
-      --lwt-accent-color-inactive: var(--aytordev-bg) !important;
-      --lwt-text-color: var(--aytordev-fg) !important;
-      --lwt-selected-tab-background-color: var(--aytordev-bg) !important;
-      --lwt-tab-text: var(--aytordev-fg) !important;
-      --toolbar-bgcolor: var(--aytordev-bg) !important;
-      --toolbar-color: var(--aytordev-fg) !important;
-      --toolbar-field-background-color: var(--aytordev-bg-dim) !important;
-      --toolbar-field-color: var(--aytordev-fg) !important;
-      --toolbar-field-border-color: var(--aytordev-border) !important;
-      --toolbar-field-focus-background-color: var(--aytordev-bg-float) !important;
-      --toolbar-field-focus-color: var(--aytordev-fg) !important;
-      --toolbar-field-focus-border-color: var(--aytordev-accent) !important;
-      --tab-selected-bgcolor: var(--aytordev-bg-float) !important;
-      --tab-selected-textcolor: var(--aytordev-fg) !important;
-      --tab-line-color: var(--aytordev-accent) !important;
-      --tab-selected-outline-color: var(--aytordev-accent-dim) !important;
-      --urlbar-box-bgcolor: var(--aytordev-bg-visual) !important;
-      --arrowpanel-background: var(--aytordev-bg-float) !important;
-      --arrowpanel-color: var(--aytordev-fg) !important;
-      --arrowpanel-border-color: var(--aytordev-border) !important;
-      --sidebar-background-color: var(--aytordev-bg) !important;
-      --sidebar-text-color: var(--aytordev-fg) !important;
-      --focus-outline-color: var(--aytordev-accent) !important;
-      --toolbarbutton-hover-background: var(--aytordev-bg-dim) !important;
-      --toolbarbutton-active-background: var(--aytordev-selection) !important;
-    }
+          /* Lightweight-theme variables Firefox reads across chrome. Mirrors the
+             upstream Sora Color manifest slot-for-slot. */
+          --lwt-accent-color: var(--aytordev-bg-dim) !important;
+          --lwt-accent-color-inactive: var(--aytordev-bg-dim) !important;
+          --lwt-text-color: var(--aytordev-fg) !important;
+          --lwt-selected-tab-background-color: var(--aytordev-bg) !important;
+          --lwt-tab-text: var(--aytordev-fg-reverse) !important;
+          --toolbar-bgcolor: var(--aytordev-bg) !important;
+          --toolbar-color: var(--aytordev-fg) !important;
+          --toolbar-field-background-color: var(--aytordev-bg-float) !important;
+          --toolbar-field-color: var(--aytordev-fg-reverse) !important;
+          --toolbar-field-border-color: var(--aytordev-border) !important;
+          --toolbar-field-focus-background-color: var(--aytordev-bg-gutter) !important;
+          --toolbar-field-focus-color: var(--aytordev-fg-reverse) !important;
+          --toolbar-field-focus-border-color: var(--aytordev-accent) !important;
+          --tab-selected-bgcolor: var(--aytordev-bg) !important;
+          --tab-selected-textcolor: var(--aytordev-fg-reverse) !important;
+          --tab-line-color: var(--aytordev-accent) !important;
+          --tab-selected-outline-color: var(--aytordev-accent-dim) !important;
+          --urlbar-box-bgcolor: var(--aytordev-bg-visual) !important;
+          --arrowpanel-background: var(--aytordev-bg) !important;
+          --arrowpanel-color: var(--aytordev-fg) !important;
+          --arrowpanel-border-color: var(--aytordev-border) !important;
+          --sidebar-background-color: var(--aytordev-bg-dim) !important;
+          --sidebar-text-color: var(--aytordev-fg) !important;
+          --focus-outline-color: var(--aytordev-accent) !important;
+          --toolbarbutton-hover-background: var(--aytordev-bg-gutter) !important;
+          --toolbarbutton-active-background: var(--aytordev-selection) !important;
+          }
 
-    /* Toolbar and tab strip surfaces. */
-    #navigator-toolbox,
-    #TabsToolbar,
-    #PersonalToolbar,
-    #nav-bar {
-      background-color: var(--aytordev-bg) !important;
-      color: var(--aytordev-fg) !important;
-    }
-    #nav-bar {
-      border-top: 1px solid var(--aytordev-border) !important;
-      box-shadow: none !important;
-    }
+          /* Toolbar and tab strip surfaces. */
+          #navigator-toolbox,
+          #TabsToolbar,
+          #PersonalToolbar,
+          #nav-bar {
+            background-color: var(--aytordev-bg) !important;
+            color: var(--aytordev-fg) !important;
+          }
+          #nav-bar {
+            border-top: 1px solid var(--aytordev-border) !important;
+            box-shadow: none !important;
+          }
 
-    /* Address bar and search box. */
-    #urlbar,
-    #searchbar {
-      background-color: var(--aytordev-bg-dim) !important;
-      color: var(--aytordev-fg) !important;
-    }
-    #urlbar[focused="true"] > #urlbar-background {
-      border-color: var(--aytordev-accent) !important;
-      box-shadow: 0 0 0 2px var(--aytordev-selection) !important;
-    }
+          /* Address bar and search box. */
+        #urlbar,
+        #searchbar {
+          background-color: var(--aytordev-bg-float) !important;
+          color: var(--aytordev-fg-reverse) !important;
+        }
+          #urlbar[focused="true"] > #urlbar-background {
+            border-color: var(--aytordev-accent) !important;
+            box-shadow: 0 0 0 2px var(--aytordev-selection) !important;
+          }
 
-    /* Tabs. */
-    .tabbrowser-tab[selected] .tab-content {
-      background-color: var(--aytordev-bg-float) !important;
-      color: var(--aytordev-fg) !important;
-    }
-    .tabbrowser-tab:not([selected]) .tab-content {
-      color: var(--aytordev-fg-dim) !important;
-    }
-    .tabbrowser-tab[selected] .tab-line {
-      background-color: var(--aytordev-accent) !important;
-    }
-    .tabbrowser-tab[attention] .tab-icon-image {
-      color: ${ansi.normal.yellow.hex} !important;
-    }
+          /* Tabs. */
+      .tabbrowser-tab[selected] .tab-content {
+        background-color: var(--aytordev-bg) !important;
+        color: var(--aytordev-fg-reverse) !important;
+      }
+          .tabbrowser-tab:not([selected]) .tab-content {
+            color: var(--aytordev-fg-dim) !important;
+          }
+          .tabbrowser-tab[selected] .tab-line {
+            background-color: var(--aytordev-accent) !important;
+          }
+          .tabbrowser-tab[attention] .tab-icon-image {
+            color: ${ansi.normal.yellow.hex} !important;
+          }
 
-    /* Buttons. */
-    toolbarbutton:hover {
-      background-color: var(--aytordev-bg-dim) !important;
-    }
-    toolbarbutton:hover:active {
-      background-color: var(--aytordev-selection) !important;
-    }
+          /* Buttons. */
+          toolbarbutton:hover {
+            background-color: var(--aytordev-bg-dim) !important;
+          }
+          toolbarbutton:hover:active {
+            background-color: var(--aytordev-selection) !important;
+          }
 
-    /* Panels, menus, and sidebars. */
+          /* Panels, menus, and sidebars. */
     panelview,
     menupopup,
     .panel-arrowcontent {
-      background-color: var(--aytordev-bg-float) !important;
+      background-color: var(--aytordev-bg) !important;
       color: var(--aytordev-fg) !important;
     }
     #sidebar-box,
     #sidebar-header {
-      background-color: var(--aytordev-bg) !important;
+      background-color: var(--aytordev-bg-dim) !important;
       color: var(--aytordev-fg) !important;
       border-color: var(--aytordev-border) !important;
     }
 
-    /* Find bar and status panel. */
-    .findbar-container,
-    #statuspanel-label {
-      background-color: var(--aytordev-bg-float) !important;
-      color: var(--aytordev-fg) !important;
-      border-color: var(--aytordev-border) !important;
-    }
+          /* Find bar and status panel. */
+          .findbar-container,
+          #statuspanel-label {
+            background-color: var(--aytordev-bg-float) !important;
+            color: var(--aytordev-fg) !important;
+            border-color: var(--aytordev-border) !important;
+          }
 
-    /* State accents (ANSI table). */
-    #identity-box.verifiedDomain {
-      color: ${ansi.normal.green.hex} !important;
-    }
-    #identity-box.notSecure {
-      color: ${ansi.normal.red.hex} !important;
-    }
-    #tracking-protection-icon-container[active] {
-      color: ${ansi.normal.blue.hex} !important;
-    }
+          /* State accents (ANSI table). */
+          #identity-box.verifiedDomain {
+            color: ${ansi.normal.green.hex} !important;
+          }
+          #identity-box.notSecure {
+            color: ${ansi.normal.red.hex} !important;
+          }
+          #tracking-protection-icon-container[active] {
+            color: ${ansi.normal.blue.hex} !important;
+          }
   '';
 
   # Full `userChrome.css`: the pre-existing rules first, then the generated theme

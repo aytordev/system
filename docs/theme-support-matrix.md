@@ -14,25 +14,25 @@ override.
 
 ## Family × app (default variant)
 
-| Family | bat | btop | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Catppuccin (mocha) | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
-| Kanagawa (dragon) | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
-| Sora (dark) | O | O | O | O | O | O | G | O | O | G | G | O | O | G | O | O | G |
+| Family | bat | btop | delta | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Catppuccin (mocha) | O | O | G | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
+| Kanagawa (dragon) | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Sora (dark) | O | O | O | O | O | O | O | G | O | O | G | G | O | O | G | O | O | G |
 
 ## Variant coverage
 
-| Family / variant | bat | btop | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Catppuccin frappe | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
-| Catppuccin latte | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
-| Catppuccin macchiato | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
-| Catppuccin mocha | O | O | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
-| Kanagawa dragon | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
-| Kanagawa lotus | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
-| Kanagawa wave | O | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
-| Sora dark | O | O | O | O | O | O | G | O | O | G | G | O | O | G | O | O | G |
-| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
+| Family / variant | bat | btop | delta | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Catppuccin frappe | O | O | G | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
+| Catppuccin latte | O | O | G | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
+| Catppuccin macchiato | O | O | G | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
+| Catppuccin mocha | O | O | G | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
+| Kanagawa dragon | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa lotus | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa wave | O | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Sora dark | O | O | O | O | O | O | O | G | O | O | G | G | O | O | G | O | O | G |
+| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
 
 ## Official resources and provenance
 
@@ -58,7 +58,8 @@ override.
 | Kanagawa | zed | community-port | no | dragon, lotus, wave | https://github.com/ethangilmore/zed-kanagawa @ 45b4295e708a5720d75514013a20a00917d50cc5 |
 | Sora | bat | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | btop | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
-| Sora | eza | official-upstream | no | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
+| Sora | delta | official-upstream | no | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
+| Sora | eza | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | firefox | official-upstream | no | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | fzf | official-upstream | no | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | ghostty | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
@@ -80,6 +81,7 @@ adapter.
 | --- | --- | --- |
 | bat | aytordev | Palette-generated tmTheme. |
 | btop | aytordev | Palette-generated theme. |
+| delta | aytordev | Palette-generated git-delta styles. |
 | eza | aytordev | Palette-generated theme. |
 | firefox | userChrome | Exception: userChrome is generated from the palette every family; a declared id is a Firefox Color title, not a UI selection. |
 | fzf | aytordev | Palette-generated theme. |
