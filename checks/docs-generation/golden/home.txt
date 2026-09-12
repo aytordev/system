@@ -99,6 +99,7 @@
 ## aytordev\.programs\.terminal\.tools\.atuin\.package
 ## aytordev\.programs\.terminal\.tools\.bat\.enable
 ## aytordev\.programs\.terminal\.tools\.bat\.package
+## aytordev\.programs\.terminal\.tools\.bat\.theme
 ## aytordev\.programs\.terminal\.tools\.bitwarden-cli\.enable
 ## aytordev\.programs\.terminal\.tools\.bitwarden-cli\.package
 ## aytordev\.programs\.terminal\.tools\.bitwarden-cli\.aliases\.enable
@@ -139,6 +140,7 @@
 ## aytordev\.programs\.terminal\.tools\.fzf\.package
 ## aytordev\.programs\.terminal\.tools\.fzf\.defaultCommand
 ## aytordev\.programs\.terminal\.tools\.fzf\.extraOptions
+## aytordev\.programs\.terminal\.tools\.fzf\.theme
 ## aytordev\.programs\.terminal\.tools\.gh\.enable
 ## aytordev\.programs\.terminal\.tools\.gh\.package
 ## aytordev\.programs\.terminal\.tools\.gh\.auth\.accounts
@@ -175,6 +177,7 @@
 ## aytordev\.programs\.terminal\.tools\.lazydocker\.package
 ## aytordev\.programs\.terminal\.tools\.lazygit\.enable
 ## aytordev\.programs\.terminal\.tools\.lazygit\.package
+## aytordev\.programs\.terminal\.tools\.lazygit\.theme
 ## aytordev\.programs\.terminal\.tools\.lsd\.enable
 ## aytordev\.programs\.terminal\.tools\.lsd\.package
 ## aytordev\.programs\.terminal\.tools\.mcp\.enable

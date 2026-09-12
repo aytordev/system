@@ -17,46 +17,132 @@
   cfg = config.aytordev.programs.desktop.editors.vscode;
   providerMeta = themeCfg.providers.${themeCfg.name};
 
+  vscodeTheme = import ./config.nix {
+    inherit lib;
+    inherit (lib.aytordev) resolveApp;
+  };
+
   vscodeIntegration = themeCfg.integrations.${themeCfg.name}.vscode or null;
 
-  # Hand `resolveApp` the integration only when it covers the requested variant;
-  # a dark-only family (Sora) therefore yields "none" for its light companion.
-  selectOfficial = variant:
-    if !(lib.isAttrs vscodeIntegration)
-    then vscodeIntegration
-    else if !(vscodeIntegration ? variants)
-    then vscodeIntegration
-    else if (vscodeIntegration.variants or {}) ? ${variant}
-    then vscodeIntegration
-    else null;
+  # Palette theme label for a variant of the active family. Used whenever the
+  # family ships no covering official resource (Sora).
+  generatedLabel = variant:
+    vscodeTheme.generatedThemeLabel {
+      inherit (providerMeta) displayName;
+      inherit variant;
+    };
 
   resolve = variant: override:
-    lib.aytordev.resolveApp {
-      app = "vscode";
+    vscodeTheme.resolve {
       inherit variant override;
-      official = selectOfficial variant;
-      generated = null;
+      integration = vscodeIntegration;
+      generated = generatedLabel variant;
     };
 
   # The active variant drives `workbench.colorTheme` and honours the override;
   # the preferred dark/light themes follow the family integration regardless of
-  # the override, matching the previous behaviour.
+  # the override.
   activeResolution = resolve themeCfg.variant cfg.theme;
   darkResolution = resolve providerMeta.darkVariant null;
   lightResolution = resolve providerMeta.lightVariant null;
 
+  # `none` opts the whole app out: no selection, no preferred themes and no
+  # generated extension.
+  selectionEnabled = activeResolution.kind != "none";
   themeName =
-    if activeResolution.kind == "none"
-    then null
-    else activeResolution.id;
+    if selectionEnabled
+    then activeResolution.id
+    else null;
   themeDark =
-    if darkResolution.kind == "none"
-    then null
-    else darkResolution.id;
+    if selectionEnabled && darkResolution.kind != "none"
+    then darkResolution.id
+    else null;
   themeLight =
-    if lightResolution.kind == "none"
-    then null
-    else lightResolution.id;
+    if selectionEnabled && lightResolution.kind != "none"
+    then lightResolution.id
+    else null;
+
+  # Every generated resolution the active family needs a theme for.
+  generatedVariants = lib.unique (
+    map (pair: pair.variant) (
+      builtins.filter (pair: pair.resolution.kind == "generated") [
+        {
+          resolution = activeResolution;
+          inherit (themeCfg) variant;
+        }
+        {
+          resolution = darkResolution;
+          variant = providerMeta.darkVariant;
+        }
+        {
+          resolution = lightResolution;
+          variant = providerMeta.lightVariant;
+        }
+      ]
+    )
+  );
+
+  generatedThemes =
+    map (
+      variant:
+        vscodeTheme.mkTheme {
+          family = themeCfg.name;
+          inherit (providerMeta) displayName;
+          inherit variant;
+          palette = providerMeta.variants.${variant};
+          ansi = providerMeta.ansi.${variant};
+          isLight = variant == providerMeta.lightVariant;
+        }
+    )
+    generatedVariants;
+
+  # A real, self-contained VS Code extension built from the shared palette. It
+  # is only referenced when the resolver selects a generated theme, so an
+  # official family never evaluates or builds it.
+  generatedSrcName = "${vscodeTheme.generatedExtensionName themeCfg.name}-src";
+  generatedSrc = pkgs.runCommand generatedSrcName {} ''
+    mkdir -p "$out/themes"
+    cp ${
+      pkgs.writeText "package.json" (
+        builtins.toJSON (
+          vscodeTheme.manifest {
+            family = themeCfg.name;
+            inherit (providerMeta) displayName;
+            themes = generatedThemes;
+          }
+        )
+      )
+    } "$out/package.json"
+    ${lib.concatMapStrings (theme: ''
+        cp ${pkgs.writeText (builtins.baseNameOf theme.path) (builtins.toJSON theme.json)} "$out/themes/${builtins.baseNameOf theme.path}"
+      '')
+      generatedThemes}
+  '';
+
+  generatedExtension = pkgs.vscode-utils.buildVscodeExtension {
+    pname = vscodeTheme.generatedExtensionName themeCfg.name;
+    version = "1.0.0";
+    vscodeExtPublisher = "aytordev";
+    vscodeExtName = vscodeTheme.generatedExtensionName themeCfg.name;
+    vscodeExtUniqueId = "aytordev.${vscodeTheme.generatedExtensionName themeCfg.name}";
+
+    src = generatedSrc;
+    # The default `sourceRoot` is "extension" (VSIX layout); a directory `src`
+    # unpacks to its hash-stripped store name, so point the build there and let
+    # the default install phase move package.json and themes/ together.
+    sourceRoot = generatedSrcName;
+  };
+
+  # Resolutions are only offered to the composer while the app is selected, so
+  # `none` never drags the generated extension into the profile.
+  profileResolutions =
+    if selectionEnabled
+    then [
+      activeResolution
+      darkResolution
+      lightResolution
+    ]
+    else [];
 
   themeOverrideType = types.submodule {
     options = {
@@ -67,7 +153,7 @@
           "none"
         ];
         default = "auto";
-        description = "auto follows the family integration, manual pins id, none leaves VS Code's default.";
+        description = "auto follows the family integration (or generated theme), manual pins id, none leaves VS Code's default.";
       };
       id = mkOption {
         type = types.nullOr types.str;
@@ -85,9 +171,10 @@ in {
       default = null;
       description = ''
         VS Code color theme override. Null follows `aytordev.theme` through the
-        integration resolver. A bare theme label, or
+        integration resolver, falling back to a palette-generated extension when
+        the family ships no official theme. A bare theme label, or
         `{ mode = "manual"; id = ...; }`, pins a theme; `{ mode = "none"; }`
-        leaves VS Code's own default.
+        leaves VS Code's own default and installs no generated extension.
       '';
     };
   };
@@ -116,6 +203,21 @@ in {
           github.copilot-chat
         ];
 
+        nixExtensions = [
+          pkgs.vscode-extensions.arrterian.nix-env-selector
+          pkgs.vscode-extensions.bbenoist.nix
+          pkgs.vscode-extensions.mkhl.direnv
+        ];
+
+        # The generated extension is appended to every profile, and only when a
+        # generated resolution is active.
+        mkExtensions = base:
+          vscodeTheme.profileExtensions {
+            inherit base;
+            resolutions = profileResolutions;
+            inherit generatedExtension;
+          };
+
         commonSettings = import ./settings.nix {
           inherit
             lib
@@ -126,19 +228,13 @@ in {
         };
       in {
         default = {
-          extensions = commonExtensions;
+          extensions = mkExtensions commonExtensions;
           enableUpdateCheck = false;
           enableExtensionUpdateCheck = false;
           userSettings = commonSettings;
         };
         Nix = {
-          extensions = with pkgs.vscode-extensions;
-            commonExtensions
-            ++ [
-              arrterian.nix-env-selector
-              bbenoist.nix
-              mkhl.direnv
-            ];
+          extensions = mkExtensions (commonExtensions ++ nixExtensions);
         };
       };
     };

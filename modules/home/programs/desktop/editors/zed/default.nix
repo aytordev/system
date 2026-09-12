@@ -16,31 +16,28 @@
 
   cfg = config.aytordev.programs.desktop.editors.zed;
 
-  # Hand `resolveApp` the integration only when it covers the active variant, so
-  # a dark-only family (Sora) falls through to "none" instead of reusing a dark
-  # resource. A malformed integration passes through so it fails loudly.
-  selectOfficial = integration:
-    if !(lib.isAttrs integration)
-    then integration
-    else if !(integration ? variants)
-    then integration
-    else if (integration.variants or {}) ? ${themeCfg.variant}
-    then integration
-    else null;
-
-  themeResolution = lib.aytordev.resolveApp {
-    app = "zed";
+  # Hybrid theme resolution: the exact official extension theme when the active
+  # family ships one for the active variant, otherwise a palette-generated
+  # theme JSON written under Zed's local themes directory.
+  zedTheme = import ./config.nix {
+    inherit lib;
+    inherit (lib.aytordev) resolveApp;
+  };
+  zedIntegration = themeCfg.integrations.${themeCfg.name}.zed or null;
+  generatedTheme = zedTheme.render {
+    inherit (themeCfg) palette ansi isLight;
+  };
+  themeResolution = zedTheme.resolve {
     inherit (themeCfg) variant;
     override = cfg.theme;
-    official = selectOfficial (themeCfg.integrations.${themeCfg.name}.zed or null);
-    generated = null;
+    integration = zedIntegration;
   };
-
-  # Official selection uses the integration id; no generated Zed resource exists.
-  effectiveTheme =
-    if themeResolution.kind == "none"
-    then null
-    else themeResolution.id;
+  themeSettings = zedTheme.themeSetting themeResolution;
+  # Materialize the generated theme JSON only when the resolver selected it.
+  generatedFiles = zedTheme.themeFiles {
+    resolution = themeResolution;
+    text = generatedTheme;
+  };
 
   themeOverrideType = types.submodule {
     options = {
@@ -265,11 +262,13 @@ in {
             "dock" = "left";
           };
         }
-        // lib.optionalAttrs (effectiveTheme != null) {
-          theme = effectiveTheme;
-        };
+        // themeSettings;
 
       userKeymaps = import ./keymaps.nix;
     };
+
+    # Local generated theme JSON. An official/explicit/opt-out selection writes
+    # nothing: those themes come from the installed extensions.
+    xdg.configFile = generatedFiles;
   };
 }

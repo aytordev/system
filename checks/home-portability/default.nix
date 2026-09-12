@@ -250,7 +250,10 @@
     (!(lib.hasSuffix "ghostty/themes/sora.conf" (ghosttyTheme soraLightConfig)))
     (lib.elem "sora-theme" soraConfig.programs.zed-editor.extensions)
     (soraConfig.programs.zed-editor.userSettings.theme == "Sora")
-    (!(soraConfig.programs.vscode.profiles.default.userSettings ? "workbench.colorTheme"))
+    (
+      soraConfig.programs.vscode.profiles.default.userSettings."workbench.colorTheme"
+      == "Aytordev Sora Dark"
+    )
     (soraConfig.aytordev.programs.terminal.tools.tmux.theme == null)
     (
       let
