@@ -137,7 +137,7 @@ promised.
 | Warp | Theme files (official + generated) are deployed, but the active theme is chosen in **Settings → Appearance**; the adapter writes no selection. |
 | Pi | No upstream resource; the generated theme and vendored gentle-pi banner deploy with `shell.enable`. With the shell off, the generated file is not deployed and resolution is `none`. |
 | Sora `light` | Synthetic, unofficial companion. Sora resources are `dark`-only (`complete = false`), so `light` resolves to generated where the app has a fallback, otherwise `none`. |
-| Neovim | Theming is deferred; there is no integration yet. |
+| Neovim | Built from the `aytordev-nvim` distribution with the family/variant from `aytordev.theme` (through its `lib.mkAytordevNeovim` builder). Sora is dark-only, so the synthetic `light` companion uses the editor default (`none`). |
 | `@catppuccin_flavor` | `catppuccin/tmux` reads this American-spelled option; the adapter sets it to the lower-case flavour id from the integration. |
 | JankyBorders, Sketchybar | No upstream resource in any family; both consume raw `sketchybar`-format palette roles. |
 
