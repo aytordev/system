@@ -38,6 +38,12 @@ in {
       networking = enabled; # Network tools
     };
 
+    # Temporary: exercise the Sora family end to end on this host.
+    theme = {
+      name = "sora";
+      variant = "dark";
+    };
+
     # Host-specific overrides and custom configurations only
     programs = {
       desktop = {
