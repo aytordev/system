@@ -34,6 +34,11 @@
   };
   paletteName = paletteSelection.palette or starshipTheme.generatedId;
 
+  # Official module-style overlay for the resolved resource (empty unless the
+  # resource ships module styles). Deep-merged over the prompt so only colors
+  # change, never layout or glyphs.
+  styleOverrides = starshipTheme.styleOverrides {resolution = themeResolution;};
+
   # Per-app override shape. `manual` pins a palette id; `none` emits no palette
   # selection; `auto` (the default) follows the hybrid resolver.
   themeOverrideType = types.submodule {
@@ -55,7 +60,9 @@
     };
   };
 
-  # Helper: Create language module config
+  # Helper: Create language module config. The color lives in `style` (not an
+  # inline `fg:`) so the official style overlay can re-color a module without
+  # touching this prompt.
   mkLang = {
     symbol,
     color,
@@ -63,7 +70,8 @@
   }:
     {
       inherit symbol;
-      format = "[[ $symbol ($version) ](fg:${color})]($style)";
+      style = color;
+      format = "[[ $symbol ($version) ]]($style)";
       version_format = "\${raw}";
     }
     // extraAttrs;
@@ -123,7 +131,8 @@
     };
     python = {
       symbol = " ";
-      format = "[$symbol$pyenv_prefix($version)( $virtualenv)](fg:peach)";
+      style = "peach";
+      format = "[$symbol$pyenv_prefix($version)( $virtualenv)]($style)";
       version_format = "\${raw}";
     };
     c = mkLang {
@@ -187,7 +196,7 @@
       username = {
         style_user = "bold fg:blue";
         style_root = "bold fg:red";
-        format = "[ $user](fg:$style) ";
+        format = "[ $user]($style) ";
         disabled = false;
         show_always = true;
       };
@@ -268,7 +277,8 @@
       time = {
         disabled = false;
         time_format = "%R";
-        format = "[[   $time ](fg:subtext0)]($style)";
+        style = "subtext0";
+        format = "[[   $time ]]($style)";
       };
 
       battery = {
@@ -350,8 +360,8 @@ in {
 
     settings = mkOption {
       type = types.attrs;
-      default = starshipConfig // paletteSelection;
-      description = "Starship configuration options. Setting this replaces the resolved palette selection.";
+      default = lib.recursiveUpdate (starshipConfig // paletteSelection) styleOverrides;
+      description = "Starship configuration options. Setting this replaces the resolved palette selection and official style overlay.";
     };
 
     enableBashIntegration = mkOption {

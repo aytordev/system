@@ -1,10 +1,14 @@
-# Official Starship `[palettes.<name>]` blocks vendored verbatim.
+# Official Starship `[palettes.<name>]` blocks.
 #
 # Each block is copied unmodified from the resource pinned by the matching
 # provider integration (`modules/home/theme/<family>/provider.nix`); the
 # integration carries the provenance and revision, this file only pins the
 # color data so resolution never fetches at evaluation time. Do not hand-edit
 # a value: re-vendor from the URL below at the integration's `source.ref.rev`.
+#
+# Some resources also ship module styles; those are vendored separately in
+# `official-styles.nix` and applied over the repository prompt when the resource
+# is resolved (currently only Sora; Catppuccin themes are palette-only).
 #
 # catppuccin/starship @ 5906cc369dd8207e063c0e6e2d27bd0c0b567cb8
 #   provider: catppuccin, integration `starship` (port "starship")
@@ -132,6 +136,8 @@
     };
   };
 
+  # Sora ships both a palette and module styles; the palette is vendored here
+  # verbatim and the module styles live in `official-styles.nix`.
   sora = {
     sora = {
       bg = "#0e1018";

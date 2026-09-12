@@ -27,6 +27,17 @@
   # name any vendored official palette regardless of the active family.
   officialById = lib.foldl' (acc: family: acc // family) {} (builtins.attrValues officialPalettes);
 
+  # Palette id -> official module-style overlay. A resource that ships module
+  # configuration (Sora) contributes its color-bearing fields; resources that
+  # are palette-only (Catppuccin) have no entry. `styleOverrides` is deep-merged
+  # over the base prompt so its layout and glyphs are preserved.
+  officialStyles = import ./official-styles.nix;
+
+  styleOverrides = {resolution}:
+    if resolution.kind == "none"
+    then {}
+    else officialStyles.${resolution.id} or {};
+
   # ANSI terminal slots in index order.
   ansiSlots = [
     "black"

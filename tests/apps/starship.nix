@@ -26,6 +26,11 @@
       ansi = theme.providers.${family}.ansi.${variant};
     };
 
+  stylesFor = family: variant: override:
+    starship.styleOverrides {
+      resolution = resolveFor family variant override;
+    };
+
   kanagawaDragon = theme.providers.kanagawa.variants.dragon;
   kanagawaAnsi = theme.providers.kanagawa.ansi.dragon;
 
@@ -92,6 +97,69 @@ in {
       cyan = "#80c8e0";
       gold = "#d4b878";
     };
+  };
+
+  # Sora's official palette is vendored verbatim, including the `peach`/`teal`
+  # keys the module-style overlay relies on.
+  testStarshipSoraDarkKeepsNativePalette = {
+    expr = let
+      palette = (selectionFor "sora" "dark" null).palettes.sora;
+    in {
+      inherit
+        (palette)
+        cyan
+        peach
+        teal
+        gold
+        ;
+    };
+    expected = {
+      cyan = "#80c8e0";
+      peach = "#d0a888";
+      teal = "#78b8b0";
+      gold = "#d4b878";
+    };
+  };
+
+  # Sora is the only resource that ships module styles; the overlay re-colors
+  # the modules the base prompt's shared keys (`blue`/`red`) cannot.
+  testStarshipSoraDarkEmitsOfficialStyleOverrides = {
+    expr = let
+      styles = stylesFor "sora" "dark" null;
+    in {
+      inherit (styles) directory;
+      rust = styles.rust.style;
+      gitStatus = styles.git_status.style;
+      usernameUser = styles.username.style_user;
+      usernameRoot = styles.username.style_root;
+      vimcmd = styles.character.vimcmd_symbol;
+      golang = styles.golang.style;
+      dockerDisabled = styles.docker_context.disabled;
+      dockerStyle = styles.docker_context.style;
+    };
+    expected = {
+      directory = {
+        style = "cyan";
+      };
+      rust = "peach";
+      gitStatus = "rose";
+      usernameUser = "steel";
+      usernameRoot = "rose bold";
+      vimcmd = "[N](bold purple)";
+      golang = "cyan";
+      dockerDisabled = false;
+      dockerStyle = "teal";
+    };
+  };
+
+  testStarshipGeneratedEmitsNoStyleOverrides = {
+    expr = stylesFor "kanagawa" "dragon" null;
+    expected = {};
+  };
+
+  testStarshipSoraLightEmitsNoStyleOverrides = {
+    expr = stylesFor "sora" "light" null;
+    expected = {};
   };
 
   # ─── Generated fallback ───────────────────────────────────────────────────
