@@ -61,10 +61,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     aytordev-nvim = {
-      # Pre-merge: consumes the feat/add-theme-families revision that adds the
-      # Catppuccin/Sora colorschemes and the public builder. Switch back to
-      # `github:aytordev/aytordev.nvim` once the branch lands on main.
-      url = "github:aytordev/aytordev.nvim/580611fb5be78e46e677df8595572f0ad7f78640";
+      url = "github:aytordev/aytordev.nvim";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
