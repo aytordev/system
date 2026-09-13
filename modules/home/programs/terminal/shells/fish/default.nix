@@ -57,7 +57,6 @@ in {
           fish_add_path --path --global ~/.cargo/bin
           fish_add_path --path --global ~/go/bin
           set -gx VISUAL (command -v nvim || command -v vim || command -v vi || echo "vi")
-          set -gx BAT_THEME "base16"
         '';
       };
       home.activation.fishDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
