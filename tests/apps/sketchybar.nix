@@ -38,9 +38,9 @@ in {
     expected = builtins.sort builtins.lessThan (map pairKey allPairs);
   };
 
-  testSketchybarCatalogHasNineVariants = {
+  testSketchybarCatalogHasFiveVariants = {
     expr = builtins.length (builtins.attrNames themes);
-    expected = 9;
+    expected = 5;
   };
 
   # ─── Active selection ─────────────────────────────────────────────────────

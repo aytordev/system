@@ -62,13 +62,6 @@
     then lightResolution.id
     else null;
 
-  # Only Catppuccin ships a file-icon theme among the installed extensions;
-  # the other families fall back to VS Code's built-in icons.
-  iconTheme =
-    if themeCfg.name == "catppuccin"
-    then "catppuccin-${themeCfg.variant}"
-    else null;
-
   # Every generated resolution the active family needs a theme for.
   generatedVariants = lib.unique (
     map (pair: pair.variant) (
@@ -204,8 +197,6 @@ in {
         commonExtensions = with pkgs.vscode-extensions; [
           # Theme families supported by aytordev.theme
           kanagawa-theme
-          catppuccin.catppuccin-vsc
-          catppuccin.catppuccin-vsc-icons
           github.copilot
           github.copilot-chat
         ];
@@ -231,7 +222,6 @@ in {
             themeName
             themeDark
             themeLight
-            iconTheme
             ;
         };
       in {

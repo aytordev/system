@@ -33,32 +33,6 @@
 in {
   # ─── Official resource selection per family/variant ───────────────────────
 
-  testLazygitCatppuccinMochaResolvesOfficial = {
-    expr = resolveFor "catppuccin" "mocha" null;
-    expected = {
-      kind = "official";
-      id = "catppuccin-mocha-mauve";
-      provenance = "official-upstream";
-      variantProvenance = "official";
-      source = "official";
-    };
-  };
-
-  testLazygitCatppuccinEveryFlavorResolvesOfficial = {
-    expr = map (variant: (resolveFor "catppuccin" variant null).id) [
-      "latte"
-      "frappe"
-      "macchiato"
-      "mocha"
-    ];
-    expected = [
-      "catppuccin-latte-mauve"
-      "catppuccin-frappe-mauve"
-      "catppuccin-macchiato-mauve"
-      "catppuccin-mocha-mauve"
-    ];
-  };
-
   testLazygitSoraDarkResolvesOfficial = {
     expr = resolveFor "sora" "dark" null;
     expected = {
@@ -93,16 +67,16 @@ in {
   # ─── Explicit override wins ───────────────────────────────────────────────
 
   testLazygitStringOverrideWins = {
-    expr = resolveFor "kanagawa" "dragon" "catppuccin-latte-mauve";
+    expr = resolveFor "kanagawa" "dragon" "sora";
     expected = {
       kind = "explicit";
-      id = "catppuccin-latte-mauve";
+      id = "sora";
       source = "user";
     };
   };
 
   testLazygitManualOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" {
+    expr = resolveFor "kanagawa" "dragon" {
       mode = "manual";
       id = "sora";
     };
@@ -116,7 +90,7 @@ in {
   # ─── Opt-out emits no theme colors ────────────────────────────────────────
 
   testLazygitNoneOverrideEmitsNoTheme = {
-    expr = guiFor "catppuccin" "mocha" {mode = "none";};
+    expr = guiFor "sora" "dark" {mode = "none";};
     expected = {};
   };
 
@@ -169,19 +143,9 @@ in {
 
   # ─── Official selection emits the vendored upstream fragment ──────────────
 
-  testLazygitOfficialCatppuccinEmitsVendoredTheme = {
-    expr = guiFor "catppuccin" "mocha" null;
-    expected = lazygit.officialThemes.catppuccin.catppuccin-mocha-mauve;
-  };
-
   testLazygitOfficialSoraEmitsVendoredTheme = {
     expr = guiFor "sora" "dark" null;
     expected = lazygit.officialThemes.sora.sora;
-  };
-
-  testLazygitCatppuccinOfficialCarriesAuthorColors = {
-    expr = (guiFor "catppuccin" "mocha" null).authorColors."*";
-    expected = "#b4befe";
   };
 
   testLazygitSoraOfficialHasNoAuthorColors = {
@@ -191,20 +155,12 @@ in {
 
   testLazygitVendoredThemesMatchUpstreamValues = {
     expr = let
-      mocha = lazygit.officialThemes.catppuccin.catppuccin-mocha-mauve.theme;
       sora = lazygit.officialThemes.sora.sora.theme;
     in {
-      mochaFg = mocha.defaultFgColor;
-      mochaActive = mocha.activeBorderColor;
       soraFg = sora.defaultFgColor;
       soraUnstaged = sora.unstagedChangesColor;
     };
     expected = {
-      mochaFg = ["#cdd6f4"];
-      mochaActive = [
-        "#cba6f7"
-        "bold"
-      ];
       soraFg = ["#c8d0e0"];
       soraUnstaged = ["#c46c78"];
     };
@@ -252,11 +208,11 @@ in {
   testLazygitBrokenIntegrationThrows = {
     expr = throws (
       lazygit.resolve {
-        variant = "mocha";
+        variant = "dark";
         override = null;
         integration = {
           source = null;
-          variants.mocha.id = "catppuccin-mocha-mauve";
+          variants.dark.id = "sora";
         };
       }
     );

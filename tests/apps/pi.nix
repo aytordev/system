@@ -67,8 +67,8 @@ in {
   # ─── JSON parse round-trip follows the active variant palette ─────────────
 
   testPiGeneratedThemeRoundTripsActiveVariantColors = let
-    palette = theme.providers.catppuccin.variants.mocha;
-    parsed = parsedTheme "catppuccin" "mocha";
+    palette = theme.providers.sora.variants.dark;
+    parsed = parsedTheme "sora" "dark";
   in {
     expr = {
       inherit (parsed) name;
@@ -147,11 +147,11 @@ in {
   testPiManualOverrideWins = {
     expr = resolveFor "kanagawa" "dragon" {
       mode = "manual";
-      id = "catppuccin-mocha";
+      id = "sora";
     };
     expected = {
       kind = "explicit";
-      id = "catppuccin-mocha";
+      id = "sora";
       source = "user";
     };
   };

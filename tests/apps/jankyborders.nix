@@ -24,11 +24,11 @@
   paletteFor = pair: theme.providers.${pair.family}.variants.${pair.variant};
   colorsFor = pair: jankyborders.colors {palette = paletteFor pair;};
 in {
-  # ─── Fixture sanity: all nine variants are covered ────────────────────────
+  # ─── Fixture sanity: all five variants are covered ────────────────────────
 
   testJankybordersIteratesEveryVariant = {
     expr = builtins.length allPairs;
-    expected = 9;
+    expected = 5;
   };
 
   # ─── Active/inactive are distinguishable in every family/variant ──────────
@@ -68,25 +68,25 @@ in {
 
   testJankybordersColorsFollowTheDeclaredRoles = {
     expr = colorsFor {
-      family = "catppuccin";
-      variant = "mocha";
+      family = "sora";
+      variant = "dark";
     };
     expected = {
-      active_color = theme.providers.catppuccin.variants.mocha.${jankyborders.activeRole}.sketchybar;
-      inactive_color = theme.providers.catppuccin.variants.mocha.${jankyborders.inactiveRole}.sketchybar;
+      active_color = theme.providers.sora.variants.dark.${jankyborders.activeRole}.sketchybar;
+      inactive_color = theme.providers.sora.variants.dark.${jankyborders.inactiveRole}.sketchybar;
     };
   };
 
   # ─── Sample variant matches the provider palette literally ────────────────
 
-  testJankybordersMochaMatchesProviderPalette = {
+  testJankybordersSoraMatchesProviderPalette = {
     expr = colorsFor {
-      family = "catppuccin";
-      variant = "mocha";
+      family = "sora";
+      variant = "dark";
     };
     expected = {
-      active_color = theme.providers.catppuccin.variants.mocha.accent.sketchybar;
-      inactive_color = theme.providers.catppuccin.variants.mocha.border.sketchybar;
+      active_color = theme.providers.sora.variants.dark.accent.sketchybar;
+      inactive_color = theme.providers.sora.variants.dark.border.sketchybar;
     };
   };
 

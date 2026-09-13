@@ -37,40 +37,12 @@
   brokenIntegration = {
     source = null;
     variants = {
-      mocha = {
+      dark = {
         id = "broken";
       };
     };
   };
 in {
-  # ─── Official selection: catppuccin (complete integration) ────────────────
-
-  testStarshipCatppuccinMochaResolvesOfficial = {
-    expr = resolveFor "catppuccin" "mocha" null;
-    expected = {
-      kind = "official";
-      id = "catppuccin_mocha";
-      provenance = "official-upstream";
-      variantProvenance = "official";
-      source = "official";
-    };
-  };
-
-  testStarshipCatppuccinMochaVendorsUpstreamPalette = {
-    expr = let
-      selection = selectionFor "catppuccin" "mocha" null;
-    in {
-      name = selection.palette;
-      mauve = selection.palettes.catppuccin_mocha.mauve;
-      base = selection.palettes.catppuccin_mocha.base;
-    };
-    expected = {
-      name = "catppuccin_mocha";
-      mauve = "#cba6f7";
-      base = "#1e1e2e";
-    };
-  };
-
   # ─── Official selection: sora (dark only) ─────────────────────────────────
 
   testStarshipSoraDarkResolvesOfficial = {
@@ -212,7 +184,7 @@ in {
   # ─── Explicit override wins (bare string and submodule) ───────────────────
 
   testStarshipStringOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" "sora";
+    expr = resolveFor "kanagawa" "dragon" "sora";
     expected = {
       kind = "explicit";
       id = "sora";
@@ -221,19 +193,19 @@ in {
   };
 
   testStarshipManualOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" {
+    expr = resolveFor "kanagawa" "dragon" {
       mode = "manual";
-      id = "catppuccin_latte";
+      id = "sora";
     };
     expected = {
       kind = "explicit";
-      id = "catppuccin_latte";
+      id = "sora";
       source = "user";
     };
   };
 
   testStarshipOverrideSelectsPalette = {
-    expr = (selectionFor "catppuccin" "mocha" "sora").palette;
+    expr = (selectionFor "kanagawa" "dragon" "sora").palette;
     expected = "sora";
   };
 
@@ -269,7 +241,7 @@ in {
   testStarshipMalformedIntegrationThrows = {
     expr = throws (
       starship.resolve {
-        variant = "mocha";
+        variant = "dark";
         override = null;
         integration = brokenIntegration;
       }

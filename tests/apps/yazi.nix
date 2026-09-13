@@ -28,51 +28,6 @@
       palette = theme.providers.${family}.variants.${variant};
     };
 in {
-  # ─── Official catppuccin flavor selection per flavor ──────────────────────
-
-  testYaziCatppuccinResolvesOfficialPerFlavor = {
-    expr = map (variant: (resolveFor "catppuccin" variant null).id) [
-      "latte"
-      "frappe"
-      "macchiato"
-      "mocha"
-    ];
-    expected = [
-      "catppuccin-latte-mauve"
-      "catppuccin-frappe-mauve"
-      "catppuccin-macchiato-mauve"
-      "catppuccin-mocha-mauve"
-    ];
-  };
-
-  testYaziCatppuccinMochaResolvesOfficial = {
-    expr = resolveFor "catppuccin" "mocha" null;
-    expected = {
-      kind = "official";
-      id = "catppuccin-mocha-mauve";
-      provenance = "official-upstream";
-      variantProvenance = "official";
-      source = "official";
-    };
-  };
-
-  testYaziOfficialCatppuccinDeploysVendoredFlavor = {
-    expr = let
-      resolution = resolveFor "catppuccin" "mocha" null;
-    in {
-      entries = yazi.flavorEntries {
-        inherit resolution generatedFlavor;
-      };
-      vendored = yazi.officialFlavors.catppuccin-mocha-mauve;
-    };
-    expected = {
-      entries = {
-        catppuccin-mocha-mauve = yazi.officialFlavors.catppuccin-mocha-mauve;
-      };
-      vendored = ../../modules/home/programs/terminal/tools/yazi/flavors/catppuccin-mocha-mauve;
-    };
-  };
-
   # ─── Sora official is a whole theme, not a flavor ─────────────────────────
 
   testYaziSoraDarkResolvesOfficial = {
@@ -149,7 +104,7 @@ in {
   # ─── Explicit override wins ───────────────────────────────────────────────
 
   testYaziStringOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" "kanagawa-dragon";
+    expr = resolveFor "sora" "dark" "kanagawa-dragon";
     expected = {
       kind = "explicit";
       id = "kanagawa-dragon";
@@ -158,13 +113,13 @@ in {
   };
 
   testYaziManualOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" {
+    expr = resolveFor "sora" "dark" {
       mode = "manual";
-      id = "catppuccin-latte-mauve";
+      id = "kanagawa-dragon";
     };
     expected = {
       kind = "explicit";
-      id = "catppuccin-latte-mauve";
+      id = "kanagawa-dragon";
       source = "user";
     };
   };
@@ -173,7 +128,7 @@ in {
 
   testYaziNoneOverrideEmitsNothing = {
     expr = let
-      resolution = resolveFor "catppuccin" "mocha" {mode = "none";};
+      resolution = resolveFor "sora" "dark" {mode = "none";};
     in {
       inherit resolution;
       flavors = yazi.flavorEntries {
@@ -204,7 +159,6 @@ in {
         );
     in {
       generated = entries (resolveFor "kanagawa" "dragon" null);
-      officialCatppuccin = entries (resolveFor "catppuccin" "mocha" null);
       officialSora = entries (resolveFor "sora" "dark" null);
       none = entries {
         kind = "none";
@@ -213,7 +167,6 @@ in {
     };
     expected = {
       generated = ["kanagawa-dragon"];
-      officialCatppuccin = ["catppuccin-mocha-mauve"];
       officialSora = [];
       none = [];
     };
@@ -254,39 +207,14 @@ in {
     expected = true;
   };
 
-  # ─── Vendored catppuccin flavors are real flavor payloads ─────────────────
-
-  testYaziVendoredCatppuccinFlavorIsValidFlavor = {
-    expr = let
-      text = builtins.readFile (yazi.officialFlavors.catppuccin-mocha-mauve + "/flavor.toml");
-    in {
-      hasMochaMauve = lib.hasInfix "#cba6f7" text;
-      hasFlavorTable = lib.hasInfix "[flavor]" text;
-    };
-    expected = {
-      hasMochaMauve = true;
-      hasFlavorTable = false;
-    };
-  };
-
-  testYaziVendoredFlavorsExistPerFlavor = {
-    expr = builtins.all (id: builtins.pathExists (yazi.officialFlavors.${id} + "/flavor.toml")) [
-      "catppuccin-latte-mauve"
-      "catppuccin-frappe-mauve"
-      "catppuccin-macchiato-mauve"
-      "catppuccin-mocha-mauve"
-    ];
-    expected = true;
-  };
-
   testYaziBrokenIntegrationThrows = {
     expr = throws (
       yazi.resolve {
-        variant = "mocha";
+        variant = "dark";
         override = null;
         integration = {
           source = null;
-          variants.mocha.id = "catppuccin-mocha-mauve";
+          variants.dark.id = "sora";
         };
       }
     );

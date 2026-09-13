@@ -7,13 +7,8 @@
 # over. A malformed integration is passed through to `resolveApp` so the
 # declaration fails loudly.
 #
-# Upstream resource shapes differ, so the adapter composes them differently:
-#   - Catppuccin ships one accent theme per flavor (`catppuccin-<flavor>-mauve`).
-#     Each file is theme.toml-shaped but carries no `[flavor]` table, so Yazi
-#     loads it as a flavor payload; it is vendored as a flavor directory
-#     (`flavors/<id>/flavor.toml`).
-#   - Sora ships a single `theme.toml` (not a per-flavor resource). It is
-#     vendored verbatim and applied as the base theme, never as a flavor.
+# Sora ships a single `theme.toml` (not a per-flavor resource). It is vendored
+# verbatim and applied as the base theme, never as a flavor.
 {
   lib,
   resolveApp,
@@ -22,15 +17,9 @@
   generatedFlavor = import ./flavor.nix;
 
   # Vendored per-flavor official resources, keyed by the provider integration
-  # id. catppuccin/yazi @ d62802be39210ea10e54b3e3b09735c6cb9e57c1,
-  # `themes/<flavor>/catppuccin-<flavor>-mauve.toml`, vendored under
-  # `flavors/<id>/flavor.toml` (only whitespace is normalized by taplo).
-  officialFlavors = {
-    catppuccin-latte-mauve = ./flavors/catppuccin-latte-mauve;
-    catppuccin-frappe-mauve = ./flavors/catppuccin-frappe-mauve;
-    catppuccin-macchiato-mauve = ./flavors/catppuccin-macchiato-mauve;
-    catppuccin-mocha-mauve = ./flavors/catppuccin-mocha-mauve;
-  };
+  # id. No family currently ships a per-flavor Yazi resource; generated
+  # selections still deploy their generated flavor.
+  officialFlavors = {};
 
   # Vendored single-file official themes, keyed by the provider integration id.
   # Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439,

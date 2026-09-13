@@ -46,45 +46,6 @@
 in {
   # ─── Official resources for covered families ─────────────────────────────
 
-  testOpencodeCatppuccinResolvesOfficialPerVariant = {
-    expr = map (variant: resolveFor "catppuccin" variant null) [
-      "latte"
-      "frappe"
-      "macchiato"
-      "mocha"
-    ];
-    expected = [
-      {
-        kind = "official";
-        id = "catppuccin-latte-mauve";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-      {
-        kind = "official";
-        id = "catppuccin-frappe-mauve";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-      {
-        kind = "official";
-        id = "catppuccin-macchiato-mauve";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-      {
-        kind = "official";
-        id = "catppuccin-mocha-mauve";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-    ];
-  };
-
   testOpencodeSoraDarkResolvesOfficial = {
     expr = resolveFor "sora" "dark" null;
     expected = {
@@ -128,7 +89,7 @@ in {
   # ─── Explicit override wins ───────────────────────────────────────────────
 
   testOpencodeStringOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" "sora";
+    expr = resolveFor "kanagawa" "dragon" "sora";
     expected = {
       kind = "explicit";
       id = "sora";
@@ -137,13 +98,13 @@ in {
   };
 
   testOpencodeManualOverrideWins = {
-    expr = resolveFor "sora" "dark" {
+    expr = resolveFor "kanagawa" "dragon" {
       mode = "manual";
-      id = "catppuccin-mocha-mauve";
+      id = "sora";
     };
     expected = {
       kind = "explicit";
-      id = "catppuccin-mocha-mauve";
+      id = "sora";
       source = "user";
     };
   };
@@ -171,9 +132,9 @@ in {
   # ─── `tui.theme` selection per resolution ────────────────────────────────
 
   testOpencodeOfficialResolutionSelectsVendoredId = {
-    expr = opencode.themeEntry (resolveFor "catppuccin" "mocha" null);
+    expr = opencode.themeEntry (resolveFor "sora" "dark" null);
     expected = {
-      theme = "catppuccin-mocha-mauve";
+      theme = "sora";
     };
   };
 
@@ -258,11 +219,11 @@ in {
   testOpencodeGeneratedThemeFollowsActiveVariant = {
     expr = {
       kanagawa = resolvedColor (parsedTheme "kanagawa" "dragon") "background";
-      catppuccin = resolvedColor (parsedTheme "catppuccin" "mocha") "background";
+      sora = resolvedColor (parsedTheme "sora" "dark") "background";
     };
     expected = {
       kanagawa = theme.providers.kanagawa.variants.dragon.bg.hex;
-      catppuccin = theme.providers.catppuccin.variants.mocha.bg.hex;
+      sora = theme.providers.sora.variants.dark.bg.hex;
     };
   };
 
@@ -276,10 +237,6 @@ in {
   testOpencodeVendoredOfficialThemesAreSelectableIds = {
     expr = builtins.sort builtins.lessThan officialThemeIds;
     expected = builtins.sort builtins.lessThan [
-      "catppuccin-frappe-mauve"
-      "catppuccin-latte-mauve"
-      "catppuccin-macchiato-mauve"
-      "catppuccin-mocha-mauve"
       "sora"
     ];
   };

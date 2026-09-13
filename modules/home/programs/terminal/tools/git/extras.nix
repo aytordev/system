@@ -19,7 +19,7 @@
     integration = themeCfg.integrations.${themeCfg.name}.delta or null;
   };
   # Delta reuses bat's syntax highlighting, so its `syntax-theme` follows the
-  # bat theme the adapter resolved (Sora, Catppuccin, or the generated one).
+  # bat theme the adapter resolved (Sora or the generated one).
   batTheme = lib.attrByPath ["programs" "bat" "config" "theme"] null config;
   deltaOptions =
     {

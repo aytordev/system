@@ -85,17 +85,6 @@ in {
     };
   };
 
-  testGhosttyCatppuccinMochaResolvesOfficial = {
-    expr = resolveFor "catppuccin" "mocha" null;
-    expected = {
-      kind = "official";
-      id = "catppuccin-mocha";
-      provenance = "official-upstream";
-      variantProvenance = "official";
-      source = "official";
-    };
-  };
-
   testGhosttySoraDarkResolvesOfficial = {
     expr = resolveFor "sora" "dark" null;
     expected = {
@@ -126,7 +115,7 @@ in {
   # ─── Explicit override wins ───────────────────────────────────────────────
 
   testGhosttyStringOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" "kanagawa-wave";
+    expr = resolveFor "sora" "dark" "kanagawa-wave";
     expected = {
       kind = "explicit";
       id = "kanagawa-wave";
@@ -135,7 +124,7 @@ in {
   };
 
   testGhosttyManualOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" {
+    expr = resolveFor "sora" "dark" {
       mode = "manual";
       id = "kanagawa-lotus";
     };

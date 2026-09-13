@@ -29,7 +29,7 @@
 
   brokenIntegration = {
     source = null;
-    variants.mocha.id = "catppuccin-fzf-mocha";
+    variants.dark.id = "sora";
   };
 in {
   # ─── Official selection per family/variant ────────────────────────────────
@@ -42,54 +42,6 @@ in {
       provenance = "official-upstream";
       variantProvenance = "official";
       source = "official";
-    };
-  };
-
-  testFzfCatppuccinMochaResolvesOfficial = {
-    expr = resolveFor "catppuccin" "mocha" null;
-    expected = {
-      kind = "official";
-      id = "catppuccin-fzf-mocha";
-      provenance = "official-upstream";
-      variantProvenance = "official";
-      source = "official";
-    };
-  };
-
-  testFzfCatppuccinResolvesOfficialPerFlavor = {
-    expr = map (variant: (resolveFor "catppuccin" variant null).id) [
-      "latte"
-      "frappe"
-      "macchiato"
-      "mocha"
-    ];
-    expected = [
-      "catppuccin-fzf-latte"
-      "catppuccin-fzf-frappe"
-      "catppuccin-fzf-macchiato"
-      "catppuccin-fzf-mocha"
-    ];
-  };
-
-  testFzfOfficialCatppuccinColorsMatchUpstream = {
-    expr = let
-      colors = colorsFor "catppuccin" "mocha" null;
-    in {
-      inherit
-        (colors)
-        bg
-        info
-        marker
-        border
-        ;
-      selectedBg = colors."selected-bg";
-    };
-    expected = {
-      bg = "#1E1E2E";
-      info = "#CBA6F7";
-      marker = "#B4BEFE";
-      border = "#6C7086";
-      selectedBg = "#45475A";
     };
   };
 
@@ -160,10 +112,10 @@ in {
   # ─── Explicit override wins ───────────────────────────────────────────────
 
   testFzfStringOverrideWins = {
-    expr = resolveFor "kanagawa" "dragon" "catppuccin-fzf-mocha";
+    expr = resolveFor "kanagawa" "dragon" "sora";
     expected = {
       kind = "explicit";
-      id = "catppuccin-fzf-mocha";
+      id = "sora";
       source = "user";
     };
   };
@@ -193,7 +145,7 @@ in {
   # ─── Opt-out emits no colors ──────────────────────────────────────────────
 
   testFzfNoneOverrideResolvesNone = {
-    expr = resolveFor "catppuccin" "mocha" {mode = "none";};
+    expr = resolveFor "sora" "dark" {mode = "none";};
     expected = {
       kind = "none";
       id = null;
@@ -202,7 +154,7 @@ in {
   };
 
   testFzfNoneOverrideEmitsNoColors = {
-    expr = colorsFor "catppuccin" "mocha" {mode = "none";};
+    expr = colorsFor "sora" "dark" {mode = "none";};
     expected = {};
   };
 
@@ -245,7 +197,7 @@ in {
   testFzfBrokenIntegrationThrows = {
     expr = throws (
       fzf.resolve {
-        variant = "mocha";
+        variant = "dark";
         override = null;
         integration = brokenIntegration;
       }

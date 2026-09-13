@@ -21,15 +21,9 @@
 
   # Vendored official theme JSONs, keyed by the exact id the integration
   # declares and OpenCode selects via `tui.theme`.
-  # catppuccin/opencode @ d5f409632e6294762925fae869ad0c96dc17cd8e,
-  # `themes/<flavor>/catppuccin-<flavor>-mauve.json`.
   # Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439,
   # `extras/opencode/sora.json`.
   officialThemes = {
-    catppuccin-latte-mauve = ./themes/catppuccin-latte-mauve.json;
-    catppuccin-frappe-mauve = ./themes/catppuccin-frappe-mauve.json;
-    catppuccin-macchiato-mauve = ./themes/catppuccin-macchiato-mauve.json;
-    catppuccin-mocha-mauve = ./themes/catppuccin-mocha-mauve.json;
     sora = ./themes/sora.json;
   };
 

@@ -62,17 +62,6 @@ in {
     };
   };
 
-  testVscodeCatppuccinFrappeResolvesOfficial = {
-    expr = resolveFor "catppuccin" "frappe" null;
-    expected = {
-      kind = "official";
-      id = "Catppuccin Frappé";
-      provenance = "official-upstream";
-      variantProvenance = "official";
-      source = "official";
-    };
-  };
-
   # ─── Sora has no official VS Code resource: generate ─────────────────────
 
   testVscodeSoraDarkResolvesGenerated = {
@@ -107,7 +96,7 @@ in {
   # ─── Explicit override wins ──────────────────────────────────────────────
 
   testVscodeStringOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" "Kanagawa Wave";
+    expr = resolveFor "sora" "dark" "Kanagawa Wave";
     expected = {
       kind = "explicit";
       id = "Kanagawa Wave";
@@ -346,9 +335,9 @@ in {
     expr = vscode.profileExtensions {
       base = ["base"];
       resolutions = [
-        (resolveFor "catppuccin" "mocha" null)
-        (resolveFor "catppuccin" "mocha" null)
-        (resolveFor "catppuccin" "latte" null)
+        (resolveFor "kanagawa" "dragon" null)
+        (resolveFor "kanagawa" "dragon" null)
+        (resolveFor "kanagawa" "lotus" null)
       ];
       inherit generatedExtension;
     };

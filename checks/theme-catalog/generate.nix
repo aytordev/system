@@ -107,7 +107,7 @@
     {
       id = "tmux";
       generated = "aytordev";
-      note = "Palette-generated conf; catppuccin selects via @catppuccin_flavor.";
+      note = "Palette-generated conf.";
       path = ../../modules/home/programs/terminal/tools/tmux/config.nix;
     }
     {

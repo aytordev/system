@@ -29,8 +29,8 @@
 
   # Palette id -> official module-style overlay. A resource that ships module
   # configuration (Sora) contributes its color-bearing fields; resources that
-  # are palette-only (Catppuccin) have no entry. `styleOverrides` is deep-merged
-  # over the base prompt so its layout and glyphs are preserved.
+  # are palette-only have no entry. `styleOverrides` is deep-merged over the
+  # base prompt so its layout and glyphs are preserved.
   officialStyles = import ./official-styles.nix;
 
   styleOverrides = {resolution}:

@@ -6,12 +6,9 @@
 # `$XDG_CONFIG_HOME/eza/`, overlaying it on its built-in defaults; `EZA_COLORS`
 # still wins over the file for any key it sets.
 #
-# Upstream resource shapes differ, so the adapter composes them differently:
-#   - Catppuccin ships one full `theme.yml` per flavor
-#     (`catppuccin-<flavor>-mauve.yml`); each is vendored verbatim.
-#   - Sora ships an `EZA_COLORS` shell fragment (`extras/eza/sora.sh`). Its
-#     two-letter codes are expanded to the equivalent `theme.yml` fields and
-#     vendored as `themes/sora.yml`; unset fields keep eza's defaults.
+# Sora ships an `EZA_COLORS` shell fragment (`extras/eza/sora.sh`); its
+# two-letter codes are expanded to the equivalent `theme.yml` fields and
+# vendored as `themes/sora.yml`, leaving unset fields at eza's defaults.
 # A family may cover only some variants (Sora is dark-only); an integration
 # that does not cover the active variant is treated as absent so generation
 # takes over. A malformed integration still reaches `resolveApp` and throws,
@@ -25,15 +22,9 @@
   generatedId = "aytordev";
 
   # Vendored official theme files, keyed by the provider integration id.
-  #   catppuccin/eza @ 70f805f6cc27fa5b91750b75afb4296a0ec7fec9,
-  #     `themes/<flavor>/catppuccin-<flavor>-mauve.yml`, verbatim.
   #   Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439,
   #     `extras/eza/sora.sh`, expanded to `theme.yml` fields.
   officialThemes = {
-    "catppuccin-latte-mauve" = ./themes/catppuccin-latte-mauve.yml;
-    "catppuccin-frappe-mauve" = ./themes/catppuccin-frappe-mauve.yml;
-    "catppuccin-macchiato-mauve" = ./themes/catppuccin-macchiato-mauve.yml;
-    "catppuccin-mocha-mauve" = ./themes/catppuccin-mocha-mauve.yml;
     sora = ./themes/sora.yml;
   };
 

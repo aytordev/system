@@ -27,18 +27,9 @@
     resolution = themeResolution;
   };
 
-  # A plugin-backed family (catppuccin) carries its selection on the plugin
-  # entry so the option is set before the plugin's `run-shell`; sourced
-  # (sora) and generated (kanagawa) families append to `extraConfig` instead.
-  themePlugin = lib.optional (themeArtifacts.pluginName != null) {
-    plugin = pkgs.tmuxPlugins.${themeArtifacts.pluginName};
-    inherit (themeArtifacts) extraConfig;
-  };
-  themeExtraConfig =
-    lib.optionalString (
-      themeArtifacts.pluginName == null
-    )
-    themeArtifacts.extraConfig;
+  # Theme selection always lands in app-level extraConfig: sourced conf for
+  # Sora, palette-generated styles otherwise.
+  themeExtraConfig = themeArtifacts.extraConfig;
 
   themeOverrideType = lib.types.submodule {
     options = {
@@ -67,8 +58,8 @@ in {
       default = null;
       description = ''
         tmux theme override. Null follows `aytordev.theme` through the hybrid
-        resolver: the family's official resource when it exists (catppuccin
-        plugin flavour, sora conf), otherwise a palette-generated fallback.
+        resolver: the family's official resource when it exists (sora conf),
+        otherwise a palette-generated fallback.
         A bare id (or `{ mode = "manual"; id = ...; }`) pins a selection;
         `{ mode = "none"; }` leaves tmux's own default.
       '';
@@ -88,51 +79,48 @@ in {
       sensibleOnTop = false;
       terminal = "tmux-256color";
 
-      plugins =
-        (with pkgs.tmuxPlugins; [
-          # Tested options for TMUX compatibility
-          {plugin = sensible;}
+      plugins = with pkgs.tmuxPlugins; [
+        # Tested options for TMUX compatibility
+        {plugin = sensible;}
 
-          # Clipboard management
-          {plugin = yank;}
+        # Clipboard management
+        {plugin = yank;}
 
-          # Tmux Navigation
-          {plugin = vim-tmux-navigator;}
+        # Tmux Navigation
+        {plugin = vim-tmux-navigator;}
 
-          # Tmux Resurrect
-          {plugin = resurrect;}
+        # Tmux Resurrect
+        {plugin = resurrect;}
 
-          # Continuous saving of tmux environment
-          {
-            plugin = continuum;
-            extraConfig = ''
-              set -g @continuum-restore 'on'
-              set -g @continuum-save-interval '10'
-            '';
-          }
+        # Continuous saving of tmux environment
+        {
+          plugin = continuum;
+          extraConfig = ''
+            set -g @continuum-restore 'on'
+            set -g @continuum-save-interval '10'
+          '';
+        }
 
-          # Floating pane
-          {
-            plugin = tmux-floax;
-            extraConfig = ''
-              set -g @floax-bind 'p'
-              set -g @floax-change-path 'true'
-            '';
-          }
+        # Floating pane
+        {
+          plugin = tmux-floax;
+          extraConfig = ''
+            set -g @floax-bind 'p'
+            set -g @floax-change-path 'true'
+          '';
+        }
 
-          # Session manager with fuzzy finding
-          {
-            plugin = tmux-sessionx;
-            extraConfig = ''
-              set -g @sessionx-bind 'o'
-            '';
-          }
+        # Session manager with fuzzy finding
+        {
+          plugin = tmux-sessionx;
+          extraConfig = ''
+            set -g @sessionx-bind 'o'
+          '';
+        }
 
-          # Which Key
-          {plugin = tmux-which-key;}
-        ])
-        # Theme loads last so it takes effect.
-        ++ themePlugin;
+        # Which Key
+        {plugin = tmux-which-key;}
+      ];
 
       # Theme settings first, then the theme-independent layout so user
       # preferences (for example `status-position top`) win over a sourced conf.

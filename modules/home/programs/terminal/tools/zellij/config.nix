@@ -14,14 +14,11 @@
   # vendored upstream theme name.
   generatedId = "aytordev";
 
-  # Vendored upstream theme files, keyed by family. catppuccin/zellij ships one
-  # `catppuccin.kdl` registering all four flavors, under the exact names the
-  # integration declares (`catppuccin-<flavor>`), so a single file serves every
-  # variant. `officialName` is the file stem Zellij loads from
+  # Vendored upstream theme files, keyed by family. No family currently ships a
+  # Zellij resource; any selection falls back to the generated theme.
+  # `officialName` is the file stem Zellij loads from
   # `$XDG_CONFIG_HOME/zellij/themes/<name>.kdl`.
-  officialThemeFiles = {
-    catppuccin = ./themes/catppuccin.kdl;
-  };
+  officialThemeFiles = {};
 
   # Hand `resolveApp` the integration only when it covers the active variant;
   # otherwise let the generated theme win. Malformed integrations pass through

@@ -55,22 +55,22 @@
     };
   };
   businessHome = mkPortableHome {suite = "business";};
-  catppuccinHome = mkPortableHome {
+  soraDesktopHome = mkPortableHome {
     suite = "desktop";
     extraModule.aytordev = {
       theme = {
-        name = "catppuccin";
-        variant = "mocha";
+        name = "sora";
+        variant = "dark";
       };
       programs.terminal.tools.yazi.enable = true;
       programs.terminal.emulators.ghostty.enable = true;
     };
   };
-  catppuccinDevHome = mkPortableHome {
+  kanagawaLightHome = mkPortableHome {
     suite = "development";
     extraModule.aytordev.theme = {
-      name = "catppuccin";
-      variant = "mocha";
+      name = "kanagawa";
+      variant = "lotus";
     };
   };
   soraHome = mkPortableHome {
@@ -108,8 +108,8 @@
   ghosttyDisabledConfig = ghosttyDisabledHome.config;
   ghosttyNoThemesConfig = ghosttyNoThemesHome.config;
   businessConfig = businessHome.config;
-  catppuccinConfig = catppuccinHome.config;
-  catppuccinDevConfig = catppuccinDevHome.config;
+  soraDesktopConfig = soraDesktopHome.config;
+  kanagawaLightConfig = kanagawaLightHome.config;
   soraConfig = soraHome.config;
   soraLightConfig = soraLightHome.config;
   desktopOverrideConfig = desktopOverrideHome.config;
@@ -157,12 +157,8 @@
     (!(desktopConfig.aytordev.services.jankyborders ? themeOverride))
     (desktopConfig.aytordev.services.jankyborders.enable == isDarwin)
     (desktopConfig.aytordev.theme.providers ? kanagawa)
-    (desktopConfig.aytordev.theme.providers ? catppuccin)
-    (catppuccinConfig.aytordev.theme.palette.accent.hex == "#89b4fa")
-    (!catppuccinConfig.aytordev.theme.isLight)
-    (lib.hasSuffix "ghostty/themes/catppuccin-mocha.conf" (ghosttyTheme catppuccinConfig))
+    (desktopConfig.aytordev.theme.providers ? sora)
     (lib.hasSuffix "ghostty/themes/kanagawa-dragon.conf" (ghosttyTheme desktopConfig))
-    (!(catppuccinConfig.xdg.configFile ? "ghostty/themes/aytordev.conf"))
     (!(desktopConfig.xdg.configFile ? "ghostty/themes/aytordev.conf"))
     # The cursor-smear shader deploys with ghostty, its setting points at it,
     # and `enableThemes = false` removes both (no dangling custom-shader).
@@ -174,7 +170,7 @@
     (!(ghosttyDisabledConfig.xdg.configFile ? "ghostty/shaders/cursor_smear.glsl"))
     (desktopConfig.aytordev.programs.terminal.tools.pi.theme == "aytordev")
     (config.programs.yazi.theme.flavor.dark == "kanagawa-dragon")
-    (catppuccinConfig.programs.yazi.theme.flavor.dark == "catppuccin-mocha-mauve")
+    (soraDesktopConfig.programs.yazi.theme.mgr.cwd.fg == "#80c8e0")
     (
       if isDarwin
       then
@@ -187,30 +183,30 @@
       then let
         constants = desktopConfig.xdg.configFile."sketchybar/nix_constants.lua".text;
       in
-        lib.hasInfix "catppuccin/mocha" constants
+        lib.hasInfix "sora/dark" constants
         && lib.hasInfix "kanagawa/dragon" constants
         && lib.hasInfix "active_theme" constants
       else true
     )
     (config.aytordev.programs.terminal.tools.starship.palette == "aytordev")
     (
-      catppuccinDevConfig.programs.vscode.profiles.default.userSettings."workbench.colorTheme"
-      == "Catppuccin Mocha"
+      kanagawaLightConfig.programs.vscode.profiles.default.userSettings."workbench.colorTheme"
+      == "Kanagawa Lotus"
     )
     (
-      catppuccinDevConfig.programs.vscode.profiles.default.userSettings."workbench.preferredDarkColorTheme"
-      == "Catppuccin Mocha"
+      kanagawaLightConfig.programs.vscode.profiles.default.userSettings."workbench.preferredDarkColorTheme"
+      == "Kanagawa Dragon"
     )
     (
-      catppuccinDevConfig.programs.vscode.profiles.default.userSettings."workbench.preferredLightColorTheme"
-      == "Catppuccin Latte"
+      kanagawaLightConfig.programs.vscode.profiles.default.userSettings."workbench.preferredLightColorTheme"
+      == "Kanagawa Lotus"
     )
     (
       developmentOverrideConfig.programs.vscode.profiles.default.userSettings."workbench.preferredDarkColorTheme"
       == "Kanagawa Dragon"
     )
-    (lib.elem "catppuccin" catppuccinDevConfig.programs.zed-editor.extensions)
-    (catppuccinDevConfig.programs.zed-editor.userSettings.theme == "Catppuccin Mocha")
+    (lib.elem "kanagawa-themes" kanagawaLightConfig.programs.zed-editor.extensions)
+    (kanagawaLightConfig.programs.zed-editor.userSettings.theme == "Kanagawa Lotus")
     (developmentOverrideConfig.programs.zed-editor.userSettings.theme == "Kanagawa Dragon")
     (soraConfig.aytordev.theme.palette.accent.hex == "#80c8e0")
     (lib.hasSuffix "ghostty/themes/sora.conf" (ghosttyTheme soraConfig))
@@ -229,12 +225,9 @@
     (
       soraConfig.programs.vscode.profiles.Nix.userSettings."workbench.colorTheme" == "Aytordev Sora Dark"
     )
-    # Sora ships no file-icon theme; only Catppuccin sets one.
+    # No family ships a file-icon theme, so VS Code keeps its built-in icons.
     (!(soraConfig.programs.vscode.profiles.default.userSettings ? "workbench.iconTheme"))
-    (
-      catppuccinDevConfig.programs.vscode.profiles.default.userSettings."workbench.iconTheme"
-      == "catppuccin-mocha"
-    )
+    (!(kanagawaLightConfig.programs.vscode.profiles.default.userSettings ? "workbench.iconTheme"))
     (soraConfig.aytordev.programs.terminal.tools.tmux.theme == null)
     (
       let

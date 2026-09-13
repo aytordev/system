@@ -1,9 +1,8 @@
 # Per-family tmux theme materialization plus the adapter's hybrid resolution.
 #
-# Official resources exist for catppuccin (the official `catppuccin/tmux`
-# plugin) and sora (the official vendored `sora.tmux.conf`). Kanagawa has no
-# upstream tmux resource, so it resolves to a theme generated from the shared
-# palette. `resolve` follows the shared hybrid policy:
+# The official vendored `sora.tmux.conf` is the only upstream tmux resource; a
+# family without one (e.g. Kanagawa) resolves to a theme generated from the
+# shared palette. `resolve` follows the shared hybrid policy:
 # explicit override > official exact > generated fallback > none.
 {
   lib,
@@ -19,14 +18,6 @@
   # and this file's NAR hash; the adapter sources it at runtime so the upstream
   # file stays byte-for-byte.
   soraConf = ./sora.tmux.conf;
-
-  # Families backed by an official tmux plugin: nixpkgs plugin attr -> the
-  # upstream option that selects the variant. catppuccin/tmux reads the
-  # American-spelling `@catppuccin_flavor`; its values are the lower-case
-  # flavour ids the integration declares.
-  pluginOptions = {
-    catppuccin = "@catppuccin_flavor";
-  };
 
   # Hand `resolveApp` the integration only when it covers the active variant;
   # otherwise the generated fallback wins. Malformed integrations pass through
@@ -79,45 +70,25 @@
     + lib.concatStringsSep "\n" lines
     + "\n";
 
-  # Mechanism backing a family: an official plugin, a vendored source file, or
-  # the palette-generated fallback (any family without an upstream resource,
-  # currently kanagawa).
-  familyKind = family:
-    if pluginOptions ? ${family}
-    then "plugin"
-    else if family == "sora"
-    then "sourced"
-    else "generated";
-
-  # Materialize a resolution for the active family. Returns the symbolic plugin
-  # attr (`pluginName`) the module maps to `pkgs.tmuxPlugins`, plus `extraConfig`
-  # lines. A plugin family carries its selection on the plugin's own config; a
-  # sourced/generated family carries it in the app-level extraConfig.
+  # Materialize a resolution for the active family. Official Sora selections
+  # source the vendored conf; every other selection renders the palette into
+  # app-level `extraConfig`.
   materialize = {
     family,
     resolution,
     palette,
   }: let
-    kind = familyKind family;
     selected = resolution.kind == "official" || resolution.kind == "explicit";
   in
     if resolution.kind == "none"
     then {
-      pluginName = null;
       extraConfig = "";
     }
-    else if kind == "plugin" && selected
+    else if family == "sora" && selected
     then {
-      pluginName = family;
-      extraConfig = "set -g ${pluginOptions.${family}} '${resolution.id}'";
-    }
-    else if kind == "sourced" && selected
-    then {
-      pluginName = null;
       extraConfig = "source-file ${soraConf}";
     }
     else {
-      pluginName = null;
       extraConfig = renderConfig {inherit palette;};
     };
 

@@ -89,45 +89,6 @@
 in {
   # ─── Official selection per family/variant ────────────────────────────────
 
-  testBtopCatppuccinResolvesOfficialPerVariant = {
-    expr = map (variant: resolveFor "catppuccin" variant null) [
-      "latte"
-      "frappe"
-      "macchiato"
-      "mocha"
-    ];
-    expected = [
-      {
-        kind = "official";
-        id = "catppuccin_latte";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-      {
-        kind = "official";
-        id = "catppuccin_frappe";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-      {
-        kind = "official";
-        id = "catppuccin_macchiato";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-      {
-        kind = "official";
-        id = "catppuccin_mocha";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-    ];
-  };
-
   testBtopSoraDarkResolvesOfficial = {
     expr = resolveFor "sora" "dark" null;
     expected = {
@@ -177,16 +138,6 @@ in {
 
   # ─── Theme source selected per resolution kind ───────────────────────────
 
-  testBtopOfficialSelectionDeploysVendoredTheme = {
-    expr = btop.themeSources {
-      resolution = resolveFor "catppuccin" "mocha" null;
-      generatedText = "generated";
-    };
-    expected = {
-      catppuccin_mocha = ../../modules/home/programs/terminal/tools/btop/themes/catppuccin_mocha.theme;
-    };
-  };
-
   testBtopSoraOfficialSelectionDeploysVendoredTheme = {
     expr = btop.themeSources {
       resolution = resolveFor "sora" "dark" null;
@@ -218,7 +169,7 @@ in {
   # ─── Explicit override wins ──────────────────────────────────────────────
 
   testBtopStringOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" "sora";
+    expr = resolveFor "kanagawa" "dragon" "sora";
     expected = {
       kind = "explicit";
       id = "sora";
@@ -227,20 +178,20 @@ in {
   };
 
   testBtopManualOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" {
+    expr = resolveFor "kanagawa" "dragon" {
       mode = "manual";
-      id = "catppuccin_latte";
+      id = "sora";
     };
     expected = {
       kind = "explicit";
-      id = "catppuccin_latte";
+      id = "sora";
       source = "user";
     };
   };
 
   testBtopManualOverrideToGeneratedDeploysGeneratedTheme = {
     expr = btop.themeSources {
-      resolution = resolveFor "catppuccin" "mocha" {
+      resolution = resolveFor "kanagawa" "dragon" {
         mode = "manual";
         id = "aytordev";
       };
@@ -263,7 +214,7 @@ in {
       };
       result = btop.settings {
         inherit base;
-        resolution = resolveFor "catppuccin" "mocha" null;
+        resolution = resolveFor "sora" "dark" null;
       };
     in {
       inherit
@@ -280,7 +231,7 @@ in {
       theme_background = true;
       update_ms = 2000;
       graph_symbol = "braille";
-      color_theme = "catppuccin_mocha";
+      color_theme = "sora";
     };
   };
 
@@ -424,15 +375,9 @@ in {
 
   testBtopVendoredIdsCoverDeclaredIntegrations = {
     expr = let
-      catppuccinIds = map (variant: integrations.catppuccin.btop.variants.${variant}.id) [
-        "latte"
-        "frappe"
-        "macchiato"
-        "mocha"
-      ];
       soraId = integrations.sora.btop.variants.dark.id;
     in
-      builtins.all (id: builtins.hasAttr id btop.officialThemes) (catppuccinIds ++ [soraId]);
+      builtins.all (id: builtins.hasAttr id btop.officialThemes) [soraId];
     expected = true;
   };
 

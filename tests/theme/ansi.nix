@@ -9,7 +9,6 @@
 
   providers = {
     kanagawa = mkProvider ../../modules/home/theme/kanagawa/provider.nix;
-    catppuccin = mkProvider ../../modules/home/theme/catppuccin/provider.nix;
     sora = mkProvider ../../modules/home/theme/sora/provider.nix;
   };
 
@@ -116,7 +115,6 @@ in {
       soraDark = dimNames providers.sora.variants.dark;
       soraLight = dimNames providers.sora.variants.light;
       kanagawaHasDim = providers.kanagawa.variants.wave.ansi ? dim;
-      catppuccinHasDim = providers.catppuccin.variants.mocha.ansi ? dim;
     };
     expected = {
       soraDark = [
@@ -136,7 +134,6 @@ in {
         "yellow"
       ];
       kanagawaHasDim = false;
-      catppuccinHasDim = false;
     };
   };
 
@@ -311,105 +308,6 @@ in {
     };
   };
 
-  testCatppuccinAnsiMatchesUpstream = {
-    expr = {
-      latte = ansiHex providers.catppuccin.variants.latte;
-      frappe = ansiHex providers.catppuccin.variants.frappe;
-      macchiato = ansiHex providers.catppuccin.variants.macchiato;
-      mocha = ansiHex providers.catppuccin.variants.mocha;
-    };
-    expected = {
-      latte = {
-        normal = {
-          black = "#5c5f77";
-          red = "#d20f39";
-          green = "#40a02b";
-          yellow = "#df8e1d";
-          blue = "#1e66f5";
-          magenta = "#ea76cb";
-          cyan = "#179299";
-          white = "#acb0be";
-        };
-        bright = {
-          black = "#6c6f85";
-          red = "#de293e";
-          green = "#49af3d";
-          yellow = "#eea02d";
-          blue = "#456eff";
-          magenta = "#fe85d8";
-          cyan = "#2d9fa8";
-          white = "#bcc0cc";
-        };
-      };
-      frappe = {
-        normal = {
-          black = "#51576d";
-          red = "#e78284";
-          green = "#a6d189";
-          yellow = "#e5c890";
-          blue = "#8caaee";
-          magenta = "#f4b8e4";
-          cyan = "#81c8be";
-          white = "#a5adce";
-        };
-        bright = {
-          black = "#626880";
-          red = "#e67172";
-          green = "#8ec772";
-          yellow = "#d9ba73";
-          blue = "#7b9ef0";
-          magenta = "#f2a4db";
-          cyan = "#5abfb5";
-          white = "#b5bfe2";
-        };
-      };
-      macchiato = {
-        normal = {
-          black = "#494d64";
-          red = "#ed8796";
-          green = "#a6da95";
-          yellow = "#eed49f";
-          blue = "#8aadf4";
-          magenta = "#f5bde6";
-          cyan = "#8bd5ca";
-          white = "#a5adcb";
-        };
-        bright = {
-          black = "#5b6078";
-          red = "#ec7486";
-          green = "#8ccf7f";
-          yellow = "#e1c682";
-          blue = "#78a1f6";
-          magenta = "#f2a9dd";
-          cyan = "#63cbc0";
-          white = "#b8c0e0";
-        };
-      };
-      mocha = {
-        normal = {
-          black = "#45475a";
-          red = "#f38ba8";
-          green = "#a6e3a1";
-          yellow = "#f9e2af";
-          blue = "#89b4fa";
-          magenta = "#f5c2e7";
-          cyan = "#94e2d5";
-          white = "#a6adc8";
-        };
-        bright = {
-          black = "#585b70";
-          red = "#f37799";
-          green = "#89d88b";
-          yellow = "#ebd391";
-          blue = "#74a8fc";
-          magenta = "#f2aede";
-          cyan = "#6bd7ca";
-          white = "#bac2de";
-        };
-      };
-    };
-  };
-
   testSoraAnsiMatchesUpstream = {
     expr = {
       dark = ansiHex providers.sora.variants.dark;
@@ -481,60 +379,6 @@ in {
     };
   };
 
-  # ─── Catppuccin bright roles are sourced from ansiColors ──────────────────
-
-  testCatppuccinBrightRolesSourceAnsi = {
-    expr = let
-      of = variant: {
-        red_bright = providers.catppuccin.variants.${variant}.palette.red_bright.hex;
-        ansiRedBright = providers.catppuccin.variants.${variant}.ansi.bright.red.hex;
-        yellow_bright = providers.catppuccin.variants.${variant}.palette.yellow_bright.hex;
-        ansiYellowBright = providers.catppuccin.variants.${variant}.ansi.bright.yellow.hex;
-        blue_bright = providers.catppuccin.variants.${variant}.palette.blue_bright.hex;
-        ansiBlueBright = providers.catppuccin.variants.${variant}.ansi.bright.blue.hex;
-      };
-    in {
-      latte = of "latte";
-      frappe = of "frappe";
-      macchiato = of "macchiato";
-      mocha = of "mocha";
-    };
-    expected = {
-      latte = {
-        red_bright = "#de293e";
-        ansiRedBright = "#de293e";
-        yellow_bright = "#eea02d";
-        ansiYellowBright = "#eea02d";
-        blue_bright = "#456eff";
-        ansiBlueBright = "#456eff";
-      };
-      frappe = {
-        red_bright = "#e67172";
-        ansiRedBright = "#e67172";
-        yellow_bright = "#d9ba73";
-        ansiYellowBright = "#d9ba73";
-        blue_bright = "#7b9ef0";
-        ansiBlueBright = "#7b9ef0";
-      };
-      macchiato = {
-        red_bright = "#ec7486";
-        ansiRedBright = "#ec7486";
-        yellow_bright = "#e1c682";
-        ansiYellowBright = "#e1c682";
-        blue_bright = "#78a1f6";
-        ansiBlueBright = "#78a1f6";
-      };
-      mocha = {
-        red_bright = "#f37799";
-        ansiRedBright = "#f37799";
-        yellow_bright = "#ebd391";
-        ansiYellowBright = "#ebd391";
-        blue_bright = "#74a8fc";
-        ansiBlueBright = "#74a8fc";
-      };
-    };
-  };
-
   # ─── Sora semantic roles versus the ANSI table ────────────────────────────
 
   testSoraRolesAndAnsiGreen = {
@@ -586,18 +430,18 @@ in {
     expr = let
       theme = themeConfig {
         aytordev.theme = {
-          name = "catppuccin";
-          variant = "mocha";
+          name = "sora";
+          variant = "dark";
         };
       };
     in {
       brightRed = theme.ansi.bright.red.hex;
-      providerBrightRed = theme.providers.catppuccin.ansi.mocha.bright.red.hex;
-      matchesProvider = theme.ansi == theme.providers.catppuccin.ansi.mocha;
+      providerBrightRed = theme.providers.sora.ansi.dark.bright.red.hex;
+      matchesProvider = theme.ansi == theme.providers.sora.ansi.dark;
     };
     expected = {
-      brightRed = "#f37799";
-      providerBrightRed = "#f37799";
+      brightRed = "#d88898";
+      providerBrightRed = "#d88898";
       matchesProvider = true;
     };
   };
@@ -611,12 +455,6 @@ in {
         "dragon"
         "lotus"
         "wave"
-      ];
-      catppuccin = [
-        "frappe"
-        "latte"
-        "macchiato"
-        "mocha"
       ];
       sora = [
         "dark"

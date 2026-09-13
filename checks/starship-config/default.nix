@@ -49,16 +49,12 @@
   # The same TOML generator Home Manager uses for the starship config.
   renderConfig = home: (pkgs.formats.toml {}).generate "starship.toml" home.config.programs.starship.settings;
 
-  # One config per resolution path: official with a style overlay (sora),
-  # official palette-only (catppuccin), and generated (kanagawa).
+  # One config per resolution path: official with a style overlay (sora) and
+  # generated (kanagawa).
   configs = {
     sora = renderConfig (mkHome {
       theme = "sora";
       variant = "dark";
-    });
-    catppuccin = renderConfig (mkHome {
-      theme = "catppuccin";
-      variant = "mocha";
     });
     kanagawa = renderConfig (mkHome {
       theme = "kanagawa";

@@ -48,17 +48,6 @@ in {
     };
   };
 
-  testZedCatppuccinMochaResolvesOfficial = {
-    expr = resolveFor "catppuccin" "mocha" null;
-    expected = {
-      kind = "official";
-      id = "Catppuccin Mocha";
-      provenance = "official-upstream";
-      variantProvenance = "official";
-      source = "official";
-    };
-  };
-
   testZedSoraDarkResolvesOfficial = {
     expr = resolveFor "sora" "dark" null;
     expected = {
@@ -133,16 +122,16 @@ in {
   };
 
   testZedOfficialThemeSettingPointsAtOfficialId = {
-    expr = zed.themeSetting (resolveFor "catppuccin" "mocha" null);
+    expr = zed.themeSetting (resolveFor "sora" "dark" null);
     expected = {
-      theme = "Catppuccin Mocha";
+      theme = "Sora";
     };
   };
 
   # ─── Explicit override wins and suppresses the generated file ─────────────
 
   testZedStringOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" "Kanagawa Wave";
+    expr = resolveFor "sora" "light" "Kanagawa Wave";
     expected = {
       kind = "explicit";
       id = "Kanagawa Wave";
@@ -151,7 +140,7 @@ in {
   };
 
   testZedManualOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" {
+    expr = resolveFor "sora" "light" {
       mode = "manual";
       id = "Kanagawa Lotus";
     };

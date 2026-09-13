@@ -57,7 +57,7 @@ in {
 
   testYaziFlavorUsesActiveFamilyAccent = {
     expr = let
-      inherit ((themeConfig {aytordev.theme.name = "catppuccin";})) palette;
+      inherit ((themeConfig {aytordev.theme.name = "sora";})) palette;
       flavor = import ../../modules/home/programs/terminal/tools/yazi/flavor.nix {inherit palette;};
     in
       lib.hasInfix palette.accent.hex flavor;
@@ -83,9 +83,9 @@ in {
 
   testPiThemeFollowsActiveFamily = {
     expr = let
-      inherit ((themeConfig {aytordev.theme.name = "catppuccin";})) palette;
+      inherit ((themeConfig {aytordev.theme.name = "sora";})) palette;
     in
       (import ../../modules/home/programs/terminal/tools/pi/theme.nix {inherit palette;}).vars.bg;
-    expected = "#1e1e2e";
+    expected = "#0e1018";
   };
 }

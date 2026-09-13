@@ -3,7 +3,7 @@
   lib,
 }: let
   context = import ./fixtures/context.nix {inherit self lib;};
-  inherit (context) themeConfig themeAssertionsHold;
+  inherit (context) themeConfig themeAssertionsHold throws;
 in {
   testThemeDefaultIsKanagawaDragon = {
     expr = let
@@ -25,37 +25,9 @@ in {
     };
   };
 
-  testThemeCatppuccinLatte = {
-    expr = let
-      theme = themeConfig {
-        aytordev.theme = {
-          name = "catppuccin";
-          variant = "latte";
-        };
-      };
-    in {
-      inherit
-        (theme)
-        name
-        variant
-        isLight
-        displayName
-        ;
-      accent = theme.palette.accent.hex;
-    };
-    expected = {
-      name = "catppuccin";
-      variant = "latte";
-      isLight = true;
-      displayName = "Catppuccin";
-      accent = "#1e66f5";
-    };
-  };
-
   testThemeExposesEveryProvider = {
     expr = builtins.attrNames (themeConfig {}).providers;
     expected = [
-      "catppuccin"
       "kanagawa"
       "sora"
     ];
@@ -64,7 +36,6 @@ in {
   testThemeExposesEveryFamilyIntegrations = {
     expr = builtins.attrNames (themeConfig {}).integrations;
     expected = [
-      "catppuccin"
       "kanagawa"
       "sora"
     ];
@@ -85,18 +56,18 @@ in {
 
   testThemeIntegrationsArePerFamily = {
     expr = let
-      theme = themeConfig {aytordev.theme.name = "catppuccin";};
+      theme = themeConfig {aytordev.theme.name = "sora";};
     in {
       matches =
-        builtins.attrNames theme.integrations.catppuccin
-        == builtins.attrNames theme.providers.catppuccin.integrations;
-      catppuccin = builtins.attrNames theme.providers.catppuccin.integrations;
+        builtins.attrNames theme.integrations.sora == builtins.attrNames theme.providers.sora.integrations;
+      sora = builtins.attrNames theme.providers.sora.integrations;
     };
     expected = {
       matches = true;
-      catppuccin = [
+      sora = [
         "bat"
         "btop"
+        "delta"
         "eza"
         "firefox"
         "fzf"
@@ -105,10 +76,8 @@ in {
         "opencode"
         "starship"
         "tmux"
-        "vscode"
         "yazi"
         "zed"
-        "zellij"
       ];
     };
   };
@@ -243,7 +212,6 @@ in {
       theme = themeConfig {};
     in {
       kanagawa = builtins.attrNames theme.providers.kanagawa.integrations;
-      catppuccin = builtins.attrNames theme.providers.catppuccin.integrations;
       sora = builtins.attrNames theme.providers.sora.integrations;
     };
     expected = {
@@ -252,22 +220,6 @@ in {
         "ghostty"
         "vscode"
         "zed"
-      ];
-      catppuccin = [
-        "bat"
-        "btop"
-        "eza"
-        "firefox"
-        "fzf"
-        "ghostty"
-        "lazygit"
-        "opencode"
-        "starship"
-        "tmux"
-        "vscode"
-        "yazi"
-        "zed"
-        "zellij"
       ];
       sora = [
         "bat"
@@ -310,10 +262,8 @@ in {
       {aytordev.theme.variant = "wave";}
       {aytordev.theme.variant = "dragon";}
       {aytordev.theme.variant = "lotus";}
-      {aytordev.theme.name = "catppuccin";}
     ];
     expected = [
-      true
       true
       true
       true
@@ -326,35 +276,6 @@ in {
         builtins.deepSeq (themeConfig {aytordev.theme.palette.accent.hex = "#ffffff";}) true
       )).success;
     expected = false;
-  };
-
-  testThemeCatppuccinExposesEveryVariant = {
-    expr = let
-      theme = themeConfig {aytordev.theme.name = "catppuccin";};
-      latte = themeConfig {
-        aytordev.theme = {
-          name = "catppuccin";
-          variant = "latte";
-        };
-      };
-    in {
-      variants = builtins.attrNames theme.providers.${theme.name}.variants;
-      inherit (theme.providers.catppuccin) darkVariant lightVariant;
-      latteIsLight = latte.isLight;
-      mochaIsLight = theme.isLight;
-    };
-    expected = {
-      variants = [
-        "frappe"
-        "latte"
-        "macchiato"
-        "mocha"
-      ];
-      darkVariant = "mocha";
-      lightVariant = "latte";
-      latteIsLight = true;
-      mochaIsLight = false;
-    };
   };
 
   testKanagawaDragonBrightYellowStaysBrighterThanYellow = {
@@ -374,14 +295,14 @@ in {
     expr = let
       theme = themeConfig {
         aytordev.theme = {
-          name = "catppuccin";
-          variant = "frappe";
+          name = "sora";
+          variant = "dark";
         };
       };
     in {
-      activeMatches = theme.palette == theme.providers.${theme.name}.variants.frappe;
-      providerMatches = theme.palette == theme.providers.catppuccin.variants.frappe;
-      transparent = theme.providers.catppuccin.variants.latte.transparent.sketchybar;
+      activeMatches = theme.palette == theme.providers.${theme.name}.variants.dark;
+      providerMatches = theme.palette == theme.providers.sora.variants.dark;
+      transparent = theme.providers.sora.variants.dark.transparent.sketchybar;
     };
     expected = {
       activeMatches = true;
@@ -390,21 +311,12 @@ in {
     };
   };
 
-  testCatppuccinFrappeLabelIsAccented = {
-    expr = let
-      theme = themeConfig {
-        aytordev.theme = {
-          name = "catppuccin";
-          variant = "frappe";
-        };
-      };
-    in {
-      zed = theme.providers.catppuccin.integrations.zed.variants.frappe.id;
-      vscode = theme.providers.catppuccin.integrations.vscode.variants.frappe.id;
-    };
-    expected = {
-      zed = "Catppuccin Frappé";
-      vscode = "Catppuccin Frappé";
-    };
+  # Regression: Catppuccin is retired; selecting it must be rejected like any
+  # other unknown family (the `name` enum no longer lists it).
+  testThemeRejectsRemovedCatppuccinFamily = {
+    expr = throws (themeConfig {
+      aytordev.theme.name = "catppuccin";
+    });
+    expected = true;
   };
 }

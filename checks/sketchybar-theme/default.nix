@@ -148,7 +148,7 @@
     end
     theme.init()
     local before = theme.current
-    check(theme.apply("catppuccin/mocha") == false, "open failure returns false")
+    check(theme.apply("sora/dark") == false, "open failure returns false")
     check(theme.current == before, "current unchanged on open failure")
     check(#sbar.execs == 0, "no reload on open failure")
   '';
@@ -166,7 +166,7 @@
     end
     theme.init()
     local before = theme.current
-    check(theme.apply("catppuccin/mocha") == false, "write failure returns false")
+    check(theme.apply("sora/dark") == false, "write failure returns false")
     check(theme.current == before, "current unchanged on write failure")
     check(#sbar.execs == 0, "no reload on write failure")
   '';
@@ -184,7 +184,7 @@
     end
     theme.init()
     local before = theme.current
-    check(theme.apply("catppuccin/mocha") == false, "close failure returns false")
+    check(theme.apply("sora/dark") == false, "close failure returns false")
     check(theme.current == before, "current unchanged on close failure")
     check(#sbar.execs == 0, "no reload on close failure")
   '';
@@ -198,7 +198,7 @@
       return real_remove(path)
     end
     theme.init()
-    check(theme.current == "catppuccin/mocha", "seeded persisted theme loads")
+    check(theme.current == "sora/dark", "seeded persisted theme loads")
     check(theme.follow_nix() == false, "remove failure returns false")
     check(#sbar.execs == 0, "no reload on remove failure")
   '';
@@ -255,7 +255,7 @@ in
     HOME="$TMPDIR/home-close" lua ${closeFailureHarness}
 
     seed_home home-remove
-    printf 'catppuccin/mocha\n' > "$TMPDIR/home-remove/.config/sketchybar/.theme_variant"
+    printf 'sora/dark\n' > "$TMPDIR/home-remove/.config/sketchybar/.theme_variant"
     HOME="$TMPDIR/home-remove" lua ${removeFailureHarness}
 
     touch "$out"

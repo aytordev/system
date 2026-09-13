@@ -80,9 +80,7 @@ in {
       # Extensions - https://github.com/zed-industries/extensions/tree/main/extensions
       extensions = [
         "kanagawa-themes"
-        "catppuccin"
         "sora-theme"
-        "catppuccin-icons"
       ];
 
       # Main settings
@@ -101,7 +99,6 @@ in {
           git_panel = {
             dock = "right";
           };
-          icon_theme = "Catppuccin Mocha";
           features = {
             edit_prediction_provider = "zed";
           };

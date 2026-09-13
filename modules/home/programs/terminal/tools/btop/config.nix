@@ -16,14 +16,9 @@
 
   # Vendored official `.theme` files, keyed by the exact id the integration
   # declares and btop selects via `color_theme` (btop reads
-  # `$XDG_CONFIG_HOME/btop/themes/<id>.theme`). Catppuccin comes from
-  # `catppuccin/btop` @ f437574b600f1c6d932627050b15ff5153b58fa3; Sora's from
+  # `$XDG_CONFIG_HOME/btop/themes/<id>.theme`). Sora's comes from
   # `Aejkatappaja/sora` @ 504df4913c55dd9ad658e331b172f86b0537b439.
   officialThemes = {
-    catppuccin_latte = ./themes/catppuccin_latte.theme;
-    catppuccin_frappe = ./themes/catppuccin_frappe.theme;
-    catppuccin_macchiato = ./themes/catppuccin_macchiato.theme;
-    catppuccin_mocha = ./themes/catppuccin_mocha.theme;
     sora = ./themes/sora.theme;
   };
 

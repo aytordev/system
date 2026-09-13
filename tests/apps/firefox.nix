@@ -190,23 +190,23 @@ in {
         family = "kanagawa";
         variant = "dragon";
       };
-      catppuccin = renderFor {
-        family = "catppuccin";
-        variant = "mocha";
+      sora = renderFor {
+        family = "sora";
+        variant = "dark";
       };
       kanagawaBg = providers.kanagawa.variants.dragon.bg.hex;
-      catppuccinBg = providers.catppuccin.variants.mocha.bg.hex;
+      soraBg = providers.sora.variants.dark.bg.hex;
     in {
-      differ = kanagawa != catppuccin;
+      differ = kanagawa != sora;
       kanagawaHasOwnBg = lib.hasInfix kanagawaBg kanagawa;
-      kanagawaLacksCatppuccinBg = !(lib.hasInfix catppuccinBg kanagawa);
-      catppuccinHasOwnBg = lib.hasInfix catppuccinBg catppuccin;
+      kanagawaLacksSoraBg = !(lib.hasInfix soraBg kanagawa);
+      soraHasOwnBg = lib.hasInfix soraBg sora;
     };
     expected = {
       differ = true;
       kanagawaHasOwnBg = true;
-      kanagawaLacksCatppuccinBg = true;
-      catppuccinHasOwnBg = true;
+      kanagawaLacksSoraBg = true;
+      soraHasOwnBg = true;
     };
   };
 

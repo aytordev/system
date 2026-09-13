@@ -7,8 +7,8 @@
 # prompt keeps its own layout, glyphs and formats and only the color-bearing
 # fields change. Colors reference the resource's own palette keys.
 #
-# Only resources that ship module styles appear here. Catppuccin themes are
-# palette-only, so the base prompt already matches upstream; no entry needed.
+# Only resources that ship module styles appear here; palette-only resources
+# need no entry because the base prompt already matches upstream.
 #
 # Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439
 #   https://raw.githubusercontent.com/Aejkatappaja/sora/504df4913c55dd9ad658e331b172f86b0537b439/extras/starship/sora.toml

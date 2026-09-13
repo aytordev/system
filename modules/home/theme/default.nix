@@ -35,11 +35,6 @@
         inherit (themeLib) mkColor transparent;
       }
     );
-    catppuccin = themeLib.validateProvider (
-      import ./catppuccin/provider.nix {
-        inherit (themeLib) mkColor transparent;
-      }
-    );
     sora = themeLib.validateProvider (
       import ./sora/provider.nix {
         inherit (themeLib) mkColor transparent;
@@ -67,8 +62,8 @@
 
   # The 16 ANSI terminal slots, grouped into the eight normal and eight bright
   # colors an ANSI palette defines. Kept faithful to upstream (Kanagawa's
-  # `term[]`, Catppuccin's `ansiColors`, Sora's `terminal_*`) so generated
-  # terminal fallbacks do not have to guess from the semantic `palette`.
+  # `term[]`, Sora's `terminal_*`) so generated terminal fallbacks do not have
+  # to guess from the semantic `palette`.
   ansiSlotNames = [
     "black"
     "red"
@@ -170,7 +165,6 @@ in {
       description = ''
         Theme variant. Valid values depend on the selected theme.
         For Kanagawa: wave, dragon, lotus.
-        For Catppuccin: latte, frappe, macchiato, mocha.
       '';
     };
 
@@ -239,8 +233,6 @@ in {
         All registered theme families with their variant palettes, ANSI tables
         and the native apps they ship a resource for.
         Enables runtime switching across families.
-        Example: config.aytordev.theme.providers.catppuccin.variants.mocha.accent.hex
-        Example: config.aytordev.theme.providers.catppuccin.ansi.mocha.bright.red.hex
       '';
     };
 

@@ -19,10 +19,6 @@
   # inside each plist (the id bat selects via `--theme`). Kanagawa's upstream
   # file declares the single name "Kanagawa" and matches only the wave palette.
   officialThemes = {
-    "Catppuccin Latte" = ./themes/catppuccin-latte.tmTheme;
-    "Catppuccin Frappé" = ./themes/catppuccin-frappe.tmTheme;
-    "Catppuccin Macchiato" = ./themes/catppuccin-macchiato.tmTheme;
-    "Catppuccin Mocha" = ./themes/catppuccin-mocha.tmTheme;
     "Kanagawa" = ./themes/kanagawa-wave.tmTheme;
     "Sora" = ./themes/sora.tmTheme;
   };

@@ -33,28 +33,6 @@
 in {
   # ─── Per-family resolution ────────────────────────────────────────────────
 
-  testTmuxCatppuccinMochaResolvesOfficial = {
-    expr = resolveFor "catppuccin" "mocha" null;
-    expected = {
-      kind = "official";
-      id = "mocha";
-      provenance = "official-upstream";
-      variantProvenance = "official";
-      source = "official";
-    };
-  };
-
-  testTmuxCatppuccinLatteResolvesOfficial = {
-    expr = resolveFor "catppuccin" "latte" null;
-    expected = {
-      kind = "official";
-      id = "latte";
-      provenance = "official-upstream";
-      variantProvenance = "official";
-      source = "official";
-    };
-  };
-
   testTmuxSoraDarkResolvesOfficial = {
     expr = resolveFor "sora" "dark" null;
     expected = {
@@ -88,76 +66,55 @@ in {
   # ─── Explicit override wins ───────────────────────────────────────────────
 
   testTmuxStringOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" "latte";
+    expr = resolveFor "kanagawa" "dragon" "sora";
     expected = {
       kind = "explicit";
-      id = "latte";
+      id = "sora";
       source = "user";
     };
   };
 
   testTmuxManualOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" {
+    expr = resolveFor "kanagawa" "dragon" {
       mode = "manual";
-      id = "frappe";
+      id = "sora";
     };
     expected = {
       kind = "explicit";
-      id = "frappe";
+      id = "sora";
       source = "user";
     };
   };
 
   # ─── Per-family materialization ───────────────────────────────────────────
 
-  # Catppuccin loads the official plugin and sets the upstream flavor option.
-  testTmuxCatppuccinMaterializesOfficialPluginAndFlavor = {
-    expr = materializeFor "catppuccin" "mocha" null;
-    expected = {
-      pluginName = "catppuccin";
-      extraConfig = "set -g @catppuccin_flavor 'mocha'";
-    };
-  };
-
-  testTmuxCatppuccinOverridePinsFlavor = {
-    expr = materializeFor "catppuccin" "mocha" "macchiato";
-    expected = {
-      pluginName = "catppuccin";
-      extraConfig = "set -g @catppuccin_flavor 'macchiato'";
-    };
-  };
-
   # Sora sources the vendored official conf instead of loading a plugin.
   testTmuxSoraMaterializesSourcedOfficialConf = {
     expr = let
       artifacts = materializeFor "sora" "dark" null;
     in {
-      inherit (artifacts) pluginName;
       sources = lib.hasPrefix "source-file " artifacts.extraConfig;
       namesConf = lib.hasInfix "sora.tmux.conf" artifacts.extraConfig;
     };
     expected = {
-      pluginName = null;
       sources = true;
       namesConf = true;
     };
   };
 
   # Kanagawa has no upstream resource: the fallback is generated from the
-  # active palette, not a plugin.
+  # active palette.
   testTmuxKanagawaMaterializesGeneratedPalette = {
     expr = let
       palette = paletteFor "kanagawa" "dragon";
       artifacts = materializeFor "kanagawa" "dragon" null;
     in {
-      inherit (artifacts) pluginName;
       bg = lib.hasInfix palette.bg_dim.hex artifacts.extraConfig;
       fg = lib.hasInfix palette.fg.hex artifacts.extraConfig;
       accent = lib.hasInfix palette.accent.hex artifacts.extraConfig;
       border = lib.hasInfix palette.border.hex artifacts.extraConfig;
     };
     expected = {
-      pluginName = null;
       bg = true;
       fg = true;
       accent = true;
@@ -168,9 +125,8 @@ in {
   # ─── Opt-out emits no theme ───────────────────────────────────────────────
 
   testTmuxNoneOverrideEmitsNothing = {
-    expr = materializeFor "catppuccin" "mocha" {mode = "none";};
+    expr = materializeFor "kanagawa" "dragon" {mode = "none";};
     expected = {
-      pluginName = null;
       extraConfig = "";
     };
   };
@@ -178,7 +134,6 @@ in {
   testTmuxNoneDropsEvenAnOfficialResource = {
     expr = materializeFor "sora" "dark" {mode = "none";};
     expected = {
-      pluginName = null;
       extraConfig = "";
     };
   };
@@ -187,7 +142,7 @@ in {
 
   testTmuxGeneratedConfigCarriesPalette = {
     expr = let
-      palette = theme.providers.catppuccin.variants.mocha;
+      palette = theme.providers.sora.variants.dark;
       text = tmux.renderConfig {inherit palette;};
     in {
       bg = lib.hasInfix palette.bg_dim.hex text;
@@ -307,11 +262,11 @@ in {
   testTmuxBrokenIntegrationThrows = {
     expr = throws (
       tmux.resolve {
-        variant = "mocha";
+        variant = "dark";
         override = null;
         integration = {
           source = null;
-          variants.mocha.id = "mocha";
+          variants.dark.id = "sora";
         };
       }
     );

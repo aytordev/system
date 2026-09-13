@@ -16,7 +16,6 @@ override.
 
 | Family | bat | btop | delta | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Catppuccin (mocha) | O | O | G | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
 | Kanagawa (dragon) | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
 | Sora (dark) | O | O | O | O | O | O | O | G | O | O | G | G | O | O | G | O | O | G |
 
@@ -24,10 +23,6 @@ override.
 
 | Family / variant | bat | btop | delta | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Catppuccin frappe | O | O | G | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
-| Catppuccin latte | O | O | G | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
-| Catppuccin macchiato | O | O | G | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
-| Catppuccin mocha | O | O | G | O | O | O | O | G | O | O | G | G | O | O | O | O | O | O |
 | Kanagawa dragon | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
 | Kanagawa lotus | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
 | Kanagawa wave | O | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
@@ -38,20 +33,6 @@ override.
 
 | Family | App | Provenance | Vendored | Covered variants | Pinned source |
 | --- | --- | --- | --- | --- | --- |
-| Catppuccin | bat | official-upstream | yes | frappe, latte, macchiato, mocha | https://github.com/catppuccin/bat @ 6810349b28055dce54076712fc05fc68da4b8ec0 |
-| Catppuccin | btop | official-upstream | yes | frappe, latte, macchiato, mocha | https://github.com/catppuccin/btop @ f437574b600f1c6d932627050b15ff5153b58fa3 |
-| Catppuccin | eza | official-upstream | yes | frappe, latte, macchiato, mocha | https://github.com/catppuccin/eza @ 70f805f6cc27fa5b91750b75afb4296a0ec7fec9 |
-| Catppuccin | firefox | official-upstream | no | frappe, latte, macchiato, mocha | https://github.com/catppuccin/firefox @ 1aa345a3312f0a649068418679ceb81a9c599d36 |
-| Catppuccin | fzf | official-upstream | no | frappe, latte, macchiato, mocha | https://github.com/catppuccin/fzf @ 7508f8141286fb95249100a2b5325960320dcf32 |
-| Catppuccin | ghostty | official-upstream | yes | frappe, latte, macchiato, mocha | https://github.com/catppuccin/ghostty @ b0b03ccee7ae8f16b13bd4fdfe267616defdb2b7 |
-| Catppuccin | lazygit | official-upstream | no | frappe, latte, macchiato, mocha | https://github.com/catppuccin/lazygit @ 798ad2e75a11766e9ba50e76e59aea6a81eb4866 |
-| Catppuccin | opencode | official-upstream | yes | frappe, latte, macchiato, mocha | https://github.com/catppuccin/opencode @ d5f409632e6294762925fae869ad0c96dc17cd8e |
-| Catppuccin | starship | official-upstream | no | frappe, latte, macchiato, mocha | https://github.com/catppuccin/starship @ 5906cc369dd8207e063c0e6e2d27bd0c0b567cb8 |
-| Catppuccin | tmux | official-upstream | no | frappe, latte, macchiato, mocha | https://github.com/catppuccin/tmux @ b2f219c00609ea1772bcfbdae0697807184743e4 |
-| Catppuccin | vscode | official-upstream | no | frappe, latte, macchiato, mocha | https://github.com/catppuccin/vscode @ 55b3e5d6248eb201c0e16424ce6f345757e94bad |
-| Catppuccin | yazi | official-upstream | yes | frappe, latte, macchiato, mocha | https://github.com/catppuccin/yazi @ d62802be39210ea10e54b3e3b09735c6cb9e57c1 |
-| Catppuccin | zed | official-upstream | no | frappe, latte, macchiato, mocha | https://github.com/catppuccin/zed @ 9e24b02f32ca6bba7ac0cfb1bf758b1ccd8ee5cb |
-| Catppuccin | zellij | official-upstream | yes | frappe, latte, macchiato, mocha | https://github.com/catppuccin/zellij @ be841efbfb0b914daecdc4d1cde242fee53781b2 |
 | Kanagawa | bat | official-upstream | yes | wave | https://github.com/rebelot/kanagawa.nvim @ bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3 |
 | Kanagawa | ghostty | official-upstream | yes | dragon, lotus, wave | https://github.com/rebelot/kanagawa.nvim @ bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3 |
 | Kanagawa | vscode | community-port | no | dragon, lotus, wave | https://marketplace.visualstudio.com/items?itemName=metaphore.kanagawa-vscode-color-theme @ 0.5.0 |
@@ -92,7 +73,7 @@ adapter.
 | pi | aytordev | No upstream resource; theme + banner ship with the gentle shell. |
 | sketchybar | palette | No upstream resource; runtime family/variant picker (the only hot-reloading consumer). |
 | starship | aytordev | Palette-generated palette. |
-| tmux | aytordev | Palette-generated conf; catppuccin selects via @catppuccin_flavor. |
+| tmux | aytordev | Palette-generated conf. |
 | vscode | aytordev-<family>-<variant> | Palette-generated extension. |
 | yazi | <family>-<variant> | Palette-generated flavor. |
 | zed | aytordev | Palette-generated theme JSON. |

@@ -40,32 +40,6 @@
 in {
   # ─── Official resource selection per family/variant ───────────────────────
 
-  testEzaCatppuccinMochaResolvesOfficial = {
-    expr = resolveFor "catppuccin" "mocha" null;
-    expected = {
-      kind = "official";
-      id = "catppuccin-mocha-mauve";
-      provenance = "official-upstream";
-      variantProvenance = "official";
-      source = "official";
-    };
-  };
-
-  testEzaCatppuccinEveryFlavorResolvesOfficial = {
-    expr = map (variant: (resolveFor "catppuccin" variant null).id) [
-      "latte"
-      "frappe"
-      "macchiato"
-      "mocha"
-    ];
-    expected = [
-      "catppuccin-latte-mauve"
-      "catppuccin-frappe-mauve"
-      "catppuccin-macchiato-mauve"
-      "catppuccin-mocha-mauve"
-    ];
-  };
-
   testEzaSoraDarkResolvesOfficial = {
     expr = resolveFor "sora" "dark" null;
     expected = {
@@ -105,16 +79,16 @@ in {
   # ─── Explicit override wins ───────────────────────────────────────────────
 
   testEzaStringOverrideWins = {
-    expr = resolveFor "kanagawa" "dragon" "catppuccin-mocha-mauve";
+    expr = resolveFor "kanagawa" "dragon" "sora";
     expected = {
       kind = "explicit";
-      id = "catppuccin-mocha-mauve";
+      id = "sora";
       source = "user";
     };
   };
 
   testEzaManualOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" {
+    expr = resolveFor "kanagawa" "dragon" {
       mode = "manual";
       id = "sora";
     };
@@ -128,7 +102,7 @@ in {
   # ─── Opt-out emits no theme selection ─────────────────────────────────────
 
   testEzaNoneOverrideEmitsNothing = {
-    expr = selectionFor "catppuccin" "mocha" {mode = "none";};
+    expr = selectionFor "sora" "dark" {mode = "none";};
     expected = {
       mode = "none";
     };
@@ -142,14 +116,6 @@ in {
   };
 
   # ─── Official selection names the vendored theme.yml ──────────────────────
-
-  testEzaOfficialCatppuccinSelectsVendoredFile = {
-    expr = selectionFor "catppuccin" "mocha" null;
-    expected = {
-      mode = "official";
-      path = ../../modules/home/programs/terminal/tools/eza/themes/catppuccin-mocha-mauve.yml;
-    };
-  };
 
   testEzaOfficialSoraSelectsVendoredFile = {
     expr = selectionFor "sora" "dark" null;
@@ -181,13 +147,13 @@ in {
   };
 
   testEzaManualOverrideToGeneratedPinsGeneratedTheme = {
-    expr = selectionFor "catppuccin" "mocha" {
+    expr = selectionFor "sora" "dark" {
       mode = "manual";
       id = "aytordev";
     };
     expected = {
       mode = "generated";
-      theme = renderFor "catppuccin" "mocha";
+      theme = renderFor "sora" "dark";
     };
   };
 
@@ -232,21 +198,6 @@ in {
       builtins.attrNames eza.officialThemes
     );
     expected = true;
-  };
-
-  testEzaVendoredCatppuccinCarriesMochaMauve = {
-    expr = let
-      text = builtins.readFile eza.officialThemes.catppuccin-mocha-mauve;
-    in {
-      mauve = lib.hasInfix "#cba6f7" text;
-      fg = lib.hasInfix "#cdd6f4" text;
-      normalFileKind = lib.hasInfix "normal:" text;
-    };
-    expected = {
-      mauve = true;
-      fg = true;
-      normalFileKind = true;
-    };
   };
 
   testEzaVendoredSoraCarriesPaletteColors = {
@@ -305,11 +256,11 @@ in {
   testEzaBrokenIntegrationThrows = {
     expr = throws (
       eza.resolve {
-        variant = "mocha";
+        variant = "dark";
         override = null;
         integration = {
           source = null;
-          variants.mocha.id = "catppuccin-mocha-mauve";
+          variants.dark.id = "sora";
         };
       }
     );

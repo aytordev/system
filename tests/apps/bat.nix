@@ -36,45 +36,6 @@
 in {
   # ─── Official ids per family/variant ──────────────────────────────────────
 
-  testBatCatppuccinResolvesOfficialPerVariant = {
-    expr = map (variant: resolveFor "catppuccin" variant null) [
-      "latte"
-      "frappe"
-      "macchiato"
-      "mocha"
-    ];
-    expected = [
-      {
-        kind = "official";
-        id = "Catppuccin Latte";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-      {
-        kind = "official";
-        id = "Catppuccin Frappé";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-      {
-        kind = "official";
-        id = "Catppuccin Macchiato";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-      {
-        kind = "official";
-        id = "Catppuccin Mocha";
-        provenance = "official-upstream";
-        variantProvenance = "official";
-        source = "official";
-      }
-    ];
-  };
-
   testBatSoraDarkResolvesOfficial = {
     expr = resolveFor "sora" "dark" null;
     expected = {
@@ -136,9 +97,9 @@ in {
   # ─── Theme selection per resolution kind ──────────────────────────────────
 
   testBatOfficialSelectionDeploysVendoredTheme = {
-    expr = sourcesFor "catppuccin" "mocha" null "generated";
+    expr = sourcesFor "sora" "dark" null "generated";
     expected = {
-      "Catppuccin Mocha" = ../../modules/home/programs/terminal/tools/bat/themes/catppuccin-mocha.tmTheme;
+      "Sora" = ../../modules/home/programs/terminal/tools/bat/themes/sora.tmTheme;
     };
   };
 
@@ -159,7 +120,7 @@ in {
   # ─── Explicit override wins ───────────────────────────────────────────────
 
   testBatStringOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" "Kanagawa";
+    expr = resolveFor "sora" "dark" "Kanagawa";
     expected = {
       kind = "explicit";
       id = "Kanagawa";
@@ -168,7 +129,7 @@ in {
   };
 
   testBatManualOverrideWins = {
-    expr = resolveFor "catppuccin" "mocha" {
+    expr = resolveFor "sora" "dark" {
       mode = "manual";
       id = "Sora";
     };
@@ -180,7 +141,7 @@ in {
   };
 
   testBatManualOverrideToGeneratedPinsGeneratedTheme = {
-    expr = sourcesFor "catppuccin" "mocha" {
+    expr = sourcesFor "sora" "dark" {
       mode = "manual";
       id = "aytordev";
     } "generated";
@@ -211,11 +172,11 @@ in {
   testBatBrokenIntegrationThrows = {
     expr = throws (
       bat.resolve {
-        variant = "mocha";
+        variant = "dark";
         override = null;
         integration = {
           source = null;
-          variants.mocha.id = "Catppuccin Mocha";
+          variants.dark.id = "Sora";
         };
       }
     );
