@@ -241,9 +241,9 @@
       };
 
       git_branch = {
-        format = "-> [$symbol$branch]($style) ";
+        format = "-> [$symbol $branch]($style) ";
         style = "bold fg:mauve";
-        symbol = "git:";
+        symbol = "";
       };
 
       git_status = {
