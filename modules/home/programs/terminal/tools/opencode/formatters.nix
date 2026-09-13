@@ -10,9 +10,9 @@
 in {
   config = lib.mkIf cfg.enable {
     programs.opencode.settings.formatter = {
-      nixfmt = {
+      alejandra = {
         command = [
-          (lib.getExe pkgs.nixfmt)
+          (lib.getExe pkgs.alejandra)
           "$FILE"
         ];
         extensions = [".nix"];
