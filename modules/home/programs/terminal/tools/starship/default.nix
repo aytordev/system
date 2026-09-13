@@ -221,7 +221,7 @@
       };
 
       os = {
-        format = "[$symbol](fg:text) ";
+        format = "[$symbol](fg:text)" + lib.optionalString (!pkgs.stdenv.hostPlatform.isDarwin) " ";
         disabled = false;
         symbols = {
           Macos = "";
