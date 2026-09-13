@@ -4,8 +4,8 @@
 
 `aytordev.theme` is the single source of truth for all theming. Use the semantic palette API (`cfg.palette.accent.hex`, `cfg.palette.red.rgb`). Never hardcode colors or use variant-specific color names. Native themes resolve through `lib.aytordev.resolveApp`.
 
-Three families are registered (`kanagawa`, `catppuccin`, `sora`) and more can be
-added by importing a provider that satisfies `themeLib.validateProvider`.
+Two families are registered (`kanagawa`, `sora`) and more can be added by
+importing a provider that satisfies `themeLib.validateProvider`.
 `integrations` is the single source of native-resource truth: each app entry
 declares `source.provenance` (`official-upstream`/`community-port`), a concrete
 pinned `source.ref.{url,rev}`, an SRI `hash` when the resource is `vendored`, the

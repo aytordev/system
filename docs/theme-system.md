@@ -19,15 +19,14 @@ recorded in [ADR-0012](decisions/0012-theme-resolution-policy.md).
 
 ```nix
 aytordev.theme = {
-  name = "catppuccin"; # kanagawa | catppuccin | sora
-  variant = "mocha";   # family-specific
+  name = "sora";    # kanagawa | sora
+  variant = "dark"; # family-specific
 };
 ```
 
 | Family | Default variant | Variants | Polarity |
 | --- | --- | --- | --- |
 | `kanagawa` | `dragon` | `wave`, `dragon`, `lotus` | dark; `lotus` light |
-| `catppuccin` | `mocha` | `latte`, `frappe`, `macchiato`, `mocha` | dark; `latte` light |
 | `sora` | `dark` | `dark`, `light` | `dark` official; `light` synthetic |
 
 `variant` is validated against the selected family. There is no `theme.enable`
@@ -56,7 +55,7 @@ Native-theme apps expose a nullable `theme` option. Four forms:
 Example:
 
 ```nix
-aytordev.programs.desktop.editors.zed.theme = "Catppuccin Mocha";
+aytordev.programs.desktop.editors.zed.theme = "Sora";
 aytordev.programs.terminal.tools.yazi.theme = { mode = "none"; };
 ```
 
@@ -113,7 +112,7 @@ selects nothing the app can resolve, so prefer the discovered `id` values in the
 
 | Marker | Meaning |
 | --- | --- |
-| `official-upstream` | shipped by the theme project (`catppuccin/*`, `rebelot/kanagawa.nvim`, `Aejkatappaja/sora`) |
+| `official-upstream` | shipped by the theme project (`rebelot/kanagawa.nvim`, `Aejkatappaja/sora`) |
 | `community-port` | a real third-party port, e.g. the Kanagawa VS Code/Zed extensions |
 | `vendored = true` | artifact copied into this repo and pinned with an SRI hash |
 | reference-pinned | adapter resolves `source.ref.{url,rev}` itself; no copied artifact |
@@ -137,7 +136,7 @@ promised.
 | Pi | No upstream resource; the generated theme and vendored gentle-pi banner deploy with `shell.enable`. With the shell off, the generated file is not deployed and resolution is `none`. |
 | Sora `light` | Synthetic, unofficial companion. Sora resources are `dark`-only (`complete = false`), so `light` resolves to generated where the app has a fallback, otherwise `none`. |
 | Neovim | Built from the `aytordev-nvim` distribution with the family/variant from `aytordev.theme` (through its `lib.mkAytordevNeovim` builder). Sora is dark-only, so the synthetic `light` companion uses the editor default (`none`). |
-| `@catppuccin_flavor` | `catppuccin/tmux` reads this American-spelled option; the adapter sets it to the lower-case flavour id from the integration. |
+| tmux | Sources the Sora theme when the family provides one; otherwise generates from the palette. |
 | JankyBorders, Sketchybar | No upstream resource in any family; both consume raw `sketchybar`-format palette roles. |
 
 ## Support matrix

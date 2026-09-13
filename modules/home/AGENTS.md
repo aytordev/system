@@ -125,8 +125,8 @@ aytordev.suites.development.enable = true;
 Theming and visual customization.
 
 The pure-data theme module publishes the active family palette and application
-theme names. Select the family with `aytordev.theme.name` (Kanagawa, Catppuccin
-or Sora) and the variant with `aytordev.theme.variant`; there is no
+theme names. Select the family with `aytordev.theme.name` (Kanagawa or Sora)
+and the variant with `aytordev.theme.variant`; there is no
 `theme.enable` switch.
 
 - `palette` — active semantic colors (`hex`, `rgb`, `sketchybar`, `raw`).

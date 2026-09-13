@@ -3,6 +3,11 @@
 Status: Accepted — native-theme name accessors (`appTheme*`) superseded by
 [ADR-0013](0013-theme-integrations-are-the-only-native-registry.md).
 
+> **Note (2026-09-13):** The Catppuccin family referenced below was later
+> removed from the provider registry; see
+> [ADR-0014](0014-remove-the-catppuccin-theme-family.md). This ADR is kept as a
+> historical record of the multi-family provider design.
+
 ## Decision
 
 `aytordev.theme` supports more than one theme family. Each family is a

@@ -60,8 +60,8 @@ sudo nixos-rebuild switch --flake .#<hostname>
   ([ADR-0002](docs/decisions/0002-development-partition.md)).
 - **Verification**: unit, integration, and production checks validate the
   configuration; see [ADR-0005](docs/decisions/0005-verification-levels.md).
-- **Theme system**: pure-data multi-family palette (`aytordev.theme`; Kanagawa,
-  Catppuccin and Sora) with a hybrid per-app resolution policy
+- **Theme system**: pure-data multi-family palette (`aytordev.theme`; Kanagawa
+  and Sora) with a hybrid per-app resolution policy
   ([guide](docs/theme-system.md), [support
   matrix](docs/theme-support-matrix.md),
   [ADR-0012](docs/decisions/0012-theme-resolution-policy.md)).
