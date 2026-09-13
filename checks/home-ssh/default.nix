@@ -103,6 +103,7 @@
     (lib.hasInfix "StrictHostKeyChecking accept-new" sshConfig)
     (lib.hasInfix "Port 22" sshConfig)
     (lib.hasInfix "ForwardAgent no" sshConfig)
+    (lib.hasInfix "ControlPath ~/.ssh/controlmasters/%r@%n:%p" sshConfig)
     (lib.hasInfix ".ssh/ssh_key_github_ed25519" sshConfig)
     (lib.hasInfix ".ssh/portfolio_hetzner_ed25519" sshConfig)
     (!lib.hasAttrByPath systemSshOption darwin.options)

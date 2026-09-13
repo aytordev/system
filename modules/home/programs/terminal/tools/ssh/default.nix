@@ -130,7 +130,11 @@ in {
             ServerAliveCountMax = 3;
             HashKnownHosts = false;
             ControlMaster = "auto";
-            ControlPath = "~/.ssh/controlmasters/%r@%h:%p";
+            # %n (alias as typed) instead of %h (resolved HostName) so aliases
+            # pointing at the same real host get separate master sockets;
+            # otherwise a github.com master authenticated with one key is reused
+            # by github-civislend, breaking per-account SSH identities.
+            ControlPath = "~/.ssh/controlmasters/%r@%n:%p";
             ControlPersist = "10m";
             UserKnownHostsFile = "~/.ssh/known_hosts ~/.ssh/known_hosts.d/aytordev";
           };
