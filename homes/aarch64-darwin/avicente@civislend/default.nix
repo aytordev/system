@@ -40,6 +40,12 @@ in {
       business = enabled;
     };
 
+    # Default theme family for this work host.
+    theme = {
+      name = "sora";
+      variant = "dark";
+    };
+
     programs = {
       desktop = {
         # Development suite enables vscode by default; its kanagawa theme mirror
