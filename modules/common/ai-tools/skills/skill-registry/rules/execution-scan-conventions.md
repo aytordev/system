@@ -1,7 +1,7 @@
 ---
 title: Scan Project Conventions
 impact: HIGH
-impactDescription: Captures project-specific patterns
+impactDescription: Captures project-specific patterns without flattening scope
 tags: scanning, conventions
 ---
 
@@ -17,24 +17,10 @@ Check the project root for convention files:
 - `.cursorrules`
 - `copilot-instructions.md`
 
-### Index file handling
+### Scope preservation
 
-If an index file is found (e.g., `AGENTS.md`): READ its contents and extract all referenced file paths. These index files typically list project conventions with paths — extract every referenced path and include it in the registry alongside the index file itself.
+When an index file references other convention files, record each referenced path with the subtree it governs. Do NOT flatten every referenced path into one global standard: a rule that lives under `modules/home/AGENTS.md` applies to `modules/home/`, not to the whole repository. The delegator decides which scoped conventions match the task.
 
 ### Output
 
-Build a table of: `File | Path | Notes`
-
-Include both the index file AND all paths it references — zero extra hops for sub-agents.
-
-### Example
-
-```markdown
-## Project Conventions
-
-| File | Path | Notes |
-|------|------|-------|
-| AGENTS.md | ./AGENTS.md | Index — references files below |
-| AI Tools AGENTS | modules/common/ai-tools/AGENTS.md | Referenced by AGENTS.md |
-| Home AGENTS | modules/home/AGENTS.md | Referenced by AGENTS.md |
-```
+Build a table of `File | Path | Scope | Notes`, where `Scope` is the directory or subsystem the convention governs. Include the index file itself and each referenced path with its own scope.

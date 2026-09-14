@@ -15,21 +15,26 @@ Return a structured summary:
 ## Skill Registry Updated
 
 **Project**: {project name}
-**Location**: .atl/skill-registry.md
-**Engram**: {saved / not available}
+**Persistence**: {mode} — {session only | Engram skill-registry | .atl/skill-registry.md | both}
+**Indexed skills**: {count}
 
-### User Skills Found
-| Skill | Trigger |
-|-------|---------|
-| {name} | {trigger} |
+### Indexed Skills
+| Name | Scope | Path |
+|------|-------|------|
+| {name} | {project/global} | {exact SKILL.md path} |
 
-### Project Conventions Found
-| File | Path |
-|------|------|
-| {file} | {path} |
+### Shadowed / Ambiguous
+| Name | Kept | Shadowed | Reason |
+|------|------|----------|--------|
+
+### Project Conventions
+| File | Path | Scope |
+|------|------|-------|
+| {file} | {path} | {subtree} |
 
 ### Next Steps
-The orchestrator reads this registry once per session and passes
-pre-resolved compact rules to sub-agents via their launch prompts.
-To update after installing/removing skills, run this again.
+Delegators read this index and pass exact `SKILL.md` paths to sub-agents
+via `## Skills to load before work`. Run refresh after installing/removing skills.
 ```
+
+If listing was requested instead of a refresh, report `Read-only listing — nothing written`.

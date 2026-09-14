@@ -1,49 +1,55 @@
 ---
 name: skill-registry
-description: "Create or update the skill registry for the current project. Scans user skills and project conventions, generates compact rules (5-15 lines per skill), writes .atl/skill-registry.md, and saves to engram if available. Trigger: When user says 'update skills', 'skill registry', 'update registry', or after installing/removing skills."
+description: "Discover and index available skills by name, full description, scope, and exact SKILL.md path, with a content freshness identity. Supports read-only listing and persistence-aware refresh. Trigger: When user says 'update skills', 'skill registry', 'update registry', or after installing/removing skills."
 ---
 
 # Skill Registry
 
-Generate or update the **skill registry** — a catalog of all available skills with **compact rules** (pre-digested, 5-15 line summaries) that any delegator injects directly into sub-agent prompts. Sub-agents do NOT read the registry or individual SKILL.md files — they receive compact rules pre-resolved in their launch prompt.
+Discover and index available skills. The registry is an **index, not a compiler**: it carries each skill's name, full description, scope, exact `SKILL.md` path, and a freshness identity. `SKILL.md` stays the source of truth — delegators pass exact paths and executors read the selected originals plus the references they need. Generated summaries are never authoritative.
 
-This is the foundation of the **Skill Resolver Protocol** (see `_shared/skill-resolver.md`). The registry is built ONCE (expensive), then read cheaply at every delegation.
+This is the foundation of the **Skill Resolver Protocol** (see `_shared/skill-resolver.md`).
 
 ## Rule Categories by Priority
 
 | Priority | Category | Impact | Prefix |
 |----------|----------|--------|--------|
 | 1 | Scanning | CRITICAL | `execution-scan` |
-| 2 | Compact Rules | CRITICAL | `execution-generate` |
-| 3 | Registry Output | HIGH | `execution-write` |
+| 2 | Index Output | CRITICAL | `execution-write` |
+| 3 | Listing | HIGH | `execution-list` |
 | 4 | Persistence | HIGH | `execution-persist` |
 
 ## Quick Reference
 
 ### 1. Scanning (CRITICAL)
 
-- `execution-scan-skills` — Scan user and project skill directories
-- `execution-scan-conventions` — Scan project convention files
+- `execution-scan-skills` — Discover skills, parse full descriptions, record scope, path, and freshness
+- `execution-scan-conventions` — Index project conventions without flattening subtree scope
 
-### 2. Compact Rules (CRITICAL)
+### 2. Index Output (CRITICAL)
 
-- `execution-generate-compact` — Generate 5-15 line rule summaries per skill
+- `execution-write-registry` — Build the index (name, description, scope, path, freshness)
 
-### 3. Registry Output (HIGH)
+### 3. Listing (HIGH)
 
-- `execution-write-registry` — Build the registry markdown
+- `execution-list-readonly` — Read-only listing that writes nothing
 
 ### 4. Persistence (HIGH)
 
-- `execution-persist` — Write to .atl/ and engram
+- `execution-persist` — Persistence-aware refresh
 - `execution-return-summary` — Return structured summary
 
 ## Rules
 
-- ALWAYS write `.atl/skill-registry.md` regardless of SDD persistence mode
-- ALWAYS save to engram if `mem_save` tool is available
-- SKIP `sdd-*`, `_shared`, and `skill-registry` directories when scanning
-- Compact rules MUST be 5-15 lines per skill — concise, actionable, no fluff
-- Add `.atl/` to `.gitignore` if it exists and `.atl` is not already listed
+- NEVER generate compact rules or summaries as authoritative content — index exact paths
+- Parse the full frontmatter description; never require a literal `Trigger:` marker
+- Prefer project scope over global scope deterministically; surface ambiguous duplicates
+- Distinguish the full inventory from invocation eligibility (see below)
+- Read-only listing and `none` mode MUST write nothing (no `.atl/`, no `.gitignore`, no Engram)
+- NEVER silently edit `.gitignore`
+- Old compact-rule caches cannot satisfy this contract — regenerate them
 
 See `rules/constraints-rules.md` for complete rules.
+
+## Inventory vs Invocation Eligibility
+
+The index lists **every** discovered skill (inventory), but delegators only auto-select **eligible** domain skills. SDD phase skills (`sdd-*`) and shared protocols are indexed but phase-only: they are loaded by the orchestrator for their phase, not auto-selected as domain skills. Do not drop arbitrary user skills solely because of a name prefix.

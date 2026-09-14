@@ -1,6 +1,6 @@
 {
     "name": "dotfiles-coder",
-    "description": "aytordev configuration specialist - architecture, patterns, conventions, flake structure, secrets, and theming.",
+    "description": "aytordev configuration specialist and maintainer - knows complete module structure, patterns, and conventions",
     "version": "1.0.0",
     "organization": "aytordev",
     "date": "February 2026",

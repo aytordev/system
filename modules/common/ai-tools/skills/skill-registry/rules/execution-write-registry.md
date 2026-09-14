@@ -1,11 +1,11 @@
 ---
-title: Write the Registry
+title: Write the Registry Index
 impact: HIGH
-impactDescription: Defines the output format
-tags: output, registry
+impactDescription: Defines the index format consumed by delegators
+tags: output, registry, index
 ---
 
-## Write the Registry
+## Write the Registry Index
 
 **Impact: HIGH**
 
@@ -14,44 +14,41 @@ Build the registry markdown using this format:
 ```markdown
 # Skill Registry
 
-**Delegator use only.** Any agent that launches sub-agents reads this registry
-to resolve compact rules, then injects them directly into sub-agent prompts.
-Sub-agents do NOT read this registry or individual SKILL.md files.
+**Index, not a compiler.** `SKILL.md` is the source of truth. Delegators pass
+exact `SKILL.md` paths; executors read the selected originals plus the references
+they need. Generated summaries are not authoritative.
 
 See `_shared/skill-resolver.md` for the full resolution protocol.
 
-## User Skills
+## Index
 
-| Trigger | Skill | Path |
-|---------|-------|------|
-| {trigger from frontmatter} | {skill name} | {full path to SKILL.md} |
+| Name | Description | Scope | Path | Freshness |
+|------|-------------|-------|------|-----------|
+| {skill name} | {complete frontmatter description} | project \| global | {exact absolute path to SKILL.md} | {sha256:... or size:mtime} |
 
-## Compact Rules
+## Shadowed / Ambiguous
 
-Pre-digested rules per skill. Delegators copy matching blocks into
-sub-agent prompts as `## Project Standards (auto-resolved)`.
-
-### {skill-name-1}
-- Rule 1
-- Rule 2
-
-### {skill-name-2}
-- Rule 1
-- Rule 2
+| Name | Kept | Shadowed | Reason |
+|------|------|----------|--------|
+| {name} | {kept path} | {other path(s)} | {same-scope duplicate / shadowed by project} |
 
 ## Project Conventions
 
-| File | Path | Notes |
-|------|------|-------|
-| {file} | {path} | {notes} |
+| File | Path | Scope | Notes |
+|------|------|-------|-------|
+| {file} | {path} | {subtree it governs} | {notes} |
 
-Read the convention files listed above for project-specific patterns.
-All referenced paths have been extracted — no need to read index files
-to discover more.
+## Invocation Eligibility
+
+- Domain skills (all non-`sdd-*`, non-`_shared` entries above) MAY be auto-selected by delegators.
+- SDD phase skills (`sdd-*`) and `_shared` protocols are phase-only: loaded by the orchestrator for their phase, not auto-selected as domain skills.
 ```
 
 ### Key Rules
 
-- If no skills are found, write an empty registry (so sub-agents don't waste time searching)
-- If no conventions are found, omit the Project Conventions section
-- Keep the same heading structure always — it's machine-parseable
+- Every index entry carries `name`, the complete `description`, `scope`, the exact `SKILL.md` `path`, and a `freshness` identity.
+- The `Shadowed / Ambiguous` section is omitted only when there are no duplicates.
+- The `Project Conventions` section is omitted when no conventions are found.
+- If no skills are found, write an empty `Index` so agents stop searching blindly.
+- Index the full inventory; mark eligibility separately.
+- Keep the heading structure stable — it is machine-parseable.

@@ -1,76 +1,79 @@
 # Skill Resolver — Universal Protocol
 
-Any agent that **delegates work to sub-agents** MUST follow this protocol to resolve and inject relevant skills. This applies to the SDD orchestrator, judgment-day, and any future workflow that launches sub-agents.
+Any agent that **delegates work to sub-agents** MUST follow this protocol to resolve relevant skills and pass exact `SKILL.md` paths. This applies to the SDD orchestrator, judgment-day, and any future workflow that launches sub-agents.
+
+## Why This Exists
+
+Sub-agents start with no project skill context. The registry gives delegators a cheap **index** of available skills — name, full description, scope, exact `SKILL.md` path, and a freshness identity — without rewriting or summarizing those skills. `SKILL.md` remains the source of truth.
 
 ## When to Apply
 
-Before EVERY sub-agent launch that involves **reading, writing, or reviewing code**. Skip only for purely mechanical delegations (e.g., "run this test command").
+Before EVERY sub-agent launch that involves reading, writing, reviewing, testing, documenting, or creating project artifacts. Skip only for purely mechanical commands.
 
 ## The Protocol
 
-### Step 1: Obtain the Skill Registry (once per session)
+### Step 1: Obtain the Skill Index (once per session)
 
-The registry contains a **Compact Rules** section with pre-digested rules per skill (5-15 lines each). This is what you inject — NOT full SKILL.md paths.
+The registry is an **index** of names, full descriptions, scopes, and exact `SKILL.md` paths. It is not a compact-rules bundle.
 
 Resolution order:
 1. Already cached from earlier in this session? → use cache
 2. `mem_search(query: "skill-registry", project: "{project}")` → `mem_get_observation(id)` for full content
-3. Fallback: read `.atl/skill-registry.md` from the project root if it exists
-4. No registry found? → proceed without skills, warn the user: "No skill registry found — sub-agents will work without project-specific standards. Run `skill-registry` to fix this."
+3. Fallback: read `.atl/skill-registry.md` from the project root when file persistence was selected
+4. No index found? → proceed without skills, warn the user: "No skill registry found — sub-agents will work without project-specific standards. Run `skill-registry` to fix this."
 
 ### Step 2: Match Relevant Skills
 
 Match on TWO dimensions:
 
-**A. Code Context** — what files will the sub-agent touch?
-Use the `Trigger` field in the registry's User Skills table. Skills whose triggers mention the relevant technology or file type are matches.
+| Context | Match against |
+|---------|---------------|
+| Code/files | Index description mentions the language, framework, tool, or path context |
+| Task/action | Index description mentions actions like PR, review, docs, tests, comments, release |
 
-**B. Task Context** — what actions will the sub-agent perform?
+Prefer the smallest useful set. If more than **5 skills** match, keep the 5 most relevant (prioritize code context over task context).
 
-| Sub-agent action | Match triggers mentioning... |
-|-----------------|------------------------------|
-| Write/review code | The specific framework/language |
-| Create a PR | "PR", "pull request" |
-| Write tests | "test", "vitest", "pytest" |
-| Nix modules | "nix", "module", "flake" |
+### Step 3: Inject Skill Paths
 
-### Step 3: Inject into Sub-Agent Prompt
+Inject paths, not summaries:
 
-From the registry's **Compact Rules** section, copy matching skill blocks into the sub-agent's prompt:
+```markdown
+## Skills to load before work
 
-```
-## Project Standards (auto-resolved)
+Read these exact files before reading, writing, reviewing, testing, or creating artifacts:
 
-{paste compact rules blocks for each matching skill}
+- /absolute/path/to/skills/nix/SKILL.md
+- /absolute/path/to/skills/dotfiles-coder/SKILL.md
 ```
 
-This goes BEFORE the task-specific instructions. Inject the COMPACT RULES text, not paths.
+This goes BEFORE the task-specific instructions. The sub-agent MUST read those files before task-specific work. Project-scope paths take precedence over global-scope paths; never silently pick between ambiguous duplicates — surface them to the user.
 
 ### Step 4: Include Project Conventions
 
-If the registry has a **Project Conventions** section, add:
+If the index has a **Project Conventions** section, add:
 
-```
+```markdown
 ## Project Conventions
 Read these files for project-specific patterns:
 - {path1} — {notes}
 ```
 
+Keep each convention scoped to the subtree it documents; do not flatten every referenced path into a global standard.
+
 ## Token Budget
 
-Compact rules add ~50-150 tokens per skill. For 3-4 matching skills, that's ~400-600 tokens. If more than **5 skill blocks** match, keep only the 5 most relevant (prioritize code context over task context).
+Exact paths are compact. For 3-4 matching skills that is a few lines. If more than **5 skill paths** match, keep only the 5 most relevant (prioritize code context over task context).
 
 ## Compaction Safety
 
-This protocol is compaction-safe because:
-- The registry lives in engram/filesystem, not in orchestrator memory
-- Each delegation re-reads the registry if needed (Step 1 handles cache miss)
-- Compact rules are copied into each sub-agent's prompt at launch — even if the orchestrator forgets, the sub-agents already have the rules
+- The index lives in Engram or `.atl/skill-registry.md`, not in orchestrator memory.
+- Each delegation re-reads the index if needed (Step 1 handles a cache miss).
+- Sub-agents receive exact files to read, so skill meaning is not degraded by generated summaries.
 
 ## Feedback Loop
 
 Sub-agents report their skill resolution status via the `skill_resolution` field in the return envelope (see `_shared/return-envelope.md`).
 
-If a sub-agent reports anything other than `injected`:
-1. Re-read the skill registry immediately
-2. Ensure ALL subsequent delegations include `## Project Standards (auto-resolved)`
+If a sub-agent reports anything other than `paths-injected`:
+1. Re-read the skill registry index immediately
+2. Ensure ALL subsequent delegations include `## Skills to load before work` with exact `SKILL.md` paths

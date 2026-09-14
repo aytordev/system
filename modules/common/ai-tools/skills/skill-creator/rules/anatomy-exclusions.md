@@ -9,7 +9,10 @@ tags: anatomy, exclusions
 
 **Impact: MEDIUM**
 
-Do not include README.md, CHANGELOG.md, or generic documentation. Only include files the agent needs to do the job.
+Do not include `README.md`, `CHANGELOG.md`, or generic documentation. Only
+include files the agent needs to do the job. The required package files are
+`SKILL.md` and `metadata.json`; the optional directories are `rules/`,
+`references/`, `scripts/`, `assets/`, and `modules/`.
 
 **Incorrect (cluttered):**
 
@@ -25,5 +28,8 @@ skill/
 
 ```text
 skill/
-└── SKILL.md
+├── SKILL.md
+├── metadata.json
+└── rules/
+    └── execution-steps.md
 ```

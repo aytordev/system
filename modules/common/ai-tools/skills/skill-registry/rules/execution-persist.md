@@ -1,7 +1,7 @@
 ---
 title: Persist the Registry
 impact: HIGH
-impactDescription: Must be available for sub-agents
+impactDescription: Refresh follows the selected persistence policy
 tags: persistence, engram, filesystem
 ---
 
@@ -9,19 +9,22 @@ tags: persistence, engram, filesystem
 
 **Impact: HIGH**
 
-This step is MANDATORY — do NOT skip it.
+Refresh follows the active artifact/persistence policy (`engram | openspec | hybrid | none`; see `_shared/persistence-contract.md`). Resolve the mode once. When no mode is provided and the user did not explicitly request file persistence, default to **session-only**.
 
-### A. Always write the file (guaranteed availability)
+| Mode | Where the index lives | Project files |
+|------|-----------------------|---------------|
+| `none` | Session memory only | Never |
+| `engram` | Engram (`topic_key: skill-registry`) | Never |
+| `openspec` | `.atl/skill-registry.md` | Yes |
+| `hybrid` | Engram **and** `.atl/skill-registry.md` | Yes |
 
-Create the `.atl/` directory in the project root if it doesn't exist, then write:
+### `none` — session-only
 
-```
-.atl/skill-registry.md
-```
+Return the index inline. Do NOT create `.atl/`, do NOT edit `.gitignore`, and do NOT save to Engram.
 
-If the project has a `.gitignore` and `.atl` is not already listed, add `.atl/` to it.
+### `engram` — memory only
 
-### B. If engram is available, also save to engram
+Save or upsert the index; do not write project files silently.
 
 ```
 mem_save(
@@ -29,13 +32,27 @@ mem_save(
   topic_key: "skill-registry",
   type: "config",
   project: "{project}",
+  capture_prompt: false,
   content: "{registry markdown}"
 )
 ```
 
-`topic_key` ensures upserts — running again updates the same observation, not duplicates.
+`topic_key` ensures upserts — running again updates the same observation, not a duplicate.
 
-### Why both?
+### `openspec` / `hybrid` — explicit file persistence
 
-- `.atl/skill-registry.md` is the guaranteed fallback (works offline, no MCP dependency)
-- Engram provides cross-session searchability and faster access via `mem_search`
+Create the `.atl/` directory in the project root if needed, then write:
+
+```
+.atl/skill-registry.md
+```
+
+In `hybrid`, also save to Engram as above. Both writes MUST succeed.
+
+### `.gitignore`
+
+NEVER silently edit `.gitignore`. If `.atl` is not ignored, mention it in the summary and let the user decide.
+
+### Cache invalidation
+
+Old compact-rule caches cannot satisfy this contract. Reject any cache whose entries lack the index fields or whose `freshness` no longer matches the current `SKILL.md`; regenerate instead.

@@ -1,6 +1,6 @@
 {
     "name": "skill-creator",
-    "description": "Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.",
+    "description": "Trigger: new skills, updating agent instructions, auditing skill packages. Author and maintain skills in this repository's supported layout.",
     "version": "1.0.0",
     "organization": "aytordev",
     "date": "May 2026"
