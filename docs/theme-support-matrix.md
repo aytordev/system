@@ -14,20 +14,20 @@ override.
 
 ## Family × app (default variant)
 
-| Family | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Kanagawa (dragon) | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
-| Sora (dark) | O | O | O | O | O | O | O | G | G | O | O | G | G | O | O | G | O | O | G |
+| Family | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | hunk | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Kanagawa (dragon) | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
+| Sora (dark) | O | O | O | O | O | O | O | G | O | G | O | O | G | G | O | O | G | O | O | G |
 
 ## Variant coverage
 
-| Family / variant | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Kanagawa dragon | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
-| Kanagawa lotus | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
-| Kanagawa wave | O | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
-| Sora dark | O | O | O | O | O | O | O | G | G | O | O | G | G | O | O | G | O | O | G |
-| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
+| Family / variant | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | hunk | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Kanagawa dragon | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa lotus | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa wave | O | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
+| Sora dark | O | O | O | O | O | O | O | G | O | G | O | O | G | G | O | O | G | O | O | G |
+| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
 
 ## Official resources and provenance
 
@@ -69,6 +69,7 @@ adapter.
 | fzf | aytordev | Palette-generated theme. |
 | ghostty | aytordev | Palette-generated conf. |
 | herdr | aytordev | Palette-generated [theme.custom]; upstream Sora extra is equivalent to palette generation. |
+| hunk | aytordev | Palette-generated [custom_theme] block. |
 | jankyborders | palette | No upstream resource; consumes raw sketchybar-format palette roles. |
 | lazygit | aytordev | Palette-generated theme. |
 | opencode | aytordev | Palette-generated theme. |

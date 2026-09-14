@@ -9,7 +9,8 @@
 }: let
   # Official Sora extras, pinned to the single upstream commit that ships
   # `extras/`. Integrations whose adapter copies the artifact into this repo
-  # (`yazi`, `tmux`, `bat`, `btop`, `opencode`) set `vendored = true` and pin it
+  # (`yazi`, `tmux`, `bat`, `btop`, `opencode`, `hunk`) set `vendored = true`
+  # and pin it
   # with a hash; the rest are reference-pinned (the adapter resolves its own
   # artifact from `source.ref`). Sora ships only a dark resource, so every
   # integration stays incomplete for the synthetic `light` companion.
@@ -97,7 +98,8 @@ in {
 
     # Reference-pinned official extras. Each `id` is the name the app expects:
     # Starship palette, Yazi theme stem, bat tmTheme name, btop theme name, fzf
-    # / eza / delta / lazygit / opencode resource stem, Firefox Color manifest
+    # / eza / delta / lazygit / opencode / hunk resource stem, Firefox Color
+    # manifest
     # name. The tmux conf is vendored (`extras/tmux/sora.tmux.conf`) and its
     # hash pins the in-repo artifact; the adapter sources it.
     starship = mkSoraDark {id = "sora";};
@@ -128,6 +130,11 @@ in {
       id = "sora";
       vendored = true;
       hash = "sha256-bMx6/tgeJSzmyD0RRLS0tzAeHertEy9h/1sWSYVXa+4=";
+    };
+    hunk = mkSoraDark {
+      id = "sora";
+      vendored = true;
+      hash = "sha256-8JFtFsx15iBkIY+58s1mhhB4UjJb2L7Ap+WFNgx6JeI=";
     };
     tmux = mkSoraDark {
       id = "sora";

@@ -17,6 +17,7 @@
     "firefox"
     "fzf"
     "ghostty"
+    "hunk"
     "lazygit"
     "opencode"
     "starship"
@@ -34,6 +35,7 @@
     firefox = "Sora";
     fzf = "sora";
     ghostty = "sora";
+    hunk = "sora";
     lazygit = "sora";
     opencode = "sora";
     starship = "sora";

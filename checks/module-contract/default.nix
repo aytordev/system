@@ -58,6 +58,7 @@
     "programs.terminal.tools.git-crypt"
     "programs.terminal.tools.hcloud"
     "programs.terminal.tools.herdr"
+    "programs.terminal.tools.hunk"
     "programs.terminal.tools.infat"
     "programs.terminal.tools.jjui"
     "programs.terminal.tools.jq"

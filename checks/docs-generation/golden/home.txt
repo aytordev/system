@@ -161,6 +161,9 @@
 ## aytordev\.programs\.terminal\.tools\.hcloud\.auth\.tokenPath
 ## aytordev\.programs\.terminal\.tools\.herdr\.enable
 ## aytordev\.programs\.terminal\.tools\.herdr\.package
+## aytordev\.programs\.terminal\.tools\.hunk\.enable
+## aytordev\.programs\.terminal\.tools\.hunk\.package
+## aytordev\.programs\.terminal\.tools\.hunk\.theme
 ## aytordev\.programs\.terminal\.tools\.infat\.enable
 ## aytordev\.programs\.terminal\.tools\.infat\.package
 ## aytordev\.programs\.terminal\.tools\.jjui\.enable

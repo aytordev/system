@@ -75,6 +75,12 @@
       path = ../../modules/home/programs/terminal/tools/herdr/theme.nix;
     }
     {
+      id = "hunk";
+      generated = "aytordev";
+      note = "Palette-generated [custom_theme] block.";
+      path = ../../modules/home/programs/terminal/tools/hunk/config.nix;
+    }
+    {
       id = "jankyborders";
       generated = "palette";
       note = "No upstream resource; consumes raw sketchybar-format palette roles.";

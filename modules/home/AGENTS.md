@@ -50,7 +50,7 @@ CLI tools and terminal programs.
 - **Multiplexers:** tmux, zellij
 - **Agent runtimes:** herdr (terminal workspace for coding agents)
 - **Editors:** neovim
-- **Tools:** git, gh, lazygit, lazydocker, fzf, ripgrep, bat, eza, zoxide, jujutsu, k9s, etc.
+- **Tools:** git, gh, lazygit, lazydocker, hunk, fzf, ripgrep, bat, eza, zoxide, jujutsu, k9s, etc.
 - **Emulators:** ghostty
 
 **Pattern:**

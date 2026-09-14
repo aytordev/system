@@ -133,6 +133,7 @@ in {
             git-crypt = mkDefault enabled;
             gh = mkDefault enabled;
             hcloud = mkDefault enabled;
+            hunk = mkDefault enabled;
             rclone = mkDefault enabled;
             jujutsu = mkDefault enabled;
             jjui = mkDefault enabled;
