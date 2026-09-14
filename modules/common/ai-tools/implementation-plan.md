@@ -526,20 +526,20 @@ does not create SDD artifacts, while an explicitly requested SDD task stays in S
 
 ### T16: Exercise and evaluate the complete delivery
 
-- [ ] Run the deterministic suite and a dual-client runtime matrix using disposable
+- [x] Run the deterministic suite and a dual-client runtime matrix using disposable
   projects, fake services where appropriate, and isolated memory directories.
-- [ ] Add a scripted loopback model/provider fixture where each client's API permits
+- [x] Add a scripted loopback model/provider fixture where each client's API permits
   it. Exercise real command/delegation/transport paths without paid API calls;
   assert received inputs/results, including malformed and asynchronous responses.
 - [ ] Run a bounded live-model evaluation when credentials and invocation authority
   are available. Record client/model versions, input, result, interventions,
   unsupported tool calls, elapsed time, and usage/cost when exposed.
-- [ ] Compare baseline and candidate under the same conditions where runnable;
+- [x] Compare baseline and candidate under the same conditions where runnable;
   record baseline failures and unavailable measurements instead of inventing
   scores. Repeat only ambiguous cases and explain remaining variability.
-- [ ] Update the README support matrix and each task's evidence; review the ADR
+- [x] Update the README support matrix and each task's evidence; review the ADR
   for implementation deviations and resolve any change to the agreed contract.
-- [ ] Record the final upstream/local revision map and exercise the deployed
+- [x] Record the final upstream/local revision map and exercise the deployed
   candidate with both newly initialized changes and supported migrated changes.
   Report explicitly adapted/deferred upstream behavior alongside support claims.
 
@@ -550,6 +550,23 @@ transport/runtime behavior, not real-model selection or reasoning quality.
 **Acceptance:** every delivery criterion below has evidence for both clients.
 Missing access or a failed Pi integration keeps the affected criterion open.
 **Surface:** focused checks, evaluation fixtures/results, README, task evidence.
+
+**Evidence:** [verification-report.md](verification-report.md) is the T16 record
+(matrix, commands, results, gaps). The focused 25-check suite from T26 (plus
+`module-contract`, `docs-generation`, `unit-nix-unit`) ran with exit 0 on
+`aarch64-darwin` at `9ec0ec2`. Baseline: not runnable without credentials, recorded
+as unavailable (no score invented). The scripted-provider harness
+(`eval/scripted-provider/`) passed three scenarios with the real clients
+(`pi-direct`, `pi-workflow-delegation` through a real child `pi`, `opencode-direct`;
+OpenCode 1.18.30, Pi 0.85.1) but **cannot be a `nix flake check`**: the darwin Nix
+sandbox denies `listen` with `EPERM`, so it stays a developer-run harness and the
+blocker is recorded. Live-model execution is **not run** (no credentials/authority);
+the exact inputs to capture are listed in the report §5. Per-criterion residual
+gaps remain for live-model execution (C4/C5/C10), activation rollback (C8), and Pi
+permission enforcement (C2/C3/C6); no criterion is claimed beyond its evidence.
+Deviations recorded: T15 is implemented (`lightweight-change` +
+`integration-ai-tools-workflow-routing`) but its plan checkboxes were unticked, and
+the ADRs remain `Proposed` by design.
 
 ## Skill contracts and SDD evolution
 

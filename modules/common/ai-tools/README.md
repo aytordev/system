@@ -6,12 +6,14 @@ home module:
 
 - **OpenCode** renders commands and agents from `commands.nix` / `agents.nix` and
   links `base.md` as context plus the `skills/` tree.
-- **Pi** currently reuses `base.md` and the `skills/` tree directly. Native Pi
-  commands, delegation, and MCP are still in progress (ADR 0015; see the
-  [implementation plan](implementation-plan.md)).
+- **Pi** deploys generated phase commands, a bounded child-worker adapter, the
+  local MCP bridge, and the same `base.md` + `skills/` tree through
+  `modules/home/programs/terminal/tools/pi/`.
 
-See [Proposed Evolution](#proposed-evolution) for the target dual-client
-architecture.
+Both clients consume the same registry, role policy, skills, and `aytordev-sdd`
+engine adapter. See [Support Matrix](#support-matrix) for what is verified in
+each client and [verification-report.md](verification-report.md) (T16) for the
+evidence, commands, and open gaps.
 
 ## Architecture
 
@@ -53,6 +55,30 @@ Skills are consumed directly from the `skills/` tree by each client's runtime.
 See `AGENTS.md` in this directory for the current full inventory and the
 protocols to follow when adding a new agent/command/skill.
 
+## Support Matrix
+
+Verified against the frozen revisions and clients in
+[verification-report.md](verification-report.md) (T16). `Supported` means a
+deterministic check exercises the behavior; `Partial`/`Advisory`/`Unverified`
+name the residual gap; `Documented` means the procedure exists but was not
+executed.
+
+| Capability | OpenCode | Pi | Evidence |
+| --- | --- | --- | --- |
+| Commands + argument preservation | Supported | Supported | `ai-tools-renderers`, `ai-tools-contract`, `ai-tools-pi-workflow`; scripted-provider |
+| Role/model routing | Supported | Supported (session-level) | `ai-tools-roles`, `ai-tools-permissions`; `ai-tools-pi-workflow`; scripted-provider |
+| Home-scoped MCP selection | Supported | Supported (local bridge) | `ai-tools-mcp`; `ai-tools-pi-mcp-bridge` |
+| Persistence modes (Engram/OpenSpec/hybrid/none) | Supported | Supported | `gentle-ai-engine`, `ai-tools-sdd-persistence`, `ai-tools-sdd-research` |
+| SDD complete/resume | Supported | Supported | `ai-tools-archive`, `ai-tools-sdd-handoffs`, `ai-tools-legacy-compat`, `ai-tools-pi-workflow` |
+| Independent review | Supported (enforced) | Advisory (unverified write gate) | `ai-tools-permissions`; `ai-tools-pi-workflow` |
+| Added methods + lightweight routing | Supported | Supported | `ai-tools-method-routing`, `ai-tools-workflow-routing`, `ai-tools-testing-scope` |
+| Reversible deployment | Documented | Documented | `legacy-compatibility.md`; plan T08 |
+| Canonical skills + loading | Supported | Supported | `ai-tools-skill-contract`, `ai-tools-loading`, `ai-tools-inventory`, `ai-tools-dependencies` |
+| Explicit state + closure | Supported | Supported | `ai-tools-sdd-persistence`, `ai-tools-sdd-handoffs`, `ai-tools-archive` |
+| Upstream migration | Supported | Supported | `ai-tools-bundles`; `upstream-sources.md`, `bundle-verification.md` |
+| Live-model execution | Not run | Not run | verification-report.md §5 |
+| Pi permission enforcement | n/a | Unverified | `client-capabilities.md` blocker 1 |
+
 ## Proposed Evolution
 
 Start with the [value proposal](proposal.md) for expected outcomes, costs,
@@ -71,8 +97,9 @@ explicit local adaptations and existing-state recovery.
 The [implementation plan](implementation-plan.md) tracks dependency-ordered tasks,
 including the engine comparison, source pinning, artifact migration, bundle
 deployment, and acceptance criteria.
-These documents describe the target architecture; full dual-client workflow
-support is not implemented yet.
+These documents describe the implemented architecture; the dual-client workflow
+delivery and its evidence are recorded in
+[verification-report.md](verification-report.md).
 
 ## Adding a New Command / Agent / Skill
 
@@ -88,6 +115,5 @@ deployment into each client.
 
 - The `opencode` home module wires the rendered commands/agents, the `base.md`
   context, and the `skills/` tree into OpenCode.
-- The `pi` home module imports `base.md` and the `skills/` tree directly; native
-  SDD commands, delegation, and MCP are part of the proposed evolution above
-  (ADR 0015).
+- The `pi` home module imports `base.md` and the `skills/` tree and deploys the
+  generated phase commands, bounded child-worker adapter, and local MCP bridge.
