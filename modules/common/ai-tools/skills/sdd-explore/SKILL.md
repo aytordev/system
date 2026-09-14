@@ -70,6 +70,8 @@ Compile findings into the structured result envelope. See `rules/execution-retur
 - MUST NOT modify anything in the codebase (read-only)
 - SHOULD present at least 2 approaches with tradeoffs when applicable
 - Keep analysis concise and actionable
-- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
+- Return a `sdd-result/v1` envelope with: `schema`, `kind`, `status`,
+  `executive_summary`, `artifacts`, `evidence`, `next_recommended`, `risks`,
+  `skill_resolution`
 
 See `rules/constraints-rules.md` for complete rules.

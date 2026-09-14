@@ -67,6 +67,8 @@ Consult `references/` for templates and formats.
 - MUST use RFC 2119 keywords (MUST, SHOULD, MAY, etc.)
 - MUST NOT include implementation details in specifications
 - Every requirement needs at least one scenario
-- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
+- Return a `sdd-result/v1` envelope with: `schema`, `kind`, `status`,
+  `executive_summary`, `artifacts`, `evidence`, `next_recommended`, `risks`,
+  `skill_resolution`
 
 See `rules/constraints-rules.md` for complete rules.

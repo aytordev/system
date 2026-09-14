@@ -90,6 +90,8 @@ Consult `references/` for templates and formats.
 - NEVER create placeholder specs during initialization
 - ALWAYS detect real tech stack from actual project files
 - Keep config.yaml context concise (10 lines or fewer)
-- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
+- Return a `sdd-result/v1` envelope with: `schema`, `kind`, `status`,
+  `executive_summary`, `artifacts`, `evidence`, `next_recommended`, `risks`,
+  `skill_resolution`
 
 See `rules/constraints-rules.md` for complete rules.

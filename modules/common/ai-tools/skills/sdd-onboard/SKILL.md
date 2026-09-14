@@ -31,6 +31,12 @@ Onboarding is a teaching flow: it executes each phase inline as the executor and
 always pauses after the proposal for user review. That pause is intentional and
 is not suppressed by `automatic` execution mode.
 
+Report the walkthrough result as a `sdd-result/v1` envelope
+(`_shared/return-envelope.md`) with `schema`, `kind`, `status`,
+`executive_summary`, `artifacts`, `evidence`, `next_recommended`, `risks`, and
+`skill_resolution`. Each inline phase follows the same envelope contract as the
+individual phase skills.
+
 ## Rule Categories by Priority
 
 | Priority | Category | Impact | Prefix |

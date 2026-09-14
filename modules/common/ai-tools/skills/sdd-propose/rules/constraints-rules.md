@@ -10,7 +10,9 @@ Constraints that apply during the SDD proposal phase.
 - Every proposal MUST have a rollback plan — this is non-negotiable
 - Every proposal MUST have success criteria with checkboxes
 - Use concrete file paths in Affected Areas table
-- ALWAYS return a structured envelope with `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`
+- ALWAYS return a structured `sdd-result/v1` envelope with `schema`, `kind`,
+  `status`, `executive_summary`, `artifacts`, `evidence`, `next_recommended`,
+  `risks`, `skill_resolution`
 
 ### MUST NOT
 

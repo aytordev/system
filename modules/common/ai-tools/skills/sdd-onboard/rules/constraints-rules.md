@@ -9,7 +9,9 @@
 - ALWAYS narrate each phase in 1-3 sentences before executing it
 - ALWAYS follow the format rules of the individual phase skills (sdd-propose, sdd-spec, etc.)
 - ALWAYS produce production-quality artifacts — this is a real change, not a demo
-- Return a structured envelope with `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`
+- Return a structured `sdd-result/v1` envelope with `schema`, `kind`, `status`,
+  `executive_summary`, `artifacts`, `evidence`, `next_recommended`, `risks`,
+  `skill_resolution`
 
 ### MUST NOT
 

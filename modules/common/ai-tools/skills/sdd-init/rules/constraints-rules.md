@@ -9,7 +9,9 @@ Constraints that apply during the SDD initialization phase.
 - ALWAYS detect the real tech stack from actual project files — never guess
 - ALWAYS initialize the backend the orchestrator resolved, and honor an explicit
   backend choice exactly (`persistence-contract.md`)
-- ALWAYS return a structured envelope with `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`
+- ALWAYS return a structured `sdd-result/v1` envelope with `schema`, `kind`,
+  `status`, `executive_summary`, `artifacts`, `evidence`, `next_recommended`,
+  `risks`, `skill_resolution`
 - If `openspec/` already exists, report what exists and ask before updating
 - If no backend is usable, STOP and ask before choosing one or creating artifacts
 

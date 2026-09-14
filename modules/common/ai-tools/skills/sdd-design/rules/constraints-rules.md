@@ -11,7 +11,9 @@ Constraints that apply during the technical design phase.
 - ALWAYS include concrete file paths in the File Changes section
 - ALWAYS use ASCII diagrams for data flow (keep simple, box-and-arrow style)
 - Design artifact MUST be under 800 words. Architecture decisions as tables (option | tradeoff | decision). Code snippets only for non-obvious patterns.
-- ALWAYS return a structured envelope with `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`
+- ALWAYS return a structured `sdd-result/v1` envelope with `schema`, `kind`,
+  `status`, `executive_summary`, `artifacts`, `evidence`, `next_recommended`,
+  `risks`, `skill_resolution`
 - If open questions BLOCK the design, set `status: blocked` and explain clearly
 
 ### MUST NOT

@@ -73,6 +73,8 @@ Consult `references/` for templates and formats.
 - Use concrete file paths — never abstract references
 - Follow existing project patterns and conventions
 - MUST NOT use UML diagrams
-- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
+- Return a `sdd-result/v1` envelope with: `schema`, `kind`, `status`,
+  `executive_summary`, `artifacts`, `evidence`, `next_recommended`, `risks`,
+  `skill_resolution`
 
 See `rules/constraints-rules.md` for complete rules.

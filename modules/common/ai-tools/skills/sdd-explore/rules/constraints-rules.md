@@ -7,7 +7,9 @@ Constraints that apply during the SDD exploration phase.
 ### MUST
 
 - ALWAYS read real code — never guess implementation details
-- ALWAYS return a structured envelope with `status`, `executive_summary`, `detailed_report`, `artifacts`, `next_recommended`, `risks`
+- ALWAYS return a structured `sdd-result/v1` envelope with `schema`, `kind`,
+  `status`, `executive_summary`, `artifacts`, `evidence`, `next_recommended`,
+  `risks`, `skill_resolution`
 - Keep analysis concise — focus on actionable insights
 
 ### MUST NOT

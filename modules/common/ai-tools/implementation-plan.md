@@ -869,20 +869,20 @@ the reader means it is never silently accepted.
 
 ### T26: Assemble and verify compatible migration bundles
 
-- [ ] Adopt the selected newer content from T24, including required references,
+- [x] Adopt the selected newer content from T24, including required references,
   strict-mode resources, and shared protocols. Apply T17's authoring structure
   without preserving obsolete instructions solely to keep the old file layout.
-- [ ] With an upstream engine, match skill assets to its exact CLI/schema contract.
+- [x] With an upstream engine, match skill assets to its exact CLI/schema contract.
   With a local engine, translate native calls to proven local equivalents and keep
   the semantic adaptation map explicit. Resolve model-tier sections and client
   metadata rather than deploying raw source assets blindly.
-- [ ] Assemble each bundle's producers, consumers, commands/agents, and dependencies
+- [x] Assemble each bundle's producers, consumers, commands/agents, and dependencies
   into a coherent candidate for both clients. Reject mixed legacy/new loading and
   envelope contracts. Keep new optional methods in their own verified bundles.
-- [ ] Run structural checks and relevant native runtime smoke scenarios on the
+- [x] Run structural checks and relevant native runtime smoke scenarios on the
   candidate, including T25's supported legacy fixtures, before T08 deploys it.
   Record bundle revisions, effective client outputs, and rollback boundaries.
-- [ ] Document future updates as a comparison of previous upstream, new upstream,
+- [x] Document future updates as a comparison of previous upstream, new upstream,
   and local adaptations. Revalidate affected bundles before advancing the pin;
   remove obsolete local patches only with evidence and within the update's scope.
 
@@ -897,6 +897,71 @@ bundles can be admitted independently of optional growth, and the previous
 generation/state recovery procedure is known before rollout.
 **Surface:** selected skills/resources, shared protocols, client projections,
 bundle compatibility checks, source records, and the support/update documentation.
+**Evidence:** the five ADR 0017 bundles are mapped in
+[bundle-verification.md](bundle-verification.md) — concrete files, source
+revision(s) (`gentle-ai v2.9.0` `be4955…`, khanelinix `8f0ca0…` for methods),
+effective OpenCode outputs (`programs.opencode.{skills,commands,agents,context}`
+— orchestrator + generated `sdd-standard`/`sdd-design`/`sdd-archive`/`sdd-review`
+roles and the nine `sdd-*` commands), effective Pi outputs (`pi.skills`, generated
+phase commands), dependency closure (`_shared` + the locator/`sdd-result/v1`
+contract + `aytordev-sdd`), rollback boundary (code vs data, per
+`legacy-compatibility.md`), and the update procedure (three-way previous/new/local
+comparison, revalidate affected bundles, then advance the pin). The deferred
+upstream methods (`sdd-research`, `skill-improver`, `go-testing`,
+`rdd-defect-workflow`, `systemic-issue-triage`, `hermes-ephemeral-delegation`,
+`gentle-ai-bench`) are listed as unsupported.
+The remaining legacy producer shapes are reconciled: `sdd-init`, `sdd-explore`,
+`sdd-propose`, `sdd-spec`, `sdd-design`, and `sdd-onboard` now document the
+`sdd-result/v1` field set (`schema`, `kind`, `status`, `executive_summary`,
+`artifacts`, `evidence`, `next_recommended`, `risks`, `skill_resolution`) in
+`SKILL.md` and `rules/constraints-rules.md`, and `sdd-propose`'s return-summary
+example no longer emits `{status: "ok", artifacts: [...]}`/`detailed_report`.
+New check `checks/ai-tools-bundles/` (published as
+`integration-ai-tools-bundles`, the default level for an unlisted check dir; no
+loader edit) asserts in pure Nix that every SDD phase documents the locator model
+and `sdd-result/v1`, no producer emits the legacy envelope, archive is gated by
+C11 and calls `aytordev-sdd closure`, research is optional, the registry is
+index-first, no skill/agent presents compact-rule authority or hardcodes
+`~/.config/opencode`, every bundle file exists, the deferred methods are absent,
+the T25 legacy fixtures stay distinct from the current schema, and
+`bundle-verification.md` names the pin and all five bundles. It was confirmed to
+fail (exit 1, "still emits legacy envelope marker '\"status\": \"ok\"'") when a
+legacy marker was injected, then reverted.
+Verification (exact command, exit 0):
+
+```sh
+nix build \
+  .#checks.aarch64-darwin.integration-ai-tools-bundles \
+  .#checks.aarch64-darwin.unit-ai-tools-sdd-persistence \
+  .#checks.aarch64-darwin.unit-ai-tools-sdd-handoffs \
+  .#checks.aarch64-darwin.unit-ai-tools-sdd-research \
+  .#checks.aarch64-darwin.unit-ai-tools-dependencies \
+  .#checks.aarch64-darwin.unit-ai-tools-loading \
+  .#checks.aarch64-darwin.unit-ai-tools-inventory \
+  .#checks.aarch64-darwin.integration-ai-tools-skill-contract \
+  .#checks.aarch64-darwin.integration-ai-tools-contract \
+  .#checks.aarch64-darwin.integration-ai-tools-renderers \
+  .#checks.aarch64-darwin.integration-ai-tools-roles \
+  .#checks.aarch64-darwin.integration-ai-tools-mcp \
+  .#checks.aarch64-darwin.integration-ai-tools-pi-mcp-bridge \
+  .#checks.aarch64-darwin.integration-ai-tools-pi-workflow \
+  .#checks.aarch64-darwin.integration-ai-tools-permissions \
+  .#checks.aarch64-darwin.integration-ai-tools-testing-scope \
+  .#checks.aarch64-darwin.integration-ai-tools-method-routing \
+  .#checks.aarch64-darwin.integration-ai-tools-workflow-routing \
+  .#checks.aarch64-darwin.integration-ai-tools-archive \
+  .#checks.aarch64-darwin.integration-ai-tools-legacy-compat \
+  .#checks.aarch64-darwin.integration-ai-tools-docs-links \
+  .#checks.aarch64-darwin.integration-gentle-ai-engine \
+  .#checks.aarch64-darwin.integration-module-contract \
+  .#checks.aarch64-darwin.integration-docs-generation \
+  .#checks.aarch64-darwin.unit-nix-unit \
+  --no-link --override-input secrets path:./checks/fixtures/secrets
+```
+
+`nix fmt` (1 file changed) and `git diff --check` clean. Deferred/unverified:
+live-model execution of the migrated phases; `integration-gentle-ai-engine`
+exercises the adapter/engine, not a real model run.
 
 ### T27: Package the adopted engine and define the adapter boundary
 

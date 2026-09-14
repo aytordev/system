@@ -15,7 +15,9 @@ Constraints that apply during the specification phase.
 - ALWAYS include happy path AND edge case scenarios
 - MODIFIED requirements MUST be the FULL block — copy entire requirement + all scenarios from main spec, then edit. Partial MODIFIED blocks lose content at archive time.
 - Spec artifact MUST be under 650 words. Prefer requirement tables over narrative. Each scenario: 3-5 lines max.
-- ALWAYS return a structured envelope with `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`
+- ALWAYS return a structured `sdd-result/v1` envelope with `schema`, `kind`,
+  `status`, `executive_summary`, `artifacts`, `evidence`, `next_recommended`,
+  `risks`, `skill_resolution`
 
 ### MUST NOT
 
