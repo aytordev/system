@@ -672,14 +672,14 @@ assertion was temporarily broken to confirm it throws). Deferred: `sdd-propose` 
 
 ### T21: Implement lossless archive and chosen closure policy
 
-- [ ] Implement the owner's decided closure policy (ADR 0015, C11): current,
+- [x] Implement the owner's decided closure policy (ADR 0015, C11): current,
   relevant verification is required for successful completion and canonical spec
   promotion. Any administrative pause/abandon/unverified disposition stays
   distinct and never fabricates PASS.
-- [ ] Use T19's selected engine to compose deltas deterministically, preserving
+- [x] Use T19's selected engine to compose deltas deterministically, preserving
   unrelated bytes. Validate supported requirement IDs/headings and rename semantics
   explicitly; refuse unknown or ambiguous operations before publishing output.
-- [ ] Archive mechanically with a pre-move snapshot/readback, collision handling,
+- [x] Archive mechanically with a pre-move snapshot/readback, collision handling,
   and a documented interrupted-operation recovery path. Preserve the prior report
   and artifacts when validation fails. Engram-only closure uses references and
   final evidence rather than unnecessary filesystem copies.
@@ -695,16 +695,38 @@ never overwrite archives. Fresh/stale/failed verification and incomplete tasks
 follow the chosen policy; no outcome fabricates PASS or silently promotes specs.
 **Surface:** `sdd-archive`, spec templates, selected engine/composition helpers,
 backend-specific closure tests, and the ADR's resolved policy.
+**Evidence:** C11 lives in `skills/_shared/closure-policy.md` (successful-closure
+conditions, distinct `unverified`/`paused`/`abandoned` dispositions, promotion
+gate, no-fabricated-PASS) and is enforced by the adapter's `closure` subcommand:
+`aytordev-sdd closure <change> --revision <rev>` translates the engine's
+`sdd-status` readiness into `aytordev-sdd.closure/v1` and exits non-zero for
+`incomplete-tasks`, `unverified`, or `stale-verification`. The adapter now also
+exposes `compose` (pass-through to the engine's `sdd-archive-compose`, not
+reimplemented) and `archive` (mechanical move: pre-move snapshot, `diff -r`
+readback, collision refusal, recovery path). `sdd-archive` and its rules were
+rewritten for the gate, staged composition, lossless move, and an `sdd-result/v1`
+envelope; `sdd-verify` now mandates the engine `gentle-ai.verify-result/v1` fence
+as the report's first non-empty line so the gate is reachable (envelope
+mid-file/missing stays blocked). `checks/ai-tools-archive` proves unrelated
+requirements survive, a malformed delta writes nothing (sentinel preserved), a
+rename is applied and a malformed one refused, an archive collision never
+overwrites, the move is lossless, and the gate blocks incomplete/unverified/stale
+changes while promoting a verified one; the marker and executable negatives were
+confirmed to fail when broken. Deferred/unverified: live-model execution of the
+archive skill; the Engram/hybrid closure path is specified (references + final
+evidence) but exercised only structurally; `paused`/`abandoned` are
+operator-directed dispositions (modeled, not engine-produced).
+
 
 ### T22: Add optional SDD research/evidence handoff
 
-- [ ] Define a source-backed evidence handoff when external facts materially affect
+- [x] Define a source-backed evidence handoff when external facts materially affect
   exploration/proposal/design: questions, pinned/accessed sources, mapped claims,
   contradictions, unresolved gaps, and freshness.
-- [ ] Keep confirmed product choices separate from researched facts. The
+- [x] Keep confirmed product choices separate from researched facts. The
   orchestrator retains decision ownership; evidence collection does not infer
   user consent or turn itself into another lifecycle owner.
-- [ ] Make the method optional and pass its result through the selected backend;
+- [x] Make the method optional and pass its result through the selected backend;
   `none` retains inline evidence. Integrate with T14 rather than duplicating the
   general research method or requiring a new skill for every phase.
 
@@ -717,6 +739,23 @@ unsupported claims cannot masquerade as confirmed product choices. In `none`,
 the same handoff works without creating files or observations.
 **Surface:** SDD exploration/proposal/design contracts, optional evidence artifact,
 shared source guidance, backend and routing scenarios.
+**Evidence:** `skills/_shared/research-evidence.md` defines the optional handoff
+(`questions`; `sources` with class/title/url + `accessed` **or** `revision`;
+`claims` mapped to source IDs; `contradictions`; `unresolved gaps`; `freshness`;
+and a separate `confirmed product choices` section). It never infers consent: a
+source is evidence, never a choice. Engram uses topic key
+`sdd/{change-name}/research-evidence` (artifact-type row added to
+`engram-convention.md`), OpenSpec uses
+`openspec/changes/{change-name}/research-evidence.md`, hybrid writes both, and
+`none` stays inline. Concise entry points were added to `sdd-explore`,
+`sdd-propose`, and `sdd-design` (SKILL.md plus one rule each); evidence gathering
+defers to T14's `bug-diagnosis`/`impact-analysis` rather than a new skill.
+`unit-ai-tools-sdd-research` proves (pure Nix) that a changing claim loses
+validity without an `accessed`/`revision` anchor or without a retained gap, a
+`supported` claim needs a real source, an `unsupported` claim is allowed as a gap
+but rejected as a product choice, a choice without `decided_by` is rejected, and
+`none` writes nothing while `engram`/`openspec` never cross stores (an unknown
+backend throws).
 
 ### T23: Scope testing capability to projects and work units
 
