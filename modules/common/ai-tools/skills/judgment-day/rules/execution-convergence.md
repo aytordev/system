@@ -21,7 +21,11 @@ If issues still remain, ASK the user:
 | State | Condition |
 |-------|-----------|
 | APPROVED | Both judges return clean after fix round |
-| ESCALATED | User chose to stop, or unresolvable issues remain |
+| ESCALATED | User chose to stop, unresolvable issues remain, or a judge failed/was cancelled before a complete verdict |
+
+A judge that fails, times out, or is cancelled does not terminate the run on
+its own: the other judge still finishes, both results are recorded, and the
+synthesis reports the incomplete verdict as ESCALATED (never APPROVED).
 
 ### Self-Check (before ANY terminal action)
 

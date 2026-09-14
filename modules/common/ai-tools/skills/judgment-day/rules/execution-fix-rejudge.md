@@ -9,10 +9,16 @@ tags: execution, fix, rejudge
 
 **Impact: HIGH**
 
-1. If **confirmed CRITICAL issues or real WARNING issues** exist → delegate a **Fix Agent** (separate delegation)
-2. After Fix Agent completes → re-launch **both judges in parallel** (fresh delegates, same blind protocol)
+1. If **confirmed CRITICAL issues or real WARNING issues** exist → delegate a **Fix Agent** in the **authorized correction lane** (a separate delegation, distinct from both judges)
+2. After Fix Agent completes → re-launch **both judges in parallel** (fresh contexts, same target revision, same blind protocol)
 3. **After 2 fix iterations**, if issues remain → ASK user: "Issues remain after 2 iterations. Continue?"
 4. If both judges return clean → JUDGMENT: APPROVED
+
+### Authorized Correction Lane
+
+The Fix Agent is the only writer in the protocol. It receives the confirmed
+findings, not a full judge transcript, and it never reuses a judge session. Any
+write outside this lane is a policy violation.
 
 ### Fix Agent Scope Rule
 

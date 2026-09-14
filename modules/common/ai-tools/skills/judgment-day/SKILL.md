@@ -40,11 +40,14 @@ Parallel adversarial review protocol that launches two independent blind judge s
 User asks for "judgment day"
 ├── Target specific? → YES: continue / NO: ask user to specify
 ▼
-Resolve skills (Pattern 0): read registry → match → build Project Standards
+Resolve skills (Pattern 0): read the registry index → match → pass exact SKILL.md paths
 ▼
-Launch Judge A + Judge B in parallel (delegate, async)
+Pin the target revision
 ▼
-Wait for both → Synthesize verdict
+Launch Judge A + Judge B in parallel via the client primitive
+  (OpenCode: two Task calls, subagent_type: sdd-review; Pi: judgment-day command)
+▼
+Wait for BOTH → Synthesize verdict
 ├── No issues → JUDGMENT: APPROVED
 ├── Issues found → Present verdict table, ASK user
 │   ├── YES → Fix Agent → re-judge (Round 2)
@@ -56,8 +59,10 @@ Wait for both → Synthesize verdict
 
 - The orchestrator NEVER reviews code itself — only launches judges
 - Judges MUST be launched in parallel — never sequential
-- Fix Agent is a SEPARATE delegation — never reuse a judge as fixer
+- Judges are read-only and must not share a context or receive each other's findings
+- Both judges review the same target and the same pinned revision
+- Fix Agent is the separate authorized correction lane — never reuse a judge as fixer
 - After 2 fix iterations, ASK user before continuing
-- NEVER declare APPROVED until both judges return clean
+- NEVER declare APPROVED until both judges return clean; a failed or cancelled judge escalates, never approves
 
 See `rules/constraints-rules.md` for complete blocking rules.

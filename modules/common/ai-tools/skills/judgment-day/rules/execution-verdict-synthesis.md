@@ -23,6 +23,8 @@ Contradiction → agents DISAGREE on same thing → flag for manual decision
 ```markdown
 ## Judgment Day — {target}
 
+**Revision:** {pinned commit/tag/PR head reviewed by both judges}
+
 ### Round {N} — Verdict
 
 | Finding | Judge A | Judge B | Severity | Status |
