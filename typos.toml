@@ -24,3 +24,5 @@ SOM = "SOM"
 Collison = "Collison"
 nd = "nd"
 hace = "hace"
+# Helium browser bundle id (net.imput.helium); upstream typo, not ours.
+imput = "imput"

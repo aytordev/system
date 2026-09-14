@@ -204,13 +204,22 @@ in {
         on-mode-changed = ["exec-and-forget ${sketchybar} --trigger aerospace_mode_change"];
 
         # Multi-Monitor Workspace Assignment
+        # C/D target the Dell (civislend's secondary), matched by name, and fall
+        # back to the secondary monitor on hosts without a Dell. Everything else
+        # lives on the primary display.
         workspace-to-monitor-force-assignment = {
           B = "main";
-          C = "main";
-          D = "main";
+          C = [
+            "dell"
+            "secondary"
+          ];
+          D = [
+            "dell"
+            "secondary"
+          ];
           W = "main";
-          S = "secondary";
-          O = "secondary";
+          S = "main";
+          O = "main";
         };
 
         # Application-Specific Rules - Floating apps
