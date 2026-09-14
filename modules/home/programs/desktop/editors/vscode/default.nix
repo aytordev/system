@@ -233,10 +233,10 @@ in {
         };
         # Same settings as the default profile so the theme, fonts and
         # formatters apply here too — VS Code profiles do not inherit settings.
+        # `enableUpdateCheck`/`enableExtensionUpdateCheck` are default-profile
+        # only, so they are intentionally omitted here.
         Nix = {
           extensions = mkExtensions (commonExtensions ++ nixExtensions);
-          enableUpdateCheck = false;
-          enableExtensionUpdateCheck = false;
           userSettings = commonSettings;
         };
       };
