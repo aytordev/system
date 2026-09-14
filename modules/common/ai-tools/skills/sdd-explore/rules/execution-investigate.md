@@ -34,3 +34,6 @@ Read entry points and key files, search for related functionality, check existin
 - Read at least 3-5 relevant files before drawing conclusions
 - Note any surprising or non-obvious behaviors
 - Track file paths for later reference in analysis
+- When external facts materially affect the exploration, record the optional
+  handoff in `_shared/research-evidence.md`; never promote a sourced claim to a
+  confirmed product choice

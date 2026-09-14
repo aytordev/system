@@ -41,6 +41,15 @@ Read and follow these shared protocols:
 - `hybrid`: follow both conventions; write both stores with the partial-write/retry rules in `persistence-contract.md`.
 - `none`: return the design inline only.
 
+## Optional Research Evidence
+
+When external facts materially affect the design, record the optional
+source-backed handoff in `_shared/research-evidence.md`. It is optional, persists
+through the resolved backend (`none` stays inline with no writes), keeps confirmed
+product choices separate from researched claims, and never infers user consent
+from a source. Use `impact-analysis`/`bug-diagnosis` for the evidence itself
+instead of a separate research lifecycle.
+
 ## What to Do
 
 ### Step 1: Read the Actual Codebase

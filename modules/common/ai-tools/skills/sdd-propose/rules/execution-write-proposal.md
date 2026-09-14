@@ -35,6 +35,14 @@ Write `proposal.md` with all required sections using the template from `referenc
 
 9. **Success Criteria** — Checklist of measurable criteria
 
+### External Facts
+
+When external facts (third-party API behavior/versions, upstream contracts,
+platform behavior) materially affect the proposal, record the optional
+source-backed handoff in `_shared/research-evidence.md` and carry supported
+claims into Approach/Risks. Keep confirmed product choices separate; a source is
+evidence, never user consent.
+
 ### Size Budget
 
 Proposal artifact MUST be under 450 words. Use bullet points and tables over prose.

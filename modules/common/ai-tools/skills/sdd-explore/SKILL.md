@@ -36,6 +36,16 @@ probe another store or guess a path. Behavior by backend:
 - `hybrid`: read both conventions; persist to both stores with the partial-write/retry rules in `persistence-contract.md`.
 - `none`: return analysis inline only; no persistence writes.
 
+## Optional Research Evidence
+
+When external facts (third-party API behavior or versions, upstream contracts,
+platform behavior) materially affect the exploration, record the optional
+source-backed handoff in `_shared/research-evidence.md`. It is optional, persists
+through the resolved backend (`none` stays inline with no writes), keeps confirmed
+product choices separate from researched claims, and never infers user consent.
+Use `impact-analysis`/`bug-diagnosis` for the evidence itself instead of a
+separate research lifecycle.
+
 ## What to Do
 
 ### Step 1: Parse Exploration Request

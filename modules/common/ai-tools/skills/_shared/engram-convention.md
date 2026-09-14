@@ -17,6 +17,7 @@ scope:     project
 | Artifact Type | Produced By | Description |
 |---------------|-------------|-------------|
 | `explore` | sdd-explore | Exploration analysis |
+| `research-evidence` | sdd-explore / sdd-propose / sdd-design | Optional source-backed evidence handoff (`research-evidence.md`) |
 | `proposal` | sdd-propose | Change proposal |
 | `spec` | sdd-spec | Delta specifications (all domains concatenated) |
 | `design` | sdd-design | Technical design |

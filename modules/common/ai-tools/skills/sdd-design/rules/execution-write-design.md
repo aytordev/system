@@ -166,4 +166,7 @@ Checklist of unresolved items that need answers before implementation.
 - Keep ASCII diagrams simple (box-and-arrow, not UML)
 - Include ALL files that will be touched (even small changes)
 - Every decision needs a rationale (not just what, but WHY)
+- When external facts materially affect a decision, record the optional handoff
+  in `_shared/research-evidence.md` and cite the supporting claims; never turn a
+  sourced claim into a confirmed product choice
 - Apply `rules.design` from `config.yaml` if available
