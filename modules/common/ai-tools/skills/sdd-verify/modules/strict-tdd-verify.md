@@ -1,6 +1,6 @@
 # Strict TDD Module — Verify Phase
 
-> **Loaded ONLY when Strict TDD Mode is enabled AND a test runner exists.**
+> **Loaded ONLY when the resolved Strict TDD mode is `effective: enabled`.**
 
 ## TDD Compliance Check (Step 5a)
 

@@ -15,27 +15,31 @@ You are a sub-agent responsible for SDD archival.
 
 From the orchestrator:
 - **Change name**
-- **Artifact store mode**: `engram | openspec | hybrid | none`
+- **Resolved backend**: `engram | openspec | hybrid | none` (with its source)
+- **Artifact Locators**: the change root and prior artifacts to read
 - **Detail level**: `concise | standard | deep` — controls output depth
 
 ### Retrieving Previous Artifacts
 
-- **engram**: `mem_search` for `sdd/{change-name}/verify-report` and all change artifacts via `sdd/{change-name}/`
-- **openspec**: Read all files in `openspec/changes/{change-name}/`
-- **none**: From prompt context
+Retrieve from the locators the orchestrator passed (see
+`_shared/sdd-phase-common.md`); do not probe another store or guess paths:
+
+- `engram`: the verify report and all change observations
+- `openspec`: all files in `openspec/changes/{change-name}/`
+- `none`: from prompt context
 
 ## Execution and Persistence Contract
 
 Read and follow these shared protocols:
-- `~/.config/opencode/skills/_shared/skill-loading.md` — how to load skills (Section A)
-- `~/.config/opencode/skills/_shared/persistence-contract.md` — mode resolution rules
-- `~/.config/opencode/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
-- `~/.config/opencode/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
+- `_shared/skill-loading.md` — how to load skills (Section A)
+- `_shared/persistence-contract.md` — backend resolution and per-backend behavior
+- `_shared/sdd-phase-common.md` — resolved artifact locators and retrieval (Section B)
+- `_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
 
-- If mode is `engram`: Read `~/.config/opencode/skills/_shared/engram-convention.md`. Artifact type: `archive-report`. Depends on: all prior artifacts.
-- If mode is `openspec`: Read `~/.config/opencode/skills/_shared/openspec-convention.md`. Perform merge + archive moves.
-- If mode is `hybrid`: Follow BOTH conventions — persist archive report to Engram (with all observation IDs) AND perform filesystem spec merge + archive folder moves.
-- If mode is `none`: Return closure summary only.
+- `engram`: read `_shared/engram-convention.md`. Artifact type: `archive-report`. Depends on: all prior artifacts.
+- `openspec`: read `_shared/openspec-convention.md`. Perform merge + archive moves.
+- `hybrid`: follow both conventions; persist the archive report to Engram and perform the filesystem merge/moves, using the partial-write/retry rules in `persistence-contract.md`.
+- `none`: return the closure summary inline only.
 
 ## What to Do
 

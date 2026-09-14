@@ -7,11 +7,14 @@ Constraints that apply during task breakdown creation.
 ### MUST
 
 - **Reference concrete file paths in every task** — Every task must specify which file(s) it affects
+- **Carry per-unit evidence in every task** — Each task line records `check:`, `scenario:` (or `N/A — {reason}`), and `rollback:`
+- **Keep tests with the unit they verify** — Do NOT defer a unit's only test to a later phase
+- **Emit the `Review Workload Forecast` block** — Include `Estimated changed lines`, `400-line budget risk`, `Chained PRs recommended`, and `Decision needed before apply` so the orchestrator's consumer resolves
 - **Order tasks by dependency** — Tasks in earlier phases must not depend on tasks in later phases
 - **Use hierarchical numbering** — Format: `{phase}.{task}` (e.g., `1.1`, `1.2`, `2.1`)
 - **Every task must be completable in ONE session** — If a task requires multiple sessions, break it down further
 - **Tasks artifact MUST be under 530 words** — Each task: 1-2 lines max. Use checklist format, not paragraphs.
-- **Return a structured envelope** — Include `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`
+- **Return a structured envelope** — Use the `sdd-result/v1` schema (`status`, `executive_summary`, `artifacts`, `evidence`, `next_recommended`, `risks`, `skill_resolution`)
 
 ### MUST NOT
 

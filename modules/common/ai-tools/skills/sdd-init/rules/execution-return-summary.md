@@ -15,23 +15,19 @@ Return a summary appropriate for the resolved persistence mode.
 **Project**: {name}
 **Stack**: {stack summary}
 **Persistence**: Engram (artifacts saved to memory)
-**Strict TDD Mode**: {enabled / disabled / unavailable (no test runner)}
+**Strict TDD requested**: {true / false / unset}
+**Strict TDD effective**: {enabled / disabled / blocked}
+**Strict TDD blocker**: {reason or —}
 
 ### Testing Capabilities
-| Capability | Status |
-|------------|--------|
-| Test Runner | {tool} found / Not found |
-| Unit Tests | Available / Not available |
-| Integration Tests | {tool} / Not installed |
-| E2E Tests | {tool} / Not installed |
-| Coverage | Available / Not available |
-| Linter | {tool} / Not available |
-| Formatter | {tool} / Not available |
+| Root | Command | Surface | Covers | Workspace-wide |
+|------|---------|---------|--------|----------------|
+| {root} | `{command}` | {runtime / nix-eval / nix-build} | {targets} | yes/no |
 
 ### Context Saved
 - **Engram key**: sdd-init/{project-name}
 - **Testing capabilities key**: sdd/{project-name}/testing-capabilities
-- **Skill registry**: .atl/skill-registry.md
+- **Skill registry**: Engram `skill-registry`
 
 No project files created.
 
@@ -54,6 +50,7 @@ No project files created.
 - `openspec/specs/` — specification directory
 - `openspec/changes/` — active changes directory
 - `openspec/changes/archive/` — archived changes
+- `.atl/skill-registry.md` — skill index
 
 ### Next Steps
 - Use `/sdd-new <change-name>` to start a new change
@@ -68,18 +65,14 @@ No project files created.
 **Project**: {name}
 **Stack**: {stack summary}
 **Persistence**: Hybrid (Engram + openspec/)
-**Strict TDD Mode**: {enabled / disabled / unavailable (no test runner)}
+**Strict TDD requested**: {true / false / unset}
+**Strict TDD effective**: {enabled / disabled / blocked}
+**Strict TDD blocker**: {reason or —}
 
 ### Testing Capabilities
-| Capability | Status |
-|------------|--------|
-| Test Runner | {tool} found / Not found |
-| Unit Tests | Available / Not available |
-| Integration Tests | {tool} / Not installed |
-| E2E Tests | {tool} / Not installed |
-| Coverage | Available / Not available |
-| Linter | {tool} / Not available |
-| Formatter | {tool} / Not available |
+| Root | Command | Surface | Covers | Workspace-wide |
+|------|---------|---------|--------|----------------|
+| {root} | `{command}` | {runtime / nix-eval / nix-build} | {targets} | yes/no |
 
 ### Created (OpenSpec)
 - `openspec/config.yaml` — project configuration
@@ -89,7 +82,7 @@ No project files created.
 ### Saved (Engram)
 - **Context key**: sdd-init/{project-name}
 - **Testing capabilities key**: sdd/{project-name}/testing-capabilities
-- **Skill registry**: .atl/skill-registry.md
+- **Skill registry**: Engram `skill-registry` + `.atl/skill-registry.md`
 
 ### Next Steps
 - Use `/sdd-new <change-name>` to start a new change
@@ -110,7 +103,7 @@ No project files created.
 ### Detected Context
 - Language: {language}
 - Framework: {framework}
-- Test runner: {test command}
+- Project roots: {root} → {per-root commands and surfaces}
 
 ### Next Steps
 - Use `/sdd-new <change-name>` to start a new change

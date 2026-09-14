@@ -10,8 +10,18 @@ Create `openspec/config.yaml` with the detected project context and phase-specif
 project:
   name: {project-name}
   stack: {detected stack summary}
-  test_runner: {detected test command}
-  build_command: {detected build command}
+
+testing:
+  requested: {true | false | unset}       # explicit policy only
+  effective: {enabled | disabled | blocked}
+  blocker: {reason or null}
+  roots:
+    - root: {relative path}
+      working_dir: {path}
+      surface: {runtime | nix-eval | nix-build | quality}
+      command: {command}
+      covers: [{targets}]
+      covers_workspace: {true | false}
 
 artifact_store:
   mode: openspec
@@ -45,4 +55,8 @@ rules:
 - Keep the context section CONCISE — no more than 10 lines
 - Use detected values, do not guess or assume
 - If a value cannot be detected, use `null` or omit it
+- `testing.roots` records one entry per command with its working directory and
+  covered targets; do not collapse roots into one `test_runner`
+- `testing.requested` is the explicit policy; `testing.effective` is the resolved
+  mode. Never write `effective: disabled` to hide a `blocked` request
 - The `rules` section provides defaults that each phase's sub-agent reads

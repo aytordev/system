@@ -23,15 +23,17 @@ mem_save(
   project: {project-name}
   path: {absolute project path}
   stack: {detected stack summary}
-  test_runner: {detected test command or null}
-  build_command: {detected build command or null}
-  strict_tdd: {true | false | unavailable}
+  testing:
+    requested: {true | false | unset}
+    effective: {enabled | disabled | blocked}
+    blocker: {reason or null}
   artifact_store_mode: {engram | hybrid}
-  skill_registry: .atl/skill-registry.md
+  skill_registry: engram:skill-registry
   initialized: {ISO 8601 date}
 
   ## Testing Capabilities
-  {paste the full testing capabilities table from Step 2}
+  {paste the full testing capabilities record from Step 2, including project
+   roots, per-root commands, covered targets, and surfaces}
 
   ## Conventions
   {list of convention files detected}
@@ -57,7 +59,10 @@ mem_save(
 
 If the `mem_save` call fails:
 - In `engram` mode: report `status: blocked` — Engram is the only persistence backend
-- In `hybrid` mode: report `status: partial`, log the failure, continue with filesystem artifacts (openspec bootstrap already completed in Step 4)
+- In `hybrid` mode: report `status: partial`, name the failed store, keep the
+  filesystem artifacts (the bootstrap completed in Step 4), and retry the missing
+  Engram write with upsert semantics on the next launch. Never report success while
+  the two stores disagree (`persistence-contract.md`).
 
 ### Recovery
 

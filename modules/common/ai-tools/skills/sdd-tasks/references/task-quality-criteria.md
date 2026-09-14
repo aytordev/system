@@ -49,6 +49,10 @@ The task must have clear completion criteria. You should be able to check if it'
 - "Ensure quality"
 - "Check everything"
 
+Each task line records the focused `check:`, the applicable `scenario:` (or an
+explicit `N/A — {reason}`), and the `rollback:` boundary — see
+`rules/execution-write-tasks.md`.
+
 ### 4. Small
 
 The task must be completable in ONE session (typically 15-60 minutes of work).
@@ -105,33 +109,40 @@ Connect components together and expose functionality.
 
 **Anti-examples:**
 - Core logic implementation (that's Phase 2)
-- Documentation (that's Phase 5)
+- Documentation (that's Phase 4)
 
-### Phase 4: Testing
+### Tests Attach to Their Unit
 
-Validate that everything works as specified.
+Do not create a standalone testing phase. Each unit's focused test/scenario is
+part of that unit (Phases 1–3). Phase 4 only holds cross-cutting checks that no
+single unit owns.
 
-**Examples:**
-- Unit tests for services
-- Integration tests for flows
-- E2E tests if applicable
-- Test data creation
+**Examples (attached to a unit):**
+- Unit test for `services/auth.ts` in the same task that implements it
+- Integration test for a flow attached to the wiring task
+- Test data/fixtures created alongside their consumer
 
-**Organization:** Group by component being tested, not by test type.
+### Phase 4: Verification / Cleanup / Documentation
 
-### Phase 5: Cleanup / Documentation
-
-Finalize the change for merging and future maintenance.
+Finalize the change for merging and future maintenance. Tests stay with the unit
+they verify — Phase 4 MUST NOT be the only place a unit is covered.
 
 **Examples:**
 - Update API documentation
 - Add migration notes to README
 - Remove deprecated code
 - Update changelog
+- Cross-cutting integration/E2E checks not owned by a single unit
 
 **Anti-examples:**
 - Bug fixes (should be in the phase where the bug was introduced)
 - New features (out of scope)
+- The first test for a Phase 1–3 unit (attach it to that unit)
+
+## Review Workload Forecast
+
+The tasks artifact MUST end with a `Review Workload Forecast` block whose
+decision fields the orchestrator consumes. See `rules/execution-write-tasks.md`.
 
 ## Size Guidelines
 

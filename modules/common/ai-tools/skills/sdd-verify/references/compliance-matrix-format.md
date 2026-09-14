@@ -4,12 +4,22 @@ The compliance matrix cross-references spec scenarios with test execution result
 
 ## Table Format
 
-| Requirement | Scenario | Test | Result |
-|-------------|----------|------|--------|
-| REQ-01 | Happy path login | auth_test.ts > testValidLogin | COMPLIANT |
-| REQ-01 | Invalid credentials | auth_test.ts > testInvalidCreds | FAILING |
-| REQ-02 | Password reset flow | (none found) | UNTESTED |
-| REQ-03 | Token expiration | auth_test.ts > testTokenExpiry | PARTIAL |
+| Requirement | Scenario | Test | Result | Revision |
+|-------------|----------|------|--------|----------|
+| REQ-01 | Happy path login | auth_test.ts > testValidLogin | COMPLIANT | {hash} |
+| REQ-01 | Invalid credentials | auth_test.ts > testInvalidCreds | FAILING | {hash} |
+| REQ-02 | Password reset flow | (none found) | UNTESTED | — |
+| REQ-03 | Token expiration | auth_test.ts > testTokenExpiry | PARTIAL | {hash} |
+
+## Supported Spec Grammar
+
+Requirements are `### Requirement: {name}` (full specs may use `## Requirement:`).
+Scenarios are either canonical `#### Scenario: {name}` headings or the legacy
+bold `**Scenario: {name}**` markers under `#### Scenarios`. Count both; the
+matrix totals MUST equal the parsed totals (`rules/execution-spec-counts.md`).
+
+Each row records the candidate `Revision` its test ran against. If the candidate
+changed, the row is stale and must be re-run or marked UNTESTED.
 
 ## Status Definitions
 

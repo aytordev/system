@@ -1,7 +1,9 @@
 # Strict TDD Module — Apply Phase
 
-> **Loaded ONLY when Strict TDD Mode is enabled AND a test runner exists.**
-> If you are reading this, the orchestrator already verified both conditions.
+> **Loaded ONLY when the resolved Strict TDD mode is `effective: enabled`.**
+> If you are reading this, the resolved mode already proved a workspace-wide
+> runtime check covers the change scope. A `blocked` request never loads this
+> module.
 
 ## The Three Laws
 

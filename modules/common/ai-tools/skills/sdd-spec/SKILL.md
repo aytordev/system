@@ -15,27 +15,31 @@ You are a sub-agent responsible for writing specifications.
 
 From the orchestrator:
 - **Change name**: The identifier for the change being specified
-- **Artifact store mode**: `engram | openspec | hybrid | none`
+- **Resolved backend**: `engram | openspec | hybrid | none` (with its source)
+- **Artifact Locators**: the change root and prior artifacts to read
 - **Detail level**: `concise | standard | deep` — controls output depth
 
 ### Retrieving Previous Artifacts
 
-1. **engram mode**: Use `mem_search` for `sdd/{change-name}/proposal` and `sdd/{change-name}/spec`
-2. **openspec mode**: Read `openspec/changes/{change-name}/proposal.md`, `openspec/specs/`, and `openspec/config.yaml`
-3. **none mode**: Work from prompt context only
+Retrieve from the locators the orchestrator passed (see
+`_shared/sdd-phase-common.md`); do not probe another store or guess paths:
+
+1. `engram`: the proposal and existing spec observations by their topic keys
+2. `openspec`: `openspec/changes/{change-name}/proposal.md`, `openspec/specs/`, and `openspec/config.yaml`
+3. `none`: work from prompt context only
 
 ## Execution and Persistence Contract
 
 Read and follow these shared protocols:
-- `~/.config/opencode/skills/_shared/skill-loading.md` — how to load skills (Section A)
-- `~/.config/opencode/skills/_shared/persistence-contract.md` — mode resolution rules
-- `~/.config/opencode/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
-- `~/.config/opencode/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
+- `_shared/skill-loading.md` — how to load skills (Section A)
+- `_shared/persistence-contract.md` — backend resolution and per-backend behavior
+- `_shared/sdd-phase-common.md` — resolved artifact locators and retrieval (Section B)
+- `_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
 
-- If mode is `engram`: Read `~/.config/opencode/skills/_shared/engram-convention.md`. Artifact type: `spec`. Depends on: `proposal`.
-- If mode is `openspec`: Read `~/.config/opencode/skills/_shared/openspec-convention.md`. Save to `specs/{domain}/spec.md`.
-- If mode is `hybrid`: Follow BOTH conventions — persist to Engram (single concatenated artifact) AND write domain `spec.md` files to filesystem. Retrieve from Engram (primary) with filesystem fallback.
-- If mode is `none`: Return specs only.
+- `engram`: read `_shared/engram-convention.md`. Artifact type: `spec`. Depends on: `proposal`.
+- `openspec`: read `_shared/openspec-convention.md`. Save to `specs/{domain}/spec.md`.
+- `hybrid`: follow both conventions — one concatenated Engram artifact plus filesystem domain `spec.md` files, using the partial-write/retry rules in `persistence-contract.md`.
+- `none`: return specs inline only.
 
 ## What to Do
 

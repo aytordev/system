@@ -43,13 +43,18 @@ Return structured analysis with clearly defined sections.
 
 ### Persistence Logic
 
-**engram mode:**
+Use the backend the orchestrator resolved (no cross-store fallback):
+
+**engram:**
 - Save analysis to Engram with topic_key `sdd/{change-name}/explore` or `sdd/explore/{topic-slug}`
 
-**openspec mode with named change:**
+**openspec with named change:**
 - Write to `openspec/changes/{change-name}/exploration.md`
 
-**none mode:**
+**hybrid:**
+- Both, with the partial-write/retry rules
+
+**none:**
 - Return inline only
 
 ### Rules

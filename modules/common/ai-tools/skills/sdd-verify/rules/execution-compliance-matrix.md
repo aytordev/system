@@ -6,14 +6,16 @@ Step 5: The most important step. Cross-reference EVERY spec scenario against tes
 
 ### Compliance Matrix Table
 
-For each requirement and scenario in the specs, produce a table:
+For each requirement and scenario in the specs, produce a table. Counts MUST
+reconcile with `rules/execution-spec-counts.md`; every row records the candidate
+revision its test ran against:
 
-| Requirement | Scenario | Test | Result |
-|-------------|----------|------|--------|
-| REQ-01 | Happy path | test_file > test_name | COMPLIANT |
-| REQ-01 | Edge case | test_file > test_name | FAILING |
-| REQ-02 | Main flow | (none found) | UNTESTED |
-| REQ-03 | Invalid input | test_file > test_name | PARTIAL |
+| Requirement | Scenario | Test | Result | Revision |
+|-------------|----------|------|--------|----------|
+| REQ-01 | Happy path | test_file > test_name | COMPLIANT | {hash} |
+| REQ-01 | Edge case | test_file > test_name | FAILING | {hash} |
+| REQ-02 | Main flow | (none found) | UNTESTED | — |
+| REQ-03 | Invalid input | test_file > test_name | PARTIAL | {hash} |
 
 ### Status Definitions
 
@@ -27,6 +29,14 @@ For each requirement and scenario in the specs, produce a table:
 **A spec scenario is ONLY considered COMPLIANT when there is a test that PASSED proving the behavior at runtime.**
 
 Static analysis is NOT sufficient. The test must have been executed in step 4 and must have passed.
+
+### Revision Binding and Stale Evidence
+
+Each row records the candidate revision its test ran against. If the candidate
+changed after a test ran, the result is **stale**: it is no longer COMPLIANT and
+must be re-run or marked UNTESTED. Sum of requirements/scenarios in this matrix
+MUST equal the counts parsed in `rules/execution-spec-counts.md`; an omitted
+scenario is UNTESTED (CRITICAL), never silently dropped.
 
 ### Matching Strategy
 
@@ -49,6 +59,11 @@ Return the full compliance matrix table with a verdict summary:
 ```
 Spec Compliance Matrix:
 {full_table}
+
+Candidate revision: {hash}
+Requirements: {N} (parsed) / {N} (matrix)
+Scenarios: {N} (parsed) / {N} (matrix)
+Stale rows: {count}
 
 Total Scenarios: {total}
 Compliant: {compliant_count}

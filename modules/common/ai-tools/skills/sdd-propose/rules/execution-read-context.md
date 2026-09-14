@@ -6,6 +6,9 @@ Read existing specs from the artifact store if available. Load exploration analy
 
 ### Context Retrieval by Mode
 
+Read only from the locators the orchestrator passed for the resolved backend
+(`_shared/sdd-phase-common.md`); never probe another store.
+
 **engram mode:**
 1. Use `mem_search` for topic_key `sdd/{change-name}/explore` to retrieve exploration analysis
 2. Use `mem_search` for `sdd/` prefix to retrieve existing specifications
@@ -16,6 +19,10 @@ Read existing specs from the artifact store if available. Load exploration analy
 2. Read `openspec/specs/` directory for existing specifications
 3. Read `openspec/changes/{change-name}/exploration.md` if exists
 4. Check for existing `openspec/changes/{change-name}/proposal.md`
+
+**hybrid mode:**
+- Read Engram first (as in engram mode); fall back to the filesystem locators only
+  when Engram has no complete artifact.
 
 **none mode:**
 - Use only context passed in the prompt

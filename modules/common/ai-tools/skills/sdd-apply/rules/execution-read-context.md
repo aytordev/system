@@ -21,6 +21,11 @@ Before implementing, read all context needed to write correct code that matches 
    - The specific task numbers assigned to you (e.g., "Phase 1, tasks 1.1-1.3")
    - File paths affected by each task
    - Dependencies between tasks
+   - Per-unit `check:`, `scenario:`, and `rollback:` evidence fields
+
+3a. **Apply-progress** (resuming only) — Read the existing `apply-progress` from
+   the orchestrator's locator and merge; never restart cumulative counts. If it
+   cannot be read, report `blocked` rather than silently overwriting.
 
 4. **Existing Code** — Understand the project patterns:
    - Read files in the same directory as your target files

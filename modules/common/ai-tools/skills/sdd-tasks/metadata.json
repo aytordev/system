@@ -3,5 +3,8 @@
     "description": "Break down a change into an implementation task checklist. Produces tasks.md with concrete, actionable implementation steps organized by phase. Trigger: When the orchestrator launches you to create or update the task breakdown for a change.",
     "version": "1.0.0",
     "organization": "aytordev",
-    "date": "May 2026"
+    "date": "May 2026",
+    "dependencies": [
+        "_shared"
+    ]
 }

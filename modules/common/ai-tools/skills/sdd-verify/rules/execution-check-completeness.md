@@ -6,11 +6,16 @@ Step 1: Validate that all implementation tasks are complete.
 
 ### Task Completion Check
 
-Retrieve the task list for this change and count:
+Read the **persisted** tasks artifact from the change's backend (the same store
+the orchestrator resolved) and count:
 
 - **Total tasks**
 - **Completed tasks** (marked done/checked)
 - **Incomplete tasks** (not marked done)
+
+The persisted checkboxes are authoritative: an envelope claiming completion that
+the re-read tasks artifact does not show does NOT advance. Verify that every
+task's cumulative progress matches the artifact.
 
 ### Categorization
 

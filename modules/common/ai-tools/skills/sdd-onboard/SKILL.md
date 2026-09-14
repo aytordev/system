@@ -14,15 +14,22 @@ Teach SDD by doing. Each phase is executed for real, with brief narration explai
 ## What You Receive
 
 From the orchestrator:
-- **Artifact store mode**: `engram | openspec | hybrid | none`
+- **Resolved backend**: `engram | openspec | hybrid | none` (with its source)
+- **Artifact Locators**: the change root and any prior artifacts to read
 - **Optional**: a suggested area or improvement to focus on
 
 ## Execution and Persistence Contract
 
 Read and follow these shared protocols:
-- `~/.config/opencode/skills/_shared/skill-loading.md` — how to load skills (Section A)
-- `~/.config/opencode/skills/_shared/persistence-contract.md` — mode resolution rules
-- `~/.config/opencode/skills/_shared/return-envelope.md` — return format (Section D)
+- `_shared/skill-loading.md` — how to load skills (Section A)
+- `_shared/persistence-contract.md` — backend resolution and per-backend behavior
+- `_shared/execution-modes.md` — pause/inline policy
+- `_shared/sdd-phase-common.md` — resolved artifact locators and retrieval (Section B)
+- `_shared/return-envelope.md` — return format (Section D)
+
+Onboarding is a teaching flow: it executes each phase inline as the executor and
+always pauses after the proposal for user review. That pause is intentional and
+is not suppressed by `automatic` execution mode.
 
 ## Rule Categories by Priority
 

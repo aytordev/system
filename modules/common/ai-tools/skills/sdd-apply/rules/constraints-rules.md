@@ -10,6 +10,8 @@ Constraints that apply during task implementation.
 - **Follow design decisions** — The design describes HOW to implement; follow it unless you find a critical flaw
 - **Match existing code patterns** — Especially when `rules.apply.match_existing_patterns: true` in config.yaml
 - **Mark tasks complete as you go** — Update tasks.md after each task
+- **Re-read the persisted tasks artifact** — Write, then re-read from the same store and confirm the intended checkboxes before reporting completion
+- **Merge cumulative apply-progress** — On a resumed batch, merge new progress into the existing artifact; never overwrite prior batches
 - **Load and follow relevant coding skills** — If the project has custom coding conventions or patterns loaded as skills, apply them
 
 ### MUST NOT
@@ -66,11 +68,15 @@ Return `status: "blocked"` if:
 
 ```json
 {
+  "schema": "sdd-result/v1",
+  "kind": "final",
   "status": "blocked",
   "executive_summary": "Cannot implement task 2.1: required dependency @/lib/jwt does not exist",
-  "detailed_report": "...",
+  "artifacts": [],
+  "evidence": [],
   "next_recommended": "design (update to use jsonwebtoken package)",
-  "risks": ["Implementation stalled until design is updated"]
+  "risks": ["Implementation stalled until design is updated"],
+  "skill_resolution": "paths-injected"
 }
 ```
 

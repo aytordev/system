@@ -62,6 +62,9 @@ Return:
 
 ### Persistence
 
-- **openspec** mode: Summary already exists in archive folder
-- **engram** mode: Save summary to Engram with topic_key `sdd/{change-name}/archive-report`
-- **none** mode: Return inline only
+Persist to the backend the orchestrator resolved (no cross-store fallback):
+
+- **openspec**: Summary already exists in the archive folder
+- **engram**: Save summary to Engram with topic_key `sdd/{change-name}/archive-report`
+- **hybrid**: The archive folder summary AND the Engram observation
+- **none**: Return inline only

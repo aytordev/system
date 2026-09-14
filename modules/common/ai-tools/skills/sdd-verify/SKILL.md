@@ -15,29 +15,44 @@ You are a sub-agent responsible for SDD verification — the quality gate.
 
 From the orchestrator:
 - **Change name**
-- **Artifact store mode**: `engram | openspec | hybrid | none`
+- **Resolved backend**: `engram | openspec | hybrid | none` (with its source)
+- **Artifact Locators**: the change root and prior artifacts to read
 - **Detail level**: `concise | standard | deep` — controls output depth
 
 ### Retrieving Previous Artifacts
 
-- **engram**: `mem_search` for all change artifacts (proposal, specs, design, tasks, implementation)
-- **openspec**: Read all files in `openspec/changes/{change-name}/`
-- **none**: From prompt context
+Retrieve from the locators the orchestrator passed (see
+`_shared/sdd-phase-common.md`); do not probe another store or guess paths:
+
+- `engram`: all change observations (proposal, specs, design, tasks, implementation)
+- `openspec`: all files in `openspec/changes/{change-name}/`
+- `none`: from prompt context
 
 ## Execution and Persistence Contract
 
 Read and follow these shared protocols:
-- `~/.config/opencode/skills/_shared/skill-loading.md` — how to load skills (Section A)
-- `~/.config/opencode/skills/_shared/persistence-contract.md` — mode resolution rules
-- `~/.config/opencode/skills/_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
-- `~/.config/opencode/skills/_shared/sdd-phase-common.md` — artifact retrieval protocol (Section B)
+- `_shared/skill-loading.md` — how to load skills (Section A)
+- `_shared/persistence-contract.md` — backend resolution and per-backend behavior
+- `_shared/sdd-phase-common.md` — resolved artifact locators and retrieval (Section B)
+- `_shared/return-envelope.md` — return format with `skill_resolution` field (Section D)
 
-- If mode is `engram`: Read `~/.config/opencode/skills/_shared/engram-convention.md`. Artifact type: `verify-report`. Depends on: all prior artifacts.
-- If mode is `openspec`: Read `~/.config/opencode/skills/_shared/openspec-convention.md`. Save `verify-report.md` (only when explicit).
-- If mode is `hybrid`: Follow BOTH conventions — persist report to Engram AND write `verify-report.md` to filesystem. Retrieve all artifacts from Engram (primary) with filesystem fallback.
-- If mode is `none`: Return report only. **Default to `none` if unsure.**
+- `engram`: read `_shared/engram-convention.md`. Artifact type: `verify-report`. Depends on: all prior artifacts.
+- `openspec`: read `_shared/openspec-convention.md`. Save `verify-report.md`.
+- `hybrid`: follow both conventions; write both stores with the partial-write/retry rules in `persistence-contract.md`.
+- `none`: return the report inline only. **Default to `none` only when the backend is genuinely unresolved and the user has been asked.**
+
+Verification state is tracked, not closed here: T21 implements the owner's
+closure policy (`current, relevant verification for successful completion`). A
+phase must never label an unverified change as verified.
 
 ## What to Do
+
+### Step 0: Validate Spec Grammar, Counts, and Candidate Revision
+
+Parse the supported spec grammar (canonical `#### Scenario:` and legacy
+`**Scenario:**`), reconcile the requirement/scenario counts against the spec and
+the report, and bind every result to the candidate revision. Stale evidence is
+invalid. See `rules/execution-spec-counts.md`.
 
 ### Step 1: Check Task Completion Status
 
@@ -51,9 +66,13 @@ Check that implementation satisfies every requirement and scenario in the specs.
 
 Confirm implementation follows the architecture and decisions in the design document. See `rules/execution-check-coherence.md`.
 
-### Step 4: Execute Tests and Build
+### Step 4: Execute Applicable Per-Unit Checks and Build
 
-Run the actual test suite and build to collect real execution evidence. See `rules/execution-run-tests.md`.
+Resolve the checks that cover the changed units and run them for real. Keep the
+surfaces separate: runtime checks for the unit's root, `nix-eval` for
+evaluation, and `nix-build` for derivations — never report one as another. Run
+these focused checks in ordinary mode too; Strict TDD is not a prerequisite for
+relevant evidence. See `rules/execution-run-tests.md`.
 
 ### Step 5: Assertion Quality Audit
 
@@ -61,7 +80,11 @@ Scan all test files for trivial/meaningless assertions (tautologies, ghost loops
 
 ### Step 5a: TDD Compliance + Test Layers + Coverage (Strict TDD only)
 
-If Strict TDD Mode active, load `modules/strict-tdd-verify.md` for TDD compliance check, test layer distribution, per-file coverage of changed files, and quality metrics.
+Load `modules/strict-tdd-verify.md` only when the resolved mode is
+`effective: enabled`. A `blocked` request means the prerequisite coverage is
+missing — report the blocker instead of loading the strict module or
+fabricating compliance. When loaded, it covers TDD compliance, test layer
+distribution, per-file coverage of changed files, and quality metrics.
 
 ### Step 6: Generate Spec Compliance Matrix
 
@@ -77,9 +100,13 @@ Consult `references/` for templates and formats.
 
 - MUST read actual source code — never assume from artifact descriptions
 - MUST execute tests and build — static analysis alone is insufficient
+- MUST validate requirement/scenario counts against the supported spec grammar
+- MUST bind results to the candidate revision; a source change invalidates affected evidence
 - MUST NOT fix any issues found (report only — orchestrator decides next steps)
 - A scenario is COMPLIANT only when a corresponding test PASSED
 - DO NOT fix — report issues and let the orchestrator decide
-- Return a structured envelope with: `status`, `executive_summary`, `detailed_report` (optional), `artifacts`, `next_recommended`, `risks`
+- Return a `sdd-result/v1` envelope with: `schema`, `kind`, `status`,
+  `executive_summary`, `artifacts`, `evidence`, `next_recommended`, `risks`,
+  `skill_resolution`
 
 See `rules/constraints-rules.md` for complete rules.

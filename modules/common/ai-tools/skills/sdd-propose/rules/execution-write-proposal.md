@@ -49,15 +49,21 @@ Proposal artifact MUST be under 450 words. Use bullet points and tables over pro
 
 ### Persistence Logic
 
-**openspec mode:**
+Use the backend the orchestrator resolved (`_shared/persistence-contract.md`):
+
+**openspec:**
 - Write to `openspec/changes/{change-name}/proposal.md`
 - Create directory if it doesn't exist
 
-**engram mode:**
+**engram:**
 - Save as Engram artifact with topic_key `sdd/{change-name}/proposal`
+- Do not write `openspec/` files (no cross-store fallback)
 
-**none mode:**
-- Return inline only (no file writing)
+**hybrid:**
+- Write the file AND save the Engram observation, with the partial-write/retry rules
+
+**none:**
+- Return inline only; no persistence writes
 
 ### Existing Proposal
 
