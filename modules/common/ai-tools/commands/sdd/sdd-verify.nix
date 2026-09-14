@@ -5,7 +5,7 @@
     argumentHint = "[change-name]";
     agent = "sdd-orchestrator";
     prompt = ''
-      Verify the implementation for the active SDD change (or "{argument}" if specified).
+      Verify the implementation for the active SDD change (or "$ARGUMENTS" if specified).
 
       Launch the sdd-verify sub-agent to:
       1. Check task completeness

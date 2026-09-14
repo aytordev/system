@@ -5,7 +5,7 @@
     argumentHint = "<topic>";
     agent = "sdd-orchestrator";
     prompt = ''
-      Explore the following topic: {argument}
+      Explore the following topic: $ARGUMENTS
 
       Launch the sdd-explore sub-agent to investigate the codebase, compare
       multiple approaches, and return a structured analysis.

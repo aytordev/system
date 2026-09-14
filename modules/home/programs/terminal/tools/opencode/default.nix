@@ -14,24 +14,10 @@
 
   cfg = config.aytordev.programs.terminal.tools.opencode;
 
-  aiTools = import (lib.getFile "modules/common/ai-tools") {inherit lib;};
-
-  primaryAgents = [
-    "sdd-orchestrator"
-  ];
-
-  buildAgentConfigs = agentConfigs:
-    lib.mapAttrs (
-      name: agentConfig:
-        agentConfig
-        // {
-          mode =
-            if builtins.elem name primaryAgents
-            then "primary"
-            else "subagent";
-        }
-    )
-    agentConfigs;
+  aiTools = import (lib.getFile "modules/common/ai-tools") {
+    inherit lib;
+    roleOverrides = cfg.agentModels;
+  };
 
   # Hybrid theme resolution: exact official theme when the active family ships
   # one for the active variant, otherwise the palette-generated theme. OpenCode
@@ -137,6 +123,18 @@ in {
         Available themes: ${builtins.concatStringsSep ", " themeNames}
       '';
     };
+
+    agentModels = mkOption {
+      type = types.attrsOf types.str;
+      default = {};
+      description = ''
+        Per-role OpenCode model overrides, keyed by role name
+        (`sdd-orchestrator`, `sdd-standard`, `sdd-design`, `sdd-archive`).
+        Values must be one of the policy's known native model ids; an unknown
+        role or model fails evaluation with a named error. These change a
+        child's effective model without editing any prompt.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -161,12 +159,24 @@ in {
         autoshare = false;
         autoupdate = false;
 
-        agent = buildAgentConfigs aiTools.opencode.agentConfigs;
+        # The shared role policy owns `sdd-review`'s model and its hard
+        # read-only boundary (`edit`/`bash` denied). `agents.nix` gives every
+        # generated role the generic phase-executor prompt, which does not fit
+        # a reviewer, so only the prompt is overridden here.
+        agent =
+          aiTools.opencode.agents
+          // {
+            sdd-review =
+              aiTools.opencode.agents.sdd-review
+              // {
+                prompt = builtins.readFile ./agent-sdd-review.md;
+              };
+          };
       };
 
       tui = opencodeTheme.themeEntry themeResolution;
 
-      inherit (aiTools.opencode) agents commands;
+      inherit (aiTools.opencode) commands;
 
       context = builtins.readFile (lib.getFile "modules/common/ai-tools/base.md");
 

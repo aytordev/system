@@ -259,8 +259,9 @@ in {
     expr = {
       autoshare = lib.hasInfix "autoshare = false" opencodeModule;
       autoupdate = lib.hasInfix "autoupdate = false" opencodeModule;
-      agents = lib.hasInfix "buildAgentConfigs aiTools.opencode.agentConfigs" opencodeModule;
-      commands = lib.hasInfix "inherit (aiTools.opencode) agents commands" opencodeModule;
+      agents = lib.hasInfix "aiTools.opencode.agents" opencodeModule;
+      reviewerPrompt = lib.hasInfix "agent-sdd-review.md" opencodeModule;
+      commands = lib.hasInfix "inherit (aiTools.opencode) commands" opencodeModule;
       context = lib.hasInfix "context = builtins.readFile" opencodeModule;
       skills = lib.hasInfix "skills = lib.getFile" opencodeModule;
     };
@@ -268,6 +269,7 @@ in {
       autoshare = true;
       autoupdate = true;
       agents = true;
+      reviewerPrompt = true;
       commands = true;
       context = true;
       skills = true;

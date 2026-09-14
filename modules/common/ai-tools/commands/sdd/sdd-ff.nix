@@ -5,7 +5,7 @@
     argumentHint = "[change-name]";
     agent = "sdd-orchestrator";
     prompt = ''
-      Fast-forward all SDD planning phases for "{argument}".
+      Fast-forward all SDD planning phases for "$ARGUMENTS".
 
       This requires multi-phase coordination. Launch the SDD orchestrator to run
       sub-agents in sequence:

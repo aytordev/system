@@ -5,7 +5,7 @@
     argumentHint = "[change-name]";
     agent = "sdd-orchestrator";
     prompt = ''
-      Archive the completed SDD change (or "{argument}" if specified).
+      Archive the completed SDD change (or "$ARGUMENTS" if specified).
 
       Launch the sdd-archive sub-agent to:
       1. Check verification report for CRITICAL issues (block if found)
