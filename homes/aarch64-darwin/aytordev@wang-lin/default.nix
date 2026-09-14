@@ -62,6 +62,13 @@ in {
 
       terminal = {
         tools = {
+          # Explicit MCP selection (ADR 0015, C2). The reusable module enables
+          # no servers; this home opts into the same set for both clients.
+          mcp.selection = {
+            opencode = ["engram" "filesystem" "nixos"];
+            pi = ["engram" "filesystem" "nixos"];
+          };
+
           # Custom shell integrations
           atuin = {
             enableBashIntegration = true;

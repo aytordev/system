@@ -48,6 +48,13 @@ in {
 
     programs = {
       terminal.tools = {
+        # Explicit MCP selection (ADR 0015, C2). The reusable module enables
+        # no servers; this home opts into the same set for both clients.
+        mcp.selection = {
+          opencode = ["engram" "filesystem" "nixos"];
+          pi = ["engram" "filesystem" "nixos"];
+        };
+
         # github.com resolves to the personal account; the work account uses the
         # `github-civislend` alias; Bitbucket uses its own key on the real host.
         ssh.hosts = {
