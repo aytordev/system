@@ -1,8 +1,12 @@
-## 7-Level Configuration Hierarchy
+## Configuration Layering
 
 **Impact:** CRITICAL
 
-The system uses a strict 7-level priority hierarchy. Higher levels override lower levels. Place configuration at the correct level to maintain overridability.
+Configuration flows in one direction (ADR-0001): reusable modules define
+capabilities under `aytordev.*`, suites compose them into policy, homes and
+systems select suites and provide concrete values, and builders assemble modules
+without choosing policy. Put policy at the layer that owns it so the next layer
+can override it.
 
 **Incorrect (Wrong Level):**
 
@@ -20,7 +24,7 @@ The system uses a strict 7-level priority hierarchy. Higher levels override lowe
 **Correct (Proper Layering):**
 
 ```nix
-# Level 3 (module) — set overridable defaults
+# Module layer — set overridable defaults
 # modules/home/programs/terminal/tools/git/default.nix
 { config, lib, ... }:
 let
@@ -41,7 +45,7 @@ in
   };
 }
 
-# Level 7 (user config) — per-user-per-host overrides
+# Home entry-point layer — per-user-per-host overrides
 # homes/aarch64-darwin/aytordev@wang-lin/default.nix
 { pkgs, ... }:
 {

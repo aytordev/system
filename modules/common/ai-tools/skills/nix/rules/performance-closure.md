@@ -2,78 +2,61 @@
 
 **Impact:** HIGH
 
-Minimize closure size to reduce disk usage and deployment times. Split outputs and use minimal builders for simple scripts.
+A store path's *closure* is the set of store paths that are directly or indirectly
+reachable from it through the *references* relation — not its list of build
+inputs. The closure of a derivation equals its build-time dependencies, while the
+closure of an **output path** equals its runtime dependencies. A `buildInputs`
+entry is therefore a build-time dependency; it only stays in the runtime closure
+if the produced output actually references it (for example a linked library baked
+into an ELF binary's RPATH, or a store path embedded in a script). Do not assume
+that every build input is retained at runtime.
 
-**Incorrect (Heavy Builder):**
+Reference: [Nix glossary — closure](https://nix.dev/manual/nix/2.35/glossary#gloss-closure).
 
-Using stdenv for simple scripts pulls in unnecessary dependencies.
+Use `nix-store --query --requisites` (or `nix path-info -rsSh`) to inspect the
+real closure instead of guessing.
+
+**Incorrect (Assuming build inputs leak into the runtime closure):**
+
+`llvm`/`clang` are only invoked while building; `nativeBuildInputs` are not
+referenced by `$out`. The comment below states the opposite, and the widened
+build-time dependency set buys no runtime correctness.
 
 ```nix
 {
-  config,
-  lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib) mkIf mkEnableOption;
-  cfg = config.aytordev.example.module;
-
-  # BAD - pulls in entire stdenv (gcc, binutils, etc.) for a simple script
-  myScript = pkgs.stdenv.mkDerivation {
-    name = "my-script";
-    buildCommand = ''
-      mkdir -p $out/bin
-      cat > $out/bin/hello <<'EOF'
-      #!/bin/sh
-      echo "Hello, World!"
-      EOF
-      chmod +x $out/bin/hello
-    '';
-  };
-
-  # BAD - includes massive dev dependencies in runtime closure
+}: {
+  # BAD reasoning: "build inputs end up in the runtime closure".
   myPackage = pkgs.stdenv.mkDerivation {
-    name = "my-package";
-    buildInputs = [
+    pname = "my-package";
+    version = "1.0";
+    src = ./.;
+    nativeBuildInputs = [
+      # These run on the build machine and are not runtime references.
       pkgs.llvm
       pkgs.clang
       pkgs.cmake
     ];
-    # These are only needed at build time, not runtime!
-  };
-in
-{
-  options.aytordev.example.module = {
-    enable = mkEnableOption "example module";
-  };
-
-  config = mkIf cfg.enable {
-    environment.systemPackages = [
-      myScript
-      myPackage
-    ];
+    # openssl is a build input *and* a runtime dependency here only because the
+    # linked binary references it; the buildInputs list alone does not decide
+    # what ends up in the output closure.
+    buildInputs = [ pkgs.openssl ];
   };
 }
 ```
 
-**Correct (Minimal Builder):**
-
-Minimal closure, only bash and necessary runtime dependencies.
+**Correct (Make runtime references explicit; keep build tools build-only):**
 
 ```nix
 {
-  config,
-  lib,
   pkgs,
   ...
-}:
-let
-  inherit (lib) mkIf mkEnableOption;
-  cfg = config.aytordev.example.module;
-
-  # GOOD - minimal closure with writeShellApplication
-  myScript = pkgs.writeShellApplication {
+}: let
+  # A script's runtime closure is what its shebang and PATH reference.
+  # writeShellApplication records runtimeInputs as explicit references instead
+  # of relying on whatever happens to be on the builder's PATH.
+  hello = pkgs.writeShellApplication {
     name = "hello";
     runtimeInputs = [ pkgs.coreutils ];
     text = ''
@@ -82,56 +65,43 @@ let
     '';
   };
 
-  # GOOD - split outputs to separate dev dependencies
   myPackage = pkgs.stdenv.mkDerivation {
-    name = "my-package";
-    outputs = [ "out" "dev" "doc" "lib" ];
+    pname = "my-package";
+    version = "1.0";
+    src = ./.;
 
+    # Build-machine tools: compiled/run during the build only.
     nativeBuildInputs = [
-      pkgs.llvm
-      pkgs.clang
       pkgs.cmake
+      pkgs.clang
     ];
 
-    buildInputs = [
-      # Only runtime dependencies here
-      pkgs.openssl
-    ];
+    # Host libraries the output links against become runtime references.
+    buildInputs = [ pkgs.openssl ];
 
-    # Move headers to dev output
+    # Split development-only files out of `out` so installing the package does
+    # not deploy headers or static archives.
+    outputs = [
+      "out"
+      "dev"
+      "doc"
+    ];
     postInstall = ''
       moveToOutput "include" "$dev"
       moveToOutput "share/doc" "$doc"
       moveToOutput "lib/*.a" "$dev"
     '';
   };
-
-  # GOOD - use writeText for pure data files
-  configFile = pkgs.writeText "myconfig.json" (builtins.toJSON {
-    setting1 = "value1";
-    setting2 = "value2";
-  });
-
-  # GOOD - use writers for scripts in various languages
-  pythonScript = pkgs.writers.writePython3 "myscript" {
-    libraries = [ pkgs.python3Packages.requests ];
-  } ''
-    import requests
-    print(requests.get("https://example.com").text)
-  '';
-in
-{
-  options.aytordev.example.module = {
-    enable = mkEnableOption "example module";
-  };
-
-  config = mkIf cfg.enable {
-    environment.systemPackages = [
-      myScript
-      myPackage  # Only includes 'out', not 'dev'
-    ];
-
-    environment.etc."myconfig.json".source = configFile;
-  };
+in {
+  # ${hello} closure ≈ hello + bash + coreutils (+ glibc).
+  # ${myPackage} `out` closure ≈ myPackage + openssl (+ glibc); cmake/clang absent.
+  #
+  # Verify with:
+  #   nix path-info -rsSh ${myPackage} | grep -E 'openssl|cmake|clang'
 }
 ```
+
+A "minimal builder" such as `writeShellApplication` is smaller in the store and
+gives correct `runtimeInputs`, but the reason it is smaller is that its output
+references only what the script needs — not because `stdenv` would otherwise be
+dragged into every runtime closure.

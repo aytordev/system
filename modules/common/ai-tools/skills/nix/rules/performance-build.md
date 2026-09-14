@@ -28,7 +28,8 @@ Profile evaluation, tune parameters, leverage caching.
 # Profile evaluation to find bottlenecks
 NIX_SHOW_STATS=1 nix eval .#nixosConfigurations.hostname
 
-# Generate flamegraph for detailed profiling (requires nix 2.20+)
+# Generate collapsed call stacks for flamegraph.pl/speedscope (Nix 2.30+).
+# Writes to `nix.profile` by default; see `--eval-profile-file`.
 nix eval --eval-profiler flamegraph .#nixosConfigurations.hostname
 
 # Tune build parallelism for your hardware

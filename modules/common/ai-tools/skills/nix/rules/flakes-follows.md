@@ -2,7 +2,11 @@
 
 **Impact:** HIGH
 
-Use `follows` to deduplicate shared inputs (typically `nixpkgs`). This reduces closure size and ensures consistency across all inputs.
+Use `follows` to deduplicate shared inputs (typically `nixpkgs`). This avoids
+evaluating and instantiating multiple copies of the same revision and ensures
+every input agrees on one nixpkgs, which keeps composed closures consistent. It
+does not shrink the runtime closure of any single package; it removes duplicate
+work and duplicate store contents across inputs.
 
 **Incorrect (Duplicated Inputs):**
 
@@ -16,7 +20,7 @@ Without `follows`, you get multiple copies of nixpkgs.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # BAD - home-manager brings its own nixpkgs
-    # Now you have TWO nixpkgs instances, doubling evaluation time and closure size
+    # Now you have TWO nixpkgs instances, duplicating evaluation and store paths
     home-manager.url = "github:nix-community/home-manager";
 
     # BAD - Each input has its own nixpkgs copy

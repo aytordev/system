@@ -27,19 +27,25 @@ Modules are strictly separated by platform. Never mix platform-specific code acr
 # modules/common/  → Shared functionality (imported by others)
 
 # modules/darwin/services/yabai/default.nix  <-- CORRECT
-{ config, lib, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   cfg = config.aytordev.services.yabai;
 in
 {
   options.aytordev.services.yabai = {
     enable = lib.mkEnableOption "yabai window manager";
-    package = lib.mkPackageOption pkgs "yabai" {};
+    package = lib.mkPackageOption pkgs "yabai" { };
   };
 
   config = lib.mkIf cfg.enable {
-    services.yabai.enable = true;
-    inherit (cfg) package;
+    services.yabai = {
+      enable = true;
+      inherit (cfg) package;
+    };
   };
 }
 ```

@@ -2,7 +2,7 @@
 
 **Impact:** HIGH
 
-Organize user modules (Home Manager) into semantic categories: `programs/terminal/`, `programs/desktop/`, `services/`, `suites/`, `theme/`, `system/`, or `user/`. The auto-discovery system expects this structure.
+Organize user modules (Home Manager) into semantic categories: `programs/terminal/`, `programs/desktop/`, `services/`, `suites/`, `theme/`, `system/`, `user/`, or `host/`. The auto-discovery system expects this structure.
 
 **Incorrect (Flat Structure):**
 
@@ -27,7 +27,8 @@ Organize user modules (Home Manager) into semantic categories: `programs/termina
 # ├── suites/               # Grouped functionality
 # ├── theme/                # Pure-data theming
 # ├── system/               # User-level system config
-# └── user/                 # User identity metadata
+# ├── user/                 # User identity metadata
+# └── host/                 # Host identity metadata
 
 # Correct: terminal tool in the right category
 # modules/home/programs/terminal/tools/git/default.nix

@@ -1,15 +1,34 @@
 ---
 name: nix
-description: "Comprehensive guide for writing idiomatic, performant Nix code covering code style, module system, option types, conditionals, overlays, flakes, validation, and performance."
+description: "Idiomatic, performant Nix authoring (style, module system, option types, conditionals, overlays, flakes, validation) plus operational diagnosis: build failures, package/output diffing, closures and dependencies, evaluation cost, IFD, and activation verification."
 license: MIT
 metadata:
   author: aytordev
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Nix
 
-Comprehensive guide for writing idiomatic, performant Nix code.
+Guide for authoring idiomatic Nix and for diagnosing Nix operations. The caller
+retains lifecycle ownership: a diagnosis does not authorize code changes.
+
+## Operational Routing
+
+Read only the reference that matches the requested result. These methods are
+read-only until a change is authorized; load the rules below before editing.
+
+| Requested result                                    | Read                                                                             |
+| --------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Diagnose why a build failed                         | [Build diagnosis](references/build-diagnosis.md)                                 |
+| Compare two packages or their outputs               | [Package diffing](references/package-diffing.md)                                 |
+| Explain closure contents or trace a dependency      | [Closure and dependency analysis](references/closure-and-dependency-analysis.md) |
+| Measure evaluation cost or validate an optimization | [Evaluation cost](references/evaluation-cost.md)                                 |
+| Diagnose import-from-derivation (IFD)               | [IFD diagnosis](references/ifd-diagnosis.md)                                     |
+| Verify activation or loaded runtime state           | [Activation verification](references/activation-verification.md)                 |
+
+Authoring rules below own construction and semantic choices; evaluation cost
+owns profiling, measurement, and optimization acceptance. Report the target,
+exact command, observed result, and any unverified behavior.
 
 ## Rule Categories by Priority
 
@@ -78,6 +97,24 @@ Comprehensive guide for writing idiomatic, performant Nix code.
 
 - `performance-closure` - Closure Size Minimization
 - `performance-build` - Build Performance Optimization
+
+## Operational References
+
+The six references in `references/` are independently authored aytordev
+documentation, written for this repository's platforms (aarch64-darwin and
+x86_64-linux), `just` entry points, profile/gcroots paths, and Nix 2.35. Their
+methods were inspired only at the behavior level by the unlicensed khanelinix
+`nix-toolkit`, pinned at commit
+`8f0ca0dbfa35c1cfc13ccf99b3edafe0f742ccfd`; no upstream text, headings,
+examples, or structure is reused, so no upstream license is implicated.
+
+The `scripts/package-diff-report.py` helper is likewise an independent local
+implementation. Its only debt is the behavior-level idea: build without linking,
+compare output manifests and closures, bound the report. It shares no code with
+the pinned toolkit and records that design note in its module docstring.
+
+These references are read on demand and are not compiled into the authoring
+guide.
 
 ## Full Compiled Document
 

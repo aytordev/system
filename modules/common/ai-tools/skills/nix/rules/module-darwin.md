@@ -72,8 +72,9 @@ in
       };
     };
 
-    # macOS-specific services
-    services.nix-daemon.enable = true;
+    # nix-darwin manages the nix-daemon launchd service when `nix.enable` is on.
+    # `services.nix-daemon.enable` was removed and now errors as a removed option.
+    nix.enable = true;
   };
 }
 ```

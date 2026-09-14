@@ -26,7 +26,7 @@ aytordev configuration specialist and maintainer - knows complete module structu
 ### 1. Architecture (CRITICAL)
 
 - `architecture-discovery` - Auto-Discovery
-- `architecture-layering` - 7-Level Configuration Hierarchy
+- `architecture-layering` - Configuration Layering (ADR-0001)
 - `architecture-modules` - Module Organization & Platform Separation
 - `architecture-placement` - Home Module Categories
 

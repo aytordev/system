@@ -78,11 +78,17 @@ let
       fullPath = "${prefix}/bin:${prefix}/lib";
     };
 
-  # Or avoid rec entirely by using explicit references
-  otherPaths = {
-    prefix = "/usr/local";
-    binDir = "${otherPaths.prefix}/bin";  # Reference outer attribute
-  };
+  # A non-`rec` attrset cannot reference its own attributes: `otherPaths.prefix`
+  # here would be an undefined variable. Bind the shared value in a `let`
+  # instead (or use `rec` deliberately).
+  otherPaths =
+    let
+      prefix = "/usr/local";
+    in
+    {
+      inherit prefix;
+      binDir = "${prefix}/bin";
+    };
 in
 {
   options.aytordev.example.module = {
