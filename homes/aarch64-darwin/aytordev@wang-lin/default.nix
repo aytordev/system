@@ -69,6 +69,21 @@ in {
             pi = ["engram" "filesystem" "nixos"];
           };
 
+          # Home-boundary policy: enable the adopted SDD engine (ADR 0015, C12 /
+          # T27). This is the only place the reusable default is turned on, so
+          # Pi's SDD workflow resolves `workflow.engine` to the `aytordev-sdd`
+          # adapter and OpenCode uses the same boundary. Reusable modules keep
+          # their empty/disabled defaults.
+          #
+          # Rollback and backend-state preservation: restoring a previous Home
+          # Manager generation restores the engine, adapter, and skills only. It
+          # does not delete runtime state — Engram memory lives outside the store
+          # under `$XDG_DATA_HOME/engram` and SDD artifacts live under each
+          # project's `openspec/` tree, so both survive a rollback. Data rollback
+          # is "do not adopt the derived output"; migrations keep originals
+          # byte-identical. See modules/common/ai-tools/legacy-compatibility.md.
+          gentle-ai.enable = true;
+
           # Custom shell integrations
           atuin = {
             enableBashIntegration = true;

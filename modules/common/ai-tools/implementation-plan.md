@@ -275,14 +275,14 @@ third-party extension.
 
 ### T08: Migrate both homes
 
-- [ ] In `homes/aarch64-darwin/aytordev@wang-lin/default.nix` and
+- [x] In `homes/aarch64-darwin/aytordev@wang-lin/default.nix` and
   `homes/aarch64-darwin/avicente@civislend/default.nix`, explicitly select Engram,
   filesystem, and nixos for **both** clients.
-- [ ] Wire the shared workflows, native adapters, and role policy. Preserve
+- [x] Wire the shared workflows, native adapters, and role policy. Preserve
   home overrides and make the policy discoverable at the home boundary. Deploy
   only bundles admitted by T26, applying T25's explicit state-migration procedure
   when needed; do not replace an active legacy workflow by assumption.
-- [ ] Compare generated configurations with fixture secrets. Document the
+- [x] Compare generated configurations with fixture secrets. Document the
   generation rollback and backend-state preservation procedure before rollout.
 
 **Why/value:** turns reusable capability into an explicit, verified `system` setup.
@@ -291,6 +291,50 @@ third-party extension.
 client; runtime checks confirm discovery and an Engram write/read cycle in
 isolated test memory. Rollback does not delete user memory or SDD artifacts.
 **Surface:** both home entry points, integration checks, component README.
+**Evidence:** both home entry points now set
+`aytordev.programs.terminal.tools.gentle-ai.enable = true` as the home-boundary
+policy (T27/C12); the reusable capability default stays `false`, and the existing
+explicit MCP selection (`opencode`/`pi` = Engram, filesystem, nixos) and the role
+model defaults are unchanged. Evaluated with
+`--override-input secrets path:./checks/fixtures/secrets`, both
+`homeConfigurations.{aytordev@wang-lin,avicente@civislend}` report
+`gentle-ai.enable = true`; `programs.opencode.settings.mcp` keys
+`["engram","filesystem","nixos"]`; the unchanged agent map (`sdd-orchestrator`,
+`sdd-standard`, `sdd-review` = `anthropic/claude-sonnet-4-6`, `sdd-design` =
+`anthropic/claude-opus-4-7`, `sdd-archive` = `anthropic/claude-haiku-4-5-20251001`);
+and `home.packages` containing `gentle-ai-2.9.0` and `aytordev-sdd`. Both deploy
+`~/.pi/agent/extensions/{mcp-bridge,sdd-workflow}`, and each
+`sdd-workflow/config.ts` resolves `engine` to the `aytordev-sdd` adapter
+(`/nix/store/…-aytordev-sdd/bin/aytordev-sdd`), so `workflow.engine` is no longer
+null. No `aytordev.*` option was added or moved, so the docs golden is unchanged.
+
+Rollback and backend-state preservation (documented at each home boundary and in
+`legacy-compatibility.md`): restoring a previous Home Manager generation swaps
+the engine, adapter, and skills back, but leaves runtime state untouched. Engram
+memory lives outside the store (`$XDG_DATA_HOME/engram`) and SDD artifacts live
+under each project's `openspec/` tree, so a generation rollback never deletes
+user memory or project artifacts. Data rollback is "do not adopt the derived
+output"; migrations preserve originals byte-identical, resolve an existing
+change's recorded backend, and never fabricate a PASS.
+
+Verification (exact command, exit 0):
+
+```sh
+nix build \
+  .#checks.aarch64-darwin.integration-ai-tools-mcp \
+  .#checks.aarch64-darwin.integration-ai-tools-pi-workflow \
+  .#checks.aarch64-darwin.integration-gentle-ai-engine \
+  .#checks.aarch64-darwin.integration-ai-tools-bundles \
+  .#checks.aarch64-darwin.unit-nix-unit \
+  .#checks.aarch64-darwin.integration-docs-generation \
+  --no-link --override-input secrets path:./checks/fixtures/secrets
+```
+
+`nix fmt` (0 files changed) and `git diff --check` clean. Deferred: no real
+`home-manager switch`/activation and no live-model smoke (no activation
+authority here); the Engram write/read cycle is proved by
+`integration-gentle-ai-engine` on an isolated data dir, and the real-server smoke
+of the three selected MCP servers remains a runtime follow-up.
 
 ## Workflow reliability
 
