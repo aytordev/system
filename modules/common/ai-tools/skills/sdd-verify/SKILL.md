@@ -43,7 +43,11 @@ Read and follow these shared protocols:
 
 Verification state is tracked, not closed here: T21 implements the owner's
 closure policy (`current, relevant verification for successful completion`). A
-phase must never label an unverified change as verified.
+phase must never label an unverified change as verified. Read
+`_shared/closure-policy.md` for the successful-closure conditions, the distinct
+`unverified`/`paused`/`abandoned` dispositions, and the promotion gate. The
+persisted report must begin with the engine `gentle-ai.verify-result/v1` fence
+(see `rules/execution-return-report.md`) so the archive gate can admit it.
 
 ## What to Do
 

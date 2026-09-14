@@ -68,6 +68,46 @@ Generated: {timestamp}
 - **PASS**: No CRITICAL or WARNING issues
 - **BLOCKED**: Spec counts cannot be reconciled, evidence is stale, or a required check could not run
 
+### Engine Verify Envelope (mandatory, first bytes)
+
+The pinned engine admits a verification report only when its **first non-empty
+line** is a fenced `yaml` block declaring the strict envelope. Any narrative
+before the fence makes the report inadmissible, so canonical spec promotion
+(C11) stays blocked.
+
+The persisted report MUST begin with exactly this fence (the `yaml` tag and the
+key order are significant):
+
+````markdown
+```yaml
+schema: gentle-ai.verify-result/v1
+evidence_revision: sha256:<64 lowercase hex of the candidate revision>
+verdict: pass
+blockers: 0
+critical_findings: 0
+requirements: <parsed>/<parsed>
+scenarios: <parsed>/<parsed>
+test_command: <command or true>
+test_exit_code: <code>
+test_output_hash: sha256:<64 lowercase hex>
+build_command: <command or true>
+build_exit_code: <code>
+build_output_hash: sha256:<64 lowercase hex>
+```
+````
+
+- `evidence_revision` is the **candidate revision** the evidence ran against
+  (commit hash or content hash); it must equal the revision in `## Candidate
+  Revision`. The archive gate refuses a mismatch (`stale-verification`).
+- `verdict` MUST be `pass` for a successful closure; a failed/CRITICAL report
+  keeps closure blocked.
+- The counts MUST equal the parsed spec counts (see `execution-spec-counts.md`).
+- Validate the exact bytes through the adapter before returning:
+  `aytordev-sdd verify --input <report> --requirements <n> --scenarios <n>`.
+
+This envelope is the artifact the engine reads. The `sdd-result/v1` envelope
+returned to the orchestrator is separate and still required (below).
+
 ### Persistence
 
 Persist to the backend the orchestrator resolved (no cross-store fallback):
@@ -78,7 +118,8 @@ Persist to the backend the orchestrator resolved (no cross-store fallback):
 - **none**: Return inline only (do not persist)
 
 Tracking verification state is allowed; closing the change is not. Do not label
-an unverified change as verified.
+an unverified change as verified. Closure obligations, dispositions, and the
+promotion rule are defined in `_shared/closure-policy.md`.
 
 ### Result Envelope
 
