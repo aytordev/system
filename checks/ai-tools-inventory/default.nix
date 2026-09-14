@@ -6,7 +6,7 @@
   # Source of truth is the on-disk tree under modules/common/ai-tools.
   aiToolsPath = ../../modules/common/ai-tools;
 
-  # --- Derive the real inventory from disk -------------------------------
+  # --- Derive the real inventory from disk, one kind at a time -----------
 
   # skills/: each subdir (except _shared) with a SKILL.md is a skill.
   skillsDir = aiToolsPath + "/skills";
@@ -17,85 +17,119 @@
     ) (builtins.attrNames skillsEntries)
   );
 
-  # commands/<category>/<name>.nix — every .nix file is a slash command.
-  commandsDir = aiToolsPath + "/commands";
-  commandNames = builtins.filter (name: name != "") (
+  # commands/<category>/<name>.nix and agents/<category>/<name>.nix — every
+  # regular .nix file in a category directory is one entry of that kind.
+  namesInCategories = dir: suffix: let
+    entries = builtins.readDir dir;
+    categories = builtins.filter (name: entries.${name} == "directory") (builtins.attrNames entries);
+  in
     lib.concatMap (
-      cat: let
-        catEntries = builtins.readDir (commandsDir + "/${cat}");
+      category: let
+        catEntries = builtins.readDir (dir + "/${category}");
+        files =
+          builtins.filter
+          (file: catEntries.${file} == "regular" && lib.hasSuffix suffix file)
+          (builtins.attrNames catEntries);
       in
-        builtins.map (
-          f:
-            if catEntries.${f} == "regular" && lib.hasSuffix ".nix" f
-            then lib.removeSuffix ".nix" f
-            else ""
-        ) (builtins.attrNames catEntries)
-    ) (lib.attrNames (builtins.readDir commandsDir))
-  );
+        builtins.map (file: lib.removeSuffix suffix file) files
+    )
+    categories;
 
-  # agents/<category>/<name>.nix — every .nix file is an agent.
-  agentsDir = aiToolsPath + "/agents";
-  agentNames = builtins.filter (name: name != "") (
-    lib.concatMap (
-      cat: let
-        catEntries = builtins.readDir (agentsDir + "/${cat}");
-      in
-        builtins.map (
-          f:
-            if catEntries.${f} == "regular" && lib.hasSuffix ".nix" f
-            then lib.removeSuffix ".nix" f
-            else ""
-        ) (builtins.attrNames catEntries)
-    ) (lib.attrNames (builtins.readDir agentsDir))
-  );
+  commandNames = namesInCategories (aiToolsPath + "/commands") ".nix";
+  agentNames = namesInCategories (aiToolsPath + "/agents") ".nix";
 
-  # --- Parse the documented inventory from ai-tools/AGENTS.md -------------
+  # --- Parse the documented inventory, one section per kind --------------
 
   agentsDoc = builtins.readFile (aiToolsPath + "/AGENTS.md");
-  # A documented entry is any table row where the first cell is a bare name.
-  # Cells are `<name> | <category> | <description>` inside "Current Inventory".
+
   inventorySection = let
     parts = lib.splitString "## Current Inventory" agentsDoc;
   in
     if lib.length parts >= 2
     then lib.elemAt parts 1
     else "";
-  # Extract names from the tables that follow (skip the section header rows).
-  tableRows = lib.filter (line: lib.hasPrefix "| " line) (lib.splitString "\n" inventorySection);
-  documentedNames = lib.unique (
-    lib.filter
-    (n: n != "" && !(lib.hasPrefix "---" n) && !(lib.hasPrefix "|" n) && !(lib.hasPrefix "Name" n))
-    (
-      lib.concatMap (
-        row: let
-          cells = lib.filter (c: c != "") (lib.splitString "|" row);
-        in
-          if lib.length cells >= 1
-          then [(lib.trim (lib.elemAt cells 0))]
-          else []
-      )
-      tableRows
-    )
-  );
 
-  # --- Compare ------------------------------------------------------------
+  # The inventory keeps one `### <Kind>` subsection per resource kind. Splitting
+  # on the marker isolates each table so a name in one kind can never satisfy
+  # another kind.
+  subsections = lib.splitString "### " inventorySection;
 
-  real = skillNames ++ commandNames ++ agentNames;
-  missingFromDoc = builtins.filter (n: !(lib.elem n documentedNames)) real;
-  staleInDoc = builtins.filter (n: !(lib.elem n real)) documentedNames;
+  documentedNames = kind: let
+    matches = builtins.filter (section: lib.hasPrefix kind section) subsections;
+    section =
+      if matches == []
+      then ""
+      else builtins.head matches;
+    lines = lib.splitString "\n" section;
+    tableRows = builtins.filter (line: lib.hasPrefix "| " line) lines;
+    firstCell = row: let
+      cells = builtins.filter (cell: cell != "") (lib.splitString "|" row);
+    in
+      if lib.length cells >= 1
+      then lib.trim (builtins.elemAt cells 0)
+      else "";
+  in
+    lib.unique (
+      builtins.filter
+      (name: name != "" && name != "Name" && !(lib.hasPrefix "---" name))
+      (builtins.map firstCell tableRows)
+    );
 
-  message = lib.concatLists [
-    ["AI tooling inventory drift in modules/common/ai-tools/AGENTS.md"]
-    ["On disk but not documented:"]
-    (builtins.map (n: "  + ${n}") missingFromDoc)
-    ["Documented but not on disk:"]
-    (builtins.map (n: "  - ${n}") staleInDoc)
-    ["Update the Current Inventory tables in modules/common/ai-tools/AGENTS.md."]
-  ];
+  # --- Compare per kind ---------------------------------------------------
+
+  # Comparing each kind against its own documented table means a command can no
+  # longer mask a missing same-named skill (ADR 0015 F7).
+  compareKind = kind: real: documented: let
+    missingFromDoc = builtins.filter (name: !(lib.elem name documented)) real;
+    staleInDoc = builtins.filter (name: !(lib.elem name real)) documented;
+  in
+    builtins.map (name: "  + ${kind}: on disk but not documented: ${name}") missingFromDoc
+    ++ builtins.map (name: "  - ${kind}: documented but not on disk: ${name}") staleInDoc;
+
+  kinds = {
+    agents = {
+      real = agentNames;
+      documented = documentedNames "Agents";
+    };
+    commands = {
+      real = commandNames;
+      documented = documentedNames "Commands";
+    };
+    skills = {
+      real = skillNames;
+      documented = documentedNames "Skills";
+    };
+  };
+
+  problems = lib.concatMap (kind: compareKind kind kinds.${kind}.real kinds.${kind}.documented) (builtins.attrNames kinds);
+
+  # Self-test (pure): when the skills table documents a skill, a same-named
+  # command is on disk, but the skill itself is missing, the old union check
+  # passed while the per-kind check must fail. Guards against a regression to
+  # the masking behavior.
+  maskedSkillSelfTest = let
+    realSkills = [];
+    realCommands = ["sdd-onboard"];
+    documentedSkills = ["sdd-onboard"];
+    unionWouldPass =
+      builtins.filter (name: !(lib.elem name (documentedSkills ++ realCommands))) (realSkills ++ realCommands)
+      == []
+      && builtins.filter (name: !(lib.elem name (realSkills ++ realCommands))) (documentedSkills ++ realCommands)
+      == [];
+    perKindFinds = compareKind "skills" realSkills documentedSkills != [];
+  in
+    unionWouldPass && perKindFinds;
 in
-  if missingFromDoc == [] && staleInDoc == []
+  if !maskedSkillSelfTest
+  then throw "ai-tools inventory self-test failed: per-kind comparison did not detect a command masking a missing skill"
+  else if problems == []
   then
     pkgs.runCommand "ai-tools-inventory-check" {} ''
       touch "$out"
     ''
-  else throw (builtins.concatStringsSep "\n" message)
+  else
+    throw (lib.concatStringsSep "\n" (
+      ["AI tooling inventory drift in modules/common/ai-tools/AGENTS.md"]
+      ++ problems
+      ++ ["Update the Current Inventory tables in modules/common/ai-tools/AGENTS.md."]
+    ))

@@ -1,0 +1,11 @@
+{
+    "name": "impact-analysis",
+    "description": "Find what a change could break beyond the diff, then prove the material compatibility assumption with a focused check that runs real code. Review-only; returns findings to the caller.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "September 2026",
+    "abstract": "Bounded impact analysis: follow consumers and cross-component contracts beyond the diff, then prove the material compatibility assumption with a focused check. Usable directly or from an SDD phase; returns findings without taking over the lifecycle.",
+    "dependencies": [
+        "_shared"
+    ]
+}

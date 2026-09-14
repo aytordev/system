@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "suite_id": "diagnosis-impact-method-routing",
+  "cases": [
+    {
+      "id": "diagnosis-only",
+      "prompt": "Explain why the nightly task fails intermittently. Report the supported cause; do not change any files.",
+      "entry": "bug-diagnosis",
+      "owner": "bug-diagnosis",
+      "mutates_source": false,
+      "return_to_caller": false
+    },
+    {
+      "id": "diagnosis-inside-fix",
+      "prompt": "Fix the failing parser test, starting from why it fails.",
+      "entry": "bug-diagnosis",
+      "owner": "sdd-apply",
+      "mutates_source": true,
+      "return_to_caller": true
+    },
+    {
+      "id": "impact-before-ship",
+      "prompt": "What could this one-line option rename break beyond the diff, and can you prove it is safe?",
+      "entry": "impact-analysis",
+      "owner": "impact-analysis",
+      "mutates_source": false,
+      "return_to_caller": false
+    },
+    {
+      "id": "impact-inside-sdd",
+      "prompt": "In the current SDD change, prove the renamed contract is compatible across consumers before verify.",
+      "entry": "impact-analysis",
+      "owner": "sdd-verify",
+      "mutates_source": false,
+      "return_to_caller": true
+    },
+    {
+      "id": "adversarial-review",
+      "prompt": "Run a full adversarial review of this pull request.",
+      "entry": "judgment-day",
+      "owner": "judgment-day",
+      "mutates_source": false,
+      "return_to_caller": false
+    }
+  ]
+}

@@ -202,3 +202,19 @@ You have unlimited stamina. The human does not. Use your persistence wisely—lo
 </meta>
 </system_prompt>
 ```
+
+## Repository Workflow Context
+
+This repository's AI tooling (agents, commands, skills) is defined in
+`modules/common/ai-tools/`. OpenCode renders commands and agents and links this
+file as context plus the shared `skills/` tree; Pi currently reuses this file and
+the `skills/` tree directly, with native commands, delegation, and MCP still in
+progress. See the [AI tools README](README.md), the
+[implementation plan](implementation-plan.md), the [proposal](proposal.md), and
+[ADR 0015](../../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md).
+
+For a bounded investigation that does not need SDD, use the read-only method
+skills: `bug-diagnosis` to establish a supported cause for failing behavior, and
+`impact-analysis` to follow consumers beyond the diff and prove the material
+compatibility assumption with a focused check. Both return evidence and
+uncertainty to the requesting lifecycle; neither owns or takes over a workflow.
