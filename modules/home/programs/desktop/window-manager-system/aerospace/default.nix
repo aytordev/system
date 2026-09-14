@@ -70,7 +70,12 @@ in {
           "${sketchybar} --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE"
         ];
 
-        # Dynamic gaps per monitor
+        # Dynamic gaps per monitor.
+        # AeroSpace adds these on top of each monitor's `visibleFrame`, which
+        # already excludes the built-in's menu bar/notch. The built-in gets a
+        # small extra gap (8) on top of the menu bar while the Dell (no menu
+        # bar) keeps the full margin, keeping the top separation close across
+        # displays.
         gaps = {
           inner = {
             horizontal = 10;
@@ -79,7 +84,11 @@ in {
           outer = {
             left = 7;
             bottom = 7;
-            top = 40;
+            top = [
+              {monitor.main = 8;}
+              {monitor."dell" = 40;}
+              40
+            ];
             right = 7;
           };
         };
