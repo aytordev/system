@@ -1,0 +1,19 @@
+{
+  "name": "@aytordev/pi-mcp-bridge",
+  "version": "0.1.0",
+  "description": "Pi extension that bridges selected MCP (stdio) servers into Pi tools.",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "files": [
+    "index.ts",
+    "src",
+    "servers.ts"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0"
+  }
+}

@@ -17,6 +17,124 @@
   cfg = config.aytordev.programs.terminal.tools.pi;
   themeCfg = config.aytordev.theme;
 
+  # SDD role/model policy (T04) consumed at session level (T05). Pi has no
+  # per-agent model (client-capabilities.md PI-E4), so the workflow maps a
+  # phase to a role, resolves the role to a native model id, and the child
+  # re-applies it through `pi.setModel`. Unknown roles/models fail evaluation.
+  aiTools = import (lib.getFile "modules/common/ai-tools") {
+    inherit lib;
+    roleOverrides = cfg.workflow.roleModels;
+  };
+
+  # MCP bridge (T07). Pi has no built-in MCP (client-capabilities.md PI-E1/E8),
+  # so the selected catalog servers are projected as native Pi tools. The bridge
+  # is a Pi-owned extension whose `servers.ts` is generated from the same
+  # `selection.pi` data consumed elsewhere; only selected servers can start.
+  mcpCfg = config.aytordev.programs.terminal.tools.mcp;
+  piMcpSelection = mcpCfg.selection.pi;
+  piMcpServers = lib.filterAttrs (name: _: lib.elem name piMcpSelection) mcpCfg.servers;
+  piMcpBridgeEnabled = mcpCfg.enable && piMcpSelection != [];
+  piMcpBridgeBase = pkgs.callPackage ./mcp-bridge/package.nix {};
+  piMcpBridgeServers = pkgs.writeText "pi-mcp-bridge-servers.ts" ''
+    import type {BridgeConfig} from "./src/host.ts";
+
+    export const bridgeConfig: BridgeConfig = ${builtins.toJSON {
+      servers = piMcpServers;
+    }};
+  '';
+  # Assembled outside `node_modules` so Pi's loader sees a normal extension
+  # directory; dependencies are symlinked from the pinned npm package.
+  piMcpBridge = pkgs.runCommand "pi-mcp-bridge-deployed" {} ''
+    mkdir -p $out
+    cp ${./mcp-bridge/index.ts} $out/index.ts
+    cp -r ${./mcp-bridge/src} $out/src
+    cp ${./mcp-bridge/package.json} $out/package.json
+    ln -s ${piMcpBridgeBase}/lib/node_modules/@aytordev/pi-mcp-bridge/node_modules $out/node_modules
+    cp ${piMcpBridgeServers} $out/servers.ts
+  '';
+
+  # SDD workflow adapter (T05). Pi has no subagents or per-agent model, so the
+  # phases are exposed as extension commands (generated from the role policy,
+  # not hand-copied prompts) and each dispatch spawns one bounded child worker
+  # through `pi.exec`. The engine boundary stays in the `aytordev-sdd` adapter
+  # (T27); the workflow only reads status from it and never implements state.
+  sddPhaseNames = map (entry: entry.phase) aiTools.roles.phases;
+
+  # Per-phase write policy passed into the child context. Read-only phases get
+  # no write/shell; artifact phases may persist artifacts; the rest may edit the
+  # workspace and run shell commands.
+  writePolicyFor = phase:
+    if phase == "sdd-explore"
+    then {
+      mode = "read-only";
+      allowEdit = false;
+      allowBash = false;
+    }
+    else if lib.elem phase ["sdd-init" "sdd-verify" "sdd-archive"]
+    then {
+      mode = "artifacts-only";
+      allowEdit = true;
+      allowBash = true;
+    }
+    else {
+      mode = "workspace-write";
+      allowEdit = true;
+      allowBash = true;
+    };
+
+  # Commands come from the policy (all phases by default) intersected with the
+  # home's explicit selection; order follows the policy, not the selection list.
+  selectedPhases =
+    lib.filter (entry: lib.elem entry.phase cfg.workflow.commands)
+    aiTools.roles.phases;
+
+  workflowCommands =
+    map (entry: {
+      name = entry.phase;
+      inherit (entry) phase;
+      inherit (entry) role;
+      description = "Run the ${entry.phase} SDD phase in a bounded child worker (role: ${entry.role}).";
+      writePolicy = writePolicyFor entry.phase;
+    })
+    selectedPhases;
+
+  # The engine adapter is only available when gentle-ai is enabled; otherwise
+  # the workflow omits `/sdd-status` and the child is told no engine is
+  # configured instead of inventing readiness.
+  gentleAiCfg = config.aytordev.programs.terminal.tools.gentle-ai;
+  workflowEngine =
+    if gentleAiCfg.enable
+    then "${gentleAiCfg.adapter}/bin/aytordev-sdd"
+    else null;
+
+  # Generated pure data consumed by the extension. Runtime state (dispatches,
+  # results, active sessions) lives in Pi sessions via `pi.appendEntry`; this
+  # file is immutable Nix output and is never written at runtime.
+  piWorkflowConfig = pkgs.writeText "pi-sdd-workflow-config.ts" ''
+    import type {WorkflowConfig} from "./src/workflow.ts";
+
+    export const workflowConfig: WorkflowConfig = ${builtins.toJSON {
+      envelopeVersion = "aytordev.sdd-result/v1";
+      policy = {
+        models = aiTools.roles.resolveAll cfg.workflow.roleModels;
+        phaseRoles = aiTools.roles.phaseRoles;
+      };
+      commands = workflowCommands;
+      skillsRoot = "${absConfigDir}/skills";
+      workerCommand = lib.getExe cfg.package;
+      workerTimeoutMs = cfg.workflow.timeoutMs;
+      engine = workflowEngine;
+    }} as WorkflowConfig;
+  '';
+
+  piWorkflow = pkgs.runCommand "pi-sdd-workflow-deployed" {} ''
+    mkdir -p $out/src
+    cp ${./workflow/index.ts} $out/index.ts
+    cp ${./workflow/src/workflow.ts} $out/src/workflow.ts
+    cp ${./workflow/package.json} $out/package.json
+    cp ${piWorkflowConfig} $out/config.ts
+  '';
+
   # Hybrid theme resolution: explicit override > official exact > generated
   # fallback. Pi ships no official resource today, so the generated theme is the
   # effective path; routing through `resolveApp` keeps the override contract
@@ -382,6 +500,34 @@ in {
       default = null;
       description = "Per-phase model routing written to ~/.pi/gentle-ai/models.json (consumed by the gentle-pi subagent extension, not stock pi).";
     };
+
+    workflow = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Deploy the Pi SDD workflow adapter (phase commands + bounded child workers).";
+      };
+      commands = mkOption {
+        type = types.listOf (types.enum sddPhaseNames);
+        default = sddPhaseNames;
+        description = "SDD phases exposed as Pi commands. Defaults to every phase in the role policy, in policy order.";
+      };
+      roleModels = mkOption {
+        type = types.attrsOf types.str;
+        default = {};
+        description = ''
+          Per-role native model overrides keyed by role name (`sdd-orchestrator`,
+          `sdd-standard`, `sdd-design`, `sdd-archive`). Values must be one of the
+          policy's known model ids; an unknown role or model fails evaluation.
+          Applied at Pi session level because Pi has no per-agent model.
+        '';
+      };
+      timeoutMs = mkOption {
+        type = types.ints.positive;
+        default = 600000;
+        description = "Maximum time a bounded child worker may run before it is terminated.";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -434,6 +580,14 @@ in {
         };
         "${absConfigDir}/themes" = mkIf cfg.shell.enable {
           source = piThemes;
+        };
+
+        "${absConfigDir}/extensions/mcp-bridge" = mkIf piMcpBridgeEnabled {
+          source = piMcpBridge;
+        };
+
+        "${absConfigDir}/extensions/sdd-workflow" = mkIf cfg.workflow.enable {
+          source = piWorkflow;
         };
       };
 
