@@ -3,7 +3,7 @@
 ## Scope
 
 This is a bounded feasibility spike, not the engine decision. It feeds task T19
-of the [implementation plan](./implementation-plan.md) and the open comparison in
+of the [implementation plan](../implementation-plan.md) and the open comparison in
 [ADR 0015](../../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md).
 It does not select gentle-ai, a local engine, or prompt coordination. The owner
 still chooses in T19.

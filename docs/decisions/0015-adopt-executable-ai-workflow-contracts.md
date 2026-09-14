@@ -230,8 +230,8 @@ still mandates `.atl/` writes. Source-backed adoption includes checking those ga
   wholesale memory migration, and unrelated domain skills until a concrete need
   justifies their maintenance. Preserve local commit and activation authority.
 
-[implementation plan]: ../../modules/common/ai-tools/implementation-plan.md
-[proposal]: ../../modules/common/ai-tools/proposal.md
+[implementation plan]: ../ai-tools/implementation-plan.md
+[proposal]: ../ai-tools/proposal.md
 [local-baseline]: https://github.com/aytordev/system/tree/3752d5c43840671467487e9805ef867c2816f5b8/modules/common/ai-tools
 [upstream]: https://github.com/khaneliman/khanelinix/tree/8f0ca0dbfa35c1cfc13ccf99b3edafe0f742ccfd/modules/common/ai-tools
 [renderers]: ../../modules/common/ai-tools/commands.nix

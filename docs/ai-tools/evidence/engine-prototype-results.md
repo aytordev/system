@@ -3,7 +3,7 @@
 ## Scope
 
 This is a bounded measurement spike for task T19 of the
-[implementation plan](./implementation-plan.md), building on
+[implementation plan](../implementation-plan.md), building on
 [engine-feasibility.md](./engine-feasibility.md). It exercises the pinned
 `gentle-ai` v2.9.0 binary and one Engram-backed scenario; it does **not** select
 an engine. It does not compare quality against a local engine or

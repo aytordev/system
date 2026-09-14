@@ -4,6 +4,8 @@ Project documentation is split by purpose:
 
 - `README.md` — human-facing overview of the whole repository.
 - `docs/decisions/` — Architecture Decision Records (ADRs).
+- `docs/ai-tools/` — plan, proposal, and evidence records for the AI tooling
+  (engine spikes under `docs/ai-tools/evidence/`).
 - `AGENTS.md` files — agent-facing protocols, placed near the code they govern.
 - `README.md` files inside components — human/state documentation for a
   subtree (e.g. `checks/`). Keep these only where a component is large enough

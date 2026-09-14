@@ -1,7 +1,7 @@
 # Delivery Verification Report (T16)
 
 Final exercise and evaluation of the dual-client AI workflow delivery promised by
-[ADR 0015](../../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md)
+[ADR 0015](../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md)
 and the [implementation plan](implementation-plan.md). This file records what was
 **actually run**, what each delivery criterion has evidence for, and every gap that
 stays open. It does not claim a criterion the evidence does not support.
@@ -126,7 +126,7 @@ structurally, not end-to-end through a client (C4, C5, C10).
 
 ## 4. Scripted-provider evaluation
 
-Added under [`eval/scripted-provider/`](eval/scripted-provider/README.md):
+Added under [`eval/scripted-provider/`](../../modules/common/ai-tools/eval/scripted-provider/README.md):
 `fixture-server.mjs` (loopback OpenAI-compatible SSE fixture that logs every
 request), `run.mjs` (orchestrator), and a README documenting the sandbox blocker.
 

@@ -3,7 +3,7 @@
 ## Scope
 
 This is a bounded measurement spike for task T19 of the
-[implementation plan](./implementation-plan.md), building on
+[implementation plan](../implementation-plan.md), building on
 [engine-feasibility.md](./engine-feasibility.md) and
 [engine-prototype-results.md](./engine-prototype-results.md). It builds a
 disposable local-engine slice, runs it and the pinned `gentle-ai` v2.9.0 binary

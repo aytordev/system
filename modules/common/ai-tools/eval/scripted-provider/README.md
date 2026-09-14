@@ -6,7 +6,7 @@ answers every model request with a fixed `aytordev.sdd-result/v1` envelope, so
 the harness proves the clients actually reached a provider and forwarded the
 expected input, without depending on a live model.
 
-Evidence record: [verification-report.md](../../verification-report.md).
+Evidence record: [verification-report.md](../../../../../docs/ai-tools/verification-report.md).
 
 ## What it proves
 

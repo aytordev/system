@@ -93,5 +93,5 @@ silently restarting a change or overwriting its artifacts.
   the recorded pin. Remove a local workaround only after its replacement is
   demonstrated and its removal is in scope.
 
-[proposal]: ../../modules/common/ai-tools/proposal.md
-[implementation plan]: ../../modules/common/ai-tools/implementation-plan.md
+[proposal]: ../ai-tools/proposal.md
+[implementation plan]: ../ai-tools/implementation-plan.md

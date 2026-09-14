@@ -12,9 +12,9 @@ capability in `system`, not a larger skill inventory.
 
 | Document | Purpose |
 | --- | --- |
-| [ADR 0015](../../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md) | Audit evidence, shared workflow architecture, and comparison of engine/closure alternatives. |
-| [ADR 0016](../../../docs/decisions/0016-keep-skills-canonical-and-registry-derived.md) | Canonical skill authorship and a derived, index-first registry. |
-| [ADR 0017](../../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md) | Current upstream baseline, compatible bundles, provenance, state migration, and rollback. |
+| [ADR 0015](../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md) | Audit evidence, shared workflow architecture, and comparison of engine/closure alternatives. |
+| [ADR 0016](../../docs/decisions/0016-keep-skills-canonical-and-registry-derived.md) | Canonical skill authorship and a derived, index-first registry. |
+| [ADR 0017](../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md) | Current upstream baseline, compatible bundles, provenance, state migration, and rollback. |
 | [Implementation plan](implementation-plan.md) | Prioritized tasks, dependencies, affected surfaces, tradeoffs, and acceptance evidence. |
 
 The ADRs preserve the reasoning. This proposal summarizes expected outcomes; the

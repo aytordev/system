@@ -51,7 +51,7 @@ contracts, not a measured claim that summaries have already degraded model outpu
 | K7 | Name/description are duplicated in JSON metadata and frontmatter; convention scanning includes every path referenced by a root index. | Choose canonical metadata and validate or derive duplicates; preserve subtree scope instead of applying every referenced convention globally. |
 
 Evidence: [creator structure], [creator process], [progressive loading],
-[registry scan], [compact generation], [registry persistence], [loading protocol],
+[registry scan], [registry output], [registry persistence], [loading protocol],
 [resolver], and [convention scan].
 
 ## Alternatives considered
@@ -88,12 +88,12 @@ Evidence: [creator structure], [creator process], [progressive loading],
   content-based invalidation, symlink handling, and read-only listing. Adopt those
   principles, not its unconditional `.atl/` writes or all-client scan policy.
 
-[implementation plan]: ../../modules/common/ai-tools/implementation-plan.md
+[implementation plan]: ../ai-tools/implementation-plan.md
 [creator structure]: ../../modules/common/ai-tools/skills/skill-creator/rules/anatomy-structure.md
 [creator process]: ../../modules/common/ai-tools/skills/skill-creator/rules/process-steps.md
 [progressive loading]: ../../modules/common/ai-tools/skills/skill-creator/rules/principles-progressive.md
 [registry scan]: ../../modules/common/ai-tools/skills/skill-registry/rules/execution-scan-skills.md
-[compact generation]: ../../modules/common/ai-tools/skills/skill-registry/rules/execution-generate-compact.md
+[registry output]: ../../modules/common/ai-tools/skills/skill-registry/rules/execution-write-registry.md
 [registry persistence]: ../../modules/common/ai-tools/skills/skill-registry/rules/execution-persist.md
 [loading protocol]: ../../modules/common/ai-tools/skills/_shared/skill-loading.md
 [resolver]: ../../modules/common/ai-tools/skills/_shared/skill-resolver.md

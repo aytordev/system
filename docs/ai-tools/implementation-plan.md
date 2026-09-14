@@ -1,9 +1,9 @@
 # Deliver Reliable AI Workflows in OpenCode and Pi
 
 Status: Proposed; implementation has not started.
-Decision: [ADR 0015](../../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md).
-Skill contract: [ADR 0016](../../../docs/decisions/0016-keep-skills-canonical-and-registry-derived.md).
-Migration policy: [ADR 0017](../../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md).
+Decision: [ADR 0015](../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md).
+Skill contract: [ADR 0016](../../docs/decisions/0016-keep-skills-canonical-and-registry-derived.md).
+Migration policy: [ADR 0017](../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md).
 Value and delivery summary: [proposal](proposal.md).
 
 Make `system` deploy workflows that actually run in both clients, with explicit
@@ -1089,7 +1089,7 @@ project choice remains unverified.
 
 ## Verification and completion
 
-New checks use the repository's [verification levels](../../../checks/AGENTS.md).
+New checks use the repository's [verification levels](../../checks/AGENTS.md).
 Pure contracts and renderer cases are unit checks; actual Home Manager
 compositions are integration checks. Exercise `aarch64-darwin` and
 `x86_64-linux` through their available local/CI runners; there is no concrete

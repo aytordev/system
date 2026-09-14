@@ -81,7 +81,7 @@ in {
           # under `$XDG_DATA_HOME/engram` and SDD artifacts live under each
           # project's `openspec/` tree, so both survive a rollback. Data rollback
           # is "do not adopt the derived output"; migrations keep originals
-          # byte-identical. See modules/common/ai-tools/legacy-compatibility.md.
+          # byte-identical. See docs/ai-tools/legacy-compatibility.md.
           gentle-ai.enable = true;
 
           # Custom shell integrations

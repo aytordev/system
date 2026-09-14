@@ -8,8 +8,8 @@
 
   # Chosen form: the pinned upstream release archive (ADR 0015 C12 / T27).
   # Source build (buildGoModule) is the documented alternative in
-  # modules/common/ai-tools/engine-feasibility.md; the prebuilt archive was
-  # proved to build and run on aarch64-darwin in engine-prototype-results.md.
+  # docs/ai-tools/evidence/engine-feasibility.md; the prebuilt archive was
+  # proved to build and run on aarch64-darwin in docs/ai-tools/evidence/engine-prototype-results.md.
   #
   # Caveat (unresolved): `fetchurl` verifies the SHA-256 only. The release's
   # `checksums.txt.minisig` is not validated because the minisign public key

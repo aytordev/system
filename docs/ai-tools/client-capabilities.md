@@ -1,6 +1,6 @@
 # Client Capabilities: OpenCode and Pi
 
-Task T01 evidence for [ADR 0015](../../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md)
+Task T01 evidence for [ADR 0015](../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md)
 and the [implementation plan](implementation-plan.md). This file records what the
 **shipped, pinned** clients can actually do. It is not a wish list and not a
 statement that this repository already projects every capability.

@@ -8,6 +8,9 @@
   # use `references/...` links as illustrative templates rather than real
   # repository paths, so they are not scanned here.
   aiTools = ../../modules/common/ai-tools;
+  # The AI-tools plan/proposal/evidence records live under docs/ai-tools; they
+  # cross-link heavily, so they are link-checked too.
+  docsTree = ../../docs/ai-tools;
   # Top-level docs are listed explicitly so the scan does not recurse into
   # `skills/` and pick up other owners' illustrative template links.
   rootFiles = [
@@ -30,8 +33,9 @@
   in
     lib.concatLists (lib.mapAttrsToList step entries);
 
-  files = lib.unique (rootFiles ++ lib.concatMap markdownFiles trees);
-  rel = file: lib.removePrefix (toString aiTools + "/") (toString file);
+  files = lib.unique (rootFiles ++ lib.concatMap markdownFiles trees ++ (markdownFiles docsTree));
+  repoRoot = builtins.dirOf (builtins.dirOf docsTree);
+  rel = file: lib.removePrefix (toString repoRoot + "/") (toString file);
 
   # `builtins.split` returns alternating strings and capture-group lists. The
   # `[]]` class is required because `\]` is rejected by Nix's regex engine.

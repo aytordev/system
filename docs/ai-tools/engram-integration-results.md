@@ -4,8 +4,8 @@
 
 This closes the Engram-integration conditions of the adopted engine decision
 (ADR 0015, C12) for task T28 of the [implementation plan](./implementation-plan.md),
-building on [engine-feasibility.md](./engine-feasibility.md) and
-[engine-prototype-results.md](./engine-prototype-results.md). It proves the two
+building on [engine-feasibility.md](evidence/engine-feasibility.md) and
+[engine-prototype-results.md](evidence/engine-prototype-results.md). It proves the two
 previously unverified risks (data-directory agreement, real-writer project-name
 agreement) through the packaged adapter, and records the Engram 1.7.0 gaps
 decision.

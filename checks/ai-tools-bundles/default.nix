@@ -237,7 +237,7 @@
     "  - T25 unknown envelope fixture unexpectedly carries a schema";
 
   # --- Bundle verification record -----------------------------------------
-  record = aiTools + "/bundle-verification.md";
+  record = ../../docs/ai-tools/bundle-verification.md;
   recordExists = builtins.pathExists record;
   recordText =
     if recordExists

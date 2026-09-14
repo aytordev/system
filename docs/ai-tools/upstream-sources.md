@@ -1,7 +1,7 @@
 # Upstream Sources and Local Adaptations
 
 Provenance record for the AI skill migration in
-[ADR 0017](../../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md)
+[ADR 0017](../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md)
 and task T24 of the [implementation plan](./implementation-plan.md).
 
 This file records the frozen upstream revision, the local skill census, the
@@ -211,4 +211,4 @@ must migrate its producers and consumers together.
   `issue-creation` port depends on local authority decisions in T10 and the
   issue-first workflow review; the classification as `adapted` holds regardless.
 
-[adr-0017]: ../../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md
+[adr-0017]: ../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md

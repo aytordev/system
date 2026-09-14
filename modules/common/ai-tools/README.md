@@ -12,7 +12,7 @@ home module:
 
 Both clients consume the same registry, role policy, skills, and `aytordev-sdd`
 engine adapter. See [Support Matrix](#support-matrix) for what is verified in
-each client and [verification-report.md](verification-report.md) (T16) for the
+each client and [verification-report.md](../../../docs/ai-tools/verification-report.md) (T16) for the
 evidence, commands, and open gaps.
 
 ## Architecture
@@ -58,7 +58,7 @@ protocols to follow when adding a new agent/command/skill.
 ## Support Matrix
 
 Verified against the frozen revisions and clients in
-[verification-report.md](verification-report.md) (T16). `Supported` means a
+[verification-report.md](../../../docs/ai-tools/verification-report.md) (T16). `Supported` means a
 deterministic check exercises the behavior; `Partial`/`Advisory`/`Unverified`
 name the residual gap; `Documented` means the procedure exists but was not
 executed.
@@ -81,7 +81,7 @@ executed.
 
 ## Proposed Evolution
 
-Start with the [value proposal](proposal.md) for expected outcomes, costs,
+Start with the [value proposal](../../../docs/ai-tools/proposal.md) for expected outcomes, costs,
 delivery sequence, and pending decisions.
 
 [ADR 0015](../../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md)
@@ -94,12 +94,12 @@ keeps skill authoring separate from index-first discovery and canonical loading.
 [ADR 0017](../../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md)
 defines migration from current, pinned upstream skills as compatible bundles with
 explicit local adaptations and existing-state recovery.
-The [implementation plan](implementation-plan.md) tracks dependency-ordered tasks,
+The [implementation plan](../../../docs/ai-tools/implementation-plan.md) tracks dependency-ordered tasks,
 including the engine comparison, source pinning, artifact migration, bundle
 deployment, and acceptance criteria.
 These documents describe the implemented architecture; the dual-client workflow
 delivery and its evidence are recorded in
-[verification-report.md](verification-report.md).
+[verification-report.md](../../../docs/ai-tools/verification-report.md).
 
 ## Adding a New Command / Agent / Skill
 

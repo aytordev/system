@@ -210,7 +210,7 @@ This repository's AI tooling (agents, commands, skills) is defined in
 file as context plus the shared `skills/` tree; Pi currently reuses this file and
 the `skills/` tree directly, with native commands, delegation, and MCP still in
 progress. See the [AI tools README](README.md), the
-[implementation plan](implementation-plan.md), the [proposal](proposal.md), and
+[implementation plan](../../../docs/ai-tools/implementation-plan.md), the [proposal](../../../docs/ai-tools/proposal.md), and
 [ADR 0015](../../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md).
 
 For a bounded investigation that does not need SDD, use the read-only method

@@ -1,7 +1,7 @@
 # Bundle Verification Record (T26)
 
 Maps each of the five migration bundles from
-[ADR 0017](../../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md)
+[ADR 0017](../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md)
 to its concrete files, source revision(s), effective OpenCode/Pi outputs,
 dependency closure, and rollback boundary. This is the "assemble and verify"
 record for T26; the task status and acceptance evidence live in the
