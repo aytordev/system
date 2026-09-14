@@ -99,9 +99,9 @@ the complete-proposal verification exercise.
   permissions, MCP, and session recovery.
 - [x] Prove the Pi extension/API paths needed for a local adapter using disposable
   fixtures. Record any SDK dependencies and their versions/licenses.
-- [ ] Define native model ID translation for Pi for the T04 role policy. OpenCode
-  contracts were validated against the shipped 1.18.30 binary; client/source
-  compatibility with the T24 baseline is recorded.
+- [x] Define native model ID translation for Pi for the T04 role policy. Resolved
+  by T05's session-level role mapping (`pi.setModel`); OpenCode contracts were
+  validated against the shipped 1.18.30 binary and the T24 baseline is recorded.
 
 **Why/value:** prevents a second implementation based on nonexistent APIs.
 **Tradeoff:** an early compatibility exercise adds work but bounds the maintenance
@@ -111,14 +111,13 @@ or a named blocker that keeps dependent implementation work open. No unsupported
 capability is replaced by a prompt assertion.
 **Surface:** OpenCode/Pi package definitions, adapters, and focused test fixtures.
 **Evidence:** `client-capabilities.md` (OpenCode 1.18.30, Pi 0.85.1, 8 named
-blockers). First two bullets done; native Pi model-ID translation stays open for
-T04.
+blockers). All bullets done; Pi role models resolve at session level (T05).
 
 ### T02: Define the shared contract
 
-- [ ] Specify identifiers, descriptions, content, roles, command arguments,
+- [x] Specify identifiers, descriptions, content, roles, command arguments,
   dependency requirements, and permission intent as validated pure data.
-- [ ] Expose one registry consumed by both clients. Keep deployable paths and
+- [x] Expose one registry consumed by both clients. Keep deployable paths and
   client syntax in adapters; remove reliance on OpenCode-specific skill paths.
 - [x] Reject duplicate identifiers within each resource kind and unresolved
   references. Make defaults explicit; a non-SDD command must not silently select
@@ -511,11 +510,11 @@ file). The inventory check fails if either skill is removed from `AGENTS.md`
 
 ### T15: Add the lightweight workflow
 
-- [ ] Define a bounded understand/change/verify path for routine work, composing
+- [x] Define a bounded understand/change/verify path for routine work, composing
   T13/T14 when useful. Keep SDD for structured multi-phase requirements/design.
-- [ ] Define explicit routing examples for questions, diagnosis, small changes,
+- [x] Define explicit routing examples for questions, diagnosis, small changes,
   architecture-only analysis, and substantial implementation.
-- [ ] Preserve user-requested workflows, authority, review practices, and focused
+- [x] Preserve user-requested workflows, authority, review practices, and focused
   verification. Avoid mandatory planning artifacts or delegation for simple work.
 
 **Why/value:** reduces process overhead while keeping a verifiable completion rule.
@@ -634,21 +633,21 @@ specified in-protocol, not implemented (no local indexer exists).
 
 ### T19: Compare and prototype SDD engine alternatives
 
-- [ ] Compare three candidates against the same acceptance matrix: pinned gentle-ai
+- [x] Compare three candidates against the same acceptance matrix: pinned gentle-ai
   CLI, a locally owned bounded engine, and current prompt coordination plus
   isolated helpers as the baseline. Use T24's frozen source and document any
   required source reselection. Clearly distinguish engine and persistence.
-- [ ] Audit CLI/MCP contracts against the actual Engram 1.7.0 package, including
+- [x] Audit CLI/MCP contracts against the actual Engram 1.7.0 package, including
   discovery, export/update semantics, identity, and optional newer fields. Record
   any required upgrade and migration separately instead of assuming compatibility.
-- [ ] Build a disposable vertical slice for the credible engine alternatives:
+- [x] Build a disposable vertical slice for the credible engine alternatives:
   select an exact change, resolve status/artifact locators, accept a worker result,
   update and reread task completion, validate candidate evidence, and evaluate
   archive readiness. Exercise a minimal Pi/OpenCode adapter handoff for each.
-- [ ] Inject missing artifacts, malformed results, stale verification, cancellation,
+- [x] Inject missing artifacts, malformed results, stale verification, cancellation,
   duplicate requests, concurrent work, and partial hybrid writes. Include selected
   Engram without OpenSpec bootstrap and true no-persistence behavior.
-- [ ] Produce a decision comparison with measured prototype results, dependencies,
+- [x] Produce a decision comparison with measured prototype results, dependencies,
   packaging/platform costs, migration/rollback, code ownership, and implementation
   work units. Obtain the owner's engine choice before production implementation.
 
