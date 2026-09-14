@@ -69,6 +69,12 @@
       path = ../../modules/home/programs/terminal/emulators/ghostty/config.nix;
     }
     {
+      id = "herdr";
+      generated = "aytordev";
+      note = "Palette-generated [theme.custom]; upstream Sora extra is equivalent to palette generation.";
+      path = ../../modules/home/programs/terminal/tools/herdr/theme.nix;
+    }
+    {
       id = "jankyborders";
       generated = "palette";
       note = "No upstream resource; consumes raw sketchybar-format palette roles.";

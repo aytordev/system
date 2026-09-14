@@ -138,6 +138,7 @@ promised.
 | Neovim | Built from the `aytordev-nvim` distribution with the family/variant from `aytordev.theme` (through its `lib.mkAytordevNeovim` builder). Sora is dark-only, so the synthetic `light` companion uses the editor default (`none`). |
 | tmux | Sources the Sora theme when the family provides one; otherwise generates from the palette. |
 | JankyBorders, Sketchybar | No upstream resource in any family; both consume raw `sketchybar`-format palette roles. |
+| herdr | Upstream Sora extra exists but is equivalent to palette generation; the adapter generates `[theme.custom]` for every family. |
 
 ## Support matrix
 

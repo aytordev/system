@@ -14,20 +14,20 @@ override.
 
 ## Family × app (default variant)
 
-| Family | bat | btop | delta | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Kanagawa (dragon) | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
-| Sora (dark) | O | O | O | O | O | O | O | G | O | O | G | G | O | O | G | O | O | G |
+| Family | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Kanagawa (dragon) | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
+| Sora (dark) | O | O | O | O | O | O | O | G | G | O | O | G | G | O | O | G | O | O | G |
 
 ## Variant coverage
 
-| Family / variant | bat | btop | delta | eza | firefox | fzf | ghostty | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Kanagawa dragon | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
-| Kanagawa lotus | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
-| Kanagawa wave | O | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
-| Sora dark | O | O | O | O | O | O | O | G | O | O | G | G | O | O | G | O | O | G |
-| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
+| Family / variant | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Kanagawa dragon | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa lotus | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa wave | O | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
+| Sora dark | O | O | O | O | O | O | O | G | G | O | O | G | G | O | O | G | O | O | G |
+| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
 
 ## Official resources and provenance
 
@@ -44,6 +44,7 @@ override.
 | Sora | firefox | official-upstream | no | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | fzf | official-upstream | no | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | ghostty | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
+| Sora | hunk | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | lazygit | official-upstream | no | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | opencode | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | starship | official-upstream | no | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
@@ -67,6 +68,7 @@ adapter.
 | firefox | userChrome | Exception: userChrome is generated from the palette every family; a declared id is a Firefox Color title, not a UI selection. |
 | fzf | aytordev | Palette-generated theme. |
 | ghostty | aytordev | Palette-generated conf. |
+| herdr | aytordev | Palette-generated [theme.custom]; upstream Sora extra is equivalent to palette generation. |
 | jankyborders | palette | No upstream resource; consumes raw sketchybar-format palette roles. |
 | lazygit | aytordev | Palette-generated theme. |
 | opencode | aytordev | Palette-generated theme. |

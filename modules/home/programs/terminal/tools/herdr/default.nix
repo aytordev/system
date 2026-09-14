@@ -7,6 +7,13 @@
   inherit (lib) mkIf mkEnableOption mkPackageOption;
 
   cfg = config.aytordev.programs.terminal.tools.herdr;
+  themeCfg = config.aytordev.theme;
+
+  # herdr has no named-theme registry; the UI follows the shared palette through
+  # `[theme.custom]` in every family.
+  herdrTheme = import ./theme.nix {
+    inherit (themeCfg) palette ansi;
+  };
 in {
   options.aytordev.programs.terminal.tools.herdr = {
     enable = mkEnableOption "herdr agent runtime";
@@ -37,9 +44,9 @@ in {
           new_cwd = "follow";
         };
 
-        # Follow the host terminal's ANSI palette; ghostty is already themed
-        # from aytordev.theme, so herdr inherits it without a built-in family.
-        theme.name = "terminal";
+        # Palette-generated theme (see theme.nix); follows aytordev.theme in
+        # every family instead of a single built-in look.
+        theme = herdrTheme;
 
         ui.toast.delivery = "terminal";
       };
