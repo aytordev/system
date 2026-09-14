@@ -126,6 +126,7 @@ in {
             act = mkDefault enabled;
             # AI tools - use mkDefault so home config can override
             engram.enable = mkDefault cfg.aiEnable;
+            herdr.enable = mkDefault cfg.aiEnable;
             mcp.enable = mkDefault cfg.aiEnable;
             opencode.enable = mkDefault cfg.aiEnable;
             pi.enable = mkDefault cfg.aiEnable;

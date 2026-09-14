@@ -113,6 +113,20 @@ every child process).
 Example contract: `checks/home-identity` asserts secrets are file-based and
 wrappers fail closed without real tokens in env.
 
+### Runtime-Managed Agent Integrations
+
+Some tools ship integrations that write into *another* app's config at runtime
+and own those files. Never vendor them in Nix: a store symlink would block the
+tool's own installer and updater, and the artifact is versioned to the tool.
+
+herdr is the reference case (see `tools/herdr`). `herdr integration install
+opencode` writes `~/.config/opencode/plugins/herdr-agent-state.js`,
+`~/.config/opencode/herdr-tui-session.js`, and `~/.config/opencode/tui.jsonc`.
+OpenCode auto-loads the plugin directory and merges `tui.json` with
+`tui.jsonc`, so the Home-Manager-managed `tui.json` (theme) and herdr's plugin
+coexist. Keep the runtime targets (`opencode/plugins`, `tui.jsonc`) out of the
+managed set.
+
 ## Platform Notes
 
 - Some tools are macOS/GUI-specific (sketchybar, ghostty). Keep generic config
