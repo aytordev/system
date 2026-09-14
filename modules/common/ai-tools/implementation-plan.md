@@ -822,16 +822,16 @@ and engine/client compatibility inputs for T01/T19.
 
 ### T25: Prove legacy artifact compatibility and migration
 
-- [ ] Inventory representative old registry caches, task/progress envelopes, spec
+- [x] Inventory representative old registry caches, task/progress envelopes, spec
   scenario formats, backend identities/locators, and verification reports. Use
   isolated or redacted fixtures, preserving source bytes and observation references.
-- [ ] Classify each supported input as directly readable, requiring conversion, or
+- [x] Classify each supported input as directly readable, requiring conversion, or
   requiring a retained legacy reader/manual decision. Specify the chosen target
   schema and behavior before implementing any converter.
-- [ ] Implement only required conversions with a preview, preserved originals,
+- [x] Implement only required conversions with a preview, preserved originals,
   interruption/retry behavior, and readback. Unknown formats must not trigger
   automatic reinitialization, memory deletion, or fabricated verification.
-- [ ] Document code rollback separately from data rollback, including what happens
+- [x] Document code rollback separately from data rollback, including what happens
   when an older generation reads migrated artifacts and how an active change can
   resume in either client after migration.
 
@@ -844,6 +844,28 @@ with a documented compatibility reason. A migrated old PASS never becomes eviden
 for new code; failed/partial conversions retain a recoverable original.
 **Surface:** state/registry migration fixtures, selected engine adapters, narrowly
 required conversion helpers, and rollout/rollback instructions.
+**Evidence:** `legacy-compatibility.md` is the compatibility table and rollback
+procedure. Five surfaces are classified: registry cache and phase envelope
+**require conversion**; bold spec scenarios are **directly readable** by verify
+but convertible before promotion; verification reports and backend
+identity/locators **require a retained reader / manual decision**. The adapter
+now exposes `aytordev-sdd migrate <registry|envelope|scenarios|verify-report>`
+(`modules/home/programs/terminal/tools/gentle-ai/migrate.sh`) with preview,
+preserved originals, atomic publish, and readback; skills and `_shared`
+protocols reference it (`return-envelope.md`, `skill-loading.md`,
+`skill-resolver.md`, `execution-persist.md`, `execution-return-report.md`,
+`execution-spec-counts.md`, `execution-closure-gate.md`,
+`persistence-contract.md`). `integration-ai-tools-legacy-compat` proves each
+supported input is read/converted with a readback, an unknown format stops
+(exit 4) with a reason and leaves the original intact, a migrated old `ok`/PASS
+becomes a non-advancing `partial` envelope, a partial failure keeps a
+recoverable original, and the C11 gate returns `unverified` for a legacy
+`Verdict: PASS` report. Code rollback (Home Manager generation) and data
+rollback (not adopting the derived file; originals are byte-identical) are
+documented separately, including what an older generation reads and how an
+active change resumes in either client. Deferred to T26: `sdd-propose`'s
+return-summary example still shows the legacy envelope shape (T20 deferred it);
+the reader means it is never silently accepted.
 
 ### T26: Assemble and verify compatible migration bundles
 

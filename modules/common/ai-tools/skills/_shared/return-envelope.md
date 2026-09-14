@@ -86,6 +86,25 @@ adapter on behalf of the pinned engine) validates every result:
 When a phase's engine transition is rejected, keep the recorded backend, mark
 readiness `blocked`, and report it — never re-derive engine state locally.
 
+## Legacy Envelopes (pre-`sdd-result/v1`)
+
+An older phase could return `{status: ok|warning|failed, artifacts: [...]}` with
+no `schema`. That shape is **not** an `sdd-result/v1` result: the orchestrator
+rejects it (missing/unknown schema) and never advances on it. To inspect or
+resume from one, convert it through the adapter — never hand-roll or accept the
+legacy shape:
+
+```
+aytordev-sdd migrate envelope --input <file> [--output <file>] [--dry-run]
+```
+
+The converter preserves the input bytes, prints a preview, reads back its own
+result, and maps the legacy status to a **non-advancing** envelope
+(`ok`/`warning` → `partial`, `failed` → `failed`, `blocked` → `blocked`, with
+`evidence: []`). A migrated `ok` (an old PASS) is historical: it never satisfies
+`status: success` and never advances. An unrecognized shape stops with a reason
+and leaves the input untouched.
+
 ## Example
 
 ```markdown

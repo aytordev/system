@@ -1,0 +1,14 @@
+{
+  "status": "ok",
+  "executive_summary": "Proposal created for add-dark-mode",
+  "detailed_report": "redacted full proposal body",
+  "artifacts": [
+    {
+      "type": "proposal",
+      "location": "openspec/changes/add-dark-mode/proposal.md",
+      "change_name": "add-dark-mode"
+    }
+  ],
+  "next_recommended": "specs",
+  "risks": ["none identified"]
+}

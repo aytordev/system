@@ -56,6 +56,11 @@ reinitialize. Changing an existing change's backend is a deliberate migration
 - **change** = the user-provided slug.
 - Artifact locators are deterministic from `backend + project + change`, so the
   orchestrator can pass them to phases instead of each phase deriving them.
+- A change created before a rename can carry an older topic key or project name.
+  Do NOT silently bridge, re-key, or copy between stores: if the recorded locator
+  does not resolve, report `blocked` and ask for the explicit `ENGRAM_PROJECT`
+  override (see `engram-convention.md`) or a deliberate migration. Never
+  re-initialize the change and never overwrite an existing observation.
 
 ## Behavior Per Backend
 

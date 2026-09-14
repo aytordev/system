@@ -19,7 +19,7 @@ The registry is an **index** of names, full descriptions, scopes, and exact `SKI
 Resolution order:
 1. Already cached from earlier in this session? → use cache
 2. `mem_search(query: "skill-registry", project: "{project}")` → `mem_get_observation(id)` for full content
-3. Fallback: read `.atl/skill-registry.md` from the project root when file persistence was selected
+3. Fallback: read `.atl/skill-registry.md` from the project root when file persistence was selected **and it is index-first** (it contains `## Index`). An older summary cache has no `## Index`; do not use it — preserve it and regenerate through the `skill-registry` skill (`aytordev-sdd migrate registry --input .atl/skill-registry.md` detects it)
 4. No index found? → proceed without skills, warn the user: "No skill registry found — sub-agents will work without project-specific standards. Run `skill-registry` to fix this."
 
 ### Step 2: Match Relevant Skills

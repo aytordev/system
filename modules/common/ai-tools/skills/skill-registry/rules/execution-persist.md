@@ -53,6 +53,16 @@ In `hybrid`, also save to Engram as above. Both writes MUST succeed.
 
 NEVER silently edit `.gitignore`. If `.atl` is not ignored, mention it in the summary and let the user decide.
 
-### Cache invalidation
+### Cache invalidation and legacy migration
 
-Old compact-rule caches cannot satisfy this contract. Reject any cache whose entries lack the index fields or whose `freshness` no longer matches the current `SKILL.md`; regenerate instead.
+Old summary caches cannot satisfy this contract. Reject any cache whose entries
+lack the index fields or whose `freshness` no longer matches the current
+`SKILL.md`; regenerate instead.
+
+Before writing the new index, detect an older summary cache at the target path
+(no `## Index` section). Preserve its bytes as `.atl/skill-registry.legacy.md`
+(never overwrite it in place), then write the fresh index-first registry.
+`aytordev-sdd migrate registry --input .atl/skill-registry.md` reports the
+classification, preserves the original, and stops with a reason; the skill then
+performs the actual regeneration. Never upgrade a summary cache into an index by
+transcribing its summaries — `SKILL.md` stays the source of truth.

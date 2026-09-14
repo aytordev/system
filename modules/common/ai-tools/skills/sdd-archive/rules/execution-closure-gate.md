@@ -50,6 +50,21 @@ Pass `--revision` with the same candidate revision the verify report recorded
 well-formed but stale hash on its own; `--revision` is what turns that into a
 typed `stale-verification` refusal.
 
+### Legacy Verification Reports
+
+A report that does not begin with the `gentle-ai.verify-result/v1` fence is
+legacy prose and is refused as `unverified` — an old PASS is never evidence for
+the current candidate. Detect it without editing it:
+
+```
+aytordev-sdd migrate verify-report --input <report>
+```
+
+The adapter preserves the file and reports `requires-reverification`. Re-run
+`sdd-verify` to produce a current, fenced report; never synthesize the fence or
+fabricate a PASS. The change keeps its recorded backend and artifacts while it
+waits.
+
 ### When the Gate Cannot Run
 
 If the adapter is unavailable or the recorded backend is unreadable, report

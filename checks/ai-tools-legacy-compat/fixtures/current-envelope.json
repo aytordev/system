@@ -1,0 +1,11 @@
+{
+  "schema": "sdd-result/v1",
+  "kind": "final",
+  "status": "partial",
+  "executive_summary": "already migrated",
+  "artifacts": ["proposal: openspec/changes/add-dark-mode/proposal.md"],
+  "evidence": [],
+  "next_recommended": "specs",
+  "risks": [],
+  "skill_resolution": "none"
+}

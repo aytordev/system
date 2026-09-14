@@ -16,7 +16,8 @@ Check these in order — first match wins:
 
 2. **Fallback — skill registry index**: If no paths were injected, search for the index:
    - `mem_search(query: "skill-registry", project: "{project}")` → `mem_get_observation(id)` for the full index
-   - Fallback: read `.atl/skill-registry.md` from the project root if it exists (file persistence was selected)
+   - Fallback: read `.atl/skill-registry.md` from the project root if it exists (file persistence was selected) **and it is index-first** — it must contain an `## Index` section
+   - If that file has no `## Index` (an older summary cache cannot satisfy this contract), STOP: preserve the file and regenerate it through the `skill-registry` skill; do not read its summaries as skill content. Detect it with `aytordev-sdd migrate registry --input .atl/skill-registry.md`
    - Match your task against the index descriptions, then read the exact `SKILL.md` paths for the matches
 
 3. **Fallback — explicit `SKILL: Load` paths**: If the orchestrator passed `SKILL: Load` instructions, read those exact skill files.

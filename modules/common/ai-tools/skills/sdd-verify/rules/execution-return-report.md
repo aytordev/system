@@ -108,6 +108,21 @@ build_output_hash: sha256:<64 lowercase hex>
 This envelope is the artifact the engine reads. The `sdd-result/v1` envelope
 returned to the orchestrator is separate and still required (below).
 
+### Legacy Report (pre-engine)
+
+A prior report that does **not** begin with the `gentle-ai.verify-result/v1`
+fence is **inadmissible**: it is historical prose, not current, relevant
+evidence, and it cannot close a change. Detect it without editing it:
+
+```
+aytordev-sdd migrate verify-report --input <report>
+```
+
+The adapter preserves the file and reports `requires-reverification`. **Re-run
+verification** against the current candidate to produce a current, fenced report.
+Never synthesize the fence, upgrade an old verdict, or fabricate a PASS from a
+legacy report.
+
 ### Persistence
 
 Persist to the backend the orchestrator resolved (no cross-store fallback):

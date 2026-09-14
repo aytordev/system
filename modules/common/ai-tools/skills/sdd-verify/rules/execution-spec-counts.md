@@ -20,6 +20,21 @@ Count:
 - **Scenarios** — `#### Scenario:` headings plus bold-legacy `**Scenario:`
   markers.
 
+### Canonicalization of Legacy Specs
+
+Both grammars are accepted, and **canonical `#### Scenario:` is the target**.
+When archiving an old change whose `openspec`/`hybrid` spec still uses the bold
+grammar, normalize it through the adapter (preview, preserved original, atomic
+publish, readback):
+
+```
+aytordev-sdd migrate scenarios --input <spec> --backend <openspec|hybrid>
+```
+
+Memory-backed (`engram`) and ephemeral (`none`) specs are **not** converted by
+the file adapter; they are read in place and re-authored through the phase.
+Conversion never changes requirement headings and never rewrites the original.
+
 ### Count Reconciliation (MANDATORY)
 
 - Report the parsed totals: `Requirements: {N}`, `Scenarios: {N} (canonical {c} + legacy {l})`.

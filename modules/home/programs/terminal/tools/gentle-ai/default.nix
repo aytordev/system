@@ -53,6 +53,11 @@
   #     `evidence_revision`.
   #   - archive: the mechanical OpenSpec move with a pre-move snapshot, a
   #     lossless `diff -r` readback, and collision refusal.
+  #   - migrate: legacy artifact compatibility (T25). Converts old on-disk
+  #     formats (phase envelopes, bold spec scenarios) or stops with a reason
+  #     (legacy compact-rules registries, legacy verify reports). Preview,
+  #     preserved originals, atomic publish, and readback are implemented in
+  #     `migrate.sh`; the adapter exposes it so no skill handles raw formats.
   adapter = pkgs.writeShellApplication {
     name = "aytordev-sdd";
     runtimeInputs = [
@@ -232,8 +237,10 @@
         exit 0
       }
 
+      ${builtins.readFile ./migrate.sh}
+
       if [ "$#" -eq 0 ]; then
-        echo "usage: aytordev-sdd <status|continue|attempt|verify|compose|closure|archive> [args...]" >&2
+        echo "usage: aytordev-sdd <status|continue|attempt|verify|compose|closure|archive|migrate> [args...]" >&2
         exit 64
       fi
 
@@ -247,8 +254,9 @@
         compose) set -- sdd-archive-compose "$@" ;;
         closure) closure "$@" ;;
         archive) archive_change "$@" ;;
+        migrate) migrate "$@" ;;
         *)
-          echo "aytordev-sdd: unknown command '$command' (want status|continue|attempt|verify|compose|closure|archive)" >&2
+          echo "aytordev-sdd: unknown command '$command' (want status|continue|attempt|verify|compose|closure|archive|migrate)" >&2
           exit 64
           ;;
       esac
