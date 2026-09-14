@@ -53,6 +53,7 @@
     "programs.terminal.tools.fastfetch"
     "programs.terminal.tools.ffmpeg"
     "programs.terminal.tools.fzf"
+    "programs.terminal.tools.gentle-ai"
     "programs.terminal.tools.gh"
     "programs.terminal.tools.git"
     "programs.terminal.tools.git-crypt"

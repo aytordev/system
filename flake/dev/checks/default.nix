@@ -23,7 +23,11 @@
     # Get list of valid check directories
     checkDirs = lib.filterAttrs isCheckDir (builtins.readDir checksPath);
     unitCheckNames = [
+      "ai-tools-dependencies"
       "ai-tools-inventory"
+      "ai-tools-loading"
+      "ai-tools-sdd-handoffs"
+      "ai-tools-sdd-persistence"
       "architecture-layers"
       "file-parsers"
       "home-users-contract"

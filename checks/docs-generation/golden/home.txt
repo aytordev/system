@@ -141,6 +141,12 @@
 ## aytordev\.programs\.terminal\.tools\.fzf\.defaultCommand
 ## aytordev\.programs\.terminal\.tools\.fzf\.extraOptions
 ## aytordev\.programs\.terminal\.tools\.fzf\.theme
+## aytordev\.programs\.terminal\.tools\.gentle-ai\.enable
+## aytordev\.programs\.terminal\.tools\.gentle-ai\.package
+## aytordev\.programs\.terminal\.tools\.gentle-ai\.adapter
+## aytordev\.programs\.terminal\.tools\.gentle-ai\.engramDataDir
+## aytordev\.programs\.terminal\.tools\.gentle-ai\.engramPackage
+## aytordev\.programs\.terminal\.tools\.gentle-ai\.engramProject
 ## aytordev\.programs\.terminal\.tools\.gh\.enable
 ## aytordev\.programs\.terminal\.tools\.gh\.package
 ## aytordev\.programs\.terminal\.tools\.gh\.auth\.accounts
@@ -186,6 +192,12 @@
 ## aytordev\.programs\.terminal\.tools\.lsd\.enable
 ## aytordev\.programs\.terminal\.tools\.lsd\.package
 ## aytordev\.programs\.terminal\.tools\.mcp\.enable
+## aytordev\.programs\.terminal\.tools\.mcp\.selection\.opencode
+## aytordev\.programs\.terminal\.tools\.mcp\.selection\.pi
+## aytordev\.programs\.terminal\.tools\.mcp\.servers
+## aytordev\.programs\.terminal\.tools\.mcp\.servers\.\<name>\.args
+## aytordev\.programs\.terminal\.tools\.mcp\.servers\.\<name>\.command
+## aytordev\.programs\.terminal\.tools\.mcp\.servers\.\<name>\.env
 ## aytordev\.programs\.terminal\.tools\.navi\.enable
 ## aytordev\.programs\.terminal\.tools\.navi\.package
 ## aytordev\.programs\.terminal\.tools\.navi\.settings\.style\.comment\.color
@@ -205,6 +217,7 @@
 ## aytordev\.programs\.terminal\.tools\.nix-search-tv\.package
 ## aytordev\.programs\.terminal\.tools\.opencode\.enable
 ## aytordev\.programs\.terminal\.tools\.opencode\.package
+## aytordev\.programs\.terminal\.tools\.opencode\.agentModels
 ## aytordev\.programs\.terminal\.tools\.opencode\.model\.model
 ## aytordev\.programs\.terminal\.tools\.opencode\.model\.provider
 ## aytordev\.programs\.terminal\.tools\.opencode\.theme
@@ -232,6 +245,10 @@
 ## aytordev\.programs\.terminal\.tools\.pi\.skills\.enable
 ## aytordev\.programs\.terminal\.tools\.pi\.theme
 ## aytordev\.programs\.terminal\.tools\.pi\.tuiMode
+## aytordev\.programs\.terminal\.tools\.pi\.workflow\.enable
+## aytordev\.programs\.terminal\.tools\.pi\.workflow\.commands
+## aytordev\.programs\.terminal\.tools\.pi\.workflow\.roleModels
+## aytordev\.programs\.terminal\.tools\.pi\.workflow\.timeoutMs
 ## aytordev\.programs\.terminal\.tools\.rclone\.enable
 ## aytordev\.programs\.terminal\.tools\.rclone\.package
 ## aytordev\.programs\.terminal\.tools\.rclone\.remotes

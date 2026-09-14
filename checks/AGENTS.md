@@ -13,8 +13,10 @@ any other check directory becomes integration.
 ## Verification Levels
 
 - `unit-*`: Pure contracts, parsers, and architecture policies
-  (`ai-tools-inventory`, `architecture-layers`, `file-parsers`,
-  `home-users-contract`, `input-policy`, `library-exports`,
+  (`ai-tools-dependencies`, `ai-tools-inventory`, `ai-tools-loading`,
+  `ai-tools-sdd-handoffs`, `ai-tools-sdd-persistence`,
+  `architecture-layers`,
+  `file-parsers`, `home-users-contract`, `input-policy`, `library-exports`,
   `library-overlay`, `lua-shell-quoting`, `nix-unit`, `parse-lix`,
   `parse-nix`).
 - `integration-*`: Synthetic Home Manager and system compositions
