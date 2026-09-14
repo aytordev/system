@@ -20,6 +20,7 @@ in {
       };
 
       programs.desktop.bars.sketchybar = mkDefault enabled;
+      programs.desktop.logitech = mkDefault enabled;
     };
 
     homebrew = {

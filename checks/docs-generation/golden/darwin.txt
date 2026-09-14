@@ -9,6 +9,8 @@
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.enable
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.logPaths\.stderr
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.logPaths\.stdout
+## aytordev\.programs\.desktop\.logitech\.enable
+## aytordev\.programs\.desktop\.logitech\.driver
 ## aytordev\.programs\.terminal\.shells\.enable
 ## aytordev\.programs\.terminal\.shells\.package
 ## aytordev\.programs\.terminal\.shells\.default
