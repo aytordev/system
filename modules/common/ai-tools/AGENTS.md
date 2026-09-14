@@ -83,6 +83,7 @@ ai-tools/
 | work-unit-commits | workflow | Plan commits as reviewable work units |
 | bug-diagnosis | method | Bounded read-only bug diagnosis — symptom, minimized repro, falsifiable hypotheses |
 | impact-analysis | method | Follow consumers beyond the diff and prove the compatibility assumption |
+| lightweight-change | workflow | Bounded understand/change/verify path for routine work — owns simple changes, routes multi-phase work to SDD |
 
 > `dotfiles-coder/rules/patterns-module.md` is the canonical module template
 > (per-class variants + style rules). Subtree `AGENTS.md` files reference it.

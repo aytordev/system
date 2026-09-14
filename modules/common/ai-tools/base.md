@@ -218,3 +218,8 @@ skills: `bug-diagnosis` to establish a supported cause for failing behavior, and
 `impact-analysis` to follow consumers beyond the diff and prove the material
 compatibility assumption with a focused check. Both return evidence and
 uncertainty to the requesting lifecycle; neither owns or takes over a workflow.
+
+For routine work that does not need structured planning, use the
+`lightweight-change` skill: understand the real code, make the smallest correct
+change, and run focused verification with no planning artifacts. Exactly one
+lifecycle owns a task; keep structured, multi-phase work in SDD.

@@ -1,0 +1,13 @@
+{
+    "name": "lightweight-change",
+    "description": "Bounded understand/change/verify path for routine work: read the real code, make the smallest correct change, and run focused verification. Owns simple changes; structured multi-phase work stays in SDD.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "September 2026",
+    "abstract": "A bounded understand/change/verify lifecycle for routine work. Composes the bug-diagnosis, impact-analysis, and Nix methods when useful, creates no SDD artifacts, and keeps exactly one lifecycle owner per task with SDD reserved for structured multi-phase work.",
+    "dependencies": [
+        "bug-diagnosis",
+        "impact-analysis",
+        "nix"
+    ]
+}
