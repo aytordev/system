@@ -4,7 +4,7 @@ moduleArgs @ {
   ownerIdentity,
   ...
 }: let
-  inherit (lib.aytordev) enabled disabled;
+  inherit (lib.aytordev) enabled;
   inherit (identity) username;
 
   workSshKey = "/Users/${username}/.ssh/ssh_key_github_civislend_ed25519";
@@ -47,12 +47,6 @@ in {
     };
 
     programs = {
-      desktop = {
-        # Development suite enables vscode by default; its kanagawa theme mirror
-        # currently 404s on .vsix downloads, so keep it off in the boilerplate.
-        editors.vscode = disabled;
-      };
-
       terminal.tools = {
         # github.com resolves to the personal account; the work account uses the
         # `github-civislend` alias; Bitbucket uses its own key on the real host.
