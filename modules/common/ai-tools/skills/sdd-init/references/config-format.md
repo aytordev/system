@@ -5,11 +5,13 @@ The `openspec/config.yaml` file defines project context and phase-specific rules
 ## Schema
 
 ```yaml
+artifact_store: string   # engram | openspec | hybrid | none
+
 project:
   name: string          # Project name (detected from manifest)
   stack: string          # Detected stack summary (e.g., "TypeScript, React, Vite")
 
-testing:
+testing:                   # openspec / hybrid only; engram omits this section
   requested: boolean | null  # Explicit policy: true | false | null (unset)
   effective: string          # enabled | disabled | blocked
   blocker: string | null     # Reason when requested=true has no coverage
@@ -20,9 +22,6 @@ testing:
       command: string        # e.g., "npm test", "nix flake check"
       covers: [string]       # Targets the command exercises
       covers_workspace: boolean
-
-artifact_store:
-  mode: string           # engram | openspec | none
 
 rules:
   proposal:
@@ -50,6 +49,18 @@ rules:
 
 ## Notes
 
+- `artifact_store` is a flat, same-line string: the resolved backend literal
+  (`engram`, `openspec`, or `hybrid`) that `sdd-init` substitutes at
+  initialization — never a nested `mode:` mapping and never a default. The
+  pinned engine resolves the store only from this flat key; a nested mapping is
+  invisible to it and falls back to the documented `openspec` default. `none`
+  is policy-only: initialization writes no declaration for it and stays
+  session-local.
+- A bare `schema: spec-driven` with no declaration resolves to `openspec`.
+- Layouts per backend: `openspec`/`hybrid` may use the full schema above;
+  `engram` keeps only the declaration plus optional `project`/`rules` metadata
+  (no `testing` section — those capabilities persist to Engram); `none` writes
+  nothing on disk.
 - All `rules.*` fields are optional — sub-agents use sensible defaults when not specified
 - The `project.stack` field should be a concise comma-separated summary
 - `testing.effective` is derived from `testing.requested` plus executable
@@ -59,3 +70,17 @@ rules:
   covered targets, so a monorepo never claims one root's runner for another
 - Set `rules.apply.tdd` to `true` to enable the TDD workflow (RED → GREEN → REFACTOR)
 - Set `rules.verify.coverage_threshold` to a percentage (e.g., `80`) to enforce coverage
+
+## Minimal `engram` Example
+
+```yaml
+artifact_store: engram
+
+project:
+  name: my-app
+  stack: "Go, Nix"
+
+rules:
+  apply:
+    match_existing_patterns: true
+```

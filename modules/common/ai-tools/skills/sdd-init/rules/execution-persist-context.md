@@ -27,7 +27,7 @@ mem_save(
     requested: {true | false | unset}
     effective: {enabled | disabled | blocked}
     blocker: {reason or null}
-  artifact_store_mode: {engram | hybrid}
+  artifact_store: {engram | hybrid}
   skill_registry: engram:skill-registry
   initialized: {ISO 8601 date}
 

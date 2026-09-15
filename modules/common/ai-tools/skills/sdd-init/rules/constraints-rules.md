@@ -20,9 +20,13 @@ Constraints that apply during the SDD initialization phase.
 - NEVER create placeholder spec files during initialization
 - NEVER choose `openspec` (or `hybrid`/`none`) automatically — only an explicit
   choice, an existing change's recorded backend, or available selected Engram
-- NEVER write **persistence artifacts** to project files when the backend is
-  `engram` or `none`; authorized implementation code edits are not persistence
-  artifacts and are unaffected
+- NEVER write **persistence artifacts** from one backend into another's surface.
+  Write only the resolved backend's own persistence: `engram` permits only
+  `openspec/config.yaml` (the declaration plus optional `project`/`rules`
+  metadata) and keeps every planning artifact in Engram; `openspec`/`hybrid`
+  write only their documented `openspec/` layout; `none` writes nothing.
+  Authorized implementation code edits are not persistence artifacts and are
+  unaffected
 - NEVER read a different store when the recorded backend is empty or unreadable —
   report the change as blocked instead (no silent cross-store fallback)
 

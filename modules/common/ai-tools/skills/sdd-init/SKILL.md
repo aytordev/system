@@ -35,12 +35,24 @@ Initialize only the **resolved** backend. If the orchestrator did not resolve on
 resolve it per `persistence-contract.md`; if it remains unusable, ask before
 creating anything.
 
-- `engram`: Read `_shared/engram-convention.md`. Artifact type: project context (uses `sdd-init/{project-name}` as topic_key).
+- `engram`: Read `_shared/engram-convention.md` plus the declaration-layout
+  guidance in `_shared/persistence-contract.md`: planning artifacts go to Engram
+  only, and the only permitted filesystem file is `openspec/config.yaml`.
+  Artifact type: project context (uses `sdd-init/{project-name}` as topic_key).
 - `openspec`: Read `_shared/openspec-convention.md`. Create `openspec/` bootstrap (config.yaml, specs/, changes/, changes/archive/).
 - `hybrid`: Read and follow BOTH convention files. Run the full openspec bootstrap AND save project context to Engram. A one-sided write is `partial`, not success; retry per the contract.
 - `none`: Return detected context only; write nothing and promise no recovery.
 
 ## What to Do
+
+### Preflight (before any write)
+
+Before Steps 1–8 perform any persistence (Engram or filesystem), check the
+existing `openspec/` state and any existing change's recorded backend, and stop
+on conflict: retain a declaration that matches the resolved backend; ask before
+updating a different one; preserve nested, conflicting, or ambiguous
+`config.yaml`/`.yml` for a separately authorized migration. This guard must run
+before any write so no persistence precedes it.
 
 ### Step 1: Detect Project Context
 
@@ -61,11 +73,16 @@ missing prerequisites. See `rules/execution-strict-tdd-resolution.md`.
 
 ### Step 4: Initialize Persistence Backend
 
-Bootstrap the directory structure for the selected persistence mode. See `rules/execution-bootstrap.md`.
+The preflight above has already cleared conflicts. Prepare the filesystem for
+the resolved backend only: the full `openspec/` tree for `openspec`/`hybrid`,
+only the `openspec/` parent directory for `engram`, and nothing for `none`. See
+`rules/execution-bootstrap.md`.
 
 ### Step 5: Generate Configuration
 
-Create the config.yaml with detected context and project rules. See `rules/execution-generate-config.md`.
+Write `openspec/config.yaml` declaring the resolved backend as a flat, same-line
+`artifact_store: <backend>` for `engram`, `openspec`, and `hybrid`; `none`
+writes no declaration and no files. See `rules/execution-generate-config.md`.
 
 ### Step 6: Build Skill Registry Index
 

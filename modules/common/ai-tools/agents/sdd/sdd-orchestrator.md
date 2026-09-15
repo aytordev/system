@@ -69,7 +69,8 @@ recorded backend already answers it.
 
 `_shared/persistence-contract.md` is authoritative. Summary:
 
-- Resolved backend (the change's `artifact_store.mode`): `engram | openspec | hybrid | none`.
+- Resolved backend (declared by the workspace's flat `artifact_store:` key in
+  `openspec/config.yaml`): `engram | openspec | hybrid | none`.
 - New change: honor an explicit choice; otherwise prefer available selected
   Engram; if neither applies, ask before choosing another backend or creating
   artifacts.
@@ -85,8 +86,9 @@ On the first `/sdd-new`, `/sdd-ff`, or `/sdd-continue` in a session, resolve and
 cache these **once**:
 
 - **Backend** — ask only when the rules above leave it unresolved. Present
-  `engram` (fast, no files, overwrites), `openspec` (files, shareable, history),
-  `hybrid` (both, higher token cost), and `none` (ephemeral).
+  `engram` (fast, config-only locally, overwrites), `openspec` (files,
+  shareable, history), `hybrid` (both, higher token cost), and `none`
+  (ephemeral).
 - **Execution mode** — `interactive` (default) or `automatic`.
 - **Delivery strategy** — see below.
 

@@ -1,6 +1,16 @@
 # OpenSpec File Convention (shared across all SDD skills)
 
-## Directory Structure
+This convention describes the **filesystem** layout for the `openspec` and
+`hybrid` backends. Per-backend layouts:
+
+- `openspec` / `hybrid`: the full tree below.
+- `engram`: only `openspec/config.yaml` (the `artifact_store` declaration plus
+  optional `project`/`rules` metadata); never `specs/`, `changes/`, or
+  `archive/` — planning artifacts live in Engram
+  (`_shared/persistence-contract.md`).
+- `none`: nothing on disk.
+
+## Directory Structure (openspec / hybrid)
 
 ```
 openspec/
@@ -21,7 +31,7 @@ openspec/
         └── verify-report.md <- from sdd-verify
 ```
 
-## Artifact File Paths
+## Artifact File Paths (openspec / hybrid)
 
 | Skill | Creates / Reads | Path |
 |-------|----------------|------|
@@ -36,7 +46,7 @@ openspec/
 | sdd-archive | Moves | `openspec/changes/{change-name}/` → `openspec/changes/archive/YYYY-MM-DD-{change-name}/` |
 | sdd-archive | Updates | `openspec/specs/{domain}/spec.md` (merges deltas into main specs) |
 
-## Reading Artifacts
+## Reading Artifacts (openspec / hybrid)
 
 Each skill reads its dependencies from the filesystem:
 
@@ -50,18 +60,29 @@ Config:    openspec/config.yaml
 Main specs: openspec/specs/{domain}/spec.md
 ```
 
-## Writing Rules
+For `engram`, the same artifacts are read from Engram by topic key
+(`_shared/engram-convention.md`); `openspec/config.yaml` is the only filesystem
+file read there (the store declaration).
+
+## Writing Rules (openspec / hybrid)
 
 - ALWAYS create the change directory (`openspec/changes/{change-name}/`) before writing artifacts
 - If a file already exists, READ it first and UPDATE it (don't overwrite blindly)
 - If the change directory already exists with artifacts, the change is being CONTINUED
 - Use the `openspec/config.yaml` `rules` section to apply project-specific constraints per phase
 
+For `engram`, the only permitted filesystem write is the `openspec/config.yaml`
+declaration itself (`_shared/persistence-contract.md`); `none` writes nothing.
+
 ## Config File Reference
 
 ```yaml
 # openspec/config.yaml
 schema: spec-driven
+
+# Flat, same-line declaration of the resolved backend. The pinned engine reads
+# this key; a nested mapping is NOT a declaration.
+artifact_store: openspec
 
 context: |
   Tech stack: {detected}
@@ -93,7 +114,11 @@ rules:
     - Warn before merging destructive deltas
 ```
 
-## Archive Structure
+The canonical schema — the `engram | openspec | hybrid | none` enum,
+substitution rules, and a minimal `engram` example — lives in
+`sdd-init/references/config-format.md`.
+
+## Archive Structure (openspec / hybrid)
 
 When archiving, the change folder moves to:
 ```

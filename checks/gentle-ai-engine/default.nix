@@ -7,6 +7,10 @@
 #   - no `~/.engram` fallback: data only in `$HOME/.engram` is ignored while
 #     `ENGRAM_DATA_DIR` points elsewhere;
 #   - the documented `ENGRAM_PROJECT` override aligns a disagreeing writer.
+#   - store declaration: a fresh workspace whose only `openspec/` artifact is
+#     a config.yaml declaring `artifact_store: engram` resolves the declared
+#     store without creating `specs/`/`changes/`; flat `openspec`/`hybrid`
+#     declarations resolve likewise.
 # The observed results are written to $out as a machine-readable fixture.
 {
   lib,
@@ -146,6 +150,46 @@ in
       override="$(cd "$WS" && ENGRAM_PROJECT=ws "$ADAPTER" status dirname --json)"
       echo "$override" | jq --exit-status '.changeRoot == "engram:sdd/dirname"' >/dev/null
 
+      # --- fresh-workspace store declaration -------------------------------
+      # A workspace whose ONLY `openspec/` artifact is config.yaml declaring
+      # `artifact_store: engram` must resolve the declared store without the
+      # engine creating specs/, changes/, or archive/ (selection is not
+      # readiness: a change unknown to Engram stays unresolved). The database
+      # is a separate empty directory so nothing else can satisfy the probe.
+      DECL_WS="$TMPDIR/declaration-ws"
+      mkdir -p "$DECL_WS/openspec"
+      printf 'artifact_store: engram\n' > "$DECL_WS/openspec/config.yaml"
+      DECL_DATA="$TMPDIR/declaration-engram-data"
+      mkdir -p "$DECL_DATA"
+
+      declaration="$(AYTORDEV_SDD_ROOT="$DECL_WS" ENGRAM_DATA_DIR="$DECL_DATA" \
+        "$ADAPTER" status declaration-new --json)"
+      echo "$declaration" | jq --exit-status \
+        '.artifactStore == "engram" and .changeRoot == null' >/dev/null
+
+      # Status must not rewrite the declaration or create change artifacts.
+      [ "$(cat "$DECL_WS/openspec/config.yaml")" = "artifact_store: engram" ]
+      [ ! -e "$DECL_WS/openspec/specs" ]
+      [ ! -e "$DECL_WS/openspec/changes" ]
+      [ ! -e "$DECL_WS/openspec/archive" ]
+      [ "$(ls -A "$DECL_WS")" = "openspec" ]
+      [ "$(ls -A "$DECL_WS/openspec")" = "config.yaml" ]
+
+      # Flat declarations resolve for the other persistent stores too.
+      openspecWs="$TMPDIR/declaration-ws-openspec"
+      mkdir -p "$openspecWs/openspec"
+      printf 'artifact_store: openspec\n' > "$openspecWs/openspec/config.yaml"
+      openspecStore="$(AYTORDEV_SDD_ROOT="$openspecWs" ENGRAM_DATA_DIR="$DECL_DATA" \
+        "$ADAPTER" status declaration-openspec --json)"
+      echo "$openspecStore" | jq --exit-status '.artifactStore == "openspec"' >/dev/null
+
+      hybridWs="$TMPDIR/declaration-ws-hybrid"
+      mkdir -p "$hybridWs/openspec"
+      printf 'artifact_store: hybrid\n' > "$hybridWs/openspec/config.yaml"
+      hybridStore="$(AYTORDEV_SDD_ROOT="$hybridWs" ENGRAM_DATA_DIR="$DECL_DATA" \
+        "$ADAPTER" status declaration-hybrid --json)"
+      echo "$hybridStore" | jq --exit-status '.artifactStore == "hybrid"' >/dev/null
+
       # The adapter rejects a command outside the consumed surface.
       set +e
       "$ADAPTER" review >/dev/null 2>&1
@@ -187,6 +231,9 @@ in
         --argjson noFallback "$noFallback" \
         --argjson disagree "$disagree" \
         --argjson override "$override" \
+        --argjson declaration "$declaration" \
+        --argjson openspecStore "$openspecStore" \
+        --argjson hybridStore "$hybridStore" \
         '{
           engineVersion: $engineVersion,
           projectNameAgreement: {
@@ -199,6 +246,14 @@ in
             writer: "ws",
             unresolved: $disagree.changeRoot,
             overrideResolved: $override.changeRoot
+          },
+          storeDeclaration: {
+            engram: {
+              artifactStore: $declaration.artifactStore,
+              changeRoot: $declaration.changeRoot
+            },
+            openspec: {artifactStore: $openspecStore.artifactStore},
+            hybrid: {artifactStore: $hybridStore.artifactStore}
           }
         }' > "$out/engram-integration-fixture.json"
 

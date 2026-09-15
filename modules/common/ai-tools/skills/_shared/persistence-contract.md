@@ -12,7 +12,7 @@ never guess artifact paths.
 
 | Backend | Role | Persistence writes | Cross-session recovery |
 |---------|------|--------------------|------------------------|
-| `engram` | Working memory between sessions (Engram observations) | Engram only | Yes |
+| `engram` | Working memory between sessions (Engram observations) | Engram artifacts; configuration exception only | Yes |
 | `openspec` | Source of truth (files in the repo) | Filesystem only | Yes (files persist) |
 | `hybrid` | Files for the team + Engram for recovery | Both | Yes (both) |
 | `none` | Ephemeral, session-local | None | No |
@@ -66,7 +66,7 @@ reinitialize. Changing an existing change's backend is a deliberate migration
 
 | Backend | Read from | Write artifacts to | Project files |
 |---------|-----------|--------------------|---------------|
-| `engram` | Engram (`engram-convention.md`) | Engram | No persistence artifacts |
+| `engram` | Engram (`engram-convention.md`) | Engram artifacts; configuration exception only | Config-only (`openspec/config.yaml`) |
 | `openspec` | Filesystem (`openspec-convention.md`) | Filesystem | Yes |
 | `hybrid` | Engram (primary), filesystem (fallback) | Both | Yes |
 | `none` | Orchestrator prompt context | Nowhere | No persistence artifacts |
@@ -77,17 +77,21 @@ reinitialize. Changing an existing change's backend is a deliberate migration
   files that the apply phase is explicitly asked to change are **authorized
   implementation edits**, are not persistence writes, and are allowed in every
   backend — including `engram` and `none`.
-- `engram`: write SDD artifacts to Engram only. Do NOT create or update
-  `openspec/` or other persistence files. Reading a missing artifact from the
-  filesystem is a cross-store fallback and is forbidden.
+- `engram`: write all SDD planning artifacts to Engram only. The ONLY permitted
+  filesystem persistence file is `openspec/config.yaml`, containing
+  `artifact_store: engram` and optional `project`/`rules` metadata.
+  Initialization may create its parent directory. Do NOT create or update
+  `specs/`, `changes/`, `archive/`, planning files, or any other filesystem
+  persistence artifact. Reading this declaration/configuration is permitted;
+  filesystem artifact fallback remains forbidden.
 - `openspec`: write artifacts ONLY to the paths in `openspec-convention.md`.
 - `hybrid`: write the artifact to BOTH stores (see below). Do not treat a
   one-sided write as complete.
 - `none`: remain session-local. Write nothing to Engram or the filesystem; return
   results inline and promise no cross-session recovery. Authorized code edits are
   still allowed.
-- Never force `openspec/` creation unless the resolved backend is `openspec` or
-  `hybrid`.
+- Create the full `openspec/` layout only for `openspec` or `hybrid`; `engram`
+  permits only the configuration exception above. `none` creates nothing.
 - If the backend is genuinely unresolved, ask — do not default to `none`.
 - **Token cost warning**: `hybrid` consumes more tokens per operation (two
   persistence calls). Use it only when cross-session recovery and a file audit

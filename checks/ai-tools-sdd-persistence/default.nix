@@ -14,6 +14,10 @@
   orchestrator = aiTools + "/agents/sdd/sdd-orchestrator.md";
   initSkill = skillsDir + "/sdd-init/SKILL.md";
   initConstraints = skillsDir + "/sdd-init/rules/constraints-rules.md";
+  initBootstrap = skillsDir + "/sdd-init/rules/execution-bootstrap.md";
+  initGenerateConfig = skillsDir + "/sdd-init/rules/execution-generate-config.md";
+  initConfigFormat = skillsDir + "/sdd-init/references/config-format.md";
+  openspecConvention = skillsDir + "/_shared/openspec-convention.md";
 
   # The contract surface that must agree. `required` markers must be present
   # (the canonical rule exists); `forbidden` markers must be absent (the old
@@ -31,6 +35,8 @@
         "No silent cross-store fallback"
         "Hybrid Partial Writes and Retry"
         "persistence artifacts"
+        "write all SDD planning artifacts to Engram only"
+        "filesystem persistence file is `openspec/config.yaml`"
       ];
       forbidden = [
         "do NOT write any project files"
@@ -97,10 +103,52 @@
       required = [
         "persistence artifacts"
         "recorded backend"
+        "openspec/config.yaml"
+        "`none` writes nothing"
+        "keeps every planning artifact in Engram"
       ];
       forbidden = [
         "NEVER write project files when mode is `engram` or `none`"
+        "artifact_store_mode"
       ];
+    };
+    # The store declaration is a flat, same-line key. Nested `mode:` mappings
+    # were invisible to the pinned engine and must not return.
+    initGenerateConfig = {
+      file = initGenerateConfig;
+      required = [
+        "artifact_store: {resolved-backend}"
+        "### Minimal Template (`engram` only)"
+      ];
+      forbidden = [
+        "artifact_store:\n  mode:"
+      ];
+    };
+    initConfigFormat = {
+      file = initConfigFormat;
+      required = [
+        "artifact_store: string"
+        "## Minimal `engram` Example"
+      ];
+      forbidden = [
+        "artifact_store:\n  mode:"
+      ];
+    };
+    initBootstrap = {
+      file = initBootstrap;
+      required = [
+        "openspec/config.yaml"
+        "openspec/specs/"
+        "openspec/changes/"
+      ];
+      forbidden = [];
+    };
+    openspecConvention = {
+      file = openspecConvention;
+      required = [
+        "artifact_store: openspec"
+      ];
+      forbidden = [];
     };
   };
 

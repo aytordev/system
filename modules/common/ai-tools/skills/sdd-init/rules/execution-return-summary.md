@@ -29,7 +29,7 @@ Return a summary appropriate for the resolved persistence mode.
 - **Testing capabilities key**: sdd/{project-name}/testing-capabilities
 - **Skill registry**: Engram `skill-registry`
 
-No project files created.
+Only `openspec/config.yaml` created or retained; planning artifacts remain in Engram.
 
 ### Next Steps
 - Use `/sdd-new <change-name>` to start a new change
