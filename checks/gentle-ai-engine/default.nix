@@ -153,6 +153,33 @@ in
       set -e
       [ "$reviewExit" -eq 64 ]
 
+      # `--help`/`-h` print the advertised surface and succeed; they are not
+      # mistaken for an unknown command.
+      help="$("$ADAPTER" --help)"
+      echo "$help" | grep --quiet '^usage: aytordev-sdd ' || {
+        echo "adapter --help did not print usage" >&2
+        exit 1
+      }
+      "$ADAPTER" -h >/dev/null
+
+      # Every command the help surface advertises must reach the dispatcher;
+      # none may fall through to the unknown-command path. This keeps the
+      # advertised list and the dispatch table from drifting apart.
+      advertised="$(printf '%s\n' "$help" | sed -n 's/^usage: aytordev-sdd <\([^>]*\)>.*/\1/p' | tr '|' ' ')"
+      [ -n "$advertised" ] || {
+        echo "could not parse the advertised command list from help" >&2
+        exit 1
+      }
+      for cmd in $advertised; do
+        cmdOut="$("$ADAPTER" "$cmd" 2>&1 || true)"
+        case "$cmdOut" in
+          *"unknown command"*)
+            echo "advertised command '$cmd' was rejected as unknown" >&2
+            exit 1
+            ;;
+        esac
+      done
+
       mkdir -p "$out"
       jq --null-input \
         --arg engineVersion "$version" \

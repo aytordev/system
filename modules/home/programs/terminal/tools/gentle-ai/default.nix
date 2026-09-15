@@ -72,6 +72,10 @@
       pkgs.gnused
     ];
     text = ''
+      usage() {
+        echo "usage: aytordev-sdd <status|continue|attempt|verify|compose|closure|archive|migrate> [args...]"
+      }
+
       # The engine reads its workspace from the process cwd.
       : "''${AYTORDEV_SDD_ROOT:=$PWD}"
       export AYTORDEV_SDD_ROOT
@@ -240,13 +244,17 @@
       ${builtins.readFile ./migrate.sh}
 
       if [ "$#" -eq 0 ]; then
-        echo "usage: aytordev-sdd <status|continue|attempt|verify|compose|closure|archive|migrate> [args...]" >&2
+        usage >&2
         exit 64
       fi
 
       command="$1"
       shift
       case "$command" in
+        -h | --help)
+          usage
+          exit 0
+          ;;
         status) set -- sdd-status "$@" ;;
         continue) set -- sdd-continue "$@" ;;
         attempt) set -- sdd-attempt "$@" ;;
@@ -256,7 +264,8 @@
         archive) archive_change "$@" ;;
         migrate) migrate "$@" ;;
         *)
-          echo "aytordev-sdd: unknown command '$command' (want status|continue|attempt|verify|compose|closure|archive|migrate)" >&2
+          echo "aytordev-sdd: unknown command '$command'" >&2
+          usage >&2
           exit 64
           ;;
       esac
