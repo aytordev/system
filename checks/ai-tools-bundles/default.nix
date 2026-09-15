@@ -7,7 +7,8 @@
 #   - archive is gated by the C11 closure contract and calls the adapter's
 #     `closure` subcommand;
 #   - research is optional (shared handoff plus the three material phases) and
-#     the deferred upstream `sdd-research` skill is not deployed;
+#     the `sdd-research` collector is deployed as a skill plus an authored
+#     output-only agent;
 #   - the registry is index-first and no skill/agent presents compact-rule
 #     authority or hardcodes the OpenCode global path;
 #   - every bundle's concrete files exist, and the upstream-only methods that
@@ -75,7 +76,10 @@
       (skillsDir + "/_shared/persistence-contract.md")
       (skillsDir + "/_shared/engram-convention.md")
       (skillsDir + "/_shared/openspec-convention.md")
+      (skillsDir + "/sdd-research/SKILL.md")
+      (skillsDir + "/sdd-research/metadata.json")
       (agentsDir + "/sdd/sdd-orchestrator.md")
+      (agentsDir + "/sdd/sdd-research.nix")
     ];
     "Auxiliary workflows" = [
       (skillsDir + "/judgment-day/SKILL.md")
@@ -104,8 +108,9 @@
     (builtins.attrNames bundleFiles);
 
   # Upstream-only methods ADR 0017 defers must not be deployed as skills.
+  # `sdd-research` left this list when it was adopted as a collector skill
+  # plus an authored agent.
   deferredSkills = [
-    "sdd-research"
     "skill-improver"
     "go-testing"
     "rdd-defect-workflow"
@@ -193,6 +198,23 @@
       "  - ${phase}/SKILL.md does not present research as optional")
     materialPhases;
 
+  # --- Research collector is deployed as skill + authored agent -----------
+  collectorSkill = skillsDir + "/sdd-research/SKILL.md";
+  collectorAgent = agentsDir + "/sdd/sdd-research.nix";
+  collectorProblems =
+    lib.optional (!(builtins.pathExists collectorSkill))
+    "  - sdd-research collector skill is missing"
+    ++ lib.optional
+    ((builtins.pathExists collectorSkill)
+      && !(lib.hasInfix "research-evidence" (text collectorSkill)))
+    "  - sdd-research/SKILL.md does not return the research-evidence envelope"
+    ++ lib.optional
+    ((builtins.pathExists collectorSkill)
+      && !(lib.hasInfix "Output-only" (text collectorSkill)))
+    "  - sdd-research/SKILL.md does not state the output-only boundary"
+    ++ lib.optional (!(builtins.pathExists collectorAgent))
+    "  - authored sdd-research agent is missing";
+
   # --- Registry is index-first --------------------------------------------
   registryDir = skillsDir + "/skill-registry";
   registryText =
@@ -262,6 +284,7 @@
     ++ legacyProblems
     ++ archiveProblems
     ++ researchProblems
+    ++ collectorProblems
     ++ registryProblems
     ++ authorityProblems
     ++ hardcodedProblems

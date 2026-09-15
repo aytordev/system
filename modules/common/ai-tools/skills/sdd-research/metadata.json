@@ -1,0 +1,11 @@
+{
+    "name": "sdd-research",
+    "description": "Collect source-backed external evidence for material unknowns (API contracts, library behavior, upstream docs, version facts) into the shared research-evidence envelope. Output-only: reads no local artifacts, persists nothing, makes no product choices.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "September 2026",
+    "abstract": "Output-only external evidence collector for SDD: verifies the received question set, collects the smallest sufficient set of external primary sources, and returns the shared research-evidence envelope with claims mapped to sources, contradictions, unresolved gaps, and freshness. Reads no local artifacts, persists nothing in any backend, and makes no product choices.",
+    "dependencies": [
+        "_shared"
+    ]
+}

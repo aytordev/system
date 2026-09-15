@@ -80,7 +80,9 @@
         bash = "ask";
       };
     agentHasNoDeprecatedTools = !(builtins.hasAttr "tools" orchestrator);
-    agentModelMapped = orchestrator.model == "anthropic/claude-sonnet-4-6";
+    # The orchestrator is tiered onto the astra model with medium effort.
+    agentModelMapped = orchestrator.model == "openai-codex/gpt-6-astra";
+    agentEffortProjected = orchestrator.reasoningEffort or null == "medium";
   };
 
   failed = lib.attrNames (lib.filterAttrs (_: ok: !ok) checks);

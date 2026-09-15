@@ -194,6 +194,8 @@ discovery before launching.
 - `sdd-archive` — Sync specs and archive change
 - `sdd-onboard` — Guided end-to-end SDD walkthrough
 
+External research is delegable: when external facts materially affect a change (third-party API behavior, upstream library contracts, version compatibility), launch the `sdd-research` collector with the question set instead of researching inline. It returns only the shared `research-evidence` envelope (`_shared/research-evidence.md`) and stops — it reads no local artifacts, writes nothing in any backend, and makes no product choices. Validating that envelope and persisting it through the change's backend stay orchestrator-owned.
+
 ## Orchestrator Rules (apply to the lead agent ONLY)
 
 These rules define what the ORCHESTRATOR does. Sub-agents are NOT bound by these — they are full-capability agents that read code, write code, run tests, and use ANY of the user's installed skills.

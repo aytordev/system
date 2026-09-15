@@ -48,6 +48,15 @@ in {
               output = ["text"];
             };
           };
+          # TODO(confirm): context window per nan.builders docs.
+          "glm-5.3-flash" = {
+            name = "GLM 5.3 Flash";
+            contextWindow = 200000;
+            modalities = {
+              input = ["text"];
+              output = ["text"];
+            };
+          };
           "mimo-v2.5" = {
             name = "Xiaomi MiMo V2.5";
             contextWindow = 500000;

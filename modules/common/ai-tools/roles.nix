@@ -22,12 +22,18 @@ _: let
     mapAttrs
     ;
 
-  # Native OpenCode model ids. Add a model here to make it selectable; a bare
-  # provider/model string keeps the policy client-Nix-agnostic.
+  # Model catalogue — the single source of truth a home override may name.
+  # Anthropic keeps the neutral defaults; the owner's providers (OpenAI Codex
+  # subscription + nan.builders) are registered so the role policy can select
+  # them under the catalogue contract.
   models = {
     haiku = "anthropic/claude-haiku-4-5-20251001";
     sonnet = "anthropic/claude-sonnet-4-6";
     opus = "anthropic/claude-opus-4-7";
+    astra = "openai-codex/gpt-6-astra";
+    sol = "openai-codex/gpt-5.6-sol";
+    nan-glm = "nan/glm-5.3-flash";
+    nan-deepseek = "nan/deepseek-v4-flash";
   };
 
   modelIds = attrValues models;
@@ -37,11 +43,14 @@ _: let
     model = "sonnet";
   };
 
-  # The smallest role set justified by differing models, permissions, or
-  # execution responsibilities. `model = null` inherits `defaults.model`.
+  # Role set sized by Alan's tiered assignment: one role per (model × effort ×
+  # permission) combination the workflow needs. `model` names a catalogue key;
+  # `effort` is projected as OpenCode's reasoningEffort (OpenAI models only —
+  # the nan flash models take no effort knob, so it stays null there).
   roles = {
     sdd-orchestrator = {
-      model = null;
+      model = "astra";
+      effort = "medium";
       mode = "primary";
       permission = {
         edit = "ask";
@@ -49,23 +58,47 @@ _: let
       };
       description = "SDD Orchestrator - delegates spec-driven development to role subagents via the Task tool";
     };
-    sdd-standard = {
-      model = null;
+    sdd-init = {
+      model = "sol";
+      effort = "medium";
       mode = "subagent";
       permission = {};
-      description = "SDD phase executor for init, explore, propose, spec, tasks, apply, and verify.";
+      description = "Procedural init executor: stack detection, testing capabilities, and registry bootstrap.";
+    };
+    sdd-onboard = {
+      model = "sol";
+      effort = "medium";
+      mode = "subagent";
+      permission = {};
+      description = "Guided end-to-end SDD walkthrough executor (teaching flow, user-paced).";
+    };
+    sdd-standard = {
+      model = "nan-glm";
+      effort = null;
+      mode = "subagent";
+      permission = {};
+      description = "SDD workhorse executor for explore, spec, tasks, and apply.";
+    };
+    sdd-propose = {
+      model = "astra";
+      effort = "high";
+      mode = "subagent";
+      permission = {};
+      description = "SDD proposal executor; proposal quality gates everything downstream.";
     };
     sdd-design = {
-      model = "opus";
+      model = "astra";
+      effort = "high";
       mode = "subagent";
       permission = {};
       description = "SDD design-phase executor for architecture and technical design.";
     };
-    sdd-archive = {
-      model = "haiku";
+    sdd-verify = {
+      model = "astra";
+      effort = "high";
       mode = "subagent";
       permission = {};
-      description = "SDD archive-phase executor for spec sync and change closure.";
+      description = "SDD verify executor; the C11 quality gate before archive.";
     };
     # Read-only adversarial reviewer (T10). `edit: deny` alone does not
     # constrain shell writes (ADR 0015), so `bash` is denied too; the reviewer
@@ -73,7 +106,8 @@ _: let
     # is a separate delegation (orchestrator/executor), so judges and fixers
     # never share a context.
     sdd-review = {
-      model = null;
+      model = "astra";
+      effort = "high";
       mode = "subagent";
       permission = {
         edit = "deny";
@@ -81,14 +115,40 @@ _: let
       };
       description = "Read-only adversarial reviewer for judgment-day; file edits and shell are denied.";
     };
+    # Output-only external evidence collector (T22 contract): web access only —
+    # no local artifact reads, no persistence calls, no repository mutation.
+    sdd-research = {
+      model = "astra";
+      effort = "high";
+      mode = "subagent";
+      permission = {
+        edit = "deny";
+        bash = "deny";
+        webfetch = "allow";
+        websearch = "allow";
+      };
+      description = "Output-only external evidence collector; returns the research-evidence envelope for the orchestrator to validate and persist.";
+    };
+    sdd-archive = {
+      model = "nan-deepseek";
+      effort = null;
+      mode = "subagent";
+      permission = {};
+      description = "SDD archive executor for spec sync, closure, and change archiving.";
+    };
   };
 
   # Ordered phase → role mapping (order is the workflow order, used for the
-  # orchestrator prompt table).
+  # orchestrator prompt table). Research is a delegable collector, not a
+  # lifecycle phase, so it is not routed here.
   phases = [
     {
       phase = "sdd-init";
-      role = "sdd-standard";
+      role = "sdd-init";
+    }
+    {
+      phase = "sdd-onboard";
+      role = "sdd-onboard";
     }
     {
       phase = "sdd-explore";
@@ -96,7 +156,7 @@ _: let
     }
     {
       phase = "sdd-propose";
-      role = "sdd-standard";
+      role = "sdd-propose";
     }
     {
       phase = "sdd-spec";
@@ -116,7 +176,7 @@ _: let
     }
     {
       phase = "sdd-verify";
-      role = "sdd-standard";
+      role = "sdd-verify";
     }
     {
       phase = "sdd-archive";
@@ -162,17 +222,34 @@ _: let
       valid.${role} or models.${inherited};
 
   resolveAll = overrides: mapAttrs (role: _: resolveRoleModel overrides role) roles;
-in {
-  inherit
-    models
-    modelIds
-    defaults
-    roles
-    phases
-    phaseRoles
-    roleRows
-    validate
-    resolveRoleModel
-    resolveAll
-    ;
-}
+
+  # Effort is projected as OpenCode's reasoningEffort (an OpenAI-model option);
+  # a typo would surface at runtime as a provider error, so fail at evaluation.
+  effortValues = ["low" "medium" "high"];
+  effortProblems = let
+    invalid =
+      filter
+      (name: let
+        e = roles.${name}.effort;
+      in
+        e != null && !(elem e effortValues))
+      (attrNames roles);
+  in
+    if invalid == []
+    then null
+    else throw ("ai-tools role policy: invalid effort for: " + concatStringsSep ", " invalid);
+in
+  assert effortProblems == null; {
+    inherit
+      models
+      modelIds
+      defaults
+      roles
+      phases
+      phaseRoles
+      roleRows
+      validate
+      resolveRoleModel
+      resolveAll
+      ;
+  }

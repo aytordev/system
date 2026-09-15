@@ -45,11 +45,15 @@
   # and `description` come from the role policy (roles.nix); the authored agent
   # owns its prompt. OpenCode's Task tool has no `model` parameter, so per-phase
   # routing is expressed by registering each role as an agent.
-  toOpenCodeAgent = name: agent: {
-    inherit (roles.roles.${name}) mode permission description;
-    model = roles.resolveRoleModel roleOverrides name;
-    prompt = lib.trim agent.content;
-  };
+  toOpenCodeAgent = name: agent:
+    {
+      inherit (roles.roles.${name}) mode permission description;
+      model = roles.resolveRoleModel roleOverrides name;
+      prompt = lib.trim agent.content;
+    }
+    // lib.optionalAttrs ((roles.roles.${name}.effort or null) != null) {
+      reasoningEffort = roles.roles.${name}.effort;
+    };
 
   # Delegatable roles are projected from the same policy rather than authored
   # per skill. The orchestrator passes the concrete phase task through the Task
@@ -62,13 +66,22 @@
     structured envelope requested by the orchestrator.
   '';
 
-  generatedRoles = builtins.filter (name: name != "sdd-orchestrator") (builtins.attrNames roles.roles);
+  # sdd-orchestrator is authored (agents/sdd/) and sdd-research is an
+  # output-only collector with its own authored prompt — the rest are
+  # generated phase executors.
+  generatedRoles =
+    builtins.filter (name: name != "sdd-orchestrator" && name != "sdd-research")
+    (builtins.attrNames roles.roles);
 
-  toOpenCodeRoleAgent = name: {
-    inherit (roles.roles.${name}) mode permission description;
-    model = roles.resolveRoleModel roleOverrides name;
-    prompt = lib.trim executorPrompt;
-  };
+  toOpenCodeRoleAgent = name:
+    {
+      inherit (roles.roles.${name}) mode permission description;
+      model = roles.resolveRoleModel roleOverrides name;
+      prompt = lib.trim executorPrompt;
+    }
+    // lib.optionalAttrs ((roles.roles.${name}.effort or null) != null) {
+      reasoningEffort = roles.roles.${name}.effort;
+    };
 
   toOpenCodeAgents =
     lib.mapAttrs toOpenCodeAgent resolvedAgents

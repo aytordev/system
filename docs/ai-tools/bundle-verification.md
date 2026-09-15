@@ -60,9 +60,9 @@ always move together.
 
 | Field | Value |
 | --- | --- |
-| Concrete files | the ten `skills/sdd-*/` phases (with `rules/`, `modules/strict-tdd*.md`, `references/`); `skills/_shared/{persistence-contract,sdd-phase-common,engram-convention,openspec-convention,closure-policy,research-evidence,execution-modes}.md`; `agents/sdd/sdd-orchestrator.{md,nix}`; `commands/sdd/*.nix`; `pkgs.aytordev.gentle-ai` behind `aytordev-sdd` |
+| Concrete files | the ten `skills/sdd-*/` phases plus the `sdd-research` collector skill (each with `rules/` where applicable, `modules/strict-tdd*.md`, `references/`); `skills/_shared/{persistence-contract,sdd-phase-common,engram-convention,openspec-convention,closure-policy,research-evidence,execution-modes}.md`; `agents/sdd/{sdd-orchestrator,sdd-research}.{md,nix}`; `commands/sdd/*.nix`; `pkgs.aytordev.gentle-ai` behind `aytordev-sdd` |
 | Source revision | gentle-ai `be4955…` (ten phases + `_shared`; `adapted`); engine `be4955…` `v2.9.0` reused via the adapter |
-| OpenCode output | `programs.opencode.agents` (`sdd-orchestrator` authored + generated `sdd-standard`, `sdd-design`, `sdd-archive`, `sdd-review`); `programs.opencode.commands` (`sdd-init`, `sdd-explore`, `sdd-new`, `sdd-continue`, `sdd-ff`, `sdd-apply`, `sdd-verify`, `sdd-archive`, `sdd-onboard`) |
+| OpenCode output | `programs.opencode.agents` — ten agents (`sdd-orchestrator` and `sdd-research` authored; generated `sdd-init`, `sdd-onboard`, `sdd-standard`, `sdd-propose`, `sdd-design`, `sdd-verify`, `sdd-review`, `sdd-archive`) routed by the tiered role policy (`openai-codex/gpt-6-astra`: orchestrator/propose/design/verify/review/research; `openai-codex/gpt-5.6-sol`: init/onboard; `nan/glm-5.3-flash`: standard; `nan/deepseek-v4-flash`: archive); `programs.opencode.commands` (`sdd-init`, `sdd-explore`, `sdd-new`, `sdd-continue`, `sdd-ff`, `sdd-apply`, `sdd-verify`, `sdd-archive`, `sdd-onboard`) |
 | Pi output | generated `sdd-*` phase commands + bounded child workers; same skills tree; adapter-owned environment |
 | Dependency closure | `_shared` (declared in each phase's `metadata.json`); `sdd-phase-common.md` locator model; `return-envelope.md` `sdd-result/v1`; adapter subcommands `status|continue|attempt|verify|compose|closure|archive|migrate` |
 | Rollback boundary | code: previous generation restores the prior engine/adapter/skills; data: migrations preserve originals (see `legacy-compatibility.md`). Closure/promotion is never fabricated on rollback. |
@@ -99,7 +99,7 @@ directories do **not** exist:
 
 | Upstream method | Status |
 | --- | --- |
-| `sdd-research` | deferred as a skill; the optional handoff is `_shared/research-evidence.md` (local adaptation) |
+| `sdd-research` | deployed (formerly deferred): collector skill `skills/sdd-research/` plus the authored `sdd-research` agent; the optional handoff contract remains `_shared/research-evidence.md` |
 | `skill-improver` | deferred; authoring stays in `skill-creator` |
 | `go-testing` | deferred; testing scope is T23 |
 | `rdd-defect-workflow` | deferred |

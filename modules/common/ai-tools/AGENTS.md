@@ -41,6 +41,7 @@ ai-tools/
 | Name | Category | Description |
 |------|----------|-------------|
 | sdd-orchestrator | sdd | SDD delegate-only orchestrator — coordinates spec-driven development via sub-agents |
+| sdd-research | sdd | Output-only external evidence collector — returns the research-evidence envelope for the orchestrator to validate and persist |
 
 ### Commands
 
@@ -75,6 +76,7 @@ ai-tools/
 | sdd-verify | sdd | Quality gate — validate implementation matches specs |
 | sdd-archive | sdd | Sync delta specs to main specs, archive change |
 | sdd-onboard | sdd | Guided walkthrough of the full SDD cycle on the real codebase |
+| sdd-research | sdd | Collect source-backed external evidence for material unknowns — output-only collector returning the research-evidence envelope |
 | branch-pr | workflow | Create PRs with issue-first checks and conventional commits |
 | chained-pr | workflow | Split oversized PRs (>400 lines) into chained review slices |
 | cognitive-doc-design | workflow | Design docs that reduce cognitive load |

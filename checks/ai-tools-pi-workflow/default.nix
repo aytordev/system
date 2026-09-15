@@ -105,13 +105,22 @@ in
 
       # --- extension materializes with the policy-derived commands ----------
       enabled="${workflowSource enabledHome}"
-      for phase in sdd-init sdd-explore sdd-propose sdd-spec sdd-design sdd-tasks sdd-apply sdd-verify sdd-archive; do
+      for phase in sdd-init sdd-onboard sdd-explore sdd-propose sdd-spec sdd-design sdd-tasks sdd-apply sdd-verify sdd-archive; do
         grep --quiet "\"$phase\"" "$enabled/config.ts"
       done
-      # Role -> native model mapping comes from aiTools.roles.
-      grep --quiet 'anthropic/claude-opus-4-7' "$enabled/config.ts"
-      grep --quiet 'anthropic/claude-haiku-4-5-20251001' "$enabled/config.ts"
-      grep --quiet 'anthropic/claude-sonnet-4-6' "$enabled/config.ts"
+      # All ten phases are exposed as commands by default.
+      test "$(grep -o '"phase":"sdd-' "$enabled/config.ts" | wc -l | tr -d ' ')" -eq 10
+      # Phase -> role routing comes from aiTools.roles.phaseRoles.
+      grep --quiet '"sdd-onboard":"sdd-onboard"' "$enabled/config.ts"
+      grep --quiet '"sdd-explore":"sdd-standard"' "$enabled/config.ts"
+      grep --quiet '"sdd-archive":"sdd-archive"' "$enabled/config.ts"
+      # Role -> native model mapping comes from aiTools.roles (tiered policy).
+      grep --quiet 'openai-codex/gpt-6-astra' "$enabled/config.ts"
+      grep --quiet 'openai-codex/gpt-5.6-sol' "$enabled/config.ts"
+      grep --quiet 'nan/glm-5.3-flash' "$enabled/config.ts"
+      grep --quiet 'nan/deepseek-v4-flash' "$enabled/config.ts"
+      # No role routes to the neutral Anthropic defaults anymore.
+      ! grep --quiet 'anthropic/claude-' "$enabled/config.ts"
       # No engine configured -> the status command is not exposed and the marker
       # stays null.
       ! grep --quiet 'aytordev-sdd' "$enabled/config.ts"
@@ -119,13 +128,17 @@ in
       # --- override changes exactly the overridden role ---------------------
       overridden="${workflowSource overriddenHome}"
       grep --quiet '"sdd-design":"anthropic/claude-sonnet-4-6"' "$overridden/config.ts"
-      grep --quiet 'anthropic/claude-haiku-4-5-20251001' "$overridden/config.ts"
+      grep --quiet '"sdd-orchestrator":"openai-codex/gpt-6-astra"' "$overridden/config.ts"
+      grep --quiet '"sdd-standard":"nan/glm-5.3-flash"' "$overridden/config.ts"
+      grep --quiet '"sdd-archive":"nan/deepseek-v4-flash"' "$overridden/config.ts"
 
       # --- selection subset only exposes the selected phases ----------------
       subset="${workflowSource subsetHome}"
       grep --quiet '"sdd-design"' "$subset/config.ts"
       grep --quiet '"sdd-apply"' "$subset/config.ts"
-      ! grep --quiet '"sdd-archive"' "$subset/config.ts"
+      # Only the selected phases become commands; phaseRoles keeps every phase.
+      test "$(grep -o '"phase":"sdd-' "$subset/config.ts" | wc -l | tr -d ' ')" -eq 2
+      ! grep --quiet '"phase":"sdd-archive"' "$subset/config.ts"
 
       # --- engine adapter wired only when gentle-ai is enabled --------------
       engine="${workflowSource engineHome}"
