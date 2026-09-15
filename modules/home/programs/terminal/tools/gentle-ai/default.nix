@@ -88,6 +88,10 @@
         export ENGRAM_PROJECT="''${ENGRAM_PROJECT:-${cfg.engramProject}}"
       ''}
 
+      # Engram v2.0.0-rc phones GitHub for release update checks on non-help
+      # commands; the adapter's spawned `engram export` must stay offline.
+      export ENGRAM_NO_UPDATE_CHECK="1"
+
       # C11 closure gate. The engine keeps the readiness decision; this only
       # names the disposition and refuses anything but a verified closure.
       closure() {

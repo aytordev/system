@@ -69,6 +69,9 @@
       args = ["mcp"];
       env = {
         ENGRAM_DATA_DIR = "${config.xdg.dataHome}/engram";
+        # Engram v2.0.0-rc checks GitHub for releases on save/export; keep the
+        # server offline and deterministic.
+        ENGRAM_NO_UPDATE_CHECK = "1";
       };
     };
   };
