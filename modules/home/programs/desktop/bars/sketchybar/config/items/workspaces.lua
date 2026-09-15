@@ -29,53 +29,6 @@ local root = sbar.add("item", { drawing = false, background = { drawing = false 
 local workspaces = {}
 local initialized = false
 
--- Build NSScreen ID to SketchyBar display position mapping
-local nsscreen_to_display = {}
-local log_file = "/tmp/sketchybar_workspaces.log"
-
-local function log(msg)
-	local f = io.open(log_file, "a")
-	if f then
-		f:write(os.date("%H:%M:%S") .. " " .. msg .. "\n")
-		f:close()
-	end
-end
-
--- Build the mapping synchronously
-local function build_monitor_mapping()
-	local monitors_output = aerospace:list_monitors()
-	local monitor_names_by_position = {}
-	for line in monitors_output:gmatch("[^\r\n]+") do
-		local position, name = line:match("(%d+)%s*|%s*(.+)")
-		if position and name then
-			monitor_names_by_position[name:match("^%s*(.-)%s*$")] = tonumber(position)
-		end
-	end
-
-	local workspace_info = aerospace:query_workspaces()
-	local processed = {}
-	nsscreen_to_display = {}
-	for _, ws in ipairs(workspace_info) do
-		local nsscreen_id = math.floor(ws["monitor-appkit-nsscreen-screens-id"])
-		local monitor_name = ws["monitor-name"] or ""
-		monitor_name = monitor_name:match("^%s*(.-)%s*$")
-
-		if not processed[nsscreen_id] and monitor_names_by_position[monitor_name] then
-			nsscreen_to_display[nsscreen_id] = monitor_names_by_position[monitor_name]
-			processed[nsscreen_id] = true
-			log(
-				string.format(
-					"[MAPPING] NSScreen %d (%s) -> display %d",
-					nsscreen_id,
-					monitor_name,
-					nsscreen_to_display[nsscreen_id]
-				)
-			)
-		end
-	end
-	log("[MAPPING] Complete")
-end
-
 -- AeroSpace mode indicator
 local mode_indicator = sbar.add("item", "aerospace.mode", {
 	position = "left",
@@ -146,12 +99,12 @@ local function withWindows(f)
 					if ws["workspace-is-visible"] then
 						table.insert(visible_workspaces, ws)
 					end
-					local nsscreen_id = math.floor(ws["monitor-appkit-nsscreen-screens-id"])
-					local display_id = nsscreen_to_display[nsscreen_id]
-					if not display_id then
-						log(string.format("[WARNING] No mapping for NSScreen %d (ws %s)", nsscreen_id, ws.workspace))
-						display_id = nsscreen_id
-					end
+					-- SketchyBar numbers displays in `NSScreen.screens` order, which is
+					-- exactly what AeroSpace's `monitor-appkit-nsscreen-screens-id`
+					-- exposes (1-based). Use it directly; do NOT translate through
+					-- `aerospace list-monitors` positions (left-to-right order), which
+					-- is a different numbering and maps each bar to the wrong screen.
+					local display_id = math.floor(ws["monitor-appkit-nsscreen-screens-id"])
 					workspace_monitors[ws.workspace] = display_id
 				end
 
@@ -239,8 +192,7 @@ local function updateWorkspaceMonitor()
 	aerospace:query_workspaces(function(workspace_info)
 		for _, ws in ipairs(workspace_info) do
 			local space_index = ws.workspace
-			local nsscreen_id = math.floor(ws["monitor-appkit-nsscreen-screens-id"])
-			local display_id = nsscreen_to_display[nsscreen_id] or nsscreen_id
+			local display_id = math.floor(ws["monitor-appkit-nsscreen-screens-id"])
 			if workspaces[space_index] then
 				workspaces[space_index]:set({ display = display_id })
 			end
@@ -307,7 +259,6 @@ local function initialize_workspaces()
 	end
 	initialized = true
 
-	build_monitor_mapping()
 	update_mode_indicator()
 
 	aerospace:query_workspaces(function(workspace_info)
@@ -350,7 +301,6 @@ local function initialize_workspaces()
 		end)
 
 		root:subscribe("display_change", function()
-			build_monitor_mapping()
 			updateWorkspaceMonitor()
 			updateWindows()
 		end)
