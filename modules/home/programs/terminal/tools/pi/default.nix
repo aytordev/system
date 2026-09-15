@@ -206,17 +206,17 @@
         {
           id = "deepseek-v4-flash";
           name = "DeepSeek V4 Flash";
-          contextWindow = 500000;
+          contextWindow = 1000000;
         }
         {
-          id = "glm-5.3-flash";
+          id = "glm5.3-flash";
           name = "GLM 5.3 Flash";
-          contextWindow = 200000;
+          contextWindow = 1000000;
         }
         {
           id = "mimo-v2.5";
           name = "Xiaomi MiMo V2.5";
-          contextWindow = 500000;
+          contextWindow = 1000000;
         }
       ];
     }

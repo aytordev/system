@@ -42,24 +42,29 @@ in {
           };
           "deepseek-v4-flash" = {
             name = "DeepSeek V4 Flash";
-            contextWindow = 500000;
+            contextWindow = 1000000;
             modalities = {
-              input = ["text"];
+              input = [
+                "text"
+                "image"
+              ];
               output = ["text"];
             };
           };
-          # TODO(confirm): context window per nan.builders docs.
-          "glm-5.3-flash" = {
+          "glm5.3-flash" = {
             name = "GLM 5.3 Flash";
-            contextWindow = 200000;
+            contextWindow = 1000000;
             modalities = {
-              input = ["text"];
+              input = [
+                "text"
+                "image"
+              ];
               output = ["text"];
             };
           };
           "mimo-v2.5" = {
             name = "Xiaomi MiMo V2.5";
-            contextWindow = 500000;
+            contextWindow = 1000000;
             modalities = {
               input = [
                 "text"

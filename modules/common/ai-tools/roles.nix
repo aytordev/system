@@ -32,7 +32,7 @@ _: let
     opus = "anthropic/claude-opus-4-7";
     astra = "openai-codex/gpt-6-astra";
     sol = "openai-codex/gpt-5.6-sol";
-    nan-glm = "nan/glm-5.3-flash";
+    nan-glm = "nan/glm5.3-flash";
     nan-deepseek = "nan/deepseek-v4-flash";
   };
 
