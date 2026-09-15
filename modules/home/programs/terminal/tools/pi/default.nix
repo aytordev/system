@@ -186,37 +186,86 @@
   # in this reusable module. Only defined when the host enables SOPS.
   sopsEnabled = osConfig.aytordev.security.sops.enable or false;
   nanApiKeyPath = "${config.home.homeDirectory}/.config/sops/nan_builders_api_key";
+  # nan.builders' blessed Pi config (docs/pi). Pi's schema only admits
+  # "text"/"image" for input: mimo-v2.5 goes in WITHOUT audio — a third value
+  # makes Pi refuse the whole models.json, every provider in it included.
+  # glm5.3 (premium tier) is deliberately absent: the docs say to leave it off
+  # unless the key is premium.
   nanProvider =
     if sopsEnabled
     then {
       baseUrl = "https://api.nan.builders/v1";
       api = "openai-completions";
       apiKey = "!cat ${nanApiKeyPath}";
+      compat = {
+        supportsDeveloperRole = true;
+      };
       models = [
-        {
-          id = "qwen3.6";
-          name = "Qwen 3.6";
-          contextWindow = 262144;
-        }
-        {
-          id = "gemma4";
-          name = "Gemma 4";
-          contextWindow = 262144;
-        }
         {
           id = "deepseek-v4-flash";
           name = "DeepSeek V4 Flash";
-          contextWindow = 1000000;
+          reasoning = true;
+          input = [
+            "text"
+            "image"
+          ];
+          contextWindow = 1048575;
+          maxTokens = 32768;
         }
         {
           id = "glm5.3-flash";
           name = "GLM 5.3 Flash";
-          contextWindow = 1000000;
+          reasoning = true;
+          input = [
+            "text"
+            "image"
+          ];
+          contextWindow = 1048576;
+          maxTokens = 32768;
+        }
+        {
+          id = "qwen3.8-flash";
+          name = "Qwen 3.8 Flash";
+          reasoning = true;
+          input = [
+            "text"
+            "image"
+          ];
+          contextWindow = 262144;
+          maxTokens = 32768;
         }
         {
           id = "mimo-v2.5";
           name = "Xiaomi MiMo V2.5";
-          contextWindow = 1000000;
+          reasoning = true;
+          input = [
+            "text"
+            "image"
+          ];
+          contextWindow = 1048576;
+          maxTokens = 32768;
+        }
+        {
+          id = "gemma4";
+          name = "Gemma 4";
+          reasoning = true;
+          input = [
+            "text"
+            "image"
+          ];
+          contextWindow = 262144;
+          maxTokens = 65536;
+        }
+        {
+          id = "qwen3.6";
+          name = "Qwen 3.6";
+          reasoning = true;
+          input = [
+            "text"
+            "image"
+          ];
+          contextWindow = 262144;
+          maxTokens = 65536;
         }
       ];
     }
