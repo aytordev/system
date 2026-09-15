@@ -115,8 +115,8 @@ in
       grep --quiet '"sdd-explore":"sdd-standard"' "$enabled/config.ts"
       grep --quiet '"sdd-archive":"sdd-archive"' "$enabled/config.ts"
       # Role -> native model mapping comes from aiTools.roles (tiered policy).
-      grep --quiet 'openai-codex/gpt-6-astra' "$enabled/config.ts"
-      grep --quiet 'openai-codex/gpt-5.6-sol' "$enabled/config.ts"
+      grep --quiet 'openai/gpt-6-astra' "$enabled/config.ts"
+      grep --quiet 'openai/gpt-5.6-sol' "$enabled/config.ts"
       grep --quiet 'nan/glm5.3-flash' "$enabled/config.ts"
       grep --quiet 'nan/deepseek-v4-flash' "$enabled/config.ts"
       # No role routes to the neutral Anthropic defaults anymore.
@@ -128,7 +128,7 @@ in
       # --- override changes exactly the overridden role ---------------------
       overridden="${workflowSource overriddenHome}"
       grep --quiet '"sdd-design":"anthropic/claude-sonnet-4-6"' "$overridden/config.ts"
-      grep --quiet '"sdd-orchestrator":"openai-codex/gpt-6-astra"' "$overridden/config.ts"
+      grep --quiet '"sdd-orchestrator":"openai/gpt-6-astra"' "$overridden/config.ts"
       grep --quiet '"sdd-standard":"nan/glm5.3-flash"' "$overridden/config.ts"
       grep --quiet '"sdd-archive":"nan/deepseek-v4-flash"' "$overridden/config.ts"
 

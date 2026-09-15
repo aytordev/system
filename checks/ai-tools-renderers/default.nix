@@ -81,7 +81,7 @@
       };
     agentHasNoDeprecatedTools = !(builtins.hasAttr "tools" orchestrator);
     # The orchestrator is tiered onto the astra model with medium effort.
-    agentModelMapped = orchestrator.model == "openai-codex/gpt-6-astra";
+    agentModelMapped = orchestrator.model == "openai/gpt-6-astra";
     agentEffortProjected = orchestrator.reasoningEffort or null == "medium";
   };
 

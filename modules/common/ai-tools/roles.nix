@@ -30,8 +30,8 @@ _: let
     haiku = "anthropic/claude-haiku-4-5-20251001";
     sonnet = "anthropic/claude-sonnet-4-6";
     opus = "anthropic/claude-opus-4-7";
-    astra = "openai-codex/gpt-6-astra";
-    sol = "openai-codex/gpt-5.6-sol";
+    astra = "openai/gpt-6-astra";
+    sol = "openai/gpt-5.6-sol";
     nan-glm = "nan/glm5.3-flash";
     nan-deepseek = "nan/deepseek-v4-flash";
   };
