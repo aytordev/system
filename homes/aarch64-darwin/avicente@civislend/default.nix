@@ -38,6 +38,10 @@ in {
         nixEnable = true;
       };
       business = enabled;
+      # Desktop CLI networking tools + the OpenVPN client. The provider's
+      # `.ovpn` profile lives outside the repo under ~/.config/openvpn/, so it
+      # is never managed by Nix or committed.
+      networking = enabled;
     };
 
     # Default theme family for this work host.

@@ -18,5 +18,9 @@ in {
         networking = lib.mkDefault enabled;
       };
     };
+
+    # OpenVPN's GUI client is not in nixpkgs, so it is installed via Homebrew
+    # (like ProtonVPN). The provider's `.ovpn` profile is imported into it.
+    homebrew.casks = ["openvpn-connect"];
   };
 }

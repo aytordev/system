@@ -16,6 +16,7 @@ in {
     home.packages = with pkgs; [
       nmap
       openssh
+      openvpn
       speedtest-cli
       ssh-copy-id
     ];
