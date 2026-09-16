@@ -244,7 +244,7 @@
     }).config;
 
   engineCfg = mkHome {};
-  inherit (engineCfg.aytordev.programs.terminal.tools.gentle-ai) adapter;
+  inherit (engineCfg.aytordev.programs.terminal.tools.gentle-ai) adapter engramPackage;
 in
   if problems != []
   then
@@ -262,6 +262,7 @@ in
         pkgs.findutils
         pkgs.gnugrep
         pkgs.gnused
+        engramPackage
       ];
     } ''
       set -eu
@@ -497,12 +498,80 @@ in
       [ "$stale_exit" -ne 0 ]
       echo "$stale_out" | jq --exit-status '.disposition == "stale-verification" and .ready == false' >/dev/null
 
+      # ---------- closure gate: Engram resolves the revision from memory -----
+      # In an Engram store `artifactPaths.verifyReport` is a topic key
+      # (`sdd/<change>/verify-report`), not a file path, so the adapter must
+      # read the report body back from memory. The gate is unchanged: a
+      # matching revision promotes and a different one is refused as stale.
+      ENGRAM_WS="$TMPDIR/ws-engram"
+      mkdir -p "$ENGRAM_WS/openspec"
+      printf 'artifact_store: engram\n' > "$ENGRAM_WS/openspec/config.yaml"
+      export ENGRAM_DATA_DIR="$TMPDIR/engram-data"
+      export ENGRAM_NO_UPDATE_CHECK=1
+      engram_project="$(basename "$ENGRAM_WS")"
+      engram_rev="sha256:$(hash_of engram-rev)"
+
+      cat > "$TMPDIR/engram-spec.md" <<'EOF'
+      ## ADDED Requirements
+
+      ### Requirement: Counter
+      The system SHALL increment.
+
+      #### Scenario: Once
+      - GIVEN zero
+      - WHEN increment runs
+      - THEN it is one
+      EOF
+
+      {
+        printf '```yaml\n'
+        printf 'schema: gentle-ai.verify-result/v1\n'
+        printf 'evidence_revision: %s\n' "$engram_rev"
+        printf 'verdict: pass\n'
+        printf 'blockers: 0\n'
+        printf 'critical_findings: 0\n'
+        printf 'requirements: 1/1\n'
+        printf 'scenarios: 1/1\n'
+        printf 'test_command: true\n'
+        printf 'test_exit_code: 0\n'
+        printf 'test_output_hash: %s\n' "sha256:$(hash_of engram-tests)"
+        printf 'build_command: true\n'
+        printf 'build_exit_code: 0\n'
+        printf 'build_output_hash: %s\n' "sha256:$(hash_of engram-build)"
+        printf '```\n\n# Verification Report\n'
+      } > "$TMPDIR/engram-report.md"
+
+      engram save "sdd/eng/proposal" "# Proposal" --project "$engram_project" --scope project >/dev/null
+      engram save "sdd/eng/spec" "$(cat "$TMPDIR/engram-spec.md")" --project "$engram_project" --scope project >/dev/null
+      engram save "sdd/eng/design" "# Design" --project "$engram_project" --scope project >/dev/null
+      engram save "sdd/eng/tasks" "$(printf '# Tasks\n- [x] 1.1 Add module\n')" --project "$engram_project" --scope project >/dev/null
+      engram save "sdd/eng/verify-report" "$(cat "$TMPDIR/engram-report.md")" --project "$engram_project" --scope project >/dev/null
+
+      # The revision is read from Engram and a match promotes.
+      set +e
+      AYTORDEV_SDD_ROOT="$ENGRAM_WS" "$ADAPTER" closure eng --revision "$engram_rev" > "$TMPDIR/engram-ok.json" 2>/dev/null
+      engram_ok_exit=$?
+      set -e
+      [ "$engram_ok_exit" -eq 0 ]
+      jq --exit-status --arg rev "$engram_rev" \
+        '.disposition == "verified" and .ready == true and .verification.envelopeRevision == $rev' \
+        "$TMPDIR/engram-ok.json" >/dev/null
+
+      # A different revision is still refused as stale (gate intact).
+      engram_stale="sha256:$(hash_of engram-stale)"
+      set +e
+      AYTORDEV_SDD_ROOT="$ENGRAM_WS" "$ADAPTER" closure eng --revision "$engram_stale" > "$TMPDIR/engram-stale.json" 2>/dev/null
+      engram_stale_exit=$?
+      set -e
+      [ "$engram_stale_exit" -ne 0 ]
+      jq --exit-status '.disposition == "stale-verification" and .ready == false' "$TMPDIR/engram-stale.json" >/dev/null
+
       # ---------- machine-readable fixture ---------------------------------
       mkdir -p "$out"
       jq --null-input \
         '{
           schema: "ai-tools-archive/v1",
-          closure: {verified: true, staleBlocked: true, incompleteBlocked: true, unverifiedBlocked: true, failedBlocked: true},
+          closure: {verified: true, staleBlocked: true, incompleteBlocked: true, unverifiedBlocked: true, failedBlocked: true, engramVerified: true, engramStaleBlocked: true},
           compose: {unrelatedSurvive: true, malformedWritesNothing: true, renameApplied: true, renameRefused: true},
           archive: {collisionRefused: true, losslessMove: true}
         }' > "$out/archive-fixture.json"

@@ -92,6 +92,39 @@
       # commands; the adapter's spawned `engram export` must stay offline.
       export ENGRAM_NO_UPDATE_CHECK="1"
 
+      # Resolve the verify report's `evidence_revision` from its locator. A
+      # file-backed store exposes a path; Engram exposes a topic key
+      # (`sdd/<change>/verify-report`), so its body is read from the memory
+      # export instead. Fail-closed: any resolution failure yields an empty
+      # revision, which the gate reports as `stale-verification`.
+      report_evidence_revision() {
+        locator="$1"
+
+        if [ -f "$locator" ]; then
+          awk '/^evidence_revision:/{sub(/^evidence_revision:[[:space:]]*/, ""); print; exit}' "$locator" 2>/dev/null || true
+          return 0
+        fi
+
+        export_file="$(mktemp)"
+        if [ -n "''${ENGRAM_PROJECT:-}" ]; then
+          engram export "$export_file" --project "$ENGRAM_PROJECT" >/dev/null 2>&1 || {
+            rm -f "$export_file"
+            return 0
+          }
+        else
+          engram export "$export_file" >/dev/null 2>&1 || {
+            rm -f "$export_file"
+            return 0
+          }
+        fi
+
+        jq -r --arg topic "$locator" \
+          '[.observations[] | select(.title == $topic)] | sort_by(.updated_at) | last | .content // empty' \
+          "$export_file" 2>/dev/null \
+          | awk '/^evidence_revision:/{sub(/^evidence_revision:[[:space:]]*/, ""); print; exit}' || true
+        rm -f "$export_file"
+      }
+
       # C11 closure gate. The engine keeps the readiness decision; this only
       # names the disposition and refuses anything but a verified closure.
       closure() {
@@ -133,10 +166,8 @@
         report="$(jq -r '.artifactPaths.verifyReport[0] // empty' <<<"$status_json")"
 
         envelope_revision=""
-        if [ -n "$report" ] && [ -f "$report" ]; then
-          envelope_revision="$(
-            awk '/^evidence_revision:/{sub(/^evidence_revision:[[:space:]]*/, ""); print; exit}' "$report" 2>/dev/null || true
-          )"
+        if [ -n "$report" ]; then
+          envelope_revision="$(report_evidence_revision "$report")"
         fi
 
         if [ "$all_complete" != "true" ]; then
