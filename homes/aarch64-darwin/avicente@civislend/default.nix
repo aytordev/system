@@ -36,6 +36,9 @@ in {
         # wire the nan.builders provider from the SOPS-managed API key file.
         aiEnable = true;
         nixEnable = true;
+        # Podman + podman-compose: project docs invoke `docker-compose`, which
+        # the podman-compose capability forwards to `podman compose`.
+        podmanEnable = true;
       };
       business = enabled;
       # Desktop CLI networking tools + the OpenVPN client. The provider's

@@ -249,6 +249,8 @@
 ## aytordev\.programs\.terminal\.tools\.pi\.workflow\.commands
 ## aytordev\.programs\.terminal\.tools\.pi\.workflow\.roleModels
 ## aytordev\.programs\.terminal\.tools\.pi\.workflow\.timeoutMs
+## aytordev\.programs\.terminal\.tools\.podman-compose\.enable
+## aytordev\.programs\.terminal\.tools\.podman-compose\.package
 ## aytordev\.programs\.terminal\.tools\.rclone\.enable
 ## aytordev\.programs\.terminal\.tools\.rclone\.package
 ## aytordev\.programs\.terminal\.tools\.rclone\.remotes

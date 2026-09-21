@@ -73,6 +73,7 @@
     "programs.terminal.tools.nix-search-tv"
     "programs.terminal.tools.opencode"
     "programs.terminal.tools.pi"
+    "programs.terminal.tools.podman-compose"
     "programs.terminal.tools.rclone"
     "programs.terminal.tools.ripgrep"
     "programs.terminal.tools.ssh"

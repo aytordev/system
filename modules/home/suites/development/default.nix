@@ -139,6 +139,7 @@ in {
             jjui = mkDefault enabled;
             k9s.enable = mkDefault cfg.kubernetesEnable;
             lazydocker.enable = mkDefault cfg.podmanEnable;
+            podman-compose.enable = mkDefault cfg.podmanEnable;
             lazygit = mkDefault enabled;
             # oh-my-posh = mkDefault enabled;  # TODO: module doesn't exist
           };
