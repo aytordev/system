@@ -60,6 +60,21 @@
     opencode.enable = true;
     ai-skills.enable = true;
   };
+  providersTarget = ".pi/agent/models.json";
+  withProviders = mkHome (enabledTools
+    // {
+      pi = {
+        enable = true;
+        providers = {
+          example = {
+            baseUrl = "https://example.test/v1";
+            api = "openai-completions";
+            apiKey = "!cat /nonexistent/key";
+            models = [];
+          };
+        };
+      };
+    });
   selected = pkgs.writeShellScriptBin "selected-ai" "exit 0";
   overrides = mkHome (enabledTools
     // {
@@ -108,10 +123,19 @@
     noAdapter = !(tools.gentle-ai ? adapter) && !(lib.any (p: lib.getName p == "aytordev-sdd") enabled.home.packages);
     noLegacyOptions =
       builtins.attrNames tools.pi
-      == ["enable" "package"]
+      == ["enable" "package" "providers"]
       && builtins.attrNames tools.gentle-ai == ["enable" "package"];
     noProfile = under ".pi/" noSkills == [] && !(enabled.home.sessionVariables ? PI_CODING_AGENT_DIR);
     piExactlyFour = under ".pi/" enabled == expected piRoot;
+    providersDefaultAbsent = !(lib.elem providersTarget (targets enabled)) && !(lib.elem providersTarget (targets noSkills));
+    providersPublished = lib.elem providersTarget (targets withProviders);
+    providersOnlyExtra =
+      under ".pi/" withProviders
+      == lib.sort builtins.lessThan (expected piRoot ++ [providersTarget]);
+    providersContent = let
+      file = builtins.getAttr providersTarget withProviders.home.file;
+    in
+      lib.hasInfix "\"providers\"" file.text && lib.hasInfix "\"example\"" file.text;
     opencodeExactlyFour = under ocRoot enabled == expected ocRoot;
     skillsDisabled = under piRoot noSkills == [] && under ocRoot noSkills == [];
     clientsDisabled = under piRoot noClients == [] && under ocRoot noClients == [];

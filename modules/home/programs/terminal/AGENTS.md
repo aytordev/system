@@ -116,8 +116,12 @@ wrappers fail closed without real tokens in env.
 ### Runtime-Managed Agent Integrations
 
 Pi is package-only. The official `gentle-ai install --agent pi` owns its native
-profile, Shell package/private engine, extensions, and workflow. Nix owns the
-public CLI, Pi, Engram, Node/npm, and runtime environment. The separate guarded
+profile, Shell package/private engine, extensions, and workflow. Nix also owns
+exactly one native-profile file: `~/.pi/agent/models.json` (the SOPS-backed nan
+provider, `pi/provider.nix`), safe because Pi only reads that file and no
+upstream component writes it (Shell keeps routing in
+`~/.pi/gentle-ai/models.json`). Nix owns the public CLI, Pi, Engram, Node/npm,
+and runtime environment. The separate guarded
 shared `modules/common/ai-tools/ai-skills.nix` capability exports four self-contained folders at
 `$XDG_DATA_HOME/aytordev/skills` even without clients, plus recursive file links
 for enabled Pi/OpenCode clients; never link a whole client profile or skills root. See
