@@ -12,7 +12,7 @@
   # sibling of its entry point. `art` is published as a base file name because
   # the extension resolves it relative to its own directory.
   configJson = pkgs.writeText "startup-header-config.json" (builtins.toJSON {
-    inherit (cfg) maxWidthCells maxHeightCells cadence;
+    inherit (cfg) maxWidthCells maxHeightCells cadence disableGentlePiBanner;
     art = builtins.baseNameOf (toString cfg.art);
   });
 
@@ -40,6 +40,13 @@
   # the file untouched. The rewrite is guarded by a SEMANTIC comparison (`jq -S`)
   # so a formatting-only difference never rewrites the file: with the filter
   # already present the script is a true no-op regardless of how Pi formatted it.
+  # This activation runs once per `darwin-switch`, but `settings.json` is a
+  # runtime file that Pi, the Gentle AI installer and package installers rewrite.
+  # A `packages` rewrite that drops the filter silently re-enables gentle-pi's
+  # own banner, so the extension re-applies the same filter at setup time when
+  # `disableGentlePiBanner` is on (`ensureGentlePiBannerFilter` in `index.ts`).
+  # The activation stays authoritative; the runtime heal only closes the window
+  # between two switches.
   mergeGentlePiBannerFilter = ''
     settings="${config.home.homeDirectory}/.pi/agent/settings.json"
     if [ ! -f "$settings" ]; then exit 0; fi
@@ -112,7 +119,9 @@ in {
       default = true;
       description = ''
         Add the `!startup-banner.ts` extension filter to the `npm:gentle-pi`
-        package so the built-in banner releases the single Pi header slot.
+        package so the built-in banner releases the single Pi header slot. The
+        activation merges it, and the extension re-applies it at setup time when
+        a later writer rewrites `settings.json` without it.
       '';
     };
   };
