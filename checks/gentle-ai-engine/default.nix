@@ -26,8 +26,6 @@
           };
           aytordev.programs.terminal.tools = tools;
           home.stateVersion = "25.11";
-          # Independent client settings must still compose with our module.
-          programs.opencode.settings.agent.local = {description = "user supplied";};
         }
         extraModule
       ];
@@ -37,7 +35,6 @@
     pi.enable = true;
     gentle-ai.enable = true;
     engram.enable = true;
-    opencode.enable = true;
     ai-skills.enable = true;
   };
   enabled = mkHome enabledTools;
@@ -54,10 +51,6 @@
     enabledTools;
   piOnly = mkHome {
     pi.enable = true;
-    ai-skills.enable = true;
-  };
-  opencodeOnly = mkHome {
-    opencode.enable = true;
     ai-skills.enable = true;
   };
   providersTarget = ".pi/agent/models.json";
@@ -90,10 +83,6 @@
         enable = true;
         package = selected;
       };
-      mcp = {
-        enable = true;
-        selection.opencode = ["engram"];
-      };
     });
   installed = home: package: lib.any (p: p.outPath == package.outPath) home.home.packages;
   tools = enabled.aytordev.programs.terminal.tools;
@@ -102,7 +91,6 @@
   under = root: home: lib.sort builtins.lessThan (lib.filter (lib.hasPrefix root) (targets home));
   expected = root: map (name: "${root}${name}") names;
   piRoot = ".pi/agent/skills/";
-  ocRoot = ".config/opencode/skills/";
   catalogRoot = ".local/share/aytordev/skills";
   checks = {
     packagesEnabled = lib.all (name: installed enabled tools.${name}.package) ["pi" "gentle-ai" "engram"];
@@ -118,8 +106,7 @@
     disabledEnvironment = lib.all (name: !(builtins.hasAttr name disabled.home.sessionVariables)) ["GENTLE_AI_NO_SELF_UPDATE" "ENGRAM_BIN" "ENGRAM_DATA_DIR" "ENGRAM_NO_UPDATE_CHECK"];
     engramOverrideShared =
       overrides.home.sessionVariables.ENGRAM_BIN
-      == lib.getExe selected
-      && builtins.head overrides.programs.opencode.settings.mcp.engram.command == lib.getExe selected;
+      == lib.getExe selected;
     noAdapter = !(tools.gentle-ai ? adapter) && !(lib.any (p: lib.getName p == "aytordev-sdd") enabled.home.packages);
     noLegacyOptions =
       builtins.attrNames tools.pi
@@ -136,9 +123,8 @@
       file = builtins.getAttr providersTarget withProviders.home.file;
     in
       lib.hasInfix "\"providers\"" file.text && lib.hasInfix "\"example\"" file.text;
-    opencodeExactlyFour = under ocRoot enabled == expected ocRoot;
-    skillsDisabled = under piRoot noSkills == [] && under ocRoot noSkills == [];
-    clientsDisabled = under piRoot noClients == [] && under ocRoot noClients == [];
+    skillsDisabled = under piRoot noSkills == [];
+    clientsDisabled = under piRoot noClients == [];
     neutralEnabled = enabled.xdg.dataFile ? "aytordev/skills";
     standaloneCollection = under ".local/share/aytordev/" noClients == [catalogRoot];
     neutralDisabled = !(disabled.xdg.dataFile ? "aytordev/skills") && !(noSkills.xdg.dataFile ? "aytordev/skills");
@@ -146,17 +132,9 @@
       custom.home.homeDirectory
       == customHomeDirectory
       && under "Data/aytordev/" custom == ["Data/aytordev/skills"]
-      && under "Config/opencode/skills/" custom == expected "Config/opencode/skills/"
       && under piRoot custom == expected piRoot;
-    clientGates =
-      under piRoot piOnly
-      == expected piRoot
-      && under ocRoot piOnly == []
-      && under piRoot opencodeOnly == []
-      && under ocRoot opencodeOnly == expected ocRoot;
+    clientGates = under piRoot piOnly == expected piRoot;
     noSharedRoot = under ".agents/" enabled == [];
-    userSettingsCompose = enabled.programs.opencode.settings.agent == {local.description = "user supplied";};
-    noWorkflow = enabled.programs.opencode.commands == {} && !(enabled.xdg.configFile ? "opencode/AGENTS.md");
   };
   failed = lib.attrNames (lib.filterAttrs (_: ok: !ok) checks);
 in
@@ -173,17 +151,12 @@ in
           test ! -L ${enabled.home-files}/${piRoot}${name}
           test -L ${enabled.home-files}/${piRoot}${name}/SKILL.md
           test -f ${enabled.home-files}/${piRoot}${name}/SKILL.md
-          test -d ${enabled.home-files}/${ocRoot}${name}
-          test ! -L ${enabled.home-files}/${ocRoot}${name}
-          test -L ${enabled.home-files}/${ocRoot}${name}/SKILL.md
-          test -f ${enabled.home-files}/${ocRoot}${name}/SKILL.md
-          # Both client projections and the standalone collection contain the
-          # full canonical folder, not just its entry point or a digest.
+          # The Pi projection and the standalone collection contain the full
+          # canonical folder, not just its entry point or a digest.
           for root in ${enabled.home-files}/${catalogRoot} \
-            ${enabled.home-files}/${piRoot} ${enabled.home-files}/${ocRoot} \
+            ${enabled.home-files}/${piRoot} \
             ${noClients.home-files}/${catalogRoot} \
-            ${custom.home-files}/Data/aytordev/skills \
-            ${custom.home-files}/Config/opencode/skills; do
+            ${custom.home-files}/Data/aytordev/skills; do
             diff -r ${../../modules/common/ai-tools/skills}/${name} "$root/${name}"
           done
           mkdir "$TMPDIR/isolated-${name}"

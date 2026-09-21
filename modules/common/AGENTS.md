@@ -26,7 +26,7 @@ canonical module template (per-class variants + style rules) lives in the
 Four local knowledge skills: `dotfiles-coder`, `nix`, `skill-creator`, and
 `skill-registry`, with required support bundled inside each folder. Home Manager's
 `ai-skills` capability exports a neutral XDG data collection and publishes file
-links to enabled clients. Native Gentle AI owns Pi's workflow;
+links to the enabled Pi client. Native Gentle AI owns Pi's workflow;
 this subtree does not distribute agents or commands.
 
 `ai-tools/ai-skills.nix` is explicitly included by `mkHomeModules` in
@@ -122,7 +122,7 @@ All options follow `aytordev.{category}.{subcategory}.{option}` structure.
 **Example:**
 
 ```nix
-aytordev.programs.terminal.tools.opencode.enable = true;
+aytordev.programs.terminal.tools.pi.enable = true;
 ```
 
 **Reduce repetition:**

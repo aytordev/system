@@ -13,7 +13,7 @@ The official native Gentle AI installer owns Pi's workflow. See
 - Preserve the portable `SKILL.md` identities and matching `metadata.json`.
 - Export the neutral collection at `$XDG_DATA_HOME/aytordev/skills` whenever
   `ai-skills` is enabled. Publish the four directories recursively as file links
-  for enabled Pi/OpenCode clients; never own their profiles or whole skills roots.
+  for the enabled Pi client; never own its profile or whole skills root.
 - The old Pi root needs the explicit, ownership-checked preactivation step in
   the README. Never add a destructive activation hook or force file collisions.
 - Bundle optional resolver guidance inside `skill-registry/references/`; each
@@ -24,7 +24,7 @@ The official native Gentle AI installer owns Pi's workflow. See
 - The local registry defaults to session-only. Explicit file persistence uses
   `.ai-local/skill-registry.md`; never overwrite Shell's `.atl/skill-registry.md`.
 - Do not restore local agents, commands, orchestration, vendor code, or updater
-  wrappers. OpenCode retains its independent client configuration.
+  wrappers. Native Gentle AI owns the Pi workflow.
 - Validate with inventory, skill-contract, dependencies, docs-links, and the
   package/publication ownership check.
 

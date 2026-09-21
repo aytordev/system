@@ -52,12 +52,13 @@ behavior they test, not the level.
 four-skill publication, standalone neutral export, custom HOME/XDG roots,
 disabled-client guards, and isolated copied-folder resource resolution. It builds the
 official public CLI but does not run native onboarding or touch an Engram DB.
-The remaining `ai-tools-*` checks cover metadata, inventory, dependencies,
-documentation links, OpenCode MCP and permissions. Theme migration retains real
-Home Manager link/collision/orphan checks using OpenCode's theme directory.
+The remaining `ai-tools-*` checks cover metadata, inventory, dependencies, and
+documentation links. Theme migration retains real Home Manager
+link/collision/orphan checks using a surviving themed app's managed theme
+directory (Yazi flavors).
 `integration-ai-skills-transition` additionally executes the explicit Pi root
-preparation script and pinned HM link/collision fragments against old Pi and
-OpenCode publication shapes, including Darwin `hm.old` and refusal cases.
+preparation script and pinned HM link/collision fragments against the old Pi
+publication shape, including Darwin `hm.old` and refusal cases.
 
 The private `secrets` input is removed before checks are evaluated. `identity`
 is rebuilt from the injected `secrets` and passed to checks that need host

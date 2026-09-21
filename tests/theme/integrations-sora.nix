@@ -19,7 +19,6 @@
     "ghostty"
     "hunk"
     "lazygit"
-    "opencode"
     "starship"
     "tmux"
     "yazi"
@@ -37,7 +36,6 @@
     ghostty = "sora";
     hunk = "sora";
     lazygit = "sora";
-    opencode = "sora";
     starship = "sora";
     tmux = "sora";
     yazi = "sora";

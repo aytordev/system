@@ -19,7 +19,7 @@ terminal/
 `tools/{tool}/` (and `shells/{shell}/`, `emulators/{emulator}/`) owns the
 namespace `aytordev.programs.terminal.{category}.{tool}`.
 
-Large tools may use contained sibling files (see opencode, bitwarden-cli).
+Large tools may use contained sibling files (see bitwarden-cli, yazi).
 The directory's `default.nix` remains the only auto-discovered module and owns
 the option namespace; containment files are `import`ed from it.
 
@@ -53,7 +53,7 @@ See `docs/decisions/0008-module-contract-v1.md`.
 Short aliases live in `home.shellAliases`. When a tool provides several
 commands, prefer shell-agnostic aliases there (one entry per alias behaves the
 same in bash/zsh/fish/nushell). For per-shell concerns, use the shell-specific
-integration options instead (see bitwarden-cli, opencode).
+integration options instead (see bitwarden-cli, atuin).
 
 Rules for `home.shellAliases` values (they fan out to every shell, and nushell
 renders them verbatim):
@@ -124,7 +124,7 @@ upstream component writes it (Shell keeps routing in
 and runtime environment. The separate guarded
 shared `modules/common/ai-tools/ai-skills.nix` capability exports four self-contained folders at
 `$XDG_DATA_HOME/aytordev/skills` even without clients, plus recursive file links
-for enabled Pi/OpenCode clients; never link a whole client profile or skills root. See
+for the enabled Pi client; never link a whole client profile or skills root. See
 `modules/common/ai-tools/README.md` for onboarding and updater ownership.
 
 Some tools ship integrations that write into *another* app's config at runtime
@@ -132,12 +132,10 @@ and own those files. Never vendor them in Nix: a store symlink would block the
 tool's own installer and updater, and the artifact is versioned to the tool.
 
 herdr is the reference case (see `tools/herdr`). `herdr integration install
-opencode` writes `~/.config/opencode/plugins/herdr-agent-state.js`,
-`~/.config/opencode/herdr-tui-session.js`, and `~/.config/opencode/tui.jsonc`.
-OpenCode auto-loads the plugin directory and merges `tui.json` with
-`tui.jsonc`, so the Home-Manager-managed `tui.json` (theme) and herdr's plugin
-coexist. Keep the runtime targets (`opencode/plugins`, `tui.jsonc`) out of the
-managed set.
+<agent>` writes versioned plugin/session files under that agent's config
+directory (for example `~/.config/<agent>/plugins/` and a runtime TUI config).
+Keep those runtime targets out of the managed set so the agent can still load
+them alongside the Home-Manager-managed theme.
 
 ## Platform Notes
 
@@ -157,8 +155,8 @@ managed set.
    `home.shellAliases` — never duplicate them in a bash `conf.d` drop-in, and
    put logic/pipelines in a `writeShellApplication`/`writeShellScriptBin` bin
    with a thin forward. Add a check under `checks/` when the behavior deserves
-   regression coverage (example: `checks/home-module` covers opencode/pi
-   wiring).
+   regression coverage (example: `checks/gentle-ai-engine` covers Pi
+   publication and skill wiring).
 
 ## Testing Terminal Changes
 

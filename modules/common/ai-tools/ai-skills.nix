@@ -13,7 +13,8 @@
         name = "${root}/${name}";
         value = {
           source = skills + "/${name}";
-          # Keep real skill directories, matching OpenCode's existing HM layout.
+          # Keep real skill directories so each client links their files without
+          # owning the whole client profile or skills root.
           recursive = true;
         };
       })
@@ -27,6 +28,5 @@ in {
     # Client-independent collection; each folder includes all its support files.
     xdg.dataFile."aytordev/skills".source = skills;
     home.file = mkIf tools.pi.enable (leaves ".pi/agent/skills");
-    xdg.configFile = mkIf tools.opencode.enable (leaves "opencode/skills");
   };
 }

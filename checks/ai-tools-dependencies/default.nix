@@ -96,7 +96,6 @@
   # The capability publishes exactly these individual leaves for each client.
   clients = {
     collection = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
-    opencode = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
     pi = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
   };
 

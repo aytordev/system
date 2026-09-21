@@ -11,8 +11,7 @@ does **not** install Shell or validate its live runtime/data compatibility.
 | --- | --- |
 | Nix package capabilities | Pi, public `gentle-ai`, Engram, Node/npm, runtime environment |
 | Official `gentle-ai install --agent pi` | Native Pi profile, Shell package and private engine, extensions/workflow |
-| Local `ai-skills` capability | Neutral four-folder collection and thin recursive Pi/OpenCode publication |
-| Independent OpenCode capability | Providers, themes, LSP, formatters, permissions, selected MCP servers and composable user settings |
+| Local `ai-skills` capability | Neutral four-folder collection and thin recursive Pi publication |
 
 The development suite enables these capabilities with overridable defaults.
 The distributor lives in `modules/common/ai-tools/ai-skills.nix`, explicitly
@@ -24,7 +23,6 @@ launcher, updater, generated prompt, or activation-time native installer.
 
 Engram exports `ENGRAM_BIN` for native subprocess selection,
 `ENGRAM_DATA_DIR=$XDG_DATA_HOME/engram`, and `ENGRAM_NO_UPDATE_CHECK=1`.
-OpenCode's Engram MCP uses the same selected executable and data directory.
 `GENTLE_AI_NO_SELF_UPDATE=1` protects the Nix-owned public CLI. Update Nix-owned
 executables through their Nix pins; native Shell/package/private-engine updates
 remain upstream-owned. This replacement does not migrate Engram data.
@@ -47,11 +45,10 @@ its original rules, references, and scripts. Resolver guidance is bundled in
 | --- | --- | --- |
 | Neutral collection | `${config.xdg.dataHome}/aytordev/skills` (normally `~/.local/share/aytordev/skills`) | `ai-skills.enable`, even with both clients disabled |
 | Pi / Gentle Shell | `~/.pi/agent/skills/<name>` | `ai-skills.enable` and `pi.enable` |
-| OpenCode | `${config.xdg.configHome}/opencode/skills/<name>` | `ai-skills.enable` and `opencode.enable` |
 
 The neutral collection links to the canonical source tree. Client publication is
 recursive: each skill directory stays real and its managed files are symlinks,
-matching OpenCode's previous HM layout. Client profiles and whole skills roots
+matching Pi's native per-file layout. The client profile and whole skills root
 remain writable for native owners; additional native files survive. Source edits
 reach these linked locations on Nix activation; client reload behavior is native.
 `~/.agents/skills` is not a local publication target: upstream compatibility
@@ -114,7 +111,7 @@ actual Pen import, model capabilities, and execution have not been validated.
 These are operator instructions; repository verification does not execute them.
 
 1. **Before activation or onboarding, make consistent backups of both Pi and
-   Engram.** Stop all Engram writers: Pi/OpenCode and other clients, MCP children,
+   Engram.** Stop all Engram writers: Pi and other clients, MCP children,
    HTTP servers, background services, and any sync/import jobs. Prevent automatic
    restarts, then snapshot the **entire closed** `ENGRAM_DATA_DIR` (normally
    `$XDG_DATA_HOME/engram`) into a new private backup location, including any
@@ -141,12 +138,11 @@ These are operator instructions; repository verification does not execute them.
    removing its contents. Stop on any refusal; do not force or delete the
    conflicting path. A fresh or already-real skill root needs no preparation.
    The preserved link is not a substitute for the content backup in step 1.
-3. Activate the reviewed Nix generation. OpenCode retains its real recursive
-   directories, and Pi receives the same per-file layout after preparation.
-   Home Manager removes obsolete managed OpenCode files while preserving native
-   additions. On Darwin, an unrelated real-file collision can be backed up as
-   `.hm.old`; an existing regular backup blocks activation. Inspect any collision rather
-   than forcing it. Do not recursively delete either profile.
+3. Activate the reviewed Nix generation. Pi receives the per-file recursive
+   layout after preparation, while Home Manager preserves native additions. On
+   Darwin, an unrelated real-file collision can be backed up as `.hm.old`; an
+   existing regular backup blocks activation. Inspect any collision rather
+   than forcing it. Do not recursively delete the profile.
 4. **Start a new terminal with a fresh login environment** after activation;
    if the terminal application still inherits old session variables, log out
    and back in. A nested shell inherits variables and Home Manager's session
@@ -169,17 +165,16 @@ These are operator instructions; repository verification does not execute them.
 ## Verification and history
 
 `checks/gentle-ai-engine` now checks package enable/disable/override behavior,
-environment, no profile/adapter ownership, OpenCode settings composition, and
-exact four-skill publication with client guards, standalone neutral export,
-custom HOME/XDG paths, byte-for-byte projections, and isolated dereferenced
-copies with resolvable support. Retained AI checks cover
-inventory, dependencies, metadata, documentation links, MCP, and OpenCode
-permissions. Theme transition tests retain real Home Manager collision and
-orphan-link coverage using OpenCode's managed theme directory.
+environment, no profile/adapter ownership, and exact four-skill publication with
+client guards, standalone neutral export, custom HOME/XDG paths, byte-for-byte
+projections, and isolated dereferenced copies with resolvable support. Retained
+AI checks cover inventory, dependencies, metadata, and documentation links.
+Theme transition tests retain real Home Manager collision and orphan-link
+coverage using a surviving themed app's managed theme directory (Yazi flavors).
 `checks/ai-skills-transition` executes the exact preparation script followed by
-the pinned HM collision/link fragments over synthetic old Pi/OpenCode layouts,
-with and without Darwin's `hm.old` backups. It also checks foreign-content and
-backup refusal. Native profile and memory migration remain operator actions.
+the pinned HM collision/link fragments over the synthetic old Pi layout, with
+and without Darwin's `hm.old` backups. It also checks foreign-content and backup
+refusal. Native profile and memory migration remain operator actions.
 
 The eleven records under `docs/ai-tools/` describe the retired local dual-client
 workflow. They remain historical evidence, not current onboarding instructions.

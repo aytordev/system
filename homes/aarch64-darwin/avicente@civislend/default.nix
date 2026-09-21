@@ -31,9 +31,9 @@ in {
       desktop = enabled;
       development = {
         enable = true;
-        # Bring the AI coding agents (pi, opencode, ...) so the host can be
-        # iterated on remotely. OpenCode wires nan.builders from the SOPS key;
-        # Pi provider configuration and auth are completed by native setup.
+        # Bring the AI coding agent (Pi) so the host can be iterated on
+        # remotely. Pi provider configuration and auth are completed by native
+        # setup.
         aiEnable = true;
         nixEnable = true;
         # Podman + podman-compose: project docs invoke `docker-compose`, which
@@ -55,11 +55,6 @@ in {
 
     programs = {
       terminal.tools = {
-        # Explicit MCP selection for the independent OpenCode client.
-        mcp.selection = {
-          opencode = ["engram" "filesystem" "nixos"];
-        };
-
         # Official executable only; native onboarding owns the Pi profile.
         gentle-ai.enable = true;
 

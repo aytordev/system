@@ -188,12 +188,6 @@
 ## aytordev\.programs\.terminal\.tools\.lazygit\.theme
 ## aytordev\.programs\.terminal\.tools\.lsd\.enable
 ## aytordev\.programs\.terminal\.tools\.lsd\.package
-## aytordev\.programs\.terminal\.tools\.mcp\.enable
-## aytordev\.programs\.terminal\.tools\.mcp\.selection\.opencode
-## aytordev\.programs\.terminal\.tools\.mcp\.servers
-## aytordev\.programs\.terminal\.tools\.mcp\.servers\.\<name>\.args
-## aytordev\.programs\.terminal\.tools\.mcp\.servers\.\<name>\.command
-## aytordev\.programs\.terminal\.tools\.mcp\.servers\.\<name>\.env
 ## aytordev\.programs\.terminal\.tools\.navi\.enable
 ## aytordev\.programs\.terminal\.tools\.navi\.package
 ## aytordev\.programs\.terminal\.tools\.navi\.settings\.style\.comment\.color
@@ -211,11 +205,6 @@
 ## aytordev\.programs\.terminal\.tools\.nh\.flake
 ## aytordev\.programs\.terminal\.tools\.nix-search-tv\.enable
 ## aytordev\.programs\.terminal\.tools\.nix-search-tv\.package
-## aytordev\.programs\.terminal\.tools\.opencode\.enable
-## aytordev\.programs\.terminal\.tools\.opencode\.package
-## aytordev\.programs\.terminal\.tools\.opencode\.model\.model
-## aytordev\.programs\.terminal\.tools\.opencode\.model\.provider
-## aytordev\.programs\.terminal\.tools\.opencode\.theme
 ## aytordev\.programs\.terminal\.tools\.pi\.enable
 ## aytordev\.programs\.terminal\.tools\.pi\.package
 ## aytordev\.programs\.terminal\.tools\.pi\.providers

@@ -129,8 +129,6 @@ in {
             gentle-ai.enable = mkDefault cfg.aiEnable;
             ai-skills.enable = mkDefault cfg.aiEnable;
             herdr.enable = mkDefault cfg.aiEnable;
-            mcp.enable = mkDefault cfg.aiEnable;
-            opencode.enable = mkDefault cfg.aiEnable;
             pi.enable = mkDefault cfg.aiEnable;
             git-crypt = mkDefault enabled;
             gh = mkDefault enabled;

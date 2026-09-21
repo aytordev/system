@@ -62,11 +62,6 @@ in {
 
       terminal = {
         tools = {
-          # Explicit MCP selection for the independent OpenCode client.
-          mcp.selection = {
-            opencode = ["engram" "filesystem" "nixos"];
-          };
-
           # Official executable only; native onboarding owns the Pi profile.
           gentle-ai.enable = true;
 

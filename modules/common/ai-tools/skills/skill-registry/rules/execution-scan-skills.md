@@ -20,14 +20,12 @@ discovery where available; do not install another scanner or refresh service.
 
 ### Additional global roots (when requested)
 
-- **OpenCode**: the OpenCode config directory's `skill(s)` subdirectory, i.e. `$XDG_CONFIG_HOME/opencode/skill(s)/` (default `$XDG_CONFIG_HOME` is `~/.config`). Both singular and plural names are accepted.
 - **Pi**: `~/.pi/agent/skills/` and `~/.agents/skills/`
 - **Configured roots**: any additional skill root the active client declares in its settings
 - The supplied collection containing this skill, when requested
 
 ### Project roots (when requested)
 
-- `.opencode/skill/` and `.opencode/skills/`
 - `.pi/skills/`
 - `.agents/skills/`
 - `{project-root}/skills/`
