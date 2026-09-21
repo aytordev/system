@@ -265,8 +265,9 @@ and the revised `renderImage()` decision).
 Work unit 3 — commit `0171dda docs(odd): track ODD feature documents in version
 control`, which brings this document under version control.
 
-Work unit 4 — the CI fix for CSH-13: `checks/gentle-ai-engine/default.nix` (the
-option allowlist) and this document.
+Work unit 4 — commit `7abc945 fix(checks): allow the pi startup-header option in
+the ownership guard`, 2 files, 13 insertions, 1 deletion:
+`checks/gentle-ai-engine/default.nix` (the option allowlist) and this document.
 
 ## Next step
 
