@@ -2,20 +2,26 @@
  * Custom Pi startup header.
  *
  * Owns exactly one thing: the startup header (shown above the chat) in TUI
- * sessions. It renders the bundled art through the exported `Image` component
- * (which caches the kitty transmission per width) followed by a small animated
- * status panel. It deliberately does NOT touch the footer, widgets, editor,
- * settings, models, or any other Pi profile file — those have other owners.
+ * sessions. It renders the bundled art as a centered kitty image followed by a
+ * centered, animated status panel. It deliberately does NOT touch the footer,
+ * widgets, editor, settings, models, or any other Pi profile file — those have
+ * other owners.
  *
  * Why the `setHeader` delay: `pi-tui` keeps a SINGLE custom-header slot and the
  * last writer wins. gentle-pi's own banner asserts its header at roughly 50 ms,
  * so we assert ours at 120 ms to win the slot without a race.
  *
- * Why the exported `Image` component instead of `renderImage()`: calling
- * `renderImage()` from `render()` re-registers kitty metadata on every frame,
- * which bumps `kittyTransmissionGeneration` and forces a full base64
- * re-transmission every tick. `Image` caches by width and allocates a stable
- * kitty image id, so the payload is transmitted once per width.
+ * Why `renderImage()` is called once per width instead of once per frame: every
+ * call that passes an `imageId` re-registers kitty metadata, which bumps
+ * `kittyTransmissionGeneration` and makes the renderer treat that frame as a
+ * fresh upload, re-sending the whole base64 payload. Caching the result keeps
+ * the generation stable, so the renderer substitutes a cheap place-only (`a=p`)
+ * command on every later frame.
+ *
+ * Why the payload is built directly instead of through the exported `Image`
+ * component: `Image` does not expose the cell footprint, and centering needs it.
+ * `calculateImageCellSize` and `isImageLine` are not part of the package's public
+ * exports, so the footprint is taken from `renderImage()`'s own return value.
  */
 
 import { execFile } from "node:child_process";
@@ -30,15 +36,15 @@ import type {
 	Theme,
 } from "@earendil-works/pi-coding-agent";
 import {
+	allocateImageId,
 	deleteKittyImage,
 	getCapabilities,
 	getPngDimensions,
-	Image,
+	imageFallback,
+	renderImage,
 	truncateToWidth,
 	visibleWidth,
 	type ImageDimensions,
-	type ImageOptions,
-	type ImageTheme,
 	type TUI,
 } from "@earendil-works/pi-tui";
 
@@ -172,11 +178,56 @@ function fmtTokens(tokens: number | null, fallback: string): string {
 	return String(tokens);
 }
 
+/** The kitty payload and the cell footprint it occupies, cached per width. */
+interface CachedImage {
+	width: number;
+	sequence: string;
+	columns: number;
+	rows: number;
+}
+
+/** Left padding that centers `columns` cells inside `width`. */
+function padFor(width: number, columns: number): number {
+	return Math.max(0, Math.floor((width - columns) / 2));
+}
+
 /**
- * The header component: the art (when the terminal speaks kitty) followed by a
- * status panel. Every panel line is truncated to `width`; the image lines are
- * passed through untouched because they carry escape sequences that must not be
- * sliced.
+ * Center a kitty placement inside `width`, followed by the blank lines the
+ * renderer needs to account for the image height. The sequence is never
+ * truncated: it carries escape bytes, not printable text, so slicing it would
+ * corrupt the command.
+ */
+function placeImage(sequence: string, columns: number, rows: number, width: number): string[] {
+	const pad = padFor(width, columns);
+	const lines = pad > 0 ? [" ".repeat(pad) + sequence] : [sequence];
+	for (let index = 1; index < rows; index += 1) lines.push("");
+	return lines;
+}
+
+/**
+ * Center a block of styled lines inside `width`, preserving relative alignment.
+ * Over-wide lines are truncated to `width` first: fitting is what keeps the
+ * header from wrapping, and truncation is safe here because these lines are
+ * printable text rather than escape payloads.
+ */
+function centerLines(lines: string[], width: number): string[] {
+	const fitted = lines.map((line) => (visibleWidth(line) > width ? truncateToWidth(line, width) : line));
+	let widest = 0;
+	for (const line of fitted) widest = Math.max(widest, visibleWidth(line));
+	const pad = padFor(width, widest);
+	if (pad === 0) return fitted;
+	const prefix = " ".repeat(pad);
+	return fitted.map((line) => (line.length === 0 ? line : prefix + line));
+}
+
+/**
+ * The header component: the centered art (when the terminal speaks kitty)
+ * followed by a centered status panel.
+ *
+ * The image payload is produced at most once per terminal width and reused
+ * verbatim afterwards, which is what keeps the kitty transmission off the
+ * animation path. The panel re-renders every tick because its spinner is the
+ * only animated element.
  */
 class StartupHeaderComponent {
 	private readonly pi: ExtensionAPI;
@@ -184,9 +235,10 @@ class StartupHeaderComponent {
 	private readonly tui: TUI;
 	private readonly theme: Theme;
 	private readonly config: StartupHeaderConfig;
-	private readonly image: Image | undefined;
-	private readonly options: ImageOptions;
-	private readonly imageTheme: ImageTheme;
+	private readonly artBase64: string | undefined;
+	private readonly imageDimensions: ImageDimensions | undefined;
+	private readonly imageId: number | undefined;
+	private cachedImage: CachedImage | undefined;
 
 	private tick = 0;
 	private interval: ReturnType<typeof setInterval> | undefined;
@@ -208,20 +260,13 @@ class StartupHeaderComponent {
 		this.config = config;
 		this.profile = loadActiveProfile();
 
-		this.options = {
-			maxWidthCells: config.maxWidthCells,
-			maxHeightCells: config.maxHeightCells,
-			filename: config.art,
-		};
-		this.imageTheme = {fallbackColor: (s: string) => theme.fg("dim", s)};
-
-		// Only build the image when the terminal actually speaks kitty. Any other
-		// capability renders the panel alone rather than a broken/fallback line.
+		// Only load the art when the terminal actually speaks kitty. Any other
+		// capability renders the panel alone rather than a broken sequence.
 		const kitty = getCapabilities().images === "kitty";
 		const art = kitty ? loadArtBase64(config.art) : null;
-		this.image = art
-			? new Image(art.base64, "image/png", this.imageTheme, this.options, art.dimensions ?? undefined)
-			: undefined;
+		this.artBase64 = art?.base64;
+		this.imageDimensions = art?.dimensions ?? undefined;
+		this.imageId = art ? allocateImageId() : undefined;
 
 		this.resolveGitBranch();
 		this.startAnimation();
@@ -254,7 +299,9 @@ class StartupHeaderComponent {
 	}
 
 	private row(label: string, value: string): string {
-		const painted = this.theme.fg("muted", `  ${label.padEnd(8)}`);
+		// Three leading spaces so the labels line up under the rule, which starts
+		// after the spinner frame plus a two-space gap.
+		const painted = this.theme.fg("muted", `   ${label.padEnd(8)}`);
 		return `${painted}${value}`;
 	}
 
@@ -266,8 +313,9 @@ class StartupHeaderComponent {
 		const dim = (s: string) => theme.fg("dim", s);
 
 		const frame = SPINNER_FRAMES[this.tick % SPINNER_FRAMES.length];
-		const title = `${accent(frame)} ${theme.fg("muted", "pink-monster")}`;
-		const rule = dim("  " + "─".repeat(Math.max(0, this.config.maxWidthCells - 2)));
+		// The spinner opens the panel instead of sitting on its own title line, so
+		// the rule aligns with the rows beneath it.
+		const rule = `${accent(frame)}${dim("  " + "─".repeat(Math.max(0, this.config.maxWidthCells - 2)))}`;
 
 		const model = this.ctx.model;
 		const modelLabel = model ? `${model.provider}/${model.id}` : "(no model)";
@@ -292,7 +340,6 @@ class StartupHeaderComponent {
 		}
 
 		return [
-			title,
 			rule,
 			this.row("branch", text(this.gitBranch)),
 			this.row("model", `${text(modelLabel)}  ${dim(`· ${thinking}`)}`),
@@ -304,21 +351,58 @@ class StartupHeaderComponent {
 
 	render(width: number): string[] {
 		try {
-			const lines: string[] = [];
-			// Image lines carry kitty escape sequences; never truncate them.
-			if (this.image) lines.push(...this.image.render(width));
-			for (const line of this.panelLines()) {
-				lines.push(visibleWidth(line) > width ? truncateToWidth(line, width) : line);
-			}
+			const lines = this.imageLines(width);
+			lines.push(...centerLines(this.panelLines(), width));
 			return lines;
 		} catch {
 			// A header must never take down the session.
-			return [truncateToWidth(this.theme.fg("dim", "pink-monster"), width)];
+			return [truncateToWidth(this.theme.fg("dim", this.spinnerFrame()), width)];
 		}
 	}
 
+	/**
+	 * The centered image lines, or nothing when there is no usable art. The
+	 * payload is produced once per width and reused verbatim on later frames.
+	 */
+	private imageLines(width: number): string[] {
+		if (this.artBase64 === undefined || this.imageDimensions === undefined) return [];
+		const cached = this.cachedImage;
+		if (cached !== undefined && cached.width === width) {
+			return placeImage(cached.sequence, cached.columns, cached.rows, width);
+		}
+		// Clamp the configured cap to the live terminal width: `renderImage` uses
+		// `maxWidthCells` as given and applies no internal width guard, so this is
+		// the only thing keeping the placement inside the terminal. Centering then
+		// uses the footprint `renderImage` reports, not the requested cap.
+		const maxWidthCells = Math.max(1, Math.min(width - 2, this.config.maxWidthCells));
+		const result = renderImage(this.artBase64, this.imageDimensions, {
+			maxWidthCells,
+			maxHeightCells: this.config.maxHeightCells,
+			imageId: this.imageId,
+			moveCursor: false,
+		});
+		if (!result) {
+			const label = imageFallback("image/png", this.imageDimensions, this.config.art);
+			return [truncateToWidth(this.theme.fg("dim", label), width)];
+		}
+		this.cachedImage = {
+			width,
+			sequence: result.sequence,
+			columns: result.columns,
+			rows: result.rows,
+		};
+		return placeImage(result.sequence, result.columns, result.rows, width);
+	}
+
+	private spinnerFrame(): string {
+		return SPINNER_FRAMES[this.tick % SPINNER_FRAMES.length];
+	}
+
 	invalidate(): void {
-		this.image?.invalidate();
+		// Deliberately empty. The cached payload depends only on the terminal
+		// width, and the panel re-derives its colors from the live theme on every
+		// render, so a theme change needs no invalidation. Clearing the cache here
+		// would force a needless full kitty re-transmission.
 	}
 
 	dispose(): void {
@@ -328,7 +412,7 @@ class StartupHeaderComponent {
 			clearInterval(this.interval);
 			this.interval = undefined;
 		}
-		const imageId = this.image?.getImageId();
+		const imageId = this.imageId;
 		if (imageId !== undefined) {
 			try {
 				this.tui.terminal.write(deleteKittyImage(imageId));

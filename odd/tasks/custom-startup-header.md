@@ -113,6 +113,24 @@ only way to change the art without patching a package is to own the header.
   art lookup now iterates the same ordered, deduplicated candidate directories
   as the config lookup.
   Acceptance: the art resolves through the installed fallback directory.
+- [x] **CSH-11** (user-requested refinement) Center the header and drop the
+  `pink-monster` title. The art and the panel are now centered inside the live
+  terminal width, and the panel's first line carries the spinner plus the rule
+  instead of a separate title row, so the rule aligns with the rows beneath it.
+  Because the exported `Image` component does not expose the cell footprint that
+  centering needs, the payload is built from `renderImage()` directly and cached
+  per width.
+  Acceptance: the art and the panel are horizontally centered, no title row
+  remains, and the cached payload is still byte-identical across frames.
+- [x] **CSH-12** (defect found while verifying CSH-11) Restore the width
+  invariant. CSH-11 replaced the per-line truncation in `render()` with padding
+  only, so a `branch`, `model`, or `profile` value wider than the terminal
+  produced over-wide lines that wrap. `model` already overflows at the default
+  `maxWidthCells = 44` with a long model id: 11 cells of row prefix plus a
+  35-character `provider/id` plus the thinking suffix. `centerLines` now truncates
+  over-wide lines before centering.
+  Acceptance: no rendered panel line exceeds `width`, and centering is preserved
+  for lines that fit.
 
 ## Verification evidence
 
@@ -158,11 +176,14 @@ Original evidence prompts:
   + `paletteuse=alpha_threshold=128`) brought it to **127002 bytes**. Verified with
   `sips -g pixelWidth -g pixelHeight -g hasAlpha pink-monster.png` ->
   `pixelWidth: 768`, `pixelHeight: 613`, `hasAlpha: yes`. Comfortably under 200 KB.
-- **CSH-2..CSH-4 extension.** `index.ts` uses the exported `Image` component (built
-  once, cached per width, stable kitty `imageId`); `renderImage()` is never called
-  from `render()`. `setHeader` fires at 120 ms via `setTimeout`; cadence is 80/250/none;
-  `dispose()` clears timers and writes `deleteKittyImage(image.getImageId())`.
-  Falls back to panel-only when `getCapabilities().images !== "kitty"`.
+- **CSH-2..CSH-4 extension.** Originally `index.ts` used the exported `Image`
+  component (built once, cached per width, stable kitty `imageId`); CSH-11 replaced
+  it with a direct `renderImage()` call plus an explicit per-width cache, because
+  centering needs the cell footprint that `Image` does not expose. `renderImage()`
+  is still never called from `render()`. `setHeader` fires at 120 ms via
+  `setTimeout`; cadence is 80/250/none; `dispose()` clears timers and writes
+  `deleteKittyImage(this.imageId)`. Falls back to panel-only when
+  `getCapabilities().images !== "kitty"`.
 - **CSH-5/CSH-6 eval (option defaults).** Exact command:
   `nix eval --json 'path:.#darwinConfigurations.wang-lin.config.home-manager.users.aytordev.aytordev.programs.terminal.tools.pi.startup-header' --override-input secrets path:./checks/fixtures/secrets`
   -> `{"art":".../startup-header/pink-monster.png","cadence":"quality","disableGentlePiBanner":true,"enable":false,"maxHeightCells":20,"maxWidthCells":44}`.
@@ -194,6 +215,13 @@ Original evidence prompts:
   Pi's alt-screen renderer already solves re-transmission via
   `prepareKittyScreen()`, so a static image in an animated header costs nothing
   per frame once cached.
+- **Direct `renderImage()` over the exported `Image` component** (forced by
+  centering, CSH-11): `Image` owns its caching but does not expose the cell
+  footprint, and neither `calculateImageCellSize` nor `isImageLine` is exported,
+  so centering has no way to learn the columns it must pad. `renderImage()`
+  returns `{sequence, columns, rows}` and supplies exactly that. The per-width
+  caching `Image` used to provide is now explicit in `imageLines()`, so the
+  re-transmission hazard recorded under Constraints is still avoided.
 - **Own extension over upstream fork**: the extension is not a reproduction, so
   upstream's daily changes never reach us as conflicts.
 - **Upstream `roseArt` option deferred**: contributing a configurable art option
@@ -203,7 +231,10 @@ Original evidence prompts:
 
 ## Progress
 
-All tasks complete. Six files touched and nothing else in the working tree:
+All tasks complete, across three work units.
+
+Work unit 1 — commit `6e44f11 feat(pi): replace the startup banner with a custom
+header`, 6 files, 514 insertions, 1 deletion:
 
 | Path | Change |
 | --- | --- |
@@ -214,19 +245,29 @@ All tasks complete. Six files touched and nothing else in the working tree:
 | `modules/home/programs/terminal/tools/pi/startup-header/pink-monster.png` | new, 768x613 RGBA, 127 KB |
 | `checks/docs-generation/golden/home.txt` | +6 (new option paths) |
 
-Work-unit commit: `6e44f11 feat(pi): replace the startup banner with a custom
-header`, 6 files, 514 insertions, 1 deletion. The pre-commit suite (conflict
-markers, deadnix, statix, treefmt, typos) passed; `typos` first rejected a
-spelling variant in `index.ts` and required `unparsable`.
+The pre-commit suite (conflict markers, deadnix, statix, treefmt, typos) passed;
+`typos` first rejected a spelling variant in `index.ts` and required `unparsable`.
+
+Work unit 2 — CSH-11 and CSH-12, one file:
+`modules/home/programs/terminal/tools/pi/startup-header/index.ts`, now 454 lines
+(128 insertions, 44 deletions against `6e44f11`).
+
+Work unit 3 — commit `0171dda docs(odd): track ODD feature documents in version
+control`, which brings this document under version control.
 
 ## Next step
 
 Human verification: run `darwin-switch wang-lin`, then start Pi or `/reload`, and
-confirm the monster renders above the chat with the animated panel. If the image
-is missing, check that `TERM_PROGRAM=ghostty`, that `TMUX` is unset, and that
-`tuiMode` is `fullscreen` — the image path depends on all three.
+confirm the monster renders centered above the chat with the centered animated
+panel. If the image is missing, check that `TERM_PROGRAM=ghostty`, that `TMUX` is
+unset, and that `tuiMode` is `fullscreen` — the image path depends on all three.
 
-The work is committed as `6e44f11 feat(pi): replace the startup banner with a
-custom header` (6 files, 514 insertions, 1 deletion) on
-`refactor/gentle-upstream-stack`. The `odd/` tracking directory was later
-brought under version control. The commit is not pushed.
+Two behaviours remain unverified because they need a live terminal:
+
+- That the centered padding lands the kitty placement at the intended column. The
+  pad is written as spaces *before* the placement command, so the outcome depends
+  on how kitty resolves the cursor for `a=p`. The footprint is correct by
+  construction; the horizontal offset is not proven.
+- That a long `model` value now truncates instead of wrapping (CSH-12).
+
+Nothing is pushed: `refactor/gentle-upstream-stack` is ahead of its upstream.
