@@ -131,6 +131,15 @@ only way to change the art without patching a package is to own the header.
   over-wide lines before centering.
   Acceptance: no rendered panel line exceeds `width`, and centering is preserved
   for lines that fit.
+- [x] **CSH-13** (defect found by CI on PR #196) Update the option-ownership
+  guard. `checks/gentle-ai-engine/default.nix` asserts the exact option set of
+  `tools.pi`, and the startup-header module added `pi."startup-header"`, so
+  `noLegacyOptions` threw and took down both `Check aarch64-darwin` and
+  `Check x86_64-linux`. The pre-PR verification had run only three named checks
+  and never included `integration-gentle-ai-engine`, so the breakage reached the
+  PR.
+  Acceptance: `nix flake check` passes on aarch64-darwin, and the same assertion
+  evaluates for x86_64-linux.
 
 ## Verification evidence
 
@@ -255,6 +264,9 @@ and the revised `renderImage()` decision).
 
 Work unit 3 — commit `0171dda docs(odd): track ODD feature documents in version
 control`, which brings this document under version control.
+
+Work unit 4 — the CI fix for CSH-13: `checks/gentle-ai-engine/default.nix` (the
+option allowlist) and this document.
 
 ## Next step
 
