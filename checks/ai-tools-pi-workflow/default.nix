@@ -77,7 +77,10 @@
   engineHome = mkHome {gentleAi = true;};
   subsetHome = mkHome {commands = ["sdd-design" "sdd-apply"];};
 
-  throws = expr: !(builtins.tryEval expr).success;
+  # `tryEval` only forces to WHNF, so the role-policy validation deferred inside
+  # `piWorkflowConfig` (behind the deployed derivation) never surfaces. Force the
+  # value deeply so the throw is observed.
+  throws = expr: !(builtins.tryEval (builtins.deepSeq expr true)).success;
 
   checks = {
     enabledMaterializes = hasWorkflow enabledHome;
