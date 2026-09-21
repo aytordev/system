@@ -318,12 +318,22 @@ Verification of the fix (all commands run locally, in this order):
   `checks/docs-generation/golden/{home,darwin}.txt` byte for byte (no golden
   update needed); `alejandra --check` and `typos` are clean on the changed files.
 - Passing checks: `integration-docs-generation`, `integration-module-contract`,
-  `integration-home-module`, `integration-gentle-ai-engine`.
-- Not done: no commit and no branch (user decision), and `darwin-switch` is still
-  required to publish the new extension. The healed `settings.json` already stops
-  the rose banner from loading on the next start.
+  `integration-home-module`, `integration-gentle-ai-engine`. The repository
+  pre-commit suite passed on the staged files too (conflict markers, deadnix,
+  statix, treefmt, typos).
+- Deployment still pending: `darwin-switch wang-lin` publishes the new extension.
+  The healed `settings.json` already stops the rose banner from loading on the
+  next start, and `/reload` is enough for a session that is already running.
 
-All earlier tasks complete, across four work units.
+All earlier tasks complete, across five work units.
+
+Work unit 5 — commit `16a9dc9 fix(pi): keep the startup header when gentle-pi's
+banner re-asserts`, 3 files, 314 insertions, 57 deletions:
+`modules/home/programs/terminal/tools/pi/startup-header/index.ts`,
+`modules/home/programs/terminal/tools/pi/startup-header.nix` and this document
+(CSH-14, CSH-15 and their evidence). CSH-14 and CSH-15 share one commit because
+both live in the same claim surface of one file; the self-heal is inert without
+the nix-side `disableGentlePiBanner` that the claim reads from `config.json`.
 
 Work unit 1 — commit `6e44f11 feat(pi): replace the startup banner with a custom
 header`, 6 files, 514 insertions, 1 deletion:
