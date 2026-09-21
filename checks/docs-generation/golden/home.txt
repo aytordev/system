@@ -208,6 +208,12 @@
 ## aytordev\.programs\.terminal\.tools\.pi\.enable
 ## aytordev\.programs\.terminal\.tools\.pi\.package
 ## aytordev\.programs\.terminal\.tools\.pi\.providers
+## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.enable
+## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.art
+## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.cadence
+## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.disableGentlePiBanner
+## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.maxHeightCells
+## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.maxWidthCells
 ## aytordev\.programs\.terminal\.tools\.podman-compose\.enable
 ## aytordev\.programs\.terminal\.tools\.podman-compose\.package
 ## aytordev\.programs\.terminal\.tools\.rclone\.enable

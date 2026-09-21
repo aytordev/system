@@ -7,7 +7,10 @@
   inherit (lib) mkEnableOption mkIf mkPackageOption;
   cfg = config.aytordev.programs.terminal.tools.pi;
 in {
-  imports = [./provider.nix];
+  imports = [
+    ./provider.nix
+    ./startup-header.nix
+  ];
 
   options.aytordev.programs.terminal.tools.pi = {
     enable = mkEnableOption "Pi coding agent";
