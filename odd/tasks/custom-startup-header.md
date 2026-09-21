@@ -248,9 +248,10 @@ header`, 6 files, 514 insertions, 1 deletion:
 The pre-commit suite (conflict markers, deadnix, statix, treefmt, typos) passed;
 `typos` first rejected a spelling variant in `index.ts` and required `unparsable`.
 
-Work unit 2 — CSH-11 and CSH-12, one file:
-`modules/home/programs/terminal/tools/pi/startup-header/index.ts`, now 454 lines
-(128 insertions, 44 deletions against `6e44f11`).
+Work unit 2 — commit `479d9f8 feat(pi): center the startup header art and panel`,
+2 files, 187 insertions, 62 deletions: `startup-header/index.ts` (now 454 lines;
+128 insertions, 44 deletions against `6e44f11`) and this document (CSH-11, CSH-12
+and the revised `renderImage()` decision).
 
 Work unit 3 — commit `0171dda docs(odd): track ODD feature documents in version
 control`, which brings this document under version control.
