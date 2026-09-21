@@ -1,0 +1,111 @@
+{
+  "kind": "gentle-pi.agent_model_profile",
+  "version": 1,
+  "name": "opensource",
+  "config": {
+    "orchestrator": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "sdd-explore": {
+      "model": "nan/glm5.3-flash",
+      "thinking": "high"
+    },
+    "sdd-spec": {
+      "model": "nan/glm5.3-flash",
+      "thinking": "high"
+    },
+    "sdd-design": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "sdd-verify": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "sdd-sync": {
+      "model": "nan/glm5.3-flash",
+      "thinking": "high"
+    },
+    "sdd-archive": {
+      "model": "nan/glm5.3-flash",
+      "thinking": "medium"
+    },
+    "sdd-apply": {
+      "model": "nan/glm5.3-flash",
+      "thinking": "high"
+    },
+    "jd-judge-a": {
+      "model": "nan/glm5.3-flash",
+      "thinking": "high"
+    },
+    "jd-judge-b": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "jd-fix-agent": {
+      "model": "nan/glm5.3-flash",
+      "thinking": "high"
+    },
+    "gentle-ai-worker": {
+      "model": "nan/glm5.3-flash",
+      "thinking": "high"
+    },
+    "review-risk": {
+      "model": "nan/glm5.3-flash",
+      "thinking": "high"
+    },
+    "review-refuter": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "sdd-research": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "sdd-proposal": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "sdd-tasks": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "sdd-onboard": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "gentle-ai-explore": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "review-readability": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "review-reliability": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "review-resilience": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "review-validator": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "sdd-status": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "gentle-ai-verify": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
+    "sdd-init": {
+      "model": "nan/qwen3.8-flash",
+      "thinking": "high"
+    }
+  }
+}
