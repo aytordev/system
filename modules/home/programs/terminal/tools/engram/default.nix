@@ -22,5 +22,10 @@ in {
     home.packages = [
       cfg.package
     ];
+    home.sessionVariables = {
+      ENGRAM_BIN = lib.getExe cfg.package;
+      ENGRAM_DATA_DIR = "${config.xdg.dataHome}/engram";
+      ENGRAM_NO_UPDATE_CHECK = "1";
+    };
   };
 }

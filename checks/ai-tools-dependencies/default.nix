@@ -9,20 +9,15 @@
 
   skillNames =
     lib.filter
-    (name: name != "_shared" && entries.${name} == "directory" && builtins.pathExists (skillsDir + "/${name}/SKILL.md"))
+    (name: entries.${name} == "directory" && builtins.pathExists (skillsDir + "/${name}/SKILL.md"))
     (builtins.attrNames entries);
 
-  # `_shared` is the shared protocol bundle every SDD/review skill reads. It is
-  # not a skill (no SKILL.md), so it is a valid dependency target but never a
-  # graph node with outgoing edges.
-  sharedBundle = "_shared";
-  sharedExists = entries ? ${sharedBundle} && entries.${sharedBundle} == "directory";
-  validTargets = skillNames ++ lib.optional sharedExists sharedBundle;
+  validTargets = skillNames;
 
   # --- Declared dependencies ----------------------------------------------
 
   # `dependencies` is an optional array in a skill's metadata.json. Each entry
-  # names another skill or the shared protocol bundle. It is the only declared
+  # names another skill. It is the only declared
   # dependency surface; prose mentions are deliberately not parsed.
   metadataOf = name: let
     file = skillsDir + "/${name}/metadata.json";
@@ -98,13 +93,11 @@
   referenceProblems = referenceProblemsIn rawDeps validTargets skillNames;
   cycleProblems = builtins.map (name: "skill '${name}' participates in a dependency cycle") (cyclicNodesIn graph skillNames);
 
-  # Both deployed clients link the whole skills tree (OpenCode
-  # `programs.opencode.skills`, Pi `cfg.skills`), so each client's selected set
-  # is every skill. A client that later selects a subset must stay closed under
-  # `dependencies`; the helper enforces that.
+  # The capability publishes exactly these individual leaves for each client.
   clients = {
-    opencode = skillNames;
-    pi = skillNames;
+    collection = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
+    opencode = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
+    pi = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
   };
 
   closureProblems =
@@ -144,7 +137,11 @@
   };
   failedSelfTests = builtins.attrNames (lib.filterAttrs (_: ok: !ok) selfTests);
 
-  problems = referenceProblems ++ cycleProblems ++ closureProblems;
+  # Each exported folder must also work on its own, outside any collection.
+  standaloneProblems =
+    map (name: "skill '${name}' requires a sibling package; bundle its required support instead")
+    (lib.filter (name: parsedDeps name != []) skillNames);
+  problems = referenceProblems ++ cycleProblems ++ closureProblems ++ standaloneProblems;
 in
   if failedSelfTests != []
   then throw "ai-tools dependency self-test failures: ${lib.concatStringsSep ", " failedSelfTests}"

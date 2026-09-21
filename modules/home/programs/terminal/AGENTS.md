@@ -19,7 +19,7 @@ terminal/
 `tools/{tool}/` (and `shells/{shell}/`, `emulators/{emulator}/`) owns the
 namespace `aytordev.programs.terminal.{category}.{tool}`.
 
-Large tools may use contained sibling files (see opencode, pi, bitwarden-cli).
+Large tools may use contained sibling files (see opencode, bitwarden-cli).
 The directory's `default.nix` remains the only auto-discovered module and owns
 the option namespace; containment files are `import`ed from it.
 
@@ -99,8 +99,8 @@ Long-running user daemons use Home Manager unit form:
 - `systemd.user.services` on Linux
 
 When a tool is service-capable, keep the service in the same directory
-(`service.nix`) and expose `cfg.service.enable`/`autoStart` (see opencode,
-pi). Runtime cacheable services load secret files at start, not build
+(`service.nix`) and expose `cfg.service.enable`/`autoStart` when applicable.
+Runtime cacheable services load secret files at start, not build
 time.
 
 ### Runtime Secrets
@@ -114,6 +114,14 @@ Example contract: `checks/home-identity` asserts secrets are file-based and
 wrappers fail closed without real tokens in env.
 
 ### Runtime-Managed Agent Integrations
+
+Pi is package-only. The official `gentle-ai install --agent pi` owns its native
+profile, Shell package/private engine, extensions, and workflow. Nix owns the
+public CLI, Pi, Engram, Node/npm, and runtime environment. The separate guarded
+shared `modules/common/ai-tools/ai-skills.nix` capability exports four self-contained folders at
+`$XDG_DATA_HOME/aytordev/skills` even without clients, plus recursive file links
+for enabled Pi/OpenCode clients; never link a whole client profile or skills root. See
+`modules/common/ai-tools/README.md` for onboarding and updater ownership.
 
 Some tools ship integrations that write into *another* app's config at runtime
 and own those files. Never vendor them in Nix: a store symlink would block the

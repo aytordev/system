@@ -65,7 +65,7 @@
     };
 
     engram = {
-      command = getExe pkgs.aytordev.engram;
+      command = getExe config.aytordev.programs.terminal.tools.engram.package;
       args = ["mcp"];
       env = {
         ENGRAM_DATA_DIR = "${config.xdg.dataHome}/engram";
@@ -135,25 +135,16 @@ in {
           OpenCode.
         '';
       };
-
-      pi = mkOption {
-        type = types.listOf types.str;
-        default = [];
-        description = ''
-          Catalog server names selected for Pi. Recorded here as data for the
-          Pi MCP bridge (T07); this module does not project Pi servers itself.
-        '';
-      };
     };
   };
 
   config = mkIf cfg.enable {
     assertions = [
       {
-        assertion = unknownServers (cfg.selection.opencode ++ cfg.selection.pi) == [];
+        assertion = unknownServers cfg.selection.opencode == [];
         message = ''
           aytordev.programs.terminal.tools.mcp.selection references unknown
-          servers: ${lib.concatStringsSep ", " (unknownServers (cfg.selection.opencode ++ cfg.selection.pi))}
+          servers: ${lib.concatStringsSep ", " (unknownServers cfg.selection.opencode)}
           (available: ${lib.concatStringsSep ", " serverNames})
         '';
       }
@@ -161,8 +152,7 @@ in {
 
     programs.mcp = {
       enable = true;
-      # Only the OpenCode-selected servers are declared. Pi's selection stays
-      # data (T07) and must never leak into this generic set.
+      # Only explicitly selected OpenCode servers are declared.
       servers = lib.filterAttrs (name: _: lib.elem name cfg.selection.opencode) cfg.servers;
     };
   };

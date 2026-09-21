@@ -62,8 +62,8 @@ body as needed.
 
 ### 5. Pull request
 
-If a PR is needed, follow the existing PR template and `branch-pr`/`chained-pr`
-skills for reviewable pull requests.
+If a PR is needed, follow the existing PR template and keep it reviewable as
+one coherent change.
 
 ## Architecture Decisions
 
@@ -78,6 +78,8 @@ decision and its consequences; keep them short and readable.
 - **Naming**: options under `aytordev.{category}.{subcategory}`.
 - **Style guide reference**: see the `nix` and `dotfiles-coder` skills in
   `modules/common/ai-tools/skills/`, plus the per-directory `AGENTS.md`.
+- **AI ownership**: follow the [native adoption guide](modules/common/ai-tools/README.md).
+  The repository publishes four local skills; upstream owns Pi's workflow.
 
 ## Notes
 

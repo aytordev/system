@@ -68,8 +68,9 @@ sudo nixos-rebuild switch --flake .#<hostname>
 - **Custom packages and overlays**: portable nixpkgs-compatible derivations and
   overlays.
 - **Project templates**: `nix flake init -t .#node`.
-- **AI tooling**: agents, slash commands, and skills for agentic coding
-  workflows in `modules/common/ai-tools`.
+- **AI tooling**: Nix-owned Pi/Gentle AI/Engram executables, native upstream
+  Pi onboarding, and four local skills. See the
+  [ownership and adoption guide](modules/common/ai-tools/README.md).
 
 ## Private Profile Contract
 

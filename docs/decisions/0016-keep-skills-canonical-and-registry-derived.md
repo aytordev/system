@@ -1,7 +1,11 @@
 # ADR 0016: Keep Skills Canonical and the Registry Derived
 
-Status: Proposed
+Status: Historical / superseded (originally Proposed)
 Date: 2026-09-14
+
+> The local workflow below has been retired. See the [current ownership and
+> adoption guide](../../modules/common/ai-tools/README.md). Original reasoning
+> and references, including removed code, are preserved as historical evidence.
 
 ## Decision
 

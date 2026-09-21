@@ -15,10 +15,11 @@ tags: constraints
 - Read the full frontmatter `description`. Never require a literal `Trigger:` substring.
 - Resolve precedence deterministically: project scope over global scope. Record every candidate when the same name appears at the same precedence tier.
 - Surface shadowed and ambiguous duplicates in the registry; never silently keep the first-found entry.
-- Index the full inventory, but mark invocation eligibility separately: `sdd-*` and `_shared` are phase-only.
-- Read-only listing and `none` persistence mode MUST write nothing: no `.atl/`, no `.gitignore`, no Engram.
+- Index the full inventory; invocation requires a matching task and description.
+- Read-only listing and default `none` persistence mode MUST write nothing.
 - In `engram` mode persist to Engram only; do not write project files.
-- In `openspec`/`hybrid` (or explicit file persistence) write `.atl/skill-registry.md`.
+- In explicitly requested `file` mode write `.ai-local/skill-registry.md`.
+- Never write Shell's generated `.atl/skill-registry.md` or schedule automatic refreshes.
 - If no skills are found, produce an empty index so agents stop searching blindly.
 
 ### Forbidden

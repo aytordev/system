@@ -18,7 +18,7 @@ Build the registry markdown using this format:
 exact `SKILL.md` paths; executors read the selected originals plus the references
 they need. Generated summaries are not authoritative.
 
-See `_shared/skill-resolver.md` for the full resolution protocol.
+Optional selection guidance: {exact absolute path to the selected registry skill's references/skill-resolver.md}.
 
 ## Index
 
@@ -40,8 +40,8 @@ See `_shared/skill-resolver.md` for the full resolution protocol.
 
 ## Invocation Eligibility
 
-- Domain skills (all non-`sdd-*`, non-`_shared` entries above) MAY be auto-selected by delegators.
-- SDD phase skills (`sdd-*`) and `_shared` protocols are phase-only: loaded by the orchestrator for their phase, not auto-selected as domain skills.
+- Select knowledge only when its description matches the actual task.
+- Inventory membership does not authorize a workflow or delegation.
 ```
 
 ### Key Rules

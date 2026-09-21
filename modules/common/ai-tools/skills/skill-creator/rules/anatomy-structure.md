@@ -29,7 +29,7 @@ my-skill/
 - `scripts/` is for logic that must run deterministically instead of being described.
 - `assets/` is for output resources (templates, images, fonts).
 - `modules/` is reserved for conditional content loaded at runtime by a
-  specific skill (for example `sdd-apply/modules/strict-tdd.md`).
+  specific skill (for example an optional testing method).
 
 Do not create a directory that stays empty, and do not move existing useful
 files just to imitate another repository's tree.

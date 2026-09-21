@@ -1,5 +1,9 @@
 # Local SDD Engine Slice Results (T19 input)
 
+> **Historical / superseded:** this records the retired local dual-client workflow.
+> Current ownership and onboarding: [native adoption guide](../../../modules/common/ai-tools/README.md).
+> Past verification and procedures below do not validate or operate the current native Shell.
+
 ## Scope
 
 This is a bounded measurement spike for task T19 of the

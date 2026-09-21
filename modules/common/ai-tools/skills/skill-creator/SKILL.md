@@ -1,6 +1,7 @@
 ---
 name: skill-creator
 description: "Trigger: new skills, updating agent instructions, auditing skill packages. Author and maintain skills in this repository's supported layout."
+compatibility: "Requires filesystem read access; authoring needs write access, and repository verification needs a terminal and Nix."
 ---
 
 # Skill Creator
@@ -9,6 +10,12 @@ Authoritative authoring contract for skills under
 `modules/common/ai-tools/skills/`. A skill is a runtime instruction contract
 for an LLM, not human documentation. Keep `SKILL.md` concise and let supporting
 files carry detail.
+
+Use equivalent tools supplied by the host, not a particular client's tool names.
+Supporting paths are relative to this skill folder; repository paths identify
+the target checkout. `metadata.json` is required by this repository's validation,
+not by every Agent Skills host. A host unable to read support files or run checks
+must report that limit rather than claiming an authored skill was verified.
 
 ## Activation Contract
 
@@ -29,6 +36,9 @@ Use this skill when:
 - Keep `SKILL.md` concise and runtime-oriented; push detail into `rules/` or `references/`.
 - Do not add `scripts/` or `assets/` until a reusable resource actually exists.
 - Validate before finishing; do not hand-maintain a parallel description.
+- Ordinary maintenance preserves the four-skill inventory. Creation of another
+  repository-published skill requires explicit approval to expand that policy;
+  authoring a source package alone does not publish it.
 
 ## Decision Gates
 
@@ -43,18 +53,23 @@ Use this skill when:
 
 ## Execution Steps
 
-1. Confirm the pattern is reusable and no same-named skill exists.
+1. Distinguish maintenance from explicitly approved inventory expansion. For
+   creation, confirm approval, reusable value, and no same-named skill.
 2. Create `skills/<name>/SKILL.md` with valid frontmatter.
 3. Add `metadata.json` mirroring `name` and `description`, plus `version` and `organization`.
 4. Add supporting content in the directories selected above.
-5. Validate with the contract check (see `rules/process-steps.md`).
-6. Register the skill in `modules/common/ai-tools/AGENTS.md` Current Inventory.
+5. For approved expansion, update the neutral collection's source, the `ai-skills` publication list, documented
+   inventory, and explicit inventory/dependency/publication expectations together
+   (see `rules/process-steps.md`). Do not recreate a workflow catalog or orchestrator.
+6. Verify metadata, standalone collection export, and actual client publication,
+   including disabled-client guards and isolated-folder resource resolution.
 7. Audit or update by re-applying these rules; keep provenance honest.
 
 ## Output Contract
 
-Return files created/modified, the layout directories chosen, and the validation
-result.
+Return files created/modified, the layout directories chosen, approval scope,
+and metadata/publication validation results. Do not report a new skill as
+available merely because its source files exist.
 
 ## References
 

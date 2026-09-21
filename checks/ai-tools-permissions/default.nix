@@ -1,5 +1,4 @@
-# T10 integration check: role permission intent must map to each client's real
-# enforcement boundary.
+# OpenCode global permission contract and matching-semantics probe.
 #
 # It evaluates a synthetic Home Manager composition, then runs a disposable
 # probe (a temp target) that applies OpenCode's actual permission-matching
@@ -7,11 +6,7 @@
 #   - an `ask`/`deny` edit is not silently written;
 #   - a read-only shell command is allowed;
 #   - a mutating git/config/remote (and other mutating shell) command is gated;
-#   - MCP resource reads follow `read`;
-#   - the two Pi judges receive an identical target envelope and isolated
-#     sessions.
-# Pi's configured deny rules are asserted, and the residual risk (the
-# third-party gate is not provisioned by Nix) is reported explicitly.
+#   - MCP resource reads follow `read`.
 {
   lib,
   pkgs,
@@ -46,7 +41,6 @@
             };
             programs.terminal.tools = {
               opencode.enable = true;
-              pi.enable = true;
             };
           };
           home.stateVersion = "25.11";
@@ -55,24 +49,10 @@
     }).config;
 
   opencodePermission = home.programs.opencode.settings.permission;
-  opencodeAgents = home.programs.opencode.settings.agent;
-  reviewAgent = opencodeAgents.sdd-review;
-  piPermission = home.aytordev.programs.terminal.tools.pi.permissions.config;
-
-  workflowSrc = ../../modules/home/programs/terminal/tools/pi/workflow;
 
   checks = {
     # The global file-edit gate is not `allow`.
     globalEditAsks = opencodePermission.edit == "ask";
-
-    # The reviewer role is a hard read-only boundary (file and shell).
-    reviewEditDenies = reviewAgent.permission.edit == "deny";
-    reviewBashDenies = reviewAgent.permission.bash == "deny";
-    reviewIsSubagent = reviewAgent.mode == "subagent";
-    # The generated executor prompt was replaced by the reviewer prompt.
-    reviewPromptOverridden =
-      !(lib.hasInfix "SDD phase executor" reviewAgent.prompt)
-      && lib.hasInfix "adversarial reviewer" reviewAgent.prompt;
 
     # The broad mutating-git `allow` patterns are gone.
     broadGitAllowsRemoved =
@@ -114,10 +94,7 @@
   report = pkgs.writeText "ai-tools-permissions-report.json" (builtins.toJSON {
     opencode = {
       global = opencodePermission;
-      reviewAgent = reviewAgent.permission;
-      standardAgent = opencodeAgents.sdd-standard.permission;
     };
-    pi = piPermission;
   });
 in
   if failed != []
@@ -125,7 +102,6 @@ in
   else
     pkgs.runCommand "ai-tools-permissions-check" {
       nativeBuildInputs = [pkgs.nodejs_22 pkgs.gnugrep];
-      WORKFLOW_DIR = workflowSrc;
     } ''
       export NODE_NO_WARNINGS=1
       export HOME="$TMPDIR"
@@ -135,7 +111,6 @@ in
 
       node ${./probe.mjs} ${report} | tee probe.log
       grep --quiet "PROBE OK" probe.log
-      grep --quiet "residual risk: Pi permission enforcement" probe.log
 
       touch "$out"
     ''

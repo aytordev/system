@@ -253,7 +253,7 @@ in {
     expected = true;
   };
 
-  # ─── Existing OpenCode settings/providers/skills are preserved ────────────
+  # ─── Client settings survive removal of the local workflow ───────────────
 
   testOpencodePreservesExistingSettings = {
     expr = {
@@ -268,11 +268,11 @@ in {
     expected = {
       autoshare = true;
       autoupdate = true;
-      agents = true;
-      reviewerPrompt = true;
-      commands = true;
-      context = true;
-      skills = true;
+      agents = false;
+      reviewerPrompt = false;
+      commands = false;
+      context = false;
+      skills = false;
     };
   };
 }

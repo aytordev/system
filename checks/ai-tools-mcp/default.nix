@@ -24,7 +24,6 @@
     opencode ? true,
     mcp ? true,
     opencodeSelection ? [],
-    piSelection ? [],
   }:
     (inputs.self.lib.system.mkHome {
       system = pkgs.stdenv.hostPlatform.system;
@@ -45,7 +44,6 @@
                 enable = mcp;
                 selection = {
                   opencode = opencodeSelection;
-                  pi = piSelection;
                 };
               };
               opencode.enable = opencode;
@@ -62,11 +60,9 @@
   emptyHome = mkHome {};
   subsetHome = mkHome {
     opencodeSelection = ["engram"];
-    piSelection = ["nixos"];
   };
   allHome = mkHome {
     opencodeSelection = ["engram" "filesystem" "nixos"];
-    piSelection = ["engram" "filesystem" "nixos"];
   };
   disabledClientHome = mkHome {
     opencode = false;
@@ -87,7 +83,6 @@
   checks = {
     emptyEmitsNothing = effectiveMcp emptyHome == {};
     subsetIsExact = sorted (builtins.attrNames (effectiveMcp subsetHome)) == ["engram"];
-    piSelectionDoesNotLeak = !(effectiveMcp subsetHome ? nixos);
     allIsExact = sorted (builtins.attrNames allMcp) == ["engram" "filesystem" "nixos"];
     staleGithubSocketGone = !(allMcp ? github) && !(allMcp ? socket);
     disabledClientEmitsNothing = effectiveMcp disabledClientHome == {};

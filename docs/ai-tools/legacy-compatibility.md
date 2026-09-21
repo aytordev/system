@@ -1,5 +1,9 @@
 # Legacy Artifact Compatibility and Migration (T25)
 
+> **Historical / superseded:** this records the retired local dual-client workflow.
+> Current ownership and onboarding: [native adoption guide](../../modules/common/ai-tools/README.md).
+> Past verification and procedures below do not validate or operate the current native Shell.
+
 ## Scope
 
 This record proves that the workflow can meet work already in progress without
@@ -11,7 +15,7 @@ rollback boundary. It closes the compatibility conditions of
 [ADR 0015](../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md)
 F13/F14/F15. The task status lives in the [implementation plan](implementation-plan.md).
 
-The deterministic proof is [checks/ai-tools-legacy-compat/](../../checks/ai-tools-legacy-compat/default.nix),
+The historical deterministic proof was `checks/ai-tools-legacy-compat/` (removed),
 which runs the real `aytordev-sdd` adapter over redacted copies of the surfaces
 below and writes `legacy-compat-fixture.json` into its output.
 
@@ -52,7 +56,7 @@ Frozen inputs: engine `gentle-ai` v2.9.0
 
 All conversions are exposed through `aytordev-sdd` (no skill or client handles a
 raw format) and live in
-[`modules/home/programs/terminal/tools/gentle-ai/migrate.sh`](../../modules/home/programs/terminal/tools/gentle-ai/default.nix).
+`modules/home/programs/terminal/tools/gentle-ai/migrate.sh` (removed).
 Every one: prints a preview, **never mutates the input**, writes through a temp
 file and publishes atomically (interruption/retry safe), reads its own result
 back, and emits `aytordev-sdd.migrate/v1`.
@@ -126,7 +130,7 @@ Both OpenCode and Pi resolve the backend and readiness through the same
 1. `aytordev-sdd status <change>` reports the engine's readiness and declared
    backend (T9/T28). `engram`/`openspec`/`hybrid` are read; `none` is
    session-local and never sent to the engine.
-2. Per the [persistence contract](../../modules/common/ai-tools/skills/_shared/persistence-contract.md), an
+2. Per the historical `_shared/persistence-contract.md` (removed), an
    existing change keeps its recorded backend; there is no silent cross-store
    fallback. If the recorded locator does not resolve, the change is `blocked`.
 3. Legacy specs are read in place (both grammars). Legacy envelopes are converted

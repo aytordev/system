@@ -1,7 +1,0 @@
-{
-  "status": "failed",
-  "executive_summary": "verification failed",
-  "artifacts": [],
-  "next_recommended": "apply",
-  "risks": ["critical issue"]
-}

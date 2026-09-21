@@ -73,7 +73,7 @@ selects nothing the app can resolve, so prefer the discovered `id` values in the
   `lib.aytordev.resolveApp` and **throws**, so a broken declaration fails the
   build rather than silently degrading.
 - `generated fallback` is the app's own palette-derived resource, marked `G` in
-  the matrix. Apps with no upstream resource (Pi, Sketchybar, JankyBorders) are
+  the matrix. Apps with no upstream resource (Sketchybar, JankyBorders) are
   always generated.
 - `none` means neither an official resource nor a generated path exists; nothing
   is written.
@@ -133,7 +133,7 @@ promised.
 | App / case | Behavior |
 | --- | --- |
 | Firefox | `userChrome` is generated from the palette for **every** family. The declared id is a Firefox Color theme title, not a UI selection. |
-| Pi | No upstream resource; the generated theme and vendored gentle-pi banner deploy with `shell.enable`. With the shell off, the generated file is not deployed and resolution is `none`. |
+| Pi | Native profile and theme ownership belongs to the official Gentle AI installer; Pi is outside this repository's theme catalog. |
 | Sora `light` | Synthetic, unofficial companion. Sora resources are `dark`-only (`complete = false`), so `light` resolves to generated where the app has a fallback, otherwise `none`. |
 | Neovim | Built from the `aytordev-nvim` distribution with the family/variant from `aytordev.theme` (through its `lib.mkAytordevNeovim` builder). Sora is dark-only, so the synthetic `light` companion uses the editor default (`none`). |
 | tmux | Sources the Sora theme when the family provides one; otherwise generates from the palette. |

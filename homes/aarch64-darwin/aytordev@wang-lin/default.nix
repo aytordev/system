@@ -62,26 +62,12 @@ in {
 
       terminal = {
         tools = {
-          # Explicit MCP selection (ADR 0015, C2). The reusable module enables
-          # no servers; this home opts into the same set for both clients.
+          # Explicit MCP selection for the independent OpenCode client.
           mcp.selection = {
             opencode = ["engram" "filesystem" "nixos"];
-            pi = ["engram" "filesystem" "nixos"];
           };
 
-          # Home-boundary policy: enable the adopted SDD engine (ADR 0015, C12 /
-          # T27). This is the only place the reusable default is turned on, so
-          # Pi's SDD workflow resolves `workflow.engine` to the `aytordev-sdd`
-          # adapter and OpenCode uses the same boundary. Reusable modules keep
-          # their empty/disabled defaults.
-          #
-          # Rollback and backend-state preservation: restoring a previous Home
-          # Manager generation restores the engine, adapter, and skills only. It
-          # does not delete runtime state — Engram memory lives outside the store
-          # under `$XDG_DATA_HOME/engram` and SDD artifacts live under each
-          # project's `openspec/` tree, so both survive a rollback. Data rollback
-          # is "do not adopt the derived output"; migrations keep originals
-          # byte-identical. See docs/ai-tools/legacy-compatibility.md.
+          # Official executable only; native onboarding owns the Pi profile.
           gentle-ai.enable = true;
 
           # Custom shell integrations

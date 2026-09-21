@@ -7,9 +7,6 @@
   yaziFlavor = import ../../modules/home/programs/terminal/tools/yazi/flavor.nix {
     palette = activeThemePalette;
   };
-  piTheme = import ../../modules/home/programs/terminal/tools/pi/theme.nix {
-    palette = activeThemePalette;
-  };
 in {
   testYaziFlavorCoversAllSections = {
     expr = map (section: lib.hasInfix section yaziFlavor) [
@@ -62,30 +59,5 @@ in {
     in
       lib.hasInfix palette.accent.hex flavor;
     expected = true;
-  };
-
-  testPiThemeIsValidJsonFollowingPalette = {
-    expr = let
-      parsed = builtins.fromJSON (builtins.toJSON piTheme);
-    in {
-      inherit (parsed) name;
-      accent = parsed.vars.accent;
-      hasColors = parsed.colors ? accent;
-      hasExport = parsed.export ? pageBg;
-    };
-    expected = {
-      name = "aytordev";
-      accent = activeThemePalette.accent.hex;
-      hasColors = true;
-      hasExport = true;
-    };
-  };
-
-  testPiThemeFollowsActiveFamily = {
-    expr = let
-      inherit ((themeConfig {aytordev.theme.name = "sora";})) palette;
-    in
-      (import ../../modules/home/programs/terminal/tools/pi/theme.nix {inherit palette;}).vars.bg;
-    expected = "#0e1018";
   };
 }

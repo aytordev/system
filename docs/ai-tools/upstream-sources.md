@@ -1,5 +1,9 @@
 # Upstream Sources and Local Adaptations
 
+> **Historical / superseded:** this records the retired local dual-client workflow.
+> Current ownership and onboarding: [native adoption guide](../../modules/common/ai-tools/README.md).
+> Past verification and procedures below do not validate or operate the current native Shell.
+
 Provenance record for the AI skill migration in
 [ADR 0017](../../docs/decisions/0017-migrate-ai-skills-as-pinned-compatible-bundles.md)
 and task T24 of the [implementation plan](./implementation-plan.md).

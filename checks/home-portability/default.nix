@@ -168,7 +168,7 @@
     (!(ghosttyNoThemesConfig.programs.ghostty.settings ? "custom-shader"))
     (!ghosttyDisabledConfig.aytordev.programs.terminal.emulators.ghostty.enable)
     (!(ghosttyDisabledConfig.xdg.configFile ? "ghostty/shaders/cursor_smear.glsl"))
-    (desktopConfig.aytordev.programs.terminal.tools.pi.theme == "aytordev")
+    (!(desktopConfig.aytordev.programs.terminal.tools.pi ? theme))
     (config.programs.yazi.theme.flavor.dark == "kanagawa-dragon")
     (soraDesktopConfig.programs.yazi.theme.mgr.cwd.fg == "#80c8e0")
     (

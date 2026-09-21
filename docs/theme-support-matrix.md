@@ -14,20 +14,20 @@ override.
 
 ## Family × app (default variant)
 
-| Family | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | hunk | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Kanagawa (dragon) | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
-| Sora (dark) | O | O | O | O | O | O | O | G | O | G | O | O | G | G | O | O | G | O | O | G |
+| Family | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | hunk | jankyborders | lazygit | opencode | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Kanagawa (dragon) | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
+| Sora (dark) | O | O | O | O | O | O | O | G | O | G | O | O | G | O | O | G | O | O | G |
 
 ## Variant coverage
 
-| Family / variant | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | hunk | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Kanagawa dragon | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
-| Kanagawa lotus | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
-| Kanagawa wave | O | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
-| Sora dark | O | O | O | O | O | O | O | G | O | G | O | O | G | G | O | O | G | O | O | G |
-| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
+| Family / variant | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | hunk | jankyborders | lazygit | opencode | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Kanagawa dragon | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa lotus | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa wave | O | G | G | G | G | G | O | G | G | G | G | G | G | G | G | O | G | O | G |
+| Sora dark | O | O | O | O | O | O | O | G | O | G | O | O | G | O | O | G | O | O | G |
+| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
 
 ## Official resources and provenance
 
@@ -73,7 +73,6 @@ adapter.
 | jankyborders | palette | No upstream resource; consumes raw sketchybar-format palette roles. |
 | lazygit | aytordev | Palette-generated theme. |
 | opencode | aytordev | Palette-generated theme. |
-| pi | aytordev | No upstream resource; theme + banner ship with the gentle shell. |
 | sketchybar | palette | No upstream resource; runtime family/variant picker (the only hot-reloading consumer). |
 | starship | aytordev | Palette-generated palette. |
 | tmux | aytordev | Palette-generated conf. |

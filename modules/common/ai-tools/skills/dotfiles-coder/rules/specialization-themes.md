@@ -20,7 +20,7 @@ follows the policy. The derived family × app matrix and its provenance live in
 `docs/theme-support-matrix.md` (regenerate with
 `bash checks/theme-catalog/regenerate.sh`); the human guide is
 `docs/theme-system.md` and the policy is
-[ADR-0012](../../../../../../docs/decisions/0012-theme-resolution-policy.md).
+`docs/decisions/0012-theme-resolution-policy.md` (ADR 0012 in the target repository).
 
 **Incorrect (Hardcoded Colors):**
 

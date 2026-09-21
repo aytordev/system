@@ -1,10 +1,7 @@
 {
     "name": "skill-registry",
-    "description": "Discover and index available skills by name, full description, scope, and exact SKILL.md path, with a content freshness identity. Supports read-only listing and persistence-aware refresh. Trigger: When user says 'update skills', 'skill registry', 'update registry', or after installing/removing skills.",
+    "description": "Discover and index available skills by name, full description, scope, and exact SKILL.md path, with a content freshness identity. Supports read-only listing and explicitly requested persistence. Trigger: When the user requests the local skill registry, invokes /skill:skill-registry, or asks to refresh the local skill index.",
     "version": "1.0.0",
     "organization": "aytordev",
-    "date": "May 2026",
-    "dependencies": [
-        "_shared"
-    ]
+    "date": "May 2026"
 }

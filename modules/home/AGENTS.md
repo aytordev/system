@@ -159,7 +159,8 @@ not cover falls back to the app's generated resource when it has one (most
 adapters do, e.g. Ghostty) or resolves to `none`. Otherwise the app leaves its
 default and exposes a nullable `theme` override (a bare id or
 `{ mode = "auto"|"manual"|"none"; id = ...; }`). Apps with no upstream resource
-(Pi, Sketchybar, JankyBorders) generate from the palette for every family. Sora
+(Sketchybar, JankyBorders) generate from the palette for every family. Pi's
+native profile and themes are owned by the official Gentle AI installer. Sora
 is dark-only with a synthetic light companion, so its integrations cover only
 `dark`. Runtime switching is Sketchybar-scoped; other apps re-read their theme on
 restart. The full human guide is `docs/theme-system.md`; the derived per-family
@@ -412,7 +413,7 @@ in {
 ```
 
 Use the manual `lib.mkOption` + `defaultText` form when the default is conditional
-(see pi, bitwarden-cli). `mkOpt`/`mkBoolOpt` are for foundational modules;
+(see bitwarden-cli). `mkOpt`/`mkBoolOpt` are for foundational modules;
 capabilities use `lib.mkOption`.
 
 Full canonical template, per-class variants, and style rules live in the

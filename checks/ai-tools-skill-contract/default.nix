@@ -7,12 +7,12 @@
   skillsDir = ../../modules/common/ai-tools/skills;
   entries = builtins.readDir skillsDir;
 
-  # Every directory except _shared is expected to be a skill package. Listing
+  # Every directory is expected to be a self-contained skill package. Listing
   # them all (instead of filtering on SKILL.md) lets a missing entry point fail
   # with a named skill rather than being silently skipped.
   skillNames =
     builtins.filter
-    (name: name != "_shared" && entries.${name} == "directory")
+    (name: entries.${name} == "directory")
     (builtins.attrNames entries);
 
   # --- Frontmatter ---------------------------------------------------------

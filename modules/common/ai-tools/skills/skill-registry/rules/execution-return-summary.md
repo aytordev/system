@@ -15,7 +15,7 @@ Return a structured summary:
 ## Skill Registry Updated
 
 **Project**: {project name}
-**Persistence**: {mode} — {session only | Engram skill-registry | .atl/skill-registry.md | both}
+**Persistence**: {none | engram | file} — {session only | Engram aytordev/local-skill-registry | .ai-local/skill-registry.md}
 **Indexed skills**: {count}
 
 ### Indexed Skills
@@ -33,8 +33,8 @@ Return a structured summary:
 | {file} | {path} | {subtree} |
 
 ### Next Steps
-Delegators read this index and pass exact `SKILL.md` paths to sub-agents
-via `## Skills to load before work`. Run refresh after installing/removing skills.
+Read selected original `SKILL.md` files. Refresh this local index explicitly
+when needed; it does not replace Shell's registry or install a workflow.
 ```
 
 If listing was requested instead of a refresh, report `Read-only listing — nothing written`.

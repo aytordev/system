@@ -1,6 +1,6 @@
 # Regression check for theme file deployment.
 #
-# Reproduces the class of bug that broke `~/.pi/agent/themes`: declaring
+# Reproduces the class of bug from the retired Pi theme deployment: declaring
 # individual files *inside* a directory that Home Manager deploys as a single
 # store-backed symlink. The store is read-only, so the activation cannot place
 # a child link under it and the whole switch fails.
@@ -33,8 +33,7 @@
 
   # One synthetic home that exercises every generated-theme deployment path.
   # Sora light has no native light resource, so Ghostty and Zed both fall back
-  # to palette-generated files; Pi always generates because it ships no
-  # upstream resource for any family.
+  # to palette-generated files; OpenCode exercises directory-source themes.
   themeHome = inputs.self.lib.system.mkHome {
     inherit username;
     system = pkgs.stdenv.hostPlatform.system;
@@ -54,7 +53,7 @@
             variant = "light";
           };
           programs = {
-            terminal.tools.pi.enable = true;
+            terminal.tools.opencode.enable = true;
             terminal.emulators.ghostty.enable = true;
             desktop.editors.zed.enable = true;
           };
@@ -94,19 +93,18 @@
   # A synthesized previous generation. The name ends in `-home-manager-files`
   # so the cleanup fragment classifies its links as Home Manager-owned.
   fakeOldFiles = pkgs.runCommand "theme-migration-old-home-manager-files" {} ''
-    mkdir -p "$out/.pi/agent"
-    printf 'old-settings\n' > "$out/.pi/agent/settings.json"
-    printf 'old-obsolete\n' > "$out/.pi/agent/obsolete.json"
+    mkdir -p "$out/.config/opencode"
+    printf 'old-settings\n' > "$out/.config/opencode/opencode.json"
+    printf 'old-obsolete\n' > "$out/.config/opencode/obsolete.json"
   '';
 
-  # Pure coverage: the deployments this regression must protect. The Pi themes
-  # directory is the exact shape that regressed.
+  # Pure coverage: retain the same directory-source shape with OpenCode.
   coverageTests = [
-    (lib.elem ".pi/agent/themes" targets)
+    (lib.elem ".config/opencode/themes" targets)
     (lib.elem ".config/ghostty/themes/aytordev.conf" targets)
     (lib.elem ".config/zed/themes/aytordev.json" targets)
     (lib.elem ".config/ghostty/shaders/cursor_smear.glsl" targets)
-    (lib.all (t: !(lib.hasPrefix ".pi/agent/themes/" t)) targets)
+    (lib.all (t: !(lib.hasPrefix ".config/opencode/themes/" t)) targets)
     (lib.length (lib.unique targets) == lib.length targets)
   ];
 in
@@ -191,10 +189,10 @@ in
       fi
       echo "structural: $SCAN_ENTRIES entries, $SCAN_DIRS directory sources, 0 violations"
 
-      # Self-test: the exact `~/.pi/agent/themes` shape must be flagged.
+      # Self-test: a file nested inside a directory symlink must be flagged.
       bad_manifest="$work/bad-manifest.tsv"
-      printf '.pi/agent/themes\t%s/.pi/agent\tfalse\n' "$oldFiles" > "$bad_manifest"
-      printf '.pi/agent/themes/aytordev.json\t%s/.pi/agent/settings.json\tfalse\n' "$oldFiles" >> "$bad_manifest"
+      printf '.config/opencode/themes\t%s/.config/opencode\tfalse\n' "$oldFiles" > "$bad_manifest"
+      printf '.config/opencode/themes/aytordev.json\t%s/.config/opencode/opencode.json\tfalse\n' "$oldFiles" >> "$bad_manifest"
       SCAN_VIOLATIONS=0
       scan_invariant "$bad_manifest"
       if [ "$SCAN_VIOLATIONS" -eq 0 ]; then
@@ -241,39 +239,39 @@ in
       s1="$work/s1"
       mkdir -p "$s1/home"
       run_links "$s1/home"
-      expect_link "$s1/home" ".pi/agent/themes"
+      expect_link "$s1/home" ".config/opencode/themes"
       expect_link "$s1/home" ".config/ghostty/themes/aytordev.conf"
       expect_link "$s1/home" ".config/zed/themes/aytordev.json"
 
       # Managed links from a previous generation: live links are relinked and
       # orphans are cleaned up.
       s2="$work/s2"
-      mkdir -p "$s2/home/.pi/agent"
-      ln -s "$oldFiles/.pi/agent/settings.json" "$s2/home/.pi/agent/settings.json"
-      ln -s "$oldFiles/.pi/agent/obsolete.json" "$s2/home/.pi/agent/obsolete.json"
+      mkdir -p "$s2/home/.config/opencode"
+      ln -s "$oldFiles/.config/opencode/opencode.json" "$s2/home/.config/opencode/opencode.json"
+      ln -s "$oldFiles/.config/opencode/obsolete.json" "$s2/home/.config/opencode/obsolete.json"
       oldgen="$work/oldgen"
       mkdir -p "$oldgen"
       ln -s "$oldFiles" "$oldgen/home-files"
       run_links "$s2/home" "$oldgen"
-      expect_link "$s2/home" ".pi/agent/settings.json"
-      if [ -e "$s2/home/.pi/agent/obsolete.json" ] || [ -L "$s2/home/.pi/agent/obsolete.json" ]; then
-        fail "orphan link .pi/agent/obsolete.json was not cleaned up"
+      expect_link "$s2/home" ".config/opencode/opencode.json"
+      if [ -e "$s2/home/.config/opencode/obsolete.json" ] || [ -L "$s2/home/.config/opencode/obsolete.json" ]; then
+        fail "orphan link .config/opencode/obsolete.json was not cleaned up"
       fi
 
       # Broken symlink at the target: still ours, so it is replaced.
       s3="$work/s3"
-      mkdir -p "$s3/home/.pi/agent"
-      ln -s "$work/does-not-exist" "$s3/home/.pi/agent/settings.json"
+      mkdir -p "$s3/home/.config/opencode"
+      ln -s "$work/does-not-exist" "$s3/home/.config/opencode/opencode.json"
       run_links "$s3/home"
-      expect_link "$s3/home" ".pi/agent/settings.json"
+      expect_link "$s3/home" ".config/opencode/opencode.json"
 
       # Foreign regular file / directory: the real activation runs
       # `checkLinkTargets` before `linkGeneration` and aborts on a collision.
       # Assert it fails and never touches the user's data.
       s4="$work/s4"
-      mkdir -p "$s4/home/.pi/agent/themes"
-      printf 'user-owned\n' > "$s4/home/.pi/agent/settings.json"
-      printf 'user-owned-dir\n' > "$s4/home/.pi/agent/themes/keep.txt"
+      mkdir -p "$s4/home/.config/opencode/themes"
+      printf 'user-owned\n' > "$s4/home/.config/opencode/opencode.json"
+      printf 'user-owned-dir\n' > "$s4/home/.config/opencode/themes/keep.txt"
       if (
         export HOME="$s4/home"
         export newGenPath="$gen"
@@ -285,9 +283,9 @@ in
       ); then
         fail "checkLinkTargets accepted a foreign file/directory in the way"
       fi
-      [ "$(cat "$s4/home/.pi/agent/settings.json")" = "user-owned" ] || fail "foreign file was modified"
-      [ "$(cat "$s4/home/.pi/agent/themes/keep.txt")" = "user-owned-dir" ] || fail "foreign directory contents were modified"
-      [ ! -L "$s4/home/.pi/agent/settings.json" ] || fail "foreign file was replaced by a symlink"
+      [ "$(cat "$s4/home/.config/opencode/opencode.json")" = "user-owned" ] || fail "foreign file was modified"
+      [ "$(cat "$s4/home/.config/opencode/themes/keep.txt")" = "user-owned-dir" ] || fail "foreign directory contents were modified"
+      [ ! -L "$s4/home/.config/opencode/opencode.json" ] || fail "foreign file was replaced by a symlink"
 
       if [ "$failures" -ne 0 ]; then
         exit 1

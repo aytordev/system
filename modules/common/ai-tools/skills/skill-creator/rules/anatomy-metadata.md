@@ -21,22 +21,27 @@ tags: anatomy, metadata
 
 **Derived projection: `metadata.json`.**
 
+This file is a local validation convention, not a universal runtime field.
+Clients discover standard `SKILL.md` frontmatter; its optional `metadata` field
+is a string-to-string map, distinct from this repository's JSON file.
+
 - Must be a JSON object that parses.
 - `name` and `description` are duplicates of the frontmatter and must match it
   exactly.
 - `version` and `organization` are required catalog fields.
 - `date` and `abstract` are optional and may carry additional catalog detail.
-- `dependencies` is an optional array naming the skills this skill requires at
-  runtime. Each entry is another skill directory name or the shared protocol
-  bundle `_shared` (which is not a skill and has no outgoing edges). Declare
-  only real requirements: do not parse prose mentions into edges.
+- `dependencies` is an optional array naming other required skills. The current
+  four-folder collection must be independently consumable, so its packages have
+  no sibling dependencies. Bundle necessary references/scripts within the skill.
 - It never overrides the frontmatter. When the two disagree, the frontmatter is
   correct and `metadata.json` is stale.
 
 `checks/ai-tools-dependencies` validates the declared graph: every reference
-resolves to a skill or `_shared`, the graph is acyclic, and each client's
-selected-skill set is closed under its dependencies (both deployed clients link
-the whole skills tree).
+resolves to a skill, the graph is acyclic, each selected set is closed, and the
+four portable packages have no sibling dependencies. The `ai-skills` capability
+exports the neutral collection independently of clients and publishes the same
+folders recursively to enabled clients. Neither client's whole skills root is
+owned by Home Manager; resolver support lives inside `skill-registry/references/`.
 
 `checks/ai-tools-skill-contract` enforces this: it lists every skill directory,
 reads the frontmatter, and fails with the offending skill's name if `name` does
