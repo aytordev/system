@@ -180,9 +180,15 @@ Parent-owned, all run on this machine on 2026-09-22:
   applies the pinned alejandra (not the store build) and its statix step rewrote
   `{model = entry.model;}` into `inherit (entry) model;`, and that a repeated
   `pi.` key in the development suite had to be nested so `statix` passes.
-- Not done: no pull request yet. The repository requires an approved issue for
-  every PR (`status:approved` plus exactly one `type:*` label), which is a human
-  triage decision.
+- Pull request #197 opened against `main`
+  (`feat/pi-agent-model-profiles`), labels `enhancement` (the repository's
+  equivalent of the generic Gentle AI `type:feature`), `Modules` and `Checks`.
+  This repository has no issue-first gate: its PR template and workflows do not
+  require a linked approved issue, so none was invented.
+- Deployment: the routing is already effective on this machine (the activation
+  entry was executed against the real files before the switch).
+  `darwin-switch wang-lin` only has to publish the module itself so future
+  switches re-assert it.
 
 ## Decisions
 
@@ -214,3 +220,15 @@ envelope verbatim), `modules/home/programs/terminal/tools/pi/default.nix`,
 `modules/home/suites/development/default.nix`,
 `checks/gentle-ai-engine/default.nix` (option allowlist) and
 `checks/docs-generation/golden/home.txt`.
+
+Work unit 2 — commit `f7ab2b7 docs(odd): track the pi-agent-model-profiles
+feature document`, 1 file, 216 insertions: this document.
+
+Work unit 3 — `docs(odd): record pull request #197`, which records the PR and
+the fact that the routing is already effective on this machine.
+
+## Next step
+
+Run `darwin-switch wang-lin` to publish the module; the CI `nix flake check` on
+PR #197 is the last gate before merge. Nothing else is pending on this machine: a
+Pi started now already reports the declarative routing.
