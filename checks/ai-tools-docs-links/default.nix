@@ -15,11 +15,12 @@
   # `skills/` and pick up other owners' illustrative template links.
   rootFiles = [
     (aiTools + "/README.md")
-    (aiTools + "/base.md")
+    (aiTools + "/AGENTS.md")
   ];
   trees = [
     (aiTools + "/skills/nix")
     (aiTools + "/skills/dotfiles-coder")
+    (aiTools + "/skills/skill-registry")
   ];
 
   markdownFiles = dir: let

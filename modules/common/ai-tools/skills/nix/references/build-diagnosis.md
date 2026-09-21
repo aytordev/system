@@ -9,7 +9,7 @@ A failure in a whole host closure can come from any input. Reproduce against the
 narrowest installable that still fails before reading logs:
 
 ```bash
-nix build .#checks.aarch64-darwin.unit-ai-tools-loading --no-link
+nix build .#checks.aarch64-darwin.unit-ai-tools-dependencies --no-link
 nix build .#darwinConfigurations.wang-lin.system --no-link --show-trace
 ```
 
@@ -32,7 +32,7 @@ evaluation error first: a missing option, a type mismatch, a failing assertion.
 ## Read the Failing Log
 
 ```bash
-nix log .#checks.aarch64-darwin.unit-ai-tools-loading
+nix log .#checks.aarch64-darwin.unit-ai-tools-dependencies
 ```
 
 When the installable name no longer resolves, resolve the derivation and pass

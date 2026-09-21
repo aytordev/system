@@ -75,8 +75,9 @@ flake/          # Internal flake implementation + dev partition
 Agents load AGENTS.md files recursively. Each subdirectory has focused context:
 - Working in `modules/darwin/`? Load nix-darwin patterns.
 - Working in `modules/home/`? Load Home Manager + Module Contract patterns.
-- Working in `modules/common/`? Load shared abstractions and the ai-tools
-  workflow.
+- Working in `modules/common/`? Load shared abstractions and the four local
+  AI skill contracts. Native Gentle AI owns Pi's workflow; see
+  `modules/common/ai-tools/README.md` for ownership and onboarding.
 - Working in `checks/`? Load verification levels and loader logic.
 
 ## Documentation Granularity

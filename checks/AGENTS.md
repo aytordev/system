@@ -13,8 +13,7 @@ any other check directory becomes integration.
 ## Verification Levels
 
 - `unit-*`: Pure contracts, parsers, and architecture policies
-  (`ai-tools-dependencies`, `ai-tools-inventory`, `ai-tools-loading`,
-  `ai-tools-sdd-handoffs`, `ai-tools-sdd-persistence`,
+  (`ai-tools-dependencies`, `ai-tools-inventory`,
   `architecture-layers`,
   `file-parsers`, `home-users-contract`, `input-policy`, `library-exports`,
   `library-overlay`, `lua-shell-quoting`, `nix-unit`, `parse-lix`,
@@ -48,6 +47,18 @@ behavior they test, not the level.
 > `bash checks/theme-catalog/regenerate.sh`.
 
 ## Secrets Handling
+
+`integration-gentle-ai-engine` verifies package/environment ownership and exact
+four-skill publication, standalone neutral export, custom HOME/XDG roots,
+disabled-client guards, and isolated copied-folder resource resolution. It builds the
+official public CLI but does not run native onboarding or touch an Engram DB.
+The remaining `ai-tools-*` checks cover metadata, inventory, dependencies, and
+documentation links. Theme migration retains real Home Manager
+link/collision/orphan checks using a surviving themed app's managed theme
+directory (Yazi flavors).
+`integration-ai-skills-transition` additionally executes the explicit Pi root
+preparation script and pinned HM link/collision fragments against the old Pi
+publication shape, including Darwin `hm.old` and refusal cases.
 
 The private `secrets` input is removed before checks are evaluated. `identity`
 is rebuilt from the injected `secrets` and passed to checks that need host

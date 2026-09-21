@@ -71,7 +71,6 @@
     "programs.terminal.tools.navi"
     "programs.terminal.tools.nh"
     "programs.terminal.tools.nix-search-tv"
-    "programs.terminal.tools.opencode"
     "programs.terminal.tools.pi"
     "programs.terminal.tools.podman-compose"
     "programs.terminal.tools.rclone"

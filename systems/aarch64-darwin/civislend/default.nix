@@ -24,7 +24,7 @@ in {
       workstation = enabled;
     };
 
-    # SOPS is enabled so opencode/pi can wire the nan.builders provider from the
+    # SOPS is enabled so Pi can wire the nan.builders provider from the
     # SOPS-managed API key. Requires the machine's age key and a
     # `hard-secrets/${username}.yaml` entry in the private secrets flake.
     security.sops = {

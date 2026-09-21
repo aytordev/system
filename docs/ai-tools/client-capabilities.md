@@ -1,5 +1,9 @@
 # Client Capabilities: OpenCode and Pi
 
+> **Historical / superseded:** this records the retired local dual-client workflow.
+> Current ownership and onboarding: [native adoption guide](../../modules/common/ai-tools/README.md).
+> Past verification and procedures below do not validate or operate the current native Shell.
+
 Task T01 evidence for [ADR 0015](../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md)
 and the [implementation plan](implementation-plan.md). This file records what the
 **shipped, pinned** clients can actually do. It is not a wish list and not a

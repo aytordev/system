@@ -1,6 +1,7 @@
 ---
 name: nix
 description: "Idiomatic, performant Nix authoring (style, module system, option types, conditionals, overlays, flakes, validation) plus operational diagnosis: build failures, package/output diffing, closures and dependencies, evaluation cost, IFD, and activation verification."
+compatibility: "Requires file access; operational methods need a terminal, Nix, Git, and Python 3 for the bundled report helper."
 license: MIT
 metadata:
   author: aytordev
@@ -11,6 +12,11 @@ metadata:
 
 Guide for authoring idiomatic Nix and for diagnosing Nix operations. The caller
 retains lifecycle ownership: a diagnosis does not authorize code changes.
+
+Use the host's equivalent file and terminal tools. Without those capabilities,
+provide knowledge guidance and state which operational checks cannot run.
+Bundled paths are relative to this skill folder; repository command examples
+refer to the target checkout, not the skill's installation location.
 
 ## Operational Routing
 

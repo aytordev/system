@@ -1,5 +1,9 @@
 # Make AI Workflows Reliable, Portable, and Maintainable in System
 
+> **Historical / superseded:** this records the retired local dual-client workflow.
+> Current ownership and onboarding: [native adoption guide](../../modules/common/ai-tools/README.md).
+> Past verification and procedures below do not validate or operate the current native Shell.
+
 Status: Proposed; agreed scope, implementation pending.
 
 Deliver the same supported workflows in **OpenCode and Pi**, preserve the original

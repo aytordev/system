@@ -9,8 +9,6 @@
   home = inputs.self.homeConfigurations."${username}@wang-lin".config;
   darwin = inputs.self.darwinConfigurations.wang-lin;
   integratedHome = darwin.config.home-manager.users.${username};
-  lsp = home.programs.opencode.settings.lsp;
-  nixdOptions = lsp.nixd.initialization.options;
   bitwardenSettings =
     builtins.fromJSON
     home.home.file."Library/Application Support/Bitwarden/data.json".text;
@@ -36,12 +34,6 @@
     darwin.config.home-manager.useGlobalPkgs
     darwin.config.home-manager.useUserPackages
     (!lib.hasAttrByPath ["aytordev" "home"] darwin.options)
-    (builtins.hasAttr "darwin" nixdOptions)
-    (!(builtins.hasAttr "nixos" nixdOptions))
-    (lib.hasInfix "darwinConfigurations.\"wang-lin\"" nixdOptions.darwin.expr)
-    (lib.hasInfix "homeConfigurations.\"${username}@wang-lin\"" nixdOptions.home-manager.expr)
-    (!(lib.hasInfix "/home/aytordev" nixdOptions.home-manager.expr))
-    (builtins.elem "/etc/profiles/per-user/${username}/share/lua/5.1" lsp.emmylua-ls.initialization.Lua.workspace.library)
     (home.programs.nh.flake == "${home.home.homeDirectory}/Developer/system")
     (home.home.shellAliases.nixcfg == "nvim ${home.programs.nh.flake}/flake.nix")
     (

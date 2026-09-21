@@ -9,25 +9,33 @@ tags: scanning, skills, discovery
 
 **Impact: CRITICAL**
 
-Discover `*/SKILL.md` across every configured and native skill root. Scan ALL roots that exist, not just the first match. Reuse the clients' native discovery where it already supplies the facts; do not add a second scanner merely to mirror it.
+By default, discover `*/SKILL.md` in the neutral local collection:
+`${XDG_DATA_HOME:-$HOME/.local/share}/aytordev/skills`. It does not depend on a
+client being installed. If absent, use an explicitly supplied collection or
+skill folder; report unavailable roots instead of assuming an installation.
 
-### Global roots
+For an explicitly requested broader inventory, include the requested project and
+host roots below. Scan all selected roots, not just the first match. Reuse native
+discovery where available; do not install another scanner or refresh service.
 
-- **OpenCode**: the OpenCode config directory's `skill(s)` subdirectory, i.e. `$XDG_CONFIG_HOME/opencode/skill(s)/` (default `$XDG_CONFIG_HOME` is `~/.config`). Both singular and plural names are accepted.
+### Additional global roots (when requested)
+
 - **Pi**: `~/.pi/agent/skills/` and `~/.agents/skills/`
 - **Configured roots**: any additional skill root the active client declares in its settings
-- The parent directory of this skill file (catch-all)
+- The supplied collection containing this skill, when requested
 
-### Project roots
+### Project roots (when requested)
 
-- `.opencode/skill/` and `.opencode/skills/`
 - `.pi/skills/`
 - `.agents/skills/`
 - `{project-root}/skills/`
 
 ### Scopes
 
-Every root maps to a scope: roots inside the project are `project`; the rest are `global`. Project scope wins over global scope for the same skill name (see precedence in `_shared/skill-resolver.md`).
+Every root maps to a scope: roots inside the project are `project`; the rest are
+`global`. Project scope wins over global scope for the same skill name (see
+`references/skill-resolver.md`, relative to this skill's root). These example
+client roots are not a universal discovery standard; do not infer Pen scanning.
 
 ### Extraction
 
@@ -46,8 +54,11 @@ If a `SKILL.md` exceeds 200 lines, still read the frontmatter in full; index the
 Resolve deterministically, in this order:
 
 1. **Project over global** — for the same name, keep the project-scope entry.
-2. **Configured root order over catch-all** — within one scope, order roots as listed above.
-3. **Ambiguous duplicates** — when the same name appears at the same precedence tier (e.g. two global roots), keep the first in root order and record every other candidate in the `Shadowed / Ambiguous` section so the delegator can decide.
+2. **Aliases before duplicates** — when the collection and client projections
+   resolve to the same original `SKILL.md`, index it once at the neutral path and
+   record the client paths as aliases. Equal contents alone do not prove identity.
+3. **Ambiguous duplicates** — distinct originals with the same name at the same
+   scope remain ambiguous; record every candidate so the caller can decide.
 
 ### Symlinks
 

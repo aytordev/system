@@ -4,25 +4,15 @@
   fetchurl,
   ...
 }: let
-  version = "2.9.0";
+  version = "3.4.0";
 
-  # Chosen form: the pinned upstream release archive (ADR 0015 C12 / T27).
-  # Source build (buildGoModule) is the documented alternative in
-  # docs/ai-tools/evidence/engine-feasibility.md; the prebuilt archive was
-  # proved to build and run on aarch64-darwin in docs/ai-tools/evidence/engine-prototype-results.md.
-  #
-  # Caveat (unresolved): `fetchurl` verifies the SHA-256 only. The release's
-  # `checksums.txt.minisig` is not validated because the minisign public key
-  # has no maintainer-independent provenance yet. The SHA-256 below is pinned
-  # from the upstream release (aarch64-darwin independently re-downloaded and
-  # hashed; the other platforms are read from the signed manifest and are not
-  # independently verified here). The pinned nixpkgs rejects bare hex in
-  # `fetchurl`, so the digests are encoded as SRI (`nix hash convert`).
+  # Official release checksums.txt digests, encoded as SRI. fetchurl verifies
+  # SHA-256; it does not verify the release's minisign signature.
   hashes = {
-    x86_64-darwin = "sha256-DhzgsRfm8VtW4F3v7LM6M4JcLiXrgwbfCUAdQeChdvs=";
-    aarch64-darwin = "sha256-CljYHNfXYxXh0R7Pazirsn7o5+cJoEyaeG6JY2+1Wbs=";
-    x86_64-linux = "sha256-fUFM2Muo3cCrn6S8MJkyY4xTMhey+ZmypS56T8C/bxQ=";
-    aarch64-linux = "sha256-K9q0aEtdQV35yUI8ICKwF8fBwdkFb1aswIYz+g2CHPw=";
+    x86_64-darwin = "sha256-fRP6RUiQmP+egt7iIyIE9yvxwE75mM6t/h6pcml/LlY=";
+    aarch64-darwin = "sha256-uQUtjcApI2Y9RFGksDHE73MozYZsDLZyno/yuYU2A/A=";
+    x86_64-linux = "sha256-wocomlFEIDgeiQmRuz++pKLDbXtLF3T89rxN64M3iRU=";
+    aarch64-linux = "sha256-39H+cKz+V30qNuOmWIlfSBRnUYopI7cgBAPbzKAYE5k=";
   };
 
   releaseArch = {

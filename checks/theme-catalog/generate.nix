@@ -93,18 +93,6 @@
       path = ../../modules/home/programs/terminal/tools/lazygit/config.nix;
     }
     {
-      id = "opencode";
-      generated = "aytordev";
-      note = "Palette-generated theme.";
-      path = ../../modules/home/programs/terminal/tools/opencode/config.nix;
-    }
-    {
-      id = "pi";
-      generated = "aytordev";
-      note = "No upstream resource; theme + banner ship with the gentle shell.";
-      path = ../../modules/home/programs/terminal/tools/pi/config.nix;
-    }
-    {
       id = "sketchybar";
       generated = "palette";
       note = "No upstream resource; runtime family/variant picker (the only hot-reloading consumer).";

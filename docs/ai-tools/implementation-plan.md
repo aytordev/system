@@ -1,5 +1,9 @@
 # Deliver Reliable AI Workflows in OpenCode and Pi
 
+> **Historical / superseded:** this records the retired local dual-client workflow.
+> Current ownership and onboarding: [native adoption guide](../../modules/common/ai-tools/README.md).
+> Past verification and procedures below do not validate or operate the current native Shell.
+
 Status: Proposed; implementation has not started.
 Decision: [ADR 0015](../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md).
 Skill contract: [ADR 0016](../../docs/decisions/0016-keep-skills-canonical-and-registry-derived.md).

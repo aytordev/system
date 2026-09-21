@@ -42,7 +42,7 @@ in {
 
     # Only if this module owns a primary package (ADR-0008). Otherwise omit it
     # and register in checks/module-contract only when package-owning. Use the
-    # manual form when the default is conditional (pi, bitwarden-cli):
+    # manual form when the default is conditional (bitwarden-cli):
     #   package = lib.mkOption { type = lib.types.package; default = ...;
     #     defaultText = lib.literalExpression "..."; };
     package = mkPackageOption pkgs "<tool>" {};

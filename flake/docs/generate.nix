@@ -12,6 +12,7 @@ Synthetic arguments are used so evaluation never touches the private
 let
   inherit (inputs.nixpkgs.lib) filterAttrs;
   extendedLib = inputs.nixpkgs.lib.extend inputs.self.lib.overlay;
+  common = import ../../libraries/system/common {inherit inputs;};
   stateVersion = "26.11";
   identity = {
     username = "docs";
@@ -79,7 +80,7 @@ let
           };
         })
       ]
-      ++ inputs.self.lib.file.importModulesRecursive ../../modules/home;
+      ++ common.mkHomeModules {inherit extendedLib;};
     extraSpecialArgs = {
       inherit inputs identity;
       lib = extendedLib;

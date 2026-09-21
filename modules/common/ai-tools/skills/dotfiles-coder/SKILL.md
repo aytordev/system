@@ -1,6 +1,7 @@
 ---
 name: dotfiles-coder
 description: "aytordev configuration specialist and maintainer - knows complete module structure, patterns, and conventions"
+compatibility: "Designed for aytordev/system. Needs repository file access; edits and checks require write access and a Nix-capable terminal."
 license: MIT
 metadata:
   author: aytordev
@@ -10,6 +11,12 @@ metadata:
 # Dotfiles Coder
 
 aytordev configuration specialist and maintainer - knows complete module structure, patterns, and conventions.
+
+These are domain facts for `aytordev/system`, not universal conventions for every
+repository. Use the host's equivalent filesystem/terminal capabilities; report
+missing capabilities before claiming edits or verification. `rules/` is bundled
+with this skill. Paths such as `modules/`, `checks/`, and `docs/` inside the rules
+refer to the target repository root, not to files beside the installed skill.
 
 ## Rule Categories by Priority
 

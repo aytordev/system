@@ -1,5 +1,9 @@
 # Delivery Verification Report (T16)
 
+> **Historical / superseded:** this records the retired local dual-client workflow.
+> Current ownership and onboarding: [native adoption guide](../../modules/common/ai-tools/README.md).
+> Past verification and procedures below do not validate or operate the current native Shell.
+
 Final exercise and evaluation of the dual-client AI workflow delivery promised by
 [ADR 0015](../../docs/decisions/0015-adopt-executable-ai-workflow-contracts.md)
 and the [implementation plan](implementation-plan.md). This file records what was
@@ -126,7 +130,7 @@ structurally, not end-to-end through a client (C4, C5, C10).
 
 ## 4. Scripted-provider evaluation
 
-Added under [`eval/scripted-provider/`](../../modules/common/ai-tools/eval/scripted-provider/README.md):
+Added under `eval/scripted-provider/` (removed with the local workflow):
 `fixture-server.mjs` (loopback OpenAI-compatible SSE fixture that logs every
 request), `run.mjs` (orchestrator), and a README documenting the sandbox blocker.
 

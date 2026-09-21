@@ -86,3 +86,5 @@ Desktop.ini
 setup.conf
 install.log
 mnemonics.txt
+# Local Pi runtime state
+.atl/

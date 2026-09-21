@@ -22,8 +22,8 @@ in {
 
   config = mkIf cfg.enable {
     # herdr manages its own agent integrations (e.g. `herdr integration install
-    # opencode` writes files under ~/.config/opencode). Do not vendor them: a
-    # store symlink would block herdr's installer/updater.
+    # <agent>` writes files under that agent's config directory). Do not vendor
+    # them: a store symlink would block herdr's installer/updater.
     programs.herdr = {
       enable = true;
       inherit (cfg) package;

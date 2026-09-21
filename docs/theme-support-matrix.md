@@ -14,20 +14,20 @@ override.
 
 ## Family × app (default variant)
 
-| Family | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | hunk | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Kanagawa (dragon) | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
-| Sora (dark) | O | O | O | O | O | O | O | G | O | G | O | O | G | G | O | O | G | O | O | G |
+| Family | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | hunk | jankyborders | lazygit | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Kanagawa (dragon) | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Sora (dark) | O | O | O | O | O | O | O | G | O | G | O | G | O | O | G | O | O | G |
 
 ## Variant coverage
 
-| Family / variant | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | hunk | jankyborders | lazygit | opencode | pi | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Kanagawa dragon | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
-| Kanagawa lotus | G | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
-| Kanagawa wave | O | G | G | G | G | G | O | G | G | G | G | G | G | G | G | G | O | G | O | G |
-| Sora dark | O | O | O | O | O | O | O | G | O | G | O | O | G | G | O | O | G | O | O | G |
-| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
+| Family / variant | bat | btop | delta | eza | firefox | fzf | ghostty | herdr | hunk | jankyborders | lazygit | sketchybar | starship | tmux | vscode | yazi | zed | zellij |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Kanagawa dragon | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa lotus | G | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Kanagawa wave | O | G | G | G | G | G | O | G | G | G | G | G | G | G | O | G | O | G |
+| Sora dark | O | O | O | O | O | O | O | G | O | G | O | G | O | O | G | O | O | G |
+| Sora light | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G | G |
 
 ## Official resources and provenance
 
@@ -46,7 +46,6 @@ override.
 | Sora | ghostty | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | hunk | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | lazygit | official-upstream | no | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
-| Sora | opencode | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | starship | official-upstream | no | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | tmux | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
 | Sora | yazi | official-upstream | yes | dark | https://github.com/Aejkatappaja/sora @ 504df4913c55dd9ad658e331b172f86b0537b439 |
@@ -72,8 +71,6 @@ adapter.
 | hunk | aytordev | Palette-generated [custom_theme] block. |
 | jankyborders | palette | No upstream resource; consumes raw sketchybar-format palette roles. |
 | lazygit | aytordev | Palette-generated theme. |
-| opencode | aytordev | Palette-generated theme. |
-| pi | aytordev | No upstream resource; theme + banner ship with the gentle shell. |
 | sketchybar | palette | No upstream resource; runtime family/variant picker (the only hot-reloading consumer). |
 | starship | aytordev | Palette-generated palette. |
 | tmux | aytordev | Palette-generated conf. |

@@ -23,24 +23,19 @@ canonical module template (per-class variants + style rules) lives in the
 
 ### AI Tools (`ai-tools/`)
 
-Code agents, slash commands, and skills for this repository.
+Four local knowledge skills: `dotfiles-coder`, `nix`, `skill-creator`, and
+`skill-registry`, with required support bundled inside each folder. Home Manager's
+`ai-skills` capability exports a neutral XDG data collection and publishes file
+links to the enabled Pi client. Native Gentle AI owns Pi's workflow;
+this subtree does not distribute agents or commands.
 
-**Patterns:**
+`ai-tools/ai-skills.nix` is explicitly included by `mkHomeModules` in
+`libraries/system/common/default.nix`. It uses Home Manager options; its location
+under `common` does not make it a NixOS/nix-darwin system module.
 
-- Agents: Specialized sub-agents for complex tasks (Nix refactor, module
-  scaffolding, etc.)
-- Commands: Slash commands that expand to prompts (`/nix-check`,
-  `/commit-changes`, etc.)
-- Skills: Reusable skill definitions
-
-**When adding new agents/commands/skills:**
-
-- Follow existing pattern in `agents/`, `commands/`, or `skills/`
-- Export via `commands.nix`/`agents.nix`/skill directory
-- Document in `ai-tools/AGENTS.md` Current Inventory
-- The `unit-ai-tools-inventory` check fails if the documented inventory
-  diverges from the on-disk tree (`skills/*/SKILL.md`, `commands/*/*.nix`,
-  `agents/*/*.nix`), so the doc can never go stale silently.
+Keep `ai-tools/AGENTS.md` Current Inventory aligned with the source tree;
+`unit-ai-tools-inventory` enforces the four-package contract. See
+`ai-tools/README.md` for ownership and operator onboarding.
 
 ### Nix (`nix/`)
 
@@ -127,7 +122,7 @@ All options follow `aytordev.{category}.{subcategory}.{option}` structure.
 **Example:**
 
 ```nix
-aytordev.programs.terminal.tools.opencode.enable = true;
+aytordev.programs.terminal.tools.pi.enable = true;
 ```
 
 **Reduce repetition:**

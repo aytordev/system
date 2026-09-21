@@ -6,17 +6,21 @@ attribute) so a re-run compares the same thing.
 
 ## Bounded Manifest Report
 
-`../scripts/package-diff-report.py` builds each installable with
+[scripts/package-diff-report.py](../scripts/package-diff-report.py) builds each installable with
 `--no-link --no-update-lock-file --no-write-lock-file`, walks every output,
 optionally hashes regular files, resolves recursive closures, bounds every list,
 and emits stable JSON. It uses only the Python standard library.
 
 ```bash
-python3 modules/common/ai-tools/skills/nix/scripts/package-diff-report.py \
-  --repo . \
+python3 "$skill_dir/scripts/package-diff-report.py" \
+  --repo "$project_dir" \
   --before 'nixpkgs#hello' \
   --after '.#hello'
 ```
+
+Set `skill_dir` to this skill's actual folder and `project_dir` to the target
+checkout. The helper travels with a copied folder; it does not require the
+target project to contain this repository's skill source tree.
 
 Flags, matching the script:
 

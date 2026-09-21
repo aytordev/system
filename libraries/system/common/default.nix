@@ -9,6 +9,7 @@
       {_module.args.lib = extendedLib;}
       inputs.nix-index-database.homeModules.nix-index
       inputs.sops-nix.homeManagerModules.sops
+      ../../../modules/common/ai-tools/ai-skills.nix
     ]
     ++ (
       if homeModules == null

@@ -31,9 +31,9 @@ in {
       desktop = enabled;
       development = {
         enable = true;
-        # Bring the AI coding agents (pi, opencode, ...) so the host can be
-        # iterated on remotely. SOPS is enabled on this host, so opencode/pi
-        # wire the nan.builders provider from the SOPS-managed API key file.
+        # Bring the AI coding agent (Pi) so the host can be iterated on
+        # remotely. Pi provider configuration and auth are completed by native
+        # setup.
         aiEnable = true;
         nixEnable = true;
         # Podman + podman-compose: project docs invoke `docker-compose`, which
@@ -55,26 +55,7 @@ in {
 
     programs = {
       terminal.tools = {
-        # Explicit MCP selection (ADR 0015, C2). The reusable module enables
-        # no servers; this home opts into the same set for both clients.
-        mcp.selection = {
-          opencode = ["engram" "filesystem" "nixos"];
-          pi = ["engram" "filesystem" "nixos"];
-        };
-
-        # Home-boundary policy: enable the adopted SDD engine (ADR 0015, C12 /
-        # T27). This is the only place the reusable default is turned on, so
-        # Pi's SDD workflow resolves `workflow.engine` to the `aytordev-sdd`
-        # adapter and OpenCode uses the same boundary. Reusable modules keep
-        # their empty/disabled defaults.
-        #
-        # Rollback and backend-state preservation: restoring a previous Home
-        # Manager generation restores the engine, adapter, and skills only. It
-        # does not delete runtime state — Engram memory lives outside the store
-        # under `$XDG_DATA_HOME/engram` and SDD artifacts live under each
-        # project's `openspec/` tree, so both survive a rollback. Data rollback
-        # is "do not adopt the derived output"; migrations keep originals
-        # byte-identical. See docs/ai-tools/legacy-compatibility.md.
+        # Official executable only; native onboarding owns the Pi profile.
         gentle-ai.enable = true;
 
         # github.com resolves to the personal account; the work account uses the

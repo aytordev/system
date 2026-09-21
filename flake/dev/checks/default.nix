@@ -25,10 +25,6 @@
     unitCheckNames = [
       "ai-tools-dependencies"
       "ai-tools-inventory"
-      "ai-tools-loading"
-      "ai-tools-sdd-handoffs"
-      "ai-tools-sdd-persistence"
-      "ai-tools-sdd-research"
       "architecture-layers"
       "file-parsers"
       "home-users-contract"

@@ -1,91 +1,42 @@
-# AI Tools
+# Local AI Knowledge
 
-Agents, slash commands, and skills for enhancing AI coding tools. Consumed by OpenCode through a multi-tool Nix pipeline.
+This subtree owns exactly four self-contained skill packages.
+The official native Gentle AI installer owns Pi's workflow. See
+[README.md](README.md) for ownership and operator onboarding.
 
-## Architecture
+## Rules
 
-```
-ai-tools/
-├── agents/        # Autonomous sub-processes with specialized tools
-├── commands/      # Slash commands that expand to prompts
-├── skills/        # Reusable knowledge and patterns (skill-creator format)
-├── agents.nix     # Agent pipeline (Nix → multi-tool output)
-├── commands.nix   # Command pipeline (Nix → multi-tool output)
-└── default.nix    # Entry point
-```
-
-## Agents vs Commands vs Skills
-
-### Agents (`agents/`)
-
-**What:** Autonomous sub-processes with specialized tool access and state
-**When to use:** Complex multi-step tasks requiring exploration and iteration
-**Structure:** Nix attrsets with colocated `.md` prompt files
-
-### Commands (`commands/`)
-
-**What:** Slash commands that expand to structured prompts
-**When to use:** Single-invocation tasks with clear inputs
-**Structure:** Nix attrsets with `description`, `allowedTools`, `prompt`, and optional `argumentHint`
-
-### Skills (`skills/`)
-
-**What:** Reusable knowledge following the skill-creator pattern
-**When to use:** Domain knowledge read by sub-agents at runtime
-**Structure:** `SKILL.md` (index + protocol) + `rules/` (execution steps + constraints) + `references/` (templates, optional)
+- `ai-skills.nix` is the shared Home Manager distributor, imported explicitly by
+  `libraries/system/common/default.nix` (`mkHomeModules`). Keep it out of system
+  module imports; retain `aytordev.programs.terminal.tools.ai-skills` for now.
+- `scripts/prepare-pi-skills.sh` is an explicit operator step, not an activation hook.
+- Preserve the portable `SKILL.md` identities and matching `metadata.json`.
+- Export the neutral collection at `$XDG_DATA_HOME/aytordev/skills` whenever
+  `ai-skills` is enabled. Publish the four directories recursively as file links
+  for the enabled Pi client; never own its profile or whole skills root.
+- The old Pi root needs the explicit, ownership-checked preactivation step in
+  the README. Never add a destructive activation hook or force file collisions.
+- Bundle optional resolver guidance inside `skill-registry/references/`; each
+  folder must work when copied alone. Keep target-repository facts distinct from
+  bundled resources, and state filesystem/terminal prerequisites.
+- Host-native mechanisms own discovery and execution. Pen import is manual;
+  do not invent scanning, MCP transport, hooks, or tool availability for it.
+- The local registry defaults to session-only. Explicit file persistence uses
+  `.ai-local/skill-registry.md`; never overwrite Shell's `.atl/skill-registry.md`.
+- Do not restore local agents, commands, orchestration, vendor code, or updater
+  wrappers. Native Gentle AI owns the Pi workflow.
+- Validate with inventory, skill-contract, dependencies, docs-links, and the
+  package/publication ownership check.
 
 ## Current Inventory
 
-### Agents
-
-| Name | Category | Description |
-|------|----------|-------------|
-| sdd-orchestrator | sdd | SDD delegate-only orchestrator — coordinates spec-driven development via sub-agents |
-| sdd-research | sdd | Output-only external evidence collector — returns the research-evidence envelope for the orchestrator to validate and persist |
-
-### Commands
-
-| Name | Category | Description |
-|------|----------|-------------|
-| sdd-init | sdd | Initialize SDD context in current project |
-| sdd-explore | sdd | Explore and investigate an idea (read-only) |
-| sdd-new | sdd | Start a new change (explore then propose) |
-| sdd-continue | sdd | Continue next SDD phase in dependency chain |
-| sdd-ff | sdd | Fast-forward all planning phases |
-| sdd-apply | sdd | Implement tasks from the change |
-| sdd-verify | sdd | Validate implementation against specs |
-| sdd-archive | sdd | Sync specs and archive completed change |
-| sdd-onboard | sdd | Guided end-to-end SDD walkthrough on a real codebase |
-
 ### Skills
 
-| Name | Category | Description |
-|------|----------|-------------|
-| skill-creator | core | How to create and maintain skills |
-| skill-registry | core | Generate skill registry with compact rules for sub-agent injection |
-| judgment-day | review | Parallel adversarial review with two blind judges |
-| dotfiles-coder | core | aytordev dotfiles architecture and conventions |
-| nix | core | Idiomatic Nix code patterns and best practices |
-| sdd-init | sdd | Initialize SDD context — detect stack, bootstrap persistence |
-| sdd-explore | sdd | Investigate codebase and compare approaches |
-| sdd-propose | sdd | Create change proposal with intent, scope, approach |
-| sdd-spec | sdd | Write delta specifications (ADDED/MODIFIED/REMOVED) |
-| sdd-design | sdd | Create technical design document |
-| sdd-tasks | sdd | Break down change into phased task checklist |
-| sdd-apply | sdd | Implement tasks following specs and design |
-| sdd-verify | sdd | Quality gate — validate implementation matches specs |
-| sdd-archive | sdd | Sync delta specs to main specs, archive change |
-| sdd-onboard | sdd | Guided walkthrough of the full SDD cycle on the real codebase |
-| sdd-research | sdd | Collect source-backed external evidence for material unknowns — output-only collector returning the research-evidence envelope |
-| branch-pr | workflow | Create PRs with issue-first checks and conventional commits |
-| chained-pr | workflow | Split oversized PRs (>400 lines) into chained review slices |
-| cognitive-doc-design | workflow | Design docs that reduce cognitive load |
-| comment-writer | workflow | Write warm, direct collaboration comments |
-| issue-creation | workflow | Create GitHub issues with issue-first checks |
-| work-unit-commits | workflow | Plan commits as reviewable work units |
-| bug-diagnosis | method | Bounded read-only bug diagnosis — symptom, minimized repro, falsifiable hypotheses |
-| impact-analysis | method | Follow consumers beyond the diff and prove the compatibility assumption |
-| lightweight-change | workflow | Bounded understand/change/verify path for routine work — owns simple changes, routes multi-phase work to SDD |
+| Name | Purpose |
+|------|---------|
+| dotfiles-coder | Repository architecture and Nix configuration patterns |
+| nix | Nix authoring, operational references, and package-diff helper |
+| skill-creator | Local skill authoring and metadata contract |
+| skill-registry | Explicitly invoked local knowledge index |
 
-> `dotfiles-coder/rules/patterns-module.md` is the canonical module template
-> (per-class variants + style rules). Subtree `AGENTS.md` files reference it.
+`dotfiles-coder/rules/patterns-module.md` remains the canonical module template.
