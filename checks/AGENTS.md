@@ -48,8 +48,8 @@ behavior they test, not the level.
 
 ## Secrets Handling
 
-`integration-gentle-ai-engine` verifies package/environment ownership and exact
-four-skill publication, standalone neutral export, custom HOME/XDG roots,
+`integration-gentle-ai-engine` verifies package/environment ownership, the
+exact published skill set, standalone neutral export, custom HOME/XDG roots,
 disabled-client guards, and isolated copied-folder resource resolution. It builds the
 official public CLI but does not run native onboarding or touch an Engram DB.
 The remaining `ai-tools-*` checks cover metadata, inventory, dependencies, and

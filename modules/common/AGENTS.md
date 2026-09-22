@@ -23,8 +23,10 @@ canonical module template (per-class variants + style rules) lives in the
 
 ### AI Tools (`ai-tools/`)
 
-Four local knowledge skills: `dotfiles-coder`, `nix`, `skill-creator`, and
-`skill-registry`, with required support bundled inside each folder. Home Manager's
+Local knowledge skills: `aytordev-design-system`, `aytordev-interface-design`,
+`aytordev-pen-ops`,
+`dotfiles-coder`, `nix`, `skill-creator`, and `skill-registry`, with required
+support bundled inside each folder. Home Manager's
 `ai-skills` capability exports a neutral XDG data collection and publishes file
 links to the enabled Pi client. Native Gentle AI owns Pi's workflow;
 this subtree does not distribute agents or commands.
@@ -34,7 +36,7 @@ this subtree does not distribute agents or commands.
 under `common` does not make it a NixOS/nix-darwin system module.
 
 Keep `ai-tools/AGENTS.md` Current Inventory aligned with the source tree;
-`unit-ai-tools-inventory` enforces the four-package contract. See
+`unit-ai-tools-inventory` enforces the published-package contract. See
 `ai-tools/README.md` for ownership and operator onboarding.
 
 ### Nix (`nix/`)

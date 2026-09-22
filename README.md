@@ -69,7 +69,7 @@ sudo nixos-rebuild switch --flake .#<hostname>
   overlays.
 - **Project templates**: `nix flake init -t .#node`.
 - **AI tooling**: Nix-owned Pi/Gentle AI/Engram executables, native upstream
-  Pi onboarding, and four local skills. See the
+  Pi onboarding, and seven local skills. See the
   [ownership and adoption guide](modules/common/ai-tools/README.md).
 
 ## Private Profile Contract

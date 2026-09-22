@@ -15,9 +15,11 @@ no such helpers exist here. Metadata and publication checks validate delivery.
 
 ### Choose the scope
 
-Ordinary maintenance updates one of `dotfiles-coder`, `nix`, `skill-creator`, or
-`skill-registry` and preserves that inventory. Do not auto-expand it after
-discovering a useful pattern. Obtain explicit approval for a new published skill
+Ordinary maintenance updates one of `aytordev-design-system`,
+`aytordev-interface-design`, `aytordev-pen-ops`, `dotfiles-coder`, `nix`,
+`skill-creator`, or
+`skill-registry` and preserves that inventory. Do not
+auto-expand it after discovering a useful pattern. Obtain explicit approval for a new published skill
 before creating a package under the repository's managed skills root.
 
 ### Create after explicit inventory-expansion approval
@@ -58,6 +60,7 @@ nix build \
   path:.#checks.aarch64-darwin.unit-ai-tools-dependencies \
   path:.#checks.aarch64-darwin.integration-gentle-ai-engine \
   path:.#checks.aarch64-darwin.integration-ai-skills-transition \
+  path:.#checks.aarch64-darwin.integration-ai-tools-docs-links \
   --override-input secrets path:./checks/fixtures/secrets \
   --no-write-lock-file --no-link
 ```

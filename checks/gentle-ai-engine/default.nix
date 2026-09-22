@@ -86,7 +86,15 @@
     });
   installed = home: package: lib.any (p: p.outPath == package.outPath) home.home.packages;
   tools = enabled.aytordev.programs.terminal.tools;
-  names = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
+  names = [
+    "aytordev-design-system"
+    "aytordev-interface-design"
+    "aytordev-pen-ops"
+    "dotfiles-coder"
+    "nix"
+    "skill-creator"
+    "skill-registry"
+  ];
   targets = home: map (file: file.target) (builtins.attrValues home.home.file);
   under = root: home: lib.sort builtins.lessThan (lib.filter (lib.hasPrefix root) (targets home));
   expected = root: map (name: "${root}${name}") names;
@@ -113,7 +121,7 @@
       == ["agent-profiles" "enable" "package" "providers" "startup-header"]
       && builtins.attrNames tools.gentle-ai == ["enable" "package"];
     noProfile = under ".pi/" noSkills == [] && !(enabled.home.sessionVariables ? PI_CODING_AGENT_DIR);
-    piExactlyFour = under ".pi/" enabled == expected piRoot;
+    piPublishedSkills = under ".pi/" enabled == expected piRoot;
     providersDefaultAbsent = !(lib.elem providersTarget (targets enabled)) && !(lib.elem providersTarget (targets noSkills));
     providersPublished = lib.elem providersTarget (targets withProviders);
     providersOnlyExtra =

@@ -95,8 +95,24 @@
 
   # The capability publishes exactly these individual leaves for each client.
   clients = {
-    collection = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
-    pi = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
+    collection = [
+      "aytordev-design-system"
+      "aytordev-interface-design"
+      "aytordev-pen-ops"
+      "dotfiles-coder"
+      "nix"
+      "skill-creator"
+      "skill-registry"
+    ];
+    pi = [
+      "aytordev-design-system"
+      "aytordev-interface-design"
+      "aytordev-pen-ops"
+      "dotfiles-coder"
+      "nix"
+      "skill-creator"
+      "skill-registry"
+    ];
   };
 
   closureProblems =

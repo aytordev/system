@@ -26,7 +26,7 @@ for document in root.rglob("*.md"):
     for target in re.findall(r"`((?:rules|references|scripts)/[\w/-]+\.(?:md|py))`", text):
         check_resource(root / target)
     if document.name == "SKILL.md":
-        # Quick-reference rule names in these four packages abbreviate rules/*.md.
+        # Quick-reference rule names in these packages abbreviate rules/*.md.
         for rule in re.findall(r"(?m)^- `([a-z]+-[a-z-]+)` [—–-]", text):
             check_resource(root / "rules" / f"{rule}.md")
 

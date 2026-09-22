@@ -1,92 +1,95 @@
 # Feature: pen-design-skills
 
-## Objective and accepted scope
+## Intent and authorization
 
-Publish three independent, Nix-managed skills under the existing ai-tools
-catalog: `aytordev-interface-design`, `aytordev-design-system`, and
-`aytordev-pen-ops`. Adapt useful upstream knowledge without importing its
-workflow authority, duplicated rules, arbitrary taste mandates, or stale APIs.
+Publish three independent Nix-managed skills in the existing ai-tools catalog:
+`aytordev-interface-design`, `aytordev-design-system`, `aytordev-pen-ops`.
+Adapt useful upstream knowledge without importing workflow authority, duplicate
+rules, arbitrary taste mandates, or stale APIs. User approved implementation,
+this separation, the local skill-creator contract, and strict TDD.
 
-The user approved implementation, the three-way separation, the local
-`modules/common/ai-tools/skills/skill-creator` authoring contract, and strict
-TDD. Manual import into Pen is acceptable. No VM, separate macOS account,
-vendor inquiry, automatic registration, or live Pen probe is wanted.
+Branch: `feat/pen-design-skills`. Planning checkpoint: `7ca1f30`.
+Implementation authorized again on 2026-09-22 with the refinements below.
+No staging or implementation commits without separate authorization; no push,
+PR, system activation, Pen launch/authentication/model calls, or live Pen probe.
+Manual Pen import is accepted. No VM, separate account, vendor inquiry,
+automatic registration, updater-owned skills, credentials, or signed-app edits.
 
-## Rationale and boundaries
+## Design contracts and accepted refinements
 
-- Interface design applies the project's system to screens and flows.
-- Design-system work defines and evolves shared tokens, component contracts,
-  variants, states, documentation, and adoption decisions.
-- Pen operations implement authorized changes using the observed tool surface;
-  they do not choose product aesthetics or replace the project's system.
-- Product-specific tokens and brand choices stay in the consuming project.
-- Each skill must work from an isolated folder. No sibling dependencies,
-  escaping resource paths, circular loading, or required all-three activation.
-- One canonical owner per concern; cross-skill mentions are optional capability
-  routing, never file dependencies. Shared standards may be externally cited.
-- Preserve upstream pins, attribution, MIT notices, and explicit correction /
-  omission rationale. Do not claim the original full audit was recovered.
-- WAI/MDN take precedence over upstream design advice. In particular preserve
-  normal-text contrast 4.5:1; large text at 18pt or 14pt bold (24px or exactly
-  18 2/3px); target-size AA 24 CSS px with exceptions; `ch` is the zero glyph's
-  advance, not a character count; no mandatory macOS-only font smoothing.
-- No vendored transitions content, fonts, icons, or fixed product templates.
-- Do not manage updater-owned `~/.pencil/skills`, credentials, application
-  config, or signed bundles. No Pen launch, authentication, or model calls.
-- No system activation, push, or PR creation. The user explicitly authorized
-  committing this planning checkpoint; implementation commits need their own
-  delivery authorization.
+- Interface design applies the consuming project's system to screens/flows;
+  produce justified proposals/reviews from screen context.
+- Design-system work evolves shared tokens, component anatomy/variants/states,
+  documentation and adoption/migration decisions from the existing inventory.
+  Do not overwrite a code-bearing design-system directory.
+- Pen operations implement authorized changes using observed capabilities;
+  report execution evidence, never select aesthetics or replace the system.
+- Declare inputs, outputs and stop/ask conditions in each entry point. Ask when
+  missing context materially changes the result; never invent requirements.
+- Reuse project tokens/components; brand choices remain in the consuming project.
+  Upstream taste is advice, not authority. Explain accessibility conflicts and
+  propose bounded corrections; never silently retain defects or redesign.
+- Each skill works in isolation: no sibling dependencies, escaping paths,
+  circular loading, or required all-three activation. Cross-skill mentions are
+  optional capability routing only. No extra orchestrator or module.
+- Keep essential decisions in concise entry points; lazily load folder-local
+  references by concern. One canonical owner per concern.
+- Acceptance examples cover review without writes, system reuse, accessibility
+  conflict escalation, missing Pen capabilities without invented operations,
+  and isolated loading. Static checks prove packaging/instruction contracts,
+  not model compliance. Behavioral examples/manual Pen use remain unexecuted.
+- PDS-13 is the pilot: independently inspect its contracts/structure before
+  repeating the pattern for PDS-14/PDS-15.
+- Re-read pinned upstream material actually adapted. Preserve attribution,
+  full applicable MIT notices and corrections/omissions. No claim the original
+  49-file audit was recovered. No vendored transitions, fonts/icons or fixed
+  product templates.
+- WAI/MDN override upstream advice: normal contrast 4.5:1; large text 18pt or
+  14pt bold (24px or exactly 18 2/3px); AA target size 24 CSS px with exceptions;
+  `ch` is the zero glyph advance, not character count. No mandatory macOS-only
+  font smoothing.
 
-## Historical evidence and superseded plan
-
-PDS-1 (original SDD 1.1) was recorded as complete: selected 49-file audit
-(15 Nisus, 34 Krehel), manifest, ownership/protocol ledgers, four broken
-reference triples. Its reported Engram topics are
-`sdd/pen-design-skills/{selection-manifest,audit,ledgers,tasks,state}`.
-Current searches did not recover those artifacts; retain this as historical
-provenance, not independently reverified evidence.
-
-Original PDS-2..PDS-12 never started. They are superseded, not completed:
-- PDS-2/3: two dependent skills replaced by three standalone skills below.
-- PDS-4/5: projection extraction replaced by existing XDG/Pi publication and
-  current contract, inventory, dependency, resource, and publication checks.
-- PDS-6/7/8: fixture/live registration probes removed by the accepted manual
-  integration route.
-- PDS-9/10/11: new home module, registration driver, watcher, and GC roots
-  removed; reuse the existing ai-skills capability.
-- PDS-12: runtime end-to-end claim replaced by repository verification below;
-  manual Pen import/use remains explicitly untested.
-
-## Current repository facts
+## Repository and historical context
 
 `ai-skills.nix` exports the whole catalog at `$XDG_DATA_HOME/aytordev/skills`
-and named complete folders to Pi when enabled. The current standalone contract
-rejects every nonempty metadata dependency array. Expand inventory and checks
-with each skill; do not relax independence or invent a new module.
+and complete named folders to Pi when enabled. Expand inventory, checks and
+current-policy docs together. Nonempty metadata dependencies remain forbidden.
+Preserve the historical four-name prepare script and transition `oldNames`.
 
-Installed system app metadata reports Pencil 1.2.0; Nix labels its package
-1.1.63. Earlier static research used Pen 1.2.13. Current Pen documentation is
-rolling, not proof of the installed tool surface. The package version is out
-of scope. Official docs describe Add SKILL.md, re-add after edits, and removal
-from the picker without deleting source files; automatic discovery is unproven.
+Recorded app metadata: Pencil 1.2.0; Nix package label 1.1.63; earlier research
+Pen 1.2.13. Rolling docs are not proof of installed capabilities; package version
+is out of scope. Official docs describe Add SKILL.md, re-add after edits, picker
+removal without deleting source. Automatic discovery remains unproven.
 
-## Work and verification
+PDS-1 (original SDD 1.1) historically recorded a selected 49-file audit (15 Nisus,
+34 Krehel), manifest/ledgers/four broken reference triples. Topics
+`sdd/pen-design-skills/{selection-manifest,audit,ledgers,tasks,state}` could not
+be recovered: historical provenance only, not reverified evidence.
+PDS-2..12 never started and are superseded, not completed: dependent two-skill
+plan -> three standalone skills; extraction -> existing publication/checks;
+registration probes/driver/watcher/GC/new module -> manual integration; runtime
+end-to-end claim -> repository checks with manual Pen use explicitly untested.
 
-Branch: `feat/pen-design-skills`.
-Route: delegated writer for each bounded multi-file task, parent tracking,
-independent verification afterward (RDD off). Mapping was delegated because
-more than four files carry the publication contract.
-TDD: **strict**, explicitly selected by the user in this session. For each skill,
-change relevant test expectations first, observe a missing-skill RED, implement,
-observe GREEN, then refactor and repeat checks. Never count an infrastructure
-failure as the required RED. Keep tests and publication/docs in the same unit.
-Baseline: all six focused checks below passed before source changes (exit 0;
-Nix cache-satisfied, 8 seconds).
-Delivery: three reviewable skill slices, forecast 250-400 changed lines each,
-plus tracking and final verification. Preserve the historical <=400 actual-diff
-slice boundary; split honestly before overrun, never omit tests or minify.
-The user requested a planning checkpoint commit before implementation.
-Commit only this feature document; keep all skill implementation pending.
+## Routing, TDD and delivery
+
+Parent owns this file, full Engram mirror `odd/pen-design-skills/tasks`, and todo.
+Original mirror was unavailable; recovered from repository checkpoint and
+restored as observation #240. Delegated mapping covered 4+ files. Each multi-file
+implementation uses one bounded writer, then independent verification. RDD off.
+
+Strict TDD: user-selected in the planning session and retained on resume.
+Update inventory test first; observe real missing-skill RED before source or
+publisher changes; implement GREEN, then refactor/recheck. Infrastructure or
+artificial dependency failures do not count as RED. Keep tests/docs with source.
+Baseline: six focused checks passed before checkpoint (cache-satisfied, 8s).
+
+Forecast: three skill slices, originally 250–400 changed lines each, plus
+tracking. Count additions+deletions including new files, excluding tracking.
+2026-09-22 user approved **one PDS-13 exception up to 500 lines**, including
+pending corrections, after independent measurement of 465. PDS-14/PDS-15 retain
+<=400 each. No minification or omitted tests/docs to fit. Splitting source from
+publication leaves a failing inventory and is not an accepted green work unit.
+No implementation commit authority was granted by the size exception.
 
 ### Exact focused runner
 
@@ -102,59 +105,160 @@ nix build \
   --no-write-lock-file --no-link
 ```
 
-`path:.` includes new files without staging. Format only authorized files using
-the repository formatter; report any unavailable check instead of claiming it.
+RED uses only the inventory target, with the same flags. `path:.` includes new
+files without staging. Format only touched files; CI verification uses
+`nix fmt -- --ci <touched Nix paths>`. Run `git diff --check`. Report cached versus
+forced execution, failures and unexecuted checks honestly; no runtime claim.
 
 ## Tasks
 
-- [x] **PDS-1** Historical source audit, as qualified above. No repository output.
-- [x] **PDS-17** Reconcile the planning checkpoint.
-  Status: done. Capture the three-skill decision, authoring contract,
-  manual Pen route, strict TDD runner, baseline, and superseded task history.
-  Acceptance: document readback and staged whitespace check pass; no skill
-  source changes. Delivery: document-only commit on the feature branch, with
-  its identity recorded in the Engram mirror.
-- [ ] **PDS-13** Interface-design skill and five-skill publication.
-  Status: pending. Adapt layout, typography, color, accessibility,
-  motion/icons, writing, and evidence-based screen/change review. Keep review
-  read-only unless changes are requested. Include provenance/corrections.
-  Acceptance: observed RED/GREEN; metadata, links, isolated resources, XDG/Pi
-  publication and disabled-client regression checks pass; <=400-line slice.
-- [ ] **PDS-14** Design-system skill and six-skill publication.
-  Status: pending. Cover existing-system discovery, semantic token decisions,
-  component anatomy/variants/states, adoption and migration, and optional
-  project documentation. Do not create fixed product values or overwrite a
-  code-bearing design-system directory. Same TDD/publication acceptance.
-- [ ] **PDS-15** Pen-operations skill and seven-skill publication.
-  Status: pending. Observe live capabilities before choosing operations;
-  distinguish documented current tools from old API recipes; document manual
-  import/reload and no automatic sibling loading. Same acceptance; no live Pen.
-- [ ] **PDS-16** Independent final verification and structural readback.
-  Status: pending. Run all six checks, formatting verification, and inspect
-  contract/scope/provenance and isolated-folder behavior. Record measured diff,
-  failures, omissions, and no runtime/activation claims.
+- [x] **PDS-1** Historical audit, qualified above; no repository output.
+- [x] **PDS-17** Planning checkpoint and reconciliation.
+  Evidence: `7ca1f30`, document readback and staged whitespace passed;
+  no skill source changed in that checkpoint. Accepted refinements now recorded.
+- [x] **PDS-13** Interface-design pilot and five-skill publication.
+  Status: done (implementation/checks); atomic delivery authorized below.
+  Cover layout, typography, color/accessibility, motion/icons, writing and
+  evidence-based review. Acceptance: observed RED/GREEN, metadata/links/resource
+  isolation, XDG/Pi and disabled-client guards; <=500 one-time exception.
+  Independent pilot contract/provenance readback passed after corrections;
+  measured 476 lines. Do not claim examples are executed model tests.
+- [x] **PDS-14** Design-system skill and six-skill publication.
+  Status: done after accessibility-applicability correction and independent PASS;
+  Atomic delivery authorized below. Final slice: 366 event-counted lines.
+  Discovery, semantic tokens, component anatomy/variants/states,
+  adoption/migration and optional project docs; no fixed product values.
+  Same strict TDD/publication checks and input/output/stop contract; <=400 slice.
+- [x] **PDS-15** Pen-operations skill and seven-skill publication.
+  Status: done after standalone-loading correction and independent PASS;
+  Atomic delivery authorized below. Final slice: 310 event-counted lines.
+  Observe capabilities before choosing operations; distinguish
+  rolling documentation from stale API recipes; manual import/reload, no sibling
+  auto-loading. Same checks/contracts; <=400 slice; no live Pen execution.
+- [x] **PDS-16** Independent final verification and structural readback.
+  Status: done. Six checks, scoped format/whitespace, contract/scope/provenance,
+  isolated-folder behavior and measured diffs; report omissions and no activation.
 
 ## Evidence and next action
 
-Source changes: none. PDS-17 readback passed; `git diff --cached --check`
-passed (exit 0), with only this document staged. Six baseline checks passed
-before this documentation-only checkpoint; they were not rerun for the plan.
-Next implementation action: PDS-13 writer observes RED before implementation.
-Checkpoint identity: recorded in the Engram mirror after commit; locate it with
-`git log -1 --format='%h %s' -- odd/tasks/pen-design-skills.md`.
-Activation/import: not performed.
+PDS-13 writer reported inventory RED (actual four vs expected five naming the new
+skill) before source/publisher changes, followed by the exact six-check GREEN
+twice, including post-format. This is delegated execution evidence, not a parent
+RED replay. No artificial dependency failure was introduced.
+
+Independent verifier: six-check runner exit 0 (5.814s, cache/store hits, not forced
+execution); CI formatter six Nix files, zero changes/exit 0; whitespace exit 0.
+Git status unchanged by verification; no result link/lockfile/index/commit writes.
+Native read-only ASSESS unavailable (empty output): treated as high and performed
+independent verification; no RDD lifecycle started.
+
+Pilot contract readback passed inputs/outputs/stops, system reuse, accessibility
+conflict escalation, read-only review, progressive local references/isolation,
+provenance/MIT notice and acceptance-example disclaimer. Independently measured
+92 tracked changed lines + 373 new = 465 excluding this file; supersedes writer's
+467 estimate. No size acceptance before the user's explicit <=500 exception.
+
+Corrections complete: exact 18 2/3px equivalence in entry/reference; count-neutral
+checks/AGENTS and portable-folder comment; reflow corrected from 200% to 400%
+at 1280px (=320 CSS px); color hierarchy made conditional on project variants,
+semantic roles reused before proposing additions. WAI reflow source confirmed.
+Final independent pilot PASS: six checks exit 0 (5.866s, cache satisfied), scoped
+CI format six files/zero changes, whitespace exit 0, empty staging. Footprint:
+98 tracked + 378 new = **476**, within approved 500. Count delta is explained by
+the corrections; no unknown edits. No blocking findings. Optional SC 1.4.4
+citation and project-overridable typography/icon defaults left unchanged.
+Writer fetched pinned sources via read-only HTTP GET (fetch_content unavailable);
+full Krehel MIT retained, Nisus fetched but not adapted for pilot. No parent fetch
+or recovered-audit claim. Behavior examples/manual Pen remain unexecuted.
+
+PDS-14 complete: writer observed genuine inventory RED five vs six before
+source/publication changes, then six-check GREEN before/after scoped formatting.
+Independent PASS: same runner exit 0 (5.819s, cache satisfied), scoped format
+zero changes, whitespace exit 0, staging empty/status unchanged. New skill:
+302 lines/six files; writer's per-edit tracked accounting 29 lines; parent fixed
+one stale terminal AGENTS sentence (two diff lines, readback passed): slice
+**333**. Cumulative implementation diff **791** (111 tracked +680 new).
+Shared-line replacements mean slice counts are not additive against HEAD.
+Independent readback passed discovery/tokens/components/adoption/rollback,
+code-bearing-directory protection, standalone resources, scenario disclaimer,
+Nisus pinned MIT attribution. External fetch evidence is writer-reported.
+
+PDS-15 writer complete: inventory RED exit 1 (six vs seven naming pen-ops)
+before source/publication edits; six-check GREEN exit 0 with changed derivations
+built, then post-format GREEN cache satisfied. No --rebuild used: not forced.
+Scoped format/CI six files zero changes; whitespace exit 0. Skill 268 new lines
+in four files +25 per-edit tracked lines = **293**. Prior skill folders preserved.
+Pinned Nisus MIT/official Pen documentation fetched read-only by writer; stale
+recipes explicitly omitted, capabilities govern operations. Input/output/stops,
+manual import/reload, no sibling loading and unexecuted-example limits included.
+
+PDS-16 found a false Pen provenance cross-reference. Corrected with folder-local
+manual loading, README picker-removal semantics, and removal of unverified
+execute-operation names. First fix writer timed out without edits (separate
+read-only diagnosis and parent git/wc confirmed baseline); bounded retry passed.
+Pen-ops now281 source lines; final task footprint **310** (281 +29 event-tracked).
+Independent corrected verification passed six checks, scoped format, whitespace
+and forced publication/transition rebuild with seven isolated folders and
+negative tests; fingerprint16f89f72 was stable before subsequent DS correction.
+
+Parent spot-read then found a missed DS defect: invented disabled-control 3:1
+floor and blanket default-only state finding. Reopened PDS-14: corrected both,
+added bounded WAI criterion applicability/exemptions and exact large-text sizes.
+Writer retrieved WAI SC1.4.3/1.4.11/2.5.8/1.4.10 passages confirming inactive
+exceptions and threshold scope; six-check runner/whitespace pass. DS now335
+source lines; PDS-14 footprint **366** (335 +31 event-tracked), still <=400.
+
+Final PDS-16 **PASS**, no blocking findings. Six-check runner exit 0 (6.083s,
+cache satisfied); scoped CI format six files/zero changes; whitespace exit 0.
+Forced `--rebuild -L` of integration-gentle-ai-engine and
+integration-ai-skills-transition exit 0 (2.336s): seven isolated-folder resource
+passes, missing-resource rejection, and fourteen transition positive/negative
+cases. Official WAI pages retrieved read-only and corrected DS claims confirmed.
+Pen manual-loading correction and seven-name publication preserved.
+
+Final verifier fingerprint (before tracking-only closure):
+`99e3e7b83082da5a40aa85ab63c86f39a50b683eae614d75e46d53a6fcdefcce`;
+identical before/after verification. Staging empty, HEAD7ca1f30 and flake.lock
+unchanged. Final source footprint: 126 tracked changed lines (92+/34-) +994 new
+(378 interface,335 design-system,281 pen-ops) = **1120**, excluding tracking.
+Slice event counts476/366/310 respect approved bounds but are not independently
+reconstructable shared-file commit diffs; no intermediate commits were authorized.
+
+Unavailable: native read-only ASSESS (empty output); treated as high risk with
+independent verification, RDD stayed off. Not run: full flake check, Linux,
+activation, installed-client discovery, live Pen import/use, model-behavior tests.
+Pre-existing docs-links scope omits skill-creator; all three new skill trees are
+included, and isolated-folder checks cover all seven. No new coverage claim.
+Deployment and manual Pen import remain separate from repository delivery.
+Installed skills remain unchanged until a separately authorized activation.
+
+## Delivery decision
+
+The user subsequently authorized an atomic commit, push and PR, and explicitly
+selected a **single-PR size exception** after reviewing the 1370-line forecast
+(1120 implementation +250 tracking, before this delivery note). Keep the three
+skills, publication, checks and documentation together in one implementation
+commit; do not reconstruct intermediate trees or drop evidence to shrink it.
+Use `feat/pen-design-skills` against `main`; both local/remote main resolve to
+`b0070e3`, and the remote feature checkpoint is `7ca1f30`. Actual repository
+policy requires no approved issue or `type:*` label; use its existing PR template.
+Delivery verification uses the Git-backed `nix flake check .` after staging new
+files. A full `path:.` check included `.git/hooks/pre-commit` in the sandbox and
+failed before treefmt ran; separate diagnosis confirmed that invocation issue.
+Do not disable hooks: the Git source includes staged files but excludes `.git`.
+Final delivery verification, commit identity, PR URL and remote check state are
+recorded in Engram topic `odd/pen-design-skills/delivery`, avoiding a follow-up
+commit whose only purpose would be to record its own identity. This document is
+the pre-delivery checkpoint, not proof that push/PR creation already succeeded.
+No merge, activation, live Pen test or registry refresh is authorized.
 
 ## Sources
 
-- Krehel pinned corpus and MIT license:
-  https://github.com/jakubkrehel/skills/tree/d01493b0a7b976a74bfcedc80c783d60c7995910
-  (`better-accessibility`, `better-layout`, `better-writing`,
-  `better-typography`, `better-colors`, `better-ui`, `better-interface`,
-  `interface-review`). Primary entries/licenses re-fetched in this session.
-- Nisus pinned corpus and MIT license (Travis Polland 2026):
-  https://github.com/Nisus74/pencil-skill/tree/28ec61cefe3000a59bdac6b98b83168dbacca9c8
-  (`skills/pencil-design/SKILL.md`, optional `design-system/` templates).
-  Main entry excerpts/template README and license re-fetched in this session.
+- Krehel + MIT: https://github.com/jakubkrehel/skills/tree/d01493b0a7b976a74bfcedc80c783d60c7995910
+  (`better-accessibility`, `better-layout`, `better-writing`, `better-typography`,
+  `better-colors`, `better-ui`, `better-interface`, `interface-review`).
+- Nisus/Travis Polland 2026 + MIT: https://github.com/Nisus74/pencil-skill/tree/28ec61cefe3000a59bdac6b98b83168dbacca9c8
+  (`skills/pencil-design/SKILL.md`, optional design-system templates).
 - https://docs.pen.dev/core-concepts/ai-agents
 - https://docs.pen.dev/getting-started/ai-integration
 - https://docs.pen.dev/for-developers/pen-cli

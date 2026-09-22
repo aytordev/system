@@ -1,0 +1,8 @@
+{
+    "name": "aytordev-interface-design",
+    "description": "Apply the consuming project's design system to screens and flows with justified proposals and read-only, evidence-based interface review. Use when designing or revising a screen, flow, or component, or when reviewing interface work for layout, typography, color, accessibility, motion, icons, or copy. Triggers on interface design, screen layout, design proposal, design review, accessibility conflict.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "September 2026",
+    "abstract": "Interface design and read-only, evidence-based review for the consuming project's system: layout, typography, color and WCAG accessibility floors, motion, icons, and copy, with conflict escalation and recorded upstream provenance."
+}

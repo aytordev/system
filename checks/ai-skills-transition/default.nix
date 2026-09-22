@@ -5,7 +5,15 @@
   pkgs,
   ...
 }: let
-  names = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
+  names = [
+    "aytordev-design-system"
+    "aytordev-interface-design"
+    "aytordev-pen-ops"
+    "dotfiles-coder"
+    "nix"
+    "skill-creator"
+    "skill-registry"
+  ];
   # Historical source requirements stay fixed if publication expands later.
   oldNames = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
   oldSkills = pkgs.runCommand "old-skills-shape-fixture" {} ''

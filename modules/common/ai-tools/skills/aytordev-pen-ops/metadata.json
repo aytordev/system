@@ -1,0 +1,8 @@
+{
+    "name": "aytordev-pen-ops",
+    "description": "Execute authorized changes in a pen.dev (Pencil) design-tool session using only capabilities observed in that session: inspect the open document, selection, and live tool schemas first, propose read-only, then apply narrow bounded edits with readback or visual verification. Use when a user asks to inspect, change, or verify designs in a running Pen session. Triggers on pen.dev, Pencil, .pen document, canvas edit, design tool session.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "September 2026",
+    "abstract": "Operational-safety method for pen.dev sessions: observed-capability inspection, read-only proposals versus explicitly authorized edits, narrow bounded change batches, readback and visual verification, and honest stopping on missing capabilities or uncertain partial outcomes."
+}

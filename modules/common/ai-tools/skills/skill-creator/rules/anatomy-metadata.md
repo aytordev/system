@@ -30,15 +30,14 @@ is a string-to-string map, distinct from this repository's JSON file.
   exactly.
 - `version` and `organization` are required catalog fields.
 - `date` and `abstract` are optional and may carry additional catalog detail.
-- `dependencies` is an optional array naming other required skills. The current
-  four-folder collection must be independently consumable, so its packages have
+- `dependencies` is an optional array naming other required skills. The
+  collection must be independently consumable, so its packages have
   no sibling dependencies. Bundle necessary references/scripts within the skill.
 - It never overrides the frontmatter. When the two disagree, the frontmatter is
   correct and `metadata.json` is stale.
 
 `checks/ai-tools-dependencies` validates the declared graph: every reference
-resolves to a skill, the graph is acyclic, each selected set is closed, and the
-four portable packages have no sibling dependencies. The `ai-skills` capability
+resolves to a skill, the graph is acyclic, each selected set is closed, and all portable packages have no sibling dependencies. The `ai-skills` capability
 exports the neutral collection independently of clients and publishes the same
 folders recursively to enabled clients. Neither client's whole skills root is
 owned by Home Manager; resolver support lives inside `skill-registry/references/`.
