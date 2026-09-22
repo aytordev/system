@@ -4,15 +4,15 @@
   fetchurl,
   ...
 }: let
-  version = "3.4.0";
+  version = "3.6.0";
 
   # Official release checksums.txt digests, encoded as SRI. fetchurl verifies
   # SHA-256; it does not verify the release's minisign signature.
   hashes = {
-    x86_64-darwin = "sha256-fRP6RUiQmP+egt7iIyIE9yvxwE75mM6t/h6pcml/LlY=";
-    aarch64-darwin = "sha256-uQUtjcApI2Y9RFGksDHE73MozYZsDLZyno/yuYU2A/A=";
-    x86_64-linux = "sha256-wocomlFEIDgeiQmRuz++pKLDbXtLF3T89rxN64M3iRU=";
-    aarch64-linux = "sha256-39H+cKz+V30qNuOmWIlfSBRnUYopI7cgBAPbzKAYE5k=";
+    x86_64-darwin = "sha256-zZElFtKdDqAv7rnGCvJz76iA1FyUUW1QG9tWlDS8vX0=";
+    aarch64-darwin = "sha256-pBZaq8s0JStQHcaj9zfoR40+M0OSIpg/yP8De619ZdU=";
+    x86_64-linux = "sha256-t0Lyiqss7RGujRZLy9eWj2a1BWr8B4d+Irya2RDenQ8=";
+    aarch64-linux = "sha256-CbQ2s4GeuCQPyLyNz1UR1WpZPyT5vbYlnVlkGghWuAQ=";
   };
 
   releaseArch = {
