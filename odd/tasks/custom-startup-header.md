@@ -85,6 +85,17 @@ only way to change the art without patching a package is to own the header.
   Acceptance: with a hostile second extension that steals the header at +2 s,
   our panel is back within a few seconds; `/reload` and `/new` keep it; and no
   re-claim storm (bounded per session).
+- [x] **CSH-16** (defect found while fixing CSH-14) The activation entry aborted the
+  whole activation. `mergeGentlePiBannerFilter` used `exit 0` on its guard paths,
+  and Home Manager inlines every activation entry into one script that runs with
+  `set -eu` (verified in the deployed `17c2a0vmxhcjwai2wpsnyxaw8gzwl1a6-home-manager-generation`:
+  the body is inline after `_iNote ... "piStartupHeaderBannerFilter"`, not a
+  subshell), so a missing `settings.json`, a missing `jq` or a failing `mktemp`
+  skipped every activation entry that followed instead of skipping one merge. The
+  body is now a function that returns instead of exiting, called with `|| true`,
+  and it restores the file's permission bits like the `agent-profiles.nix` entry.
+  Acceptance: with `settings.json` absent, unparsable or present, the script
+  continues past the entry, and in the present case the filter is merged.
 - [x] **CSH-1** Downscale the source art so the one-time kitty transmission stays
   small, and place it in the tree.
   Acceptance: a PNG of roughly 768 px width in
@@ -325,7 +336,7 @@ Verification of the fix (all commands run locally, in this order):
   The healed `settings.json` already stops the rose banner from loading on the
   next start, and `/reload` is enough for a session that is already running.
 
-All earlier tasks complete, across five work units.
+All earlier tasks complete, across seven work units.
 
 Work unit 5 — commit `16a9dc9 fix(pi): keep the startup header when gentle-pi's
 banner re-asserts`, 3 files, 314 insertions, 57 deletions:
@@ -334,6 +345,34 @@ banner re-asserts`, 3 files, 314 insertions, 57 deletions:
 (CSH-14, CSH-15 and their evidence). CSH-14 and CSH-15 share one commit because
 both live in the same claim surface of one file; the self-heal is inert without
 the nix-side `disableGentlePiBanner` that the claim reads from `config.json`.
+
+Work unit 6 — commit `e8b97bc fix(pi): never abort the activation from the
+banner-filter merge`, 1 file, 48 insertions, 32 deletions:
+`modules/home/programs/terminal/tools/pi/startup-header.nix`. The entry body
+became a shell function that returns instead of exiting, called with `|| true`,
+and it preserves the permission bits of `settings.json`.
+
+Work unit 7 — `docs(odd): record CSH-16 and the work-unit commit for the
+activation guard`, which records the evidence below.
+
+### CSH-16 evidence
+
+- Deployed generation: in
+  `17c2a0vmxhcjwai2wpsnyxaw8gzwl1a6-home-manager-generation/activate` the entry
+  body is inline after `_iNote ... "piStartupHeaderBannerFilter"` (line 605), not
+  a subshell, which is what made `exit 0` fatal for the whole activation.
+- Extracted-entry harness (`bash -eu -o pipefail`, stub `_iNote`, home path
+  rewritten to a scratch directory, `echo CONTINUED-AFTER-ENTRY` appended after
+  the entry): five cases, every one printed the continuation marker — settings
+  absent (and no file created), valid without the filter (filter added,
+  `npm:pi-btw`/`theme`/an unrelated key preserved, mode stays 644), unparsable
+  JSON (byte-identical), already filtered (byte- and mtime-identical on a second
+  run), `packages` that is not an array (file untouched).
+- jq program: byte-identical to the previous version after whitespace
+  normalization (16 lines), so the merge semantics did not change.
+- Checks: `integration-activation-dry-run`, `integration-gentle-ai-engine` and
+  `integration-home-module` pass, and `nix flake check --no-build` reports no
+  evaluation error.
 
 Work unit 1 — commit `6e44f11 feat(pi): replace the startup banner with a custom
 header`, 6 files, 514 insertions, 1 deletion:
@@ -379,4 +418,8 @@ Two behaviours remain unverified because they need a live terminal:
   construction; the horizontal offset is not proven.
 - That a long `model` value now truncates instead of wrapping (CSH-12).
 
-Nothing is pushed: `refactor/gentle-upstream-stack` is ahead of its upstream.
+Pull request: #198 (`fix/pi-startup-header-slot`), opened against `main` with the
+`bug` label, after the CSH-14/CSH-15 and CSH-16 commits. The branch was rebased
+locally onto `main` and the force-push was declined by policy, so the PR head
+tracks the original base; GitHub reports it `MERGEABLE` and CI validates the merge
+ref.
