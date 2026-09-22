@@ -207,6 +207,10 @@
 ## aytordev\.programs\.terminal\.tools\.nix-search-tv\.package
 ## aytordev\.programs\.terminal\.tools\.pi\.enable
 ## aytordev\.programs\.terminal\.tools\.pi\.package
+## aytordev\.programs\.terminal\.tools\.pi\.agent-profiles\.enable
+## aytordev\.programs\.terminal\.tools\.pi\.agent-profiles\.active
+## aytordev\.programs\.terminal\.tools\.pi\.agent-profiles\.materialize
+## aytordev\.programs\.terminal\.tools\.pi\.agent-profiles\.profiles
 ## aytordev\.programs\.terminal\.tools\.pi\.providers
 ## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.enable
 ## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.art

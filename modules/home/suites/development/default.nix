@@ -129,10 +129,14 @@ in {
             gentle-ai.enable = mkDefault cfg.aiEnable;
             ai-skills.enable = mkDefault cfg.aiEnable;
             herdr.enable = mkDefault cfg.aiEnable;
-            pi.enable = mkDefault cfg.aiEnable;
-            # Custom startup header: own the single Pi header slot with our art
-            # and panel instead of gentle-pi's built-in banner.
-            pi."startup-header".enable = mkDefault cfg.aiEnable;
+            pi = {
+              enable = mkDefault cfg.aiEnable;
+              # Custom startup header: own the single Pi header slot with our art
+              # and panel instead of gentle-pi's built-in banner.
+              "startup-header".enable = mkDefault cfg.aiEnable;
+              # Declarative gentle-pi agent-model profiles (store + routing).
+              "agent-profiles".enable = mkDefault cfg.aiEnable;
+            };
             git-crypt = mkDefault enabled;
             gh = mkDefault enabled;
             hcloud = mkDefault enabled;

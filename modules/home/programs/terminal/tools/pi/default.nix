@@ -10,6 +10,7 @@ in {
   imports = [
     ./provider.nix
     ./startup-header.nix
+    ./agent-profiles.nix
   ];
 
   options.aytordev.programs.terminal.tools.pi = {

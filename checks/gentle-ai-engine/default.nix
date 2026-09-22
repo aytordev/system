@@ -110,7 +110,7 @@
     noAdapter = !(tools.gentle-ai ? adapter) && !(lib.any (p: lib.getName p == "aytordev-sdd") enabled.home.packages);
     noLegacyOptions =
       builtins.attrNames tools.pi
-      == ["enable" "package" "providers" "startup-header"]
+      == ["agent-profiles" "enable" "package" "providers" "startup-header"]
       && builtins.attrNames tools.gentle-ai == ["enable" "package"];
     noProfile = under ".pi/" noSkills == [] && !(enabled.home.sessionVariables ? PI_CODING_AGENT_DIR);
     piExactlyFour = under ".pi/" enabled == expected piRoot;
