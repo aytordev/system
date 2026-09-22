@@ -1,0 +1,8 @@
+{
+    "name": "aytordev-design-system",
+    "description": "Evolve the consuming project's existing design system: discover its source of truth, token primitives and semantic roles, component anatomy, variants, and states, then propose decisions, documentation, and adoption/migration plans with compatibility and rollback. Use when auditing, extending, documenting, or migrating a design system, or when token or component decisions need escalation. Triggers on design system, token audit, semantic tokens, component anatomy, state matrix, adoption plan, migration plan.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "September 2026",
+    "abstract": "Design-system discovery and evolution for the consuming project: source-of-truth discovery, token primitives versus semantic roles, component anatomy and state coverage, accessibility conflict escalation, and adoption/migration planning with compatibility and rollback, plus optional project-shaped documentation."
+}

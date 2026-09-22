@@ -36,7 +36,7 @@ Use this skill when:
 - Keep `SKILL.md` concise and runtime-oriented; push detail into `rules/` or `references/`.
 - Do not add `scripts/` or `assets/` until a reusable resource actually exists.
 - Validate before finishing; do not hand-maintain a parallel description.
-- Ordinary maintenance preserves the four-skill inventory. Creation of another
+- Ordinary maintenance preserves the published-skill inventory. Creation of another
   repository-published skill requires explicit approval to expand that policy;
   authoring a source package alone does not publish it.
 

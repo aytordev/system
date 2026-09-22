@@ -11,7 +11,7 @@ does **not** install Shell or validate its live runtime/data compatibility.
 | --- | --- |
 | Nix package capabilities | Pi, public `gentle-ai`, Engram, Node/npm, runtime environment |
 | Official `gentle-ai install --agent pi` | Native Pi profile, Shell package and private engine, extensions/workflow |
-| Local `ai-skills` capability | Neutral four-folder collection and thin recursive Pi publication |
+| Local `ai-skills` capability | Neutral skill collection and thin recursive Pi publication |
 
 The development suite enables these capabilities with overridable defaults.
 The distributor lives in `modules/common/ai-tools/ai-skills.nix`, explicitly
@@ -27,10 +27,16 @@ Engram exports `ENGRAM_BIN` for native subprocess selection,
 executables through their Nix pins; native Shell/package/private-engine updates
 remain upstream-owned. This replacement does not migrate Engram data.
 
-## Four local skills
+## Local skills
 
 Sources remain under `modules/common/ai-tools/skills/`:
 
+- `aytordev-design-system` — design-system discovery and evolution: tokens,
+  component anatomy/states, adoption and migration.
+- `aytordev-interface-design` — interface design and read-only evidence-based
+  review for the consuming project's system.
+- `aytordev-pen-ops` — Pen session operations from observed capabilities:
+  inspection, authorized bounded edits, verification.
 - `dotfiles-coder` — repository architecture and configuration patterns.
 - `nix` — authoring rules, operational references, and package-diff helper.
 - `skill-creator` — local skill authoring and metadata contract.
@@ -84,7 +90,9 @@ Engram data are exported with this collection.
 [Pen's documented flow](https://docs.pen.dev/core-concepts/ai-agents#use-skills)
 is **Add SKILL.md file…** from the slash menu. Select a skill's `SKILL.md` or
 containing folder; the folder name becomes its menu name. Keep that location,
-and re-add the same file after edits to reload it. Pen does not document automatic
+and re-add the same file after edits to reload it. Removing a skill's entry in
+Pen with its trash icon does not delete the skill folder or its files from
+disk. Pen does not document automatic
 scanning of our collection or `.agents`, and its `read_skill()` MCP tool serves
 Pen's design instructions, not this custom collection.
 
@@ -95,7 +103,7 @@ managed profiles. These commands are operator instructions, not activation code:
 ```sh
 collection="${XDG_DATA_HOME:-$HOME/.local/share}/aytordev/skills"
 export_dir="$(mktemp -d "$HOME/aytordev-skills-export.XXXXXX")"
-for name in dotfiles-coder nix skill-creator skill-registry; do
+for name in aytordev-design-system aytordev-interface-design aytordev-pen-ops dotfiles-coder nix skill-creator skill-registry; do
     cp -RL "$collection/$name" "$export_dir/$name"
     chmod -R u+w "$export_dir/$name"
 done
@@ -158,14 +166,14 @@ These are operator instructions; repository verification does not execute them.
    Complete provider configuration and authentication through native setup;
    Nix no longer supplies Pi models or credentials. Review the backup when
    restoring provider preferences rather than copying the retired extensions.
-6. Start Pi and check native Shell loading and the four local skill commands.
+6. Start Pi and check native Shell loading and the local skill commands.
    Live Shell installation, model calls, and data compatibility require this
    separate operator verification.
 
 ## Verification and history
 
 `checks/gentle-ai-engine` now checks package enable/disable/override behavior,
-environment, no profile/adapter ownership, and exact four-skill publication with
+environment, no profile/adapter ownership, and exact current skill-list publication with
 client guards, standalone neutral export, custom HOME/XDG paths, byte-for-byte
 projections, and isolated dereferenced copies with resolvable support. Retained
 AI checks cover inventory, dependencies, metadata, and documentation links.

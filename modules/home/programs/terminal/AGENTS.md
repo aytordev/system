@@ -122,7 +122,7 @@ provider, `pi/provider.nix`), safe because Pi only reads that file and no
 upstream component writes it (Shell keeps routing in
 `~/.pi/gentle-ai/models.json`). Nix owns the public CLI, Pi, Engram, Node/npm,
 and runtime environment. The separate guarded
-shared `modules/common/ai-tools/ai-skills.nix` capability exports four self-contained folders at
+shared `modules/common/ai-tools/ai-skills.nix` capability exports the self-contained skill folders at
 `$XDG_DATA_HOME/aytordev/skills` even without clients, plus recursive file links
 for the enabled Pi client; never link a whole client profile or skills root. See
 `modules/common/ai-tools/README.md` for onboarding and updater ownership.

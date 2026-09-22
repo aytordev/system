@@ -18,9 +18,12 @@
     (aiTools + "/AGENTS.md")
   ];
   trees = [
+    (aiTools + "/skills/aytordev-design-system")
     (aiTools + "/skills/nix")
     (aiTools + "/skills/dotfiles-coder")
     (aiTools + "/skills/skill-registry")
+    (aiTools + "/skills/aytordev-interface-design")
+    (aiTools + "/skills/aytordev-pen-ops")
   ];
 
   markdownFiles = dir: let
