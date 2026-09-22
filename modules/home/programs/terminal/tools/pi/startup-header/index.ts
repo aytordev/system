@@ -5,7 +5,8 @@
  * sessions. It renders the bundled art as a centered kitty image followed by a
  * centered, animated status panel. It deliberately does NOT touch the footer,
  * widgets, editor, models, or any other Pi profile file. The single exception is
- * the `!startup-banner.ts` filter on the `npm:gentle-pi` entry of
+ * the `!startup-banner.ts` filter on the gentle-pi entry (bare
+ * `npm:gentle-pi` or a version-pinned variant such as `npm:gentle-pi@3.4.0`) of
  * `~/.pi/agent/settings.json`: Home Manager merges it during activation and this
  * extension re-applies it when another writer drops it.
  *
@@ -95,8 +96,28 @@ const HEADER_SILENCE_MS = 2_000;
 /** Bounded self-healing: never re-claim more than this many times per session. */
 const MAX_RECLAIMS = 8;
 
-/** The Pi package entry this extension filters, and the filter it insists on. */
-const GENTLE_PI_PACKAGE = "npm:gentle-pi";
+/**
+ * Anchored matcher for the gentle-pi source: the bare package or any pinned
+ * variant (`npm:gentle-pi@<spec>`), never a package whose name merely starts
+ * with `gentle-pi` (e.g. `npm:gentle-pi-tools`). Literal pattern, not an
+ * interpolation, so future constant churn cannot change the pattern's meaning.
+ * Must stay semantically in sync with `isGentlePiEntry` in `startup-header.nix`:
+ * the jq side uses Oniguruma's `\z` because jq's `$` also matches immediately
+ * before a final newline, which this ECMAScript pattern (no `m` flag) rejects.
+ * One residual bound is deliberately left open: Oniguruma's `.` matches a raw
+ * CR, U+2028 and U+2029 inside the `@.+` region of a pinned spec, so the
+ * activation merge would filter an entry like `npm:gentle-pi@a\rb` that this
+ * pattern would skip. Such a `source` cannot be a resolvable Pi package spec,
+ * so the divergence is unreachable for any real `settings.json`; do not add
+ * exotic escapes to chase it.
+ */
+const GENTLE_PI_SOURCE_PATTERN = /^npm:gentle-pi(@.+)?$/;
+
+/** Type guard deciding whether a `packages` entry source is gentle-pi. */
+function isGentlePiPackage(source: unknown): source is string {
+	return typeof source === "string" && GENTLE_PI_SOURCE_PATTERN.test(source);
+}
+
 const BANNER_FILTER = "!startup-banner.ts";
 
 /** Deterministic spinner frames indexed by the tick counter. */
@@ -199,8 +220,9 @@ function isTuiSession(ctx: ExtensionContext): boolean {
  * runtime file that Pi, the Gentle AI installer and package installers rewrite.
  * Observed on 2026-09-21: the activation merged the filter at 22:57:33 and a
  * later rewrite of `packages` dropped it, which re-enables gentle-pi's banner
- * for every following start. Healing rewrites only that one entry, preserves
- * every other key, and is skipped when the file changed underneath us.
+ * for every following start. Healing rewrites only that one entry (the bare or
+ * version-pinned `npm:gentle-pi` source, preserving any pin), preserves every
+ * other key, and is skipped when the file changed underneath us.
  *
  * Failures are swallowed: the activation merge remains the authoritative repair.
  */
@@ -216,13 +238,13 @@ function ensureGentlePiBannerFilter(config: StartupHeaderConfig): void {
 
 		let changed = false;
 		const packages = settings.packages.map((entry: unknown) => {
-			if (entry === GENTLE_PI_PACKAGE) {
+			if (isGentlePiPackage(entry)) {
 				changed = true;
-				return {source: GENTLE_PI_PACKAGE, extensions: [BANNER_FILTER]};
+				return {source: entry, extensions: [BANNER_FILTER]};
 			}
 			if (entry === null || typeof entry !== "object") return entry;
 			const record = entry as {source?: unknown; extensions?: unknown};
-			if (record.source !== GENTLE_PI_PACKAGE) return entry;
+			if (!isGentlePiPackage(record.source)) return entry;
 			const filters = Array.isArray(record.extensions) ? [...record.extensions] : [];
 			if (filters.includes(BANNER_FILTER)) return entry;
 			changed = true;
