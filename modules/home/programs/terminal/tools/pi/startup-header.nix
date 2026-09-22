@@ -47,42 +47,58 @@
   # `disableGentlePiBanner` is on (`ensureGentlePiBannerFilter` in `index.ts`).
   # The activation stays authoritative; the runtime heal only closes the window
   # between two switches.
+  # The body is a function that RETURNS instead of a script that exits: Home
+  # Manager inlines every activation entry into one script run with `set -eu`, so
+  # an `exit 0` here - a missing settings.json, a missing jq, a failing mktemp -
+  # would skip every activation entry that follows instead of skipping this one
+  # merge. The call is additionally guarded with `|| true`, and the existing
+  # permission bits are restored so this entry and `agent-profiles.nix` leave the
+  # file exactly as they found it.
   mergeGentlePiBannerFilter = ''
-    settings="${config.home.homeDirectory}/.pi/agent/settings.json"
-    if [ ! -f "$settings" ]; then exit 0; fi
-    jq_bin="${lib.getExe pkgs.jq}"
-    if [ ! -x "$jq_bin" ]; then exit 0; fi
+    piStartupHeaderBannerFilterFilter() {
+      settings="${config.home.homeDirectory}/.pi/agent/settings.json"
+      if [ ! -f "$settings" ]; then return 0; fi
+      jq_bin="${lib.getExe pkgs.jq}"
+      if [ ! -x "$jq_bin" ]; then return 0; fi
 
-    tmp="$(mktemp "$settings.XXXXXX")" || exit 0
-    if "$jq_bin" '
-      if has("packages") and ((.packages | type) == "array") then
-        .packages = [
-          .packages[] |
-          if (type == "string" and . == "npm:gentle-pi")
-             or (type == "object" and .source == "npm:gentle-pi")
-          then
-            (if type == "object" then . else { source: "npm:gentle-pi" } end)
-            | if ((.extensions // []) | index("!startup-banner.ts")) != null
-              then .
-              else . + { extensions: ((.extensions // []) + ["!startup-banner.ts"]) }
-              end
-          else .
-          end
-        ]
-      else .
-      end
-    ' "$settings" > "$tmp"; then
-      norm="$(mktemp "$settings.XXXXXX")" || exit 0
-      "$jq_bin" -S . "$settings" > "$norm"
-      if "$jq_bin" -S . "$tmp" | cmp -s - "$norm"; then
-        $DRY_RUN_CMD rm -f "$tmp" "$norm"
+      mode="$(${lib.getExe' pkgs.coreutils "stat"} -c '%a' "$settings" 2>/dev/null)" || mode=""
+      tmp="$(mktemp "$settings.XXXXXX")" || return 0
+      if "$jq_bin" '
+        if has("packages") and ((.packages | type) == "array") then
+          .packages = [
+            .packages[] |
+            if (type == "string" and . == "npm:gentle-pi")
+               or (type == "object" and .source == "npm:gentle-pi")
+            then
+              (if type == "object" then . else { source: "npm:gentle-pi" } end)
+              | if ((.extensions // []) | index("!startup-banner.ts")) != null
+                then .
+                else . + { extensions: ((.extensions // []) + ["!startup-banner.ts"]) }
+                end
+            else .
+            end
+          ]
+        else .
+        end
+      ' "$settings" > "$tmp"; then
+        norm="$(mktemp "$settings.XXXXXX")" || {
+          $DRY_RUN_CMD rm -f "$tmp"
+          return 0
+        }
+        "$jq_bin" -S . "$settings" > "$norm"
+        if "$jq_bin" -S . "$tmp" | cmp -s - "$norm"; then
+          $DRY_RUN_CMD rm -f "$tmp" "$norm"
+        else
+          $DRY_RUN_CMD rm -f "$norm"
+          $DRY_RUN_CMD mv "$tmp" "$settings" || return 0
+          if [ -n "$mode" ]; then $DRY_RUN_CMD chmod "$mode" "$settings" || return 0; fi
+        fi
       else
-        $DRY_RUN_CMD rm -f "$norm"
-        $DRY_RUN_CMD mv "$tmp" "$settings"
+        $DRY_RUN_CMD rm -f "$tmp"
       fi
-    else
-      $DRY_RUN_CMD rm -f "$tmp"
-    fi
+      return 0
+    }
+    piStartupHeaderBannerFilterFilter || true
   '';
 in {
   # File-publication capability: no primary executable and no profile ownership.
