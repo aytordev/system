@@ -4,12 +4,19 @@
  * Owns exactly one thing: the startup header (shown above the chat) in TUI
  * sessions. It renders the bundled art as a centered kitty image followed by a
  * centered, animated status panel. It deliberately does NOT touch the footer,
- * widgets, editor, settings, models, or any other Pi profile file — those have
- * other owners.
+ * widgets, editor, models, or any other Pi profile file. The single exception is
+ * the `!startup-banner.ts` filter on the `npm:gentle-pi` entry of
+ * `~/.pi/agent/settings.json`: Home Manager merges it during activation and this
+ * extension re-applies it when another writer drops it.
  *
- * Why the `setHeader` delay: `pi-tui` keeps a SINGLE custom-header slot and the
- * last writer wins. gentle-pi's own banner asserts its header at roughly 50 ms,
- * so we assert ours at 120 ms to win the slot without a race.
+ * Why claiming the slot takes three pieces: `pi-tui` keeps a SINGLE
+ * custom-header slot and the last writer wins. gentle-pi's own banner asserts at
+ * roughly 50 ms on EVERY `session_start`, so (1) we assert ours at 120 ms to win
+ * each emission, (2) we install immediately from `session_shutdown` while our
+ * delayed assert is still pending, because a session replaced inside that 120 ms
+ * window would otherwise hand the slot to a banner that already asserted, and
+ * (3) a bounded watchdog re-claims the header when our component stops being
+ * painted, which is the only available signal that a later writer took it back.
  *
  * Why `renderImage()` is called once per width instead of once per frame: every
  * call that passes an `imageId` re-registers kitty metadata, which bumps
@@ -25,7 +32,7 @@
  */
 
 import { execFile } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -37,7 +44,6 @@ import type {
 } from "@earendil-works/pi-coding-agent";
 import {
 	allocateImageId,
-	deleteKittyImage,
 	getCapabilities,
 	getPngDimensions,
 	imageFallback,
@@ -60,6 +66,8 @@ interface StartupHeaderConfig {
 	cadence: Cadence;
 	/** Base file name of the PNG next to this entry point. */
 	art: string;
+	/** Re-apply the gentle-pi banner filter when another writer drops it. */
+	disableGentlePiBanner: boolean;
 }
 
 const DEFAULT_CONFIG: StartupHeaderConfig = {
@@ -67,6 +75,7 @@ const DEFAULT_CONFIG: StartupHeaderConfig = {
 	maxHeightCells: 20,
 	cadence: "quality",
 	art: "pink-monster.png",
+	disableGentlePiBanner: true,
 };
 
 /** Interval per cadence; `null` disables the animation loop entirely. */
@@ -78,6 +87,17 @@ const CADENCE_MS: Record<Cadence, number | null> = {
 
 /** Delay before claiming the single custom-header slot. gentle-pi asserts at ~50 ms. */
 const HEADER_ASSERT_DELAY_MS = 120;
+
+/** Watchdog cadence, and how long a live claim may go unpainted before we re-claim. */
+const WATCHDOG_INTERVAL_MS = 500;
+const HEADER_SILENCE_MS = 2_000;
+
+/** Bounded self-healing: never re-claim more than this many times per session. */
+const MAX_RECLAIMS = 8;
+
+/** The Pi package entry this extension filters, and the filter it insists on. */
+const GENTLE_PI_PACKAGE = "npm:gentle-pi";
+const BANNER_FILTER = "!startup-banner.ts";
 
 /** Deterministic spinner frames indexed by the tick counter. */
 const SPINNER_FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
@@ -132,6 +152,7 @@ function loadConfig(): StartupHeaderConfig {
 				maxHeightCells: intOr(parsed.maxHeightCells, DEFAULT_CONFIG.maxHeightCells),
 				cadence,
 				art: typeof parsed.art === "string" && parsed.art.length > 0 ? parsed.art : DEFAULT_CONFIG.art,
+				disableGentlePiBanner: parsed.disableGentlePiBanner !== false,
 			};
 		} catch {
 			// Unparsable config is not fatal: fall through to the next candidate.
@@ -158,6 +179,67 @@ function loadArtBase64(art: string): { base64: string; dimensions: ImageDimensio
 	return null;
 }
 
+/** Timestamp of the last paint of a live header component; the watchdog reads it. */
+let lastRenderAt = 0;
+
+/** `ctx.mode` reads through the runner, which throws once the runner is invalidated. */
+function isTuiSession(ctx: ExtensionContext): boolean {
+	try {
+		return ctx.mode === "tui";
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Re-apply the `!startup-banner.ts` filter when something rewrote it away.
+ *
+ * Home Manager owns the declarative merge
+ * (`home.activation.piStartupHeaderBannerFilter`), but `settings.json` is a
+ * runtime file that Pi, the Gentle AI installer and package installers rewrite.
+ * Observed on 2026-09-21: the activation merged the filter at 22:57:33 and a
+ * later rewrite of `packages` dropped it, which re-enables gentle-pi's banner
+ * for every following start. Healing rewrites only that one entry, preserves
+ * every other key, and is skipped when the file changed underneath us.
+ *
+ * Failures are swallowed: the activation merge remains the authoritative repair.
+ */
+function ensureGentlePiBannerFilter(config: StartupHeaderConfig): void {
+	if (!config.disableGentlePiBanner) return;
+	const agentDir = process.env.PI_CODING_AGENT_DIR ?? join(homedir(), ".pi", "agent");
+	const settingsPath = join(agentDir, "settings.json");
+	try {
+		if (!existsSync(settingsPath)) return;
+		const before = statSync(settingsPath);
+		const settings = JSON.parse(readFileSync(settingsPath, "utf8")) as {packages?: unknown};
+		if (!Array.isArray(settings.packages)) return;
+
+		let changed = false;
+		const packages = settings.packages.map((entry: unknown) => {
+			if (entry === GENTLE_PI_PACKAGE) {
+				changed = true;
+				return {source: GENTLE_PI_PACKAGE, extensions: [BANNER_FILTER]};
+			}
+			if (entry === null || typeof entry !== "object") return entry;
+			const record = entry as {source?: unknown; extensions?: unknown};
+			if (record.source !== GENTLE_PI_PACKAGE) return entry;
+			const filters = Array.isArray(record.extensions) ? [...record.extensions] : [];
+			if (filters.includes(BANNER_FILTER)) return entry;
+			changed = true;
+			return {...record, extensions: [...filters, BANNER_FILTER]};
+		});
+		if (!changed) return;
+
+		const after = statSync(settingsPath);
+		if (after.mtimeMs !== before.mtimeMs || after.size !== before.size) return;
+		const tmp = `${settingsPath}.${process.pid}.tmp`;
+		writeFileSync(tmp, `${JSON.stringify({...settings, packages}, null, 2)}\n`, {mode: before.mode & 0o777});
+		renameSync(tmp, settingsPath);
+	} catch {
+		// Best effort: the activation merge still repairs the file on the next switch.
+	}
+}
+
 /** Read the active agent-model profile from gentle-ai's runtime file, else `-`. */
 function loadActiveProfile(): string {
 	try {
@@ -176,6 +258,12 @@ function fmtTokens(tokens: number | null, fallback: string): string {
 	if (tokens >= 1_000_000) return `${(tokens / 1_000_000).toFixed(1)}M`;
 	if (tokens >= 1_000) return `${Math.round(tokens / 1_000)}k`;
 	return String(tokens);
+}
+
+/** The decoded art and its pixel size, resolved once per process. */
+interface ArtState {
+	base64: string;
+	dimensions: ImageDimensions | null;
 }
 
 /** The kitty payload and the cell footprint it occupies, cached per width. */
@@ -235,10 +323,9 @@ class StartupHeaderComponent {
 	private readonly tui: TUI;
 	private readonly theme: Theme;
 	private readonly config: StartupHeaderConfig;
-	private readonly artBase64: string | undefined;
-	private readonly imageDimensions: ImageDimensions | undefined;
+	private readonly art: ArtState | undefined;
 	private readonly imageId: number | undefined;
-	private cachedImage: CachedImage | undefined;
+	private readonly payloadCache: Map<number, CachedImage>;
 
 	private tick = 0;
 	private interval: ReturnType<typeof setInterval> | undefined;
@@ -252,21 +339,19 @@ class StartupHeaderComponent {
 		tui: TUI,
 		theme: Theme,
 		config: StartupHeaderConfig,
+		art: ArtState | undefined,
+		imageId: number | undefined,
+		payloadCache: Map<number, CachedImage>,
 	) {
 		this.pi = pi;
 		this.ctx = ctx;
 		this.tui = tui;
 		this.theme = theme;
 		this.config = config;
+		this.art = art;
+		this.imageId = imageId;
+		this.payloadCache = payloadCache;
 		this.profile = loadActiveProfile();
-
-		// Only load the art when the terminal actually speaks kitty. Any other
-		// capability renders the panel alone rather than a broken sequence.
-		const kitty = getCapabilities().images === "kitty";
-		const art = kitty ? loadArtBase64(config.art) : null;
-		this.artBase64 = art?.base64;
-		this.imageDimensions = art?.dimensions ?? undefined;
-		this.imageId = art ? allocateImageId() : undefined;
 
 		this.resolveGitBranch();
 		this.startAnimation();
@@ -294,7 +379,12 @@ class StartupHeaderComponent {
 		if (ms === null) return;
 		this.interval = setInterval(() => {
 			this.tick = (this.tick + 1) % Number.MAX_SAFE_INTEGER;
-			this.tui.requestRender();
+			try {
+				this.tui.requestRender();
+			} catch {
+				// The UI is gone; a header must never throw out of a timer.
+				this.dispose();
+			}
 		}, ms);
 	}
 
@@ -350,6 +440,7 @@ class StartupHeaderComponent {
 	}
 
 	render(width: number): string[] {
+		lastRenderAt = Date.now();
 		try {
 			const lines = this.imageLines(width);
 			lines.push(...centerLines(this.panelLines(), width));
@@ -365,9 +456,10 @@ class StartupHeaderComponent {
 	 * payload is produced once per width and reused verbatim on later frames.
 	 */
 	private imageLines(width: number): string[] {
-		if (this.artBase64 === undefined || this.imageDimensions === undefined) return [];
-		const cached = this.cachedImage;
-		if (cached !== undefined && cached.width === width) {
+		const art = this.art;
+		if (art === undefined || art.dimensions === null) return [];
+		const cached = this.payloadCache.get(width);
+		if (cached !== undefined) {
 			return placeImage(cached.sequence, cached.columns, cached.rows, width);
 		}
 		// Clamp the configured cap to the live terminal width: `renderImage` uses
@@ -375,22 +467,22 @@ class StartupHeaderComponent {
 		// the only thing keeping the placement inside the terminal. Centering then
 		// uses the footprint `renderImage` reports, not the requested cap.
 		const maxWidthCells = Math.max(1, Math.min(width - 2, this.config.maxWidthCells));
-		const result = renderImage(this.artBase64, this.imageDimensions, {
+		const result = renderImage(art.base64, art.dimensions, {
 			maxWidthCells,
 			maxHeightCells: this.config.maxHeightCells,
 			imageId: this.imageId,
 			moveCursor: false,
 		});
 		if (!result) {
-			const label = imageFallback("image/png", this.imageDimensions, this.config.art);
+			const label = imageFallback("image/png", art.dimensions, this.config.art);
 			return [truncateToWidth(this.theme.fg("dim", label), width)];
 		}
-		this.cachedImage = {
+		this.payloadCache.set(width, {
 			width,
 			sequence: result.sequence,
 			columns: result.columns,
 			rows: result.rows,
-		};
+		});
 		return placeImage(result.sequence, result.columns, result.rows, width);
 	}
 
@@ -412,43 +504,114 @@ class StartupHeaderComponent {
 			clearInterval(this.interval);
 			this.interval = undefined;
 		}
-		const imageId = this.imageId;
-		if (imageId !== undefined) {
-			try {
-				this.tui.terminal.write(deleteKittyImage(imageId));
-			} catch {
-				// Terminal already gone; nothing to clean up.
-			}
-		}
 	}
 }
 
 export default function (pi: ExtensionAPI): void {
 	const config = loadConfig();
-	const pendingTimers = new Set<ReturnType<typeof setTimeout>>();
+	// One kitty image per process, allocated on the first claim: re-claims then
+	// reuse the same id and the same per-width payload, so reclaiming the slot
+	// after a later writer steals it costs no re-transmission and repaints
+	// byte-identical art.
+	let imageId: number | undefined;
+	let art: ArtState | null | undefined;
+	const payloadCache = new Map<number, CachedImage>();
+
 	let active: StartupHeaderComponent | undefined;
+	let sessionCtx: ExtensionContext | undefined;
+	let generation = 0;
+	let claimedAt = 0;
+	let reClaims = 0;
+	let pending: ReturnType<typeof setTimeout> | undefined;
+	let watchdog: ReturnType<typeof setInterval> | undefined;
+
+	/** Capability detection needs a live terminal, so the art is resolved lazily. */
+	const resolveArt = (): ArtState | undefined => {
+		if (art === undefined) {
+			const resolved = getCapabilities().images === "kitty" ? loadArtBase64(config.art) : null;
+			art = resolved ?? null;
+		}
+		return art ?? undefined;
+	};
+
+	/** Install (or reinstall) our header. Never throws, not even on a stale ctx. */
+	const claim = (ctx: ExtensionContext): void => {
+		claimedAt = Date.now();
+		try {
+			ctx.ui.setHeader((tui, theme) => {
+				const resolved = resolveArt();
+				if (imageId === undefined && resolved !== undefined) imageId = allocateImageId();
+				const component = new StartupHeaderComponent(pi, ctx, tui, theme, config, resolved, imageId, payloadCache);
+				active = component;
+				return component;
+			});
+		} catch {
+			// Never crash the session if header installation fails. A ctx whose
+			// runner was invalidated by a reload lands here as well.
+		}
+	};
+
+	const stopWatchdog = (): void => {
+		if (watchdog !== undefined) {
+			clearInterval(watchdog);
+			watchdog = undefined;
+		}
+	};
+
+	/**
+	 * Third piece of the claim. Silence on a live session is the only signal that
+	 * another writer took the single header slot, and it is enough: a claim that
+	 * stops being painted for longer than the silence window lost it, so we take
+	 * it back, bounded per session.
+	 */
+	const startWatchdog = (mine: number): void => {
+		stopWatchdog();
+		watchdog = setInterval(() => {
+			if (mine !== generation) {
+				stopWatchdog();
+				return;
+			}
+			if (Date.now() - Math.max(claimedAt, lastRenderAt) <= HEADER_SILENCE_MS) return;
+			if (reClaims >= MAX_RECLAIMS) {
+				stopWatchdog();
+				return;
+			}
+			reClaims += 1;
+			if (sessionCtx !== undefined) claim(sessionCtx);
+		}, WATCHDOG_INTERVAL_MS);
+	};
 
 	pi.on("session_start", (_event, ctx) => {
-		if (ctx.mode !== "tui") return;
-		// Assert after gentle-pi's banner so we own the single header slot.
-		const timer = setTimeout(() => {
-			pendingTimers.delete(timer);
-			try {
-				ctx.ui.setHeader((tui, theme) => {
-					active = new StartupHeaderComponent(pi, ctx, tui, theme, config);
-					return active;
-				});
-			} catch {
-				// Never crash the session if header installation fails.
-			}
+		if (!isTuiSession(ctx)) return;
+		generation += 1;
+		const mine = generation;
+		sessionCtx = ctx;
+		reClaims = 0;
+		if (pending !== undefined) clearTimeout(pending);
+		pending = setTimeout(() => {
+			pending = undefined;
+			if (mine !== generation) return;
+			claim(ctx);
+			startWatchdog(mine);
 		}, HEADER_ASSERT_DELAY_MS);
-		pendingTimers.add(timer);
 	});
 
-	pi.on("session_shutdown", () => {
-		for (const timer of pendingTimers) clearTimeout(timer);
-		pendingTimers.clear();
+	pi.on("session_shutdown", (_event, ctx) => {
+		if (!isTuiSession(ctx)) return;
+		if (pending !== undefined) {
+			// The delayed assert never ran and the runner is still active inside
+			// this shutdown emission, so install now: releasing the slot here is
+			// what let a competitor that asserted at ~50 ms keep it.
+			clearTimeout(pending);
+			pending = undefined;
+			claim(ctx);
+		}
+		stopWatchdog();
+		generation += 1;
 		active?.dispose();
 		active = undefined;
+		sessionCtx = undefined;
 	});
+
+	ensureGentlePiBannerFilter(config);
 }

@@ -63,6 +63,39 @@ only way to change the art without patching a package is to own the header.
 
 ## Tasks
 
+- [x] **CSH-14** (defect reported by the user: the gentle banner reappears
+  seconds after a start or `/reload`) Re-apply the banner filter from the
+  extension itself. `~/.pi/agent/settings.json` is a runtime file: after the
+  22:57:33 activation merged `!startup-banner.ts`, a later writer rewrote the
+  `packages` array and dropped it (verified: the file held a plain
+  `"npm:gentle-pi"` string, and `npm:gentle-engram` plus
+  `npm:gentle-engram@0.1.14` as a duplicate pair, which is the exact shape
+  `pi-engram init` produces). With the filter gone gentle-pi's banner loads on
+  every later start, so the extension now heals the single entry at setup time,
+  atomically and only when it changed.
+  Acceptance: a settings file whose `npm:gentle-pi` entry lacks the filter gains
+  exactly that filter, and every other key and entry is byte-identical.
+- [x] **CSH-15** (same defect) Make the header claim survive a competitor.
+  The old claim was one `setTimeout` at 120 ms: `session_shutdown` cancelled it,
+  and a ctx whose runner was invalidated inside that window threw (swallowed by
+  the empty catch), so a banner that asserted at ~50 ms kept the slot. The claim
+  is now three pieces: the delayed assert, an immediate assert from
+  `session_shutdown` while our assert is still pending, and a bounded watchdog
+  that re-claims when the component stops being painted.
+  Acceptance: with a hostile second extension that steals the header at +2 s,
+  our panel is back within a few seconds; `/reload` and `/new` keep it; and no
+  re-claim storm (bounded per session).
+- [x] **CSH-16** (defect found while fixing CSH-14) The activation entry aborted the
+  whole activation. `mergeGentlePiBannerFilter` used `exit 0` on its guard paths,
+  and Home Manager inlines every activation entry into one script that runs with
+  `set -eu` (verified in the deployed `17c2a0vmxhcjwai2wpsnyxaw8gzwl1a6-home-manager-generation`:
+  the body is inline after `_iNote ... "piStartupHeaderBannerFilter"`, not a
+  subshell), so a missing `settings.json`, a missing `jq` or a failing `mktemp`
+  skipped every activation entry that followed instead of skipping one merge. The
+  body is now a function that returns instead of exiting, called with `|| true`,
+  and it restores the file's permission bits like the `agent-profiles.nix` entry.
+  Acceptance: with `settings.json` absent, unparsable or present, the script
+  continues past the entry, and in the present case the filter is merged.
 - [x] **CSH-1** Downscale the source art so the one-time kitty transmission stays
   small, and place it in the tree.
   Acceptance: a PNG of roughly 768 px width in
@@ -240,7 +273,106 @@ Original evidence prompts:
 
 ## Progress
 
-All tasks complete, across three work units.
+### Work unit 5 (CSH-14, CSH-15) — the reported defect
+
+Evidence gathered before writing code:
+
+- `~/.pi/agent/settings.json` (mtime 22:59:54, i.e. 2m21s after the activation
+  that merged the filter) carries `packages[0] = "npm:gentle-pi"`: no filter.
+  The deployed activation entry is present and correct (line 507 of
+  `596n7rsxmx3bakc1l0xhday5h49b96g2-home-manager-generation/activate`), and the
+  published extension matches the repo byte for byte (sha256 `6074a7b1…`), so
+  the filter was applied and then dropped by a later writer.
+- Loading is effective: with the filter present, `pi list` reports
+  `npm:gentle-pi (filtered)`, and Pi's `matchesAnyPattern` matches the basename,
+  so `!startup-banner.ts` does exclude `extensions/startup-banner.ts`.
+- Four held-out runs of a real Pi in a pty (50x150, `--no-session`, including
+  `/reload` and `/new`) showed our header winning every emission: `GIT:` and the
+  rose braille never appear, and the loaded-resources box lists both
+  `gentle-pi:startup-banner.ts` and `startup-header`.
+- Reproduced the duplicate-entry shape without touching the real profile:
+  `PI_CODING_AGENT_DIR=/tmp/pi-merge-test node …/gentle-engram/cli.js init`
+  added `npm:gentle-engram@0.1.14` beside `npm:gentle-engram` and preserved the
+  `npm:gentle-pi` object entry, so `pi-engram init` explains the duplicate but
+  not the dropped filter.
+- Conclusion: the observable defect is the dropped filter, and the failure mode
+  of the old claim is a lost single `setTimeout` (cancelled by
+  `session_shutdown`, or thrown away on a stale ctx). Both are fixed here; the
+  exact identity of the writer that dropped the filter stays unproven, which is
+  why the fix heals the file instead of depending on that writer.
+
+Verification of the fix (all commands run locally, in this order):
+
+- `node --experimental-strip-types --check index.ts` -> syntax OK.
+- Hostile-competitor harness in an isolated agent dir (`/tmp/hdr-agent`: our
+  extension plus an `evil` extension that overwrites the header at +2 s): the
+  evil line is painted once and our panel is painted again after it (`branch` and
+  `profile` rows plus spinner frames continue to the end of the raw stream), so
+  the watchdog reclaims the slot.
+- Self-heal in the same harness: `packages[0]` went from `"npm:gentle-pi"` to
+  `{"source":"npm:gentle-pi","extensions":["!startup-banner.ts"]}` while
+  `npm:pi-btw`, `theme`, `tuiMode`, `lastChangelogVersion` and an unrelated
+  `unknownKeyThisMustSurvive` object stayed byte-identical.
+- Real profile, started with `-e <repo>/startup-header/index.ts`: the real
+  `~/.pi/agent/settings.json` was healed into the same object form (backup at
+  `/tmp/settings.real.before.json`), and a second identical run left its sha256
+  unchanged (`be935d88…`), so healing is idempotent.
+- Next start with the healed profile (real agent dir, 40x140 pty): `GIT:` and the
+  rose braille appear zero times, `gentle-pi:startup-banner.ts` is absent from the
+  loaded-resources `[Extensions]` list while `startup-header` is present, and our
+  panel and kitty payload render. The pre-heal run of the same command did list
+  `gentle-pi:startup-banner.ts`.
+- Nix: `nix eval` reports `disableGentlePiBanner = true` and `enable = true`; the
+  extension derivation `la17c56y…-pi-startup-header` holds `index.ts` (sha256
+  `a0d95845…`, identical to the repo) and a `config.json` carrying
+  `"disableGentlePiBanner":true`; a fresh `docs-options` build matches
+  `checks/docs-generation/golden/{home,darwin}.txt` byte for byte (no golden
+  update needed); `alejandra --check` and `typos` are clean on the changed files.
+- Passing checks: `integration-docs-generation`, `integration-module-contract`,
+  `integration-home-module`, `integration-gentle-ai-engine`. The repository
+  pre-commit suite passed on the staged files too (conflict markers, deadnix,
+  statix, treefmt, typos).
+- Deployment still pending: `darwin-switch wang-lin` publishes the new extension.
+  The healed `settings.json` already stops the rose banner from loading on the
+  next start, and `/reload` is enough for a session that is already running.
+
+All earlier tasks complete, across seven work units.
+
+Work unit 5 — commit `16a9dc9 fix(pi): keep the startup header when gentle-pi's
+banner re-asserts`, 3 files, 314 insertions, 57 deletions:
+`modules/home/programs/terminal/tools/pi/startup-header/index.ts`,
+`modules/home/programs/terminal/tools/pi/startup-header.nix` and this document
+(CSH-14, CSH-15 and their evidence). CSH-14 and CSH-15 share one commit because
+both live in the same claim surface of one file; the self-heal is inert without
+the nix-side `disableGentlePiBanner` that the claim reads from `config.json`.
+
+Work unit 6 — commit `e8b97bc fix(pi): never abort the activation from the
+banner-filter merge`, 1 file, 48 insertions, 32 deletions:
+`modules/home/programs/terminal/tools/pi/startup-header.nix`. The entry body
+became a shell function that returns instead of exiting, called with `|| true`,
+and it preserves the permission bits of `settings.json`.
+
+Work unit 7 — `docs(odd): record CSH-16 and the work-unit commit for the
+activation guard`, which records the evidence below.
+
+### CSH-16 evidence
+
+- Deployed generation: in
+  `17c2a0vmxhcjwai2wpsnyxaw8gzwl1a6-home-manager-generation/activate` the entry
+  body is inline after `_iNote ... "piStartupHeaderBannerFilter"` (line 605), not
+  a subshell, which is what made `exit 0` fatal for the whole activation.
+- Extracted-entry harness (`bash -eu -o pipefail`, stub `_iNote`, home path
+  rewritten to a scratch directory, `echo CONTINUED-AFTER-ENTRY` appended after
+  the entry): five cases, every one printed the continuation marker — settings
+  absent (and no file created), valid without the filter (filter added,
+  `npm:pi-btw`/`theme`/an unrelated key preserved, mode stays 644), unparsable
+  JSON (byte-identical), already filtered (byte- and mtime-identical on a second
+  run), `packages` that is not an array (file untouched).
+- jq program: byte-identical to the previous version after whitespace
+  normalization (16 lines), so the merge semantics did not change.
+- Checks: `integration-activation-dry-run`, `integration-gentle-ai-engine` and
+  `integration-home-module` pass, and `nix flake check --no-build` reports no
+  evaluation error.
 
 Work unit 1 — commit `6e44f11 feat(pi): replace the startup banner with a custom
 header`, 6 files, 514 insertions, 1 deletion:
@@ -271,9 +403,11 @@ the ownership guard`, 2 files, 13 insertions, 1 deletion:
 
 ## Next step
 
-Human verification: run `darwin-switch wang-lin`, then start Pi or `/reload`, and
-confirm the monster renders centered above the chat with the centered animated
-panel. If the image is missing, check that `TERM_PROGRAM=ghostty`, that `TMUX` is
+Human action: `darwin-switch wang-lin` publishes the new extension, then `/reload`
+(or a new Pi start) picks it up. In the session that is already running, `/reload`
+alone is enough to drop gentle-pi's banner, because the healed `settings.json` no
+longer loads it. Confirm that the monster renders centered above the chat with
+the centered animated panel and that it stays there. If the image is missing, check that `TERM_PROGRAM=ghostty`, that `TMUX` is
 unset, and that `tuiMode` is `fullscreen` — the image path depends on all three.
 
 Two behaviours remain unverified because they need a live terminal:
@@ -284,4 +418,8 @@ Two behaviours remain unverified because they need a live terminal:
   construction; the horizontal offset is not proven.
 - That a long `model` value now truncates instead of wrapping (CSH-12).
 
-Nothing is pushed: `refactor/gentle-upstream-stack` is ahead of its upstream.
+Pull request: #198 (`fix/pi-startup-header-slot`), opened against `main` with the
+`bug` label, after the CSH-14/CSH-15 and CSH-16 commits. The branch was rebased
+locally onto `main` and the force-push was declined by policy, so the PR head
+tracks the original base; GitHub reports it `MERGEABLE` and CI validates the merge
+ref.
