@@ -36,10 +36,11 @@
   # Idempotent, surgical merge: rewrite only the gentle-pi entry of the
   # `packages` array so it carries `extensions: ["!startup-banner.ts"]`. The
   # entry may be the bare string `npm:gentle-pi` or a version-pinned variant
-  # such as `npm:gentle-pi@3.4.0`; the pinned source is preserved verbatim so a
-  # pin is never silently dropped. Unrelated packages whose names merely start
-  # with `gentle-pi` (e.g. `npm:gentle-pi-tools`) are left untouched, as is every
-  # other package and key. The `\z` end-of-string anchor is deliberate: jq's `$`
+  # such as `npm:gentle-pi@<version>`; the pinned source is preserved verbatim
+  # so a pin is never silently dropped. Unrelated packages whose names merely
+  # start with `gentle-pi` (e.g. `npm:gentle-pi-tools`) are left untouched, as
+  # is every other package and key. The `\z` end-of-string anchor is
+  # deliberate: jq's `$`
   # also matches immediately before a final newline, which would accept sources
   # like `npm:gentle-pi\n` that the extension's ECMAScript pattern rejects. In
   # the jq source below the anchor is written `\\z`: jq consumes one backslash

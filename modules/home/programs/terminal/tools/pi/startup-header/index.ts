@@ -6,7 +6,7 @@
  * centered, animated status panel. It deliberately does NOT touch the footer,
  * widgets, editor, models, or any other Pi profile file. The single exception is
  * the `!startup-banner.ts` filter on the gentle-pi entry (bare
- * `npm:gentle-pi` or a version-pinned variant such as `npm:gentle-pi@3.4.0`) of
+ * `npm:gentle-pi` or a version-pinned variant such as `npm:gentle-pi@<version>`) of
  * `~/.pi/agent/settings.json`: Home Manager merges it during activation and this
  * extension re-applies it when another writer drops it.
  *
