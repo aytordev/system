@@ -9,10 +9,15 @@ The Shell package is pinned by upstream's own documented upgrade path,
 `pi install npm:gentle-pi@<version>`, so its version lives in
 `~/.pi/agent/settings.json` rather than in this flake; a versioned npm spec is
 skipped by `pi update`, which is what keeps it from drifting. The pin is
-currently **`npm:gentle-pi@3.5.1`**. The banner-filter
+currently **`npm:gentle-pi@3.6.0`**. The banner-filter
 merge matches the bare or pinned source and preserves the pin. Updating Shell
 is an operator action: run the upstream `pi install` command, then
 `gentle-ai sync`.
+
+Shell ≥ 3.4.0 registers the first-party `ask_user_question` tool, and Pi refuses
+to load two extensions that register the same tool name. A competing provider
+such as `@juicesharp/rpiv-ask-user-question` must therefore not be installed
+(`pi remove npm:@juicesharp/rpiv-ask-user-question`); Shell owns the name.
 
 Shell 3.5.0 added upstream's `gentle-shell` launcher. It ships as a package
 `bin`, so it is **not** on the login `PATH`: Pi prepends its own `<agent dir>/bin`
