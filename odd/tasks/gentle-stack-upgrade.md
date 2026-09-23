@@ -179,18 +179,63 @@ package-local Gentle AI runtime is not provisioned by that script. The same was
 true for 3.3.0, and the public Nix CLI is the runtime in use, so nothing changed;
 it is recorded because it is the step a future reader would expect to have run.
 
-### Build evidence for the switch (not yet activated)
+### Switch and sync (operator-run activation)
 
-`nix build .#darwinConfigurations.wang-lin.system` succeeded and refreshed
-`./result`. In that build: `home-path/bin/gentle-ai --version` reports
-`gentle-ai 3.6.0`, the home-manager activation script carries the generalized
-`isGentlePiEntry` predicate, and `home-files/.pi/agent/extensions/startup-header`
-publishes the updated extension. Activation itself needs `sudo` and is left to
-the operator.
+`just darwin-switch wang-lin` needs `sudo`, so the operator ran it against the
+`./result` produced above. Afterwards: `gentle-ai --version` reports 3.6.0 from
+`/nix/store/…-gentle-ai-3.6.0/bin/gentle-ai`, and `gentle-ai review mode status`
+reports `on (decided by default)` with no global or clone-local override — the
+3.5.0 default adopted by decision.
+
+`gentle-ai sync` then reported 6 changed files (`persona.json`, `settings.json`,
+`npm/package.json`, `mcp.json`, `~/.config/gga/config`, `~/.config/gga/AGENTS.md`).
+The interesting part is what survived it: `settings.json` still carries
+`{source: "npm:gentle-pi@3.4.0", extensions: ["!startup-banner.ts"]}`, so the pin
+and the banner filter both outlived a native whole-file rewrite, and
+`~/.pi/agent/models.json` is still the Home Manager store symlink rather than a
+regular file.
+
+### Final verification (independent, live system)
+
+- CLI 3.6.0 from an immutable store path; RDD `on`, no override.
+- `pi list` → `npm:gentle-pi@3.4.0 (filtered)`; installed `gentle-pi@3.4.0`.
+- `@juicesharp/rpiv-ask-user-question` absent from settings, from the npm
+  manifest and from `node_modules`.
+- **The activated matcher, run end to end.** The jq program was extracted from
+  the *installed* home-manager activation script, not the worktree, and run
+  against `/tmp` copies of the real `settings.json`: a strict semantic no-op on
+  the verbatim file (`jq -S | cmp` exit 0); `!startup-banner.ts` re-added when the
+  filter is emptied or the key removed, with `source` kept exactly
+  `npm:gentle-pi@3.4.0`; and a bare `"npm:gentle-pi"` string converted to an
+  object carrying the filter. The real file's sha256 and mtime were unchanged by
+  the probe.
+- A fresh Pi process completed a turn, and Gentle Shell registered: the sole
+  owner of the `--no-skill-registry` extension flag across every installed
+  package is `gentle-pi/extensions/skill-registry.ts`.
+
+**The Shell upgrade did not invalidate the filter's target.** This was the one
+real risk the upgrade introduced and it is now closed with evidence: in 3.4.0,
+`ctx.ui.setHeader` — the single custom-header slot — is called only by
+`extensions/startup-banner.ts`, the very file the filter excludes. The banner did
+not move to `gentle-shell.ts` or anywhere else, so no timing competition remains.
+
+Recorded, not fixed:
+
+- **`gentle-ai sync` rewrote a declared range.** `npm/package.json` now declares
+  `pi-mcp-adapter: ^2.6.0` where it declared `^2.36.0`. The *installed* version is
+  unchanged at 2.36.0 and `^2.6.0` satisfies it, so this is not a current-state
+  defect; it is a lower floor for a future resolution. `package-lock.json` still
+  pins 2.36.0, so the risk is small. Manual repair would be undone by the next
+  `sync`, since that file is native-owned; the durable repair is
+  `pi install npm:pi-mcp-adapter@2.36.0` if it ever resolves older.
+- An empty `~/.pi/agent/npm/node_modules/@juicesharp/` directory survives the
+  package removal. Cosmetic.
+- Not verifiable without a pty: that the live render actually suppresses the
+  upstream banner, and that `ask_user_question` is single-owner at runtime. Only
+  static evidence was obtainable.
 
 ## Next step
 
-Run `just darwin-switch wang-lin` (requires the operator's password), then
-`gentle-ai sync`, then confirm `gentle-ai --version` reports 3.6.0 and read the
-effective receipt-driven-development mode with `gentle-ai review mode status`,
-which 3.5.0 flipped to `on` by default.
+Nothing is pending on this machine: both components are pinned, active and
+verified. The four commits live only on `chore/upgrade-gentle-stack`; push and
+pull request remain the operator's decisions.
