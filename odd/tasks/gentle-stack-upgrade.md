@@ -152,10 +152,45 @@ Two findings from that verification are recorded rather than fixed:
   `just fmt-check` is not a non-writing check. Use `alejandra --check` when a
   read-only format check is required.
 
+### Work unit 3 (WU3) — the runtime pin, no repository change
+
+Applied with upstream's documented path, after backing up `settings.json` and the
+npm manifest:
+
+- `pi remove npm:@juicesharp/rpiv-ask-user-question` (2 packages removed).
+- `pi install npm:gentle-pi@3.4.0`.
+
+Resulting state: `settings.json` carries
+`{source: "npm:gentle-pi@3.4.0", extensions: ["!startup-banner.ts"]}` — the pin
+landed **and** the filter survived the rewrite; `pi list` reports
+`npm:gentle-pi@3.4.0 (filtered)`; `npm ls` reports `gentle-pi@3.4.0`.
+
+Load evidence, since the Shell half of WU2 has no test runner: a fresh Pi process
+completed a turn (`pi -p --no-session`, no load errors), and the proof that Gentle
+Shell itself registered is that `pi --help` lists its own extension flag
+`--no-skill-registry`, whose only owner across every installed package is
+`gentle-pi/extensions/skill-registry.ts`. No package other than `gentle-pi`
+registers `ask_user_question` after the removal, so the conflict 3.4.0's release
+notes warn about cannot occur.
+
+Known limitation, pre-existing and not introduced here: npm's `allowScripts` gate
+blocks gentle-pi's `postinstall` (`scripts/install-gentle-ai.mjs`), so the
+package-local Gentle AI runtime is not provisioned by that script. The same was
+true for 3.3.0, and the public Nix CLI is the runtime in use, so nothing changed;
+it is recorded because it is the step a future reader would expect to have run.
+
+### Build evidence for the switch (not yet activated)
+
+`nix build .#darwinConfigurations.wang-lin.system` succeeded and refreshed
+`./result`. In that build: `home-path/bin/gentle-ai --version` reports
+`gentle-ai 3.6.0`, the home-manager activation script carries the generalized
+`isGentlePiEntry` predicate, and `home-files/.pi/agent/extensions/startup-header`
+publishes the updated extension. Activation itself needs `sudo` and is left to
+the operator.
+
 ## Next step
 
-Apply the runtime pin with upstream's documented `pi install
-npm:gentle-pi@3.4.0`, remove `npm:@juicesharp/rpiv-ask-user-question` as the
-3.4.0 release notes require, then `darwin-switch` (which activates the new CLI
-and re-applies the filter to the pinned entry, proving the generalized matcher
-on the real file) and finally `gentle-ai sync`.
+Run `just darwin-switch wang-lin` (requires the operator's password), then
+`gentle-ai sync`, then confirm `gentle-ai --version` reports 3.6.0 and read the
+effective receipt-driven-development mode with `gentle-ai review mode status`,
+which 3.5.0 flipped to `on` by default.

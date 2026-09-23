@@ -68,7 +68,7 @@ reach these linked locations on Nix activation; client reload behavior is native
 `~/.agents/skills` is not a local publication target: upstream compatibility
 refreshes may write unnamespaced skills there.
 
-Shell 3.3's packaged names are `gentle-ai-skill-creator` and
+Shell 3.4's packaged names are `gentle-ai-skill-creator` and
 `gentle-ai-skill-registry`, even though their folder names omit the prefix.
 Pi's `/skill:skill-creator` and `/skill:skill-registry` select our local names;
 Shell's `/skill-creation` selects its upstream namespaced skill. Shell's registry
