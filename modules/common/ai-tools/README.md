@@ -1,6 +1,6 @@
 # AI Tools: Native Gentle AI and Local Skills
 
-Nix installs Pi, the official public Gentle AI CLI **3.6.0**, Engram
+Nix installs Pi, the official public Gentle AI CLI **3.7.0**, Engram
 **2.0.0-rc.11**, and Node/npm. The official native installer owns the Pi profile,
 Shell package, private engine, extensions, and workflow. Building this flake
 does **not** install Shell or validate its live runtime/data compatibility.
@@ -13,6 +13,17 @@ currently **`npm:gentle-pi@3.6.0`**. The banner-filter
 merge matches the bare or pinned source and preserves the pin. Updating Shell
 is an operator action: run the upstream `pi install` command, then
 `gentle-ai sync`.
+
+The two Gentle AI executables on this machine are **independent pins**, and the
+Nix one is not the engine a Pi session runs. The PATH binary
+(`/etc/profiles/per-user/<user>/bin/gentle-ai`) comes from this flake's
+`packages/gentle-ai` pin and serves operator commands such as `gentle-ai sync`.
+The session engine is Shell's *package-local* runtime, resolved by
+`lib/gentle-ai-binary.ts` (`gentleAiBinaryPath`) at
+`~/.pi/agent/npm/node_modules/gentle-pi/.gentle-ai/v<version>/gentle-ai`, which
+never falls back to `PATH`. Bumping the flake pin therefore moves the operator
+CLI only; changing the engine requires the Shell bump, so the two can legitimately
+sit at different versions.
 
 Shell ≥ 3.4.0 registers the first-party `ask_user_question` tool, and Pi refuses
 to load two extensions that register the same tool name. A competing provider
