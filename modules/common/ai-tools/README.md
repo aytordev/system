@@ -1,9 +1,44 @@
 # AI Tools: Native Gentle AI and Local Skills
 
-Nix installs Pi, the official public Gentle AI CLI **3.4.0**, Engram
+Nix installs Pi, the official public Gentle AI CLI **3.7.0**, Engram
 **2.0.0-rc.11**, and Node/npm. The official native installer owns the Pi profile,
 Shell package, private engine, extensions, and workflow. Building this flake
 does **not** install Shell or validate its live runtime/data compatibility.
+
+The Shell package is pinned by upstream's own documented upgrade path,
+`pi install npm:gentle-pi@<version>`, so its version lives in
+`~/.pi/agent/settings.json` rather than in this flake; a versioned npm spec is
+skipped by `pi update`, which is what keeps it from drifting. The pin is
+currently **`npm:gentle-pi@3.7.0`**. The banner-filter
+merge matches the bare or pinned source and preserves the pin. Updating Shell
+is an operator action: run the upstream `pi install` command, then
+`gentle-ai sync`.
+
+The two Gentle AI executables on this machine are **independent pins**, and the
+Nix one is not the engine a Pi session runs. The PATH binary
+(`/etc/profiles/per-user/<user>/bin/gentle-ai`) comes from this flake's
+`packages/gentle-ai` pin and serves operator commands such as `gentle-ai sync`.
+The session engine is Shell's *package-local* runtime, resolved by
+`lib/gentle-ai-binary.ts` (`gentleAiBinaryPath`) at
+`~/.pi/agent/npm/node_modules/gentle-pi/.gentle-ai/v<version>/gentle-ai`, which
+never falls back to `PATH`. Bumping the flake pin therefore moves the operator
+CLI only; changing the engine requires the Shell bump, so the two can legitimately
+sit at different versions.
+
+Shell ≥ 3.4.0 registers the first-party `ask_user_question` tool, and Pi refuses
+to load two extensions that register the same tool name. A competing provider
+such as `@juicesharp/rpiv-ask-user-question` must therefore not be installed
+(`pi remove npm:@juicesharp/rpiv-ask-user-question`); Shell owns the name.
+
+Shell 3.5.0 added upstream's `gentle-shell` launcher. It ships as a package
+`bin`, so it is **not** on the login `PATH`: Pi prepends its own `<agent dir>/bin`
+only for the processes it spawns and does not link package bins into it, and
+`npm prefix -g` resolves inside the read-only Nix store, so upstream's documented
+`npm i -g gentle-pi` path cannot apply here. Reach it by absolute path
+(`~/.pi/agent/npm/node_modules/.bin/gentle-shell`) or publish that directory on
+the session path. `gentle-shell --link` reuses `~/.pi/agent`; the default mode is
+an isolated `~/.gentle-shell/agent` home that carries none of the Nix-managed
+surface (local skills, `models.json`, the startup header, Engram).
 
 ## Ownership
 
@@ -60,7 +95,7 @@ reach these linked locations on Nix activation; client reload behavior is native
 `~/.agents/skills` is not a local publication target: upstream compatibility
 refreshes may write unnamespaced skills there.
 
-Shell 3.3's packaged names are `gentle-ai-skill-creator` and
+Shell 3.5's packaged names are `gentle-ai-skill-creator` and
 `gentle-ai-skill-registry`, even though their folder names omit the prefix.
 Pi's `/skill:skill-creator` and `/skill:skill-registry` select our local names;
 Shell's `/skill-creation` selects its upstream namespaced skill. Shell's registry
