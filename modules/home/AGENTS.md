@@ -51,6 +51,9 @@ CLI tools and terminal programs.
 - **Agent runtimes:** herdr (terminal workspace for coding agents)
 - **Editors:** neovim
 - **Tools:** git, gh, lazygit, lazydocker, hunk, fzf, ripgrep, bat, eza, zoxide, jujutsu, k9s, etc.
+- **AI tooling:** `mcp` (pure-data user-global MCP registry at
+  `~/.config/mcp/mcp.json`), `pen` (Pen desktop MCP bridge; wraps the server
+  bundled in `Pen.app` as `pen-mcp` and registers it).
 - **Emulators:** ghostty
 
 **Pattern:**

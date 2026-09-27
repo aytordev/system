@@ -144,6 +144,11 @@ in {
 
           nh.flake = "${config.home.homeDirectory}/Developer/system";
 
+          # Pen desktop MCP bridge: publishes the MCP server bundled in Pen.app
+          # to the user-global registry so Pi can reach the open .pen document.
+          # The app itself stays in aytordev.suites.development (darwin).
+          pen.enable = true;
+
           # Host-specific SSH configuration
           ssh = {
             hosts.github = {
