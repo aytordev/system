@@ -14,6 +14,30 @@ merge matches the bare or pinned source and preserves the pin. Updating Shell
 is an operator action: run the upstream `pi install` command, then
 `gentle-ai sync`.
 
+That pin does not survive on its own. Any `gentle-ai install` — including a
+narrow `--component persona` run — re-registers the agent's npm packages and
+writes the entry as the bare `npm:gentle-pi`, dropping the `@<version>` that
+keeps `pi update` from moving it. `--dry-run` does not warn: it reports
+`Components order: persona` and `Auto-added dependencies: none` even when the
+package entry is rewritten. Re-run `pi install npm:gentle-pi@<version>` after any
+`gentle-ai install`; that restores the pin, keeps the banner filter, and `sync`
+then leaves it alone.
+
+The persona is upstream-owned for the same reason `settings.json` is, and its
+lever is upstream's own flag: `gentle-ai install --agent pi --component persona
+--persona <name>` persists the choice where `sync` reads it, so `sync` afterwards
+reports no managed actions and never rewrites the file. This module must not
+declare it — a Nix-declared `~/.pi/gentle-ai/persona.json` would have two writers
+and oscillate between activation and `sync`. The value on this machine is
+`neutral`.
+
+`~/.pi/agent/npm/package-lock.json` is upstream-owned as well: it records what
+`pi install` resolves, and this repository neither declares nor regenerates it.
+Running `npm install` there by hand changes it in ways upstream did not —
+`--package-lock-only` recomputes the ideal tree and adds uninstalled peer
+entries. `gentle-ai sync` also normalizes managed ranges to its own defaults, so
+a tighter hand-set range is relaxed on the next `sync`.
+
 The two Gentle AI executables on this machine are **independent pins**, and the
 Nix one is not the engine a Pi session runs. The PATH binary
 (`/etc/profiles/per-user/<user>/bin/gentle-ai`) comes from this flake's
