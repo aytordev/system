@@ -168,12 +168,15 @@ state file` on branch `fix/bitwarden-state-file-ownership` (5 files, 79
 insertions, 19 deletions). The first commit attempt was blocked by the `statix`
 pre-commit hook (W20, repeated keys in an attribute set, because the three
 `home.*` assignments were plain rather than `mkIf`-wrapped); the fix was a pure
-re-nesting into one `home = { ... };`, and the evaluated activation string was
-read before and after to prove it byte-identical. Because both texts existed
-only in an uncommitted working tree, that byte-identity rests on the writer's
-reported before/after reads and is **not** reproducible from the repository;
-what the committed state supports is the correctness of the final activation
-text, which the verification reads directly.
+re-nesting into one `home = { ... };`.
+
+The pre-re-nesting text never existed in a commit, but it is still recoverable
+as the dangling blob `ee7dee268c2d36a0e56eac6808ee7c96b71db17c`, left behind by
+the `git add` that preceded the refused commit. Diffing that blob against the
+committed module shows the change is **exactly** the re-nesting plus
+indentation and nothing else, so the neutrality of the `statix` fix is evidenced
+from repository objects rather than resting on a reported before/after read.
+`git gc` would remove the blob, so that evidence has a shelf life.
 
 ### Work unit 2 (WU2) — the live machine, no repository change
 
@@ -187,7 +190,8 @@ replaced by a `-rw-------` copy of the eight settings; `open -a Bitwarden` then
 returned 0 and created a window (`31150 | Bitwarden | Bitwarden` in
 `aerospace list-windows`), and `app.log` reached `State version: 85` with no
 `EACCES`. The application now owns the state file and rewrites it: 7855 bytes
-at the 19:31 launch, 7859 bytes by 19:48 during independent verification. The
+at the 19:31 launch (a session observation, not repository evidence), 7859
+bytes by 19:48 during independent verification. The
 writer fired no live activation, so the repository fix is still only effective
 at build/eval level until the next switch.
 
@@ -202,7 +206,8 @@ All seven authorized commands exited 0 (`integration-home-bitwarden`,
 `production-home-integration`, `integration-activation-dry-run`,
 `integration-docs-generation`, `integration-module-contract`,
 `production-home-aytordev-wang-lin`, formatter with 4 files and 0 changed).
-The verifier independently confirmed all seven falsifiable claims, including by
+The verifier independently confirmed each of the seven falsifiable claims in
+its brief, including by
 reading the evaluated activation text and the rendered seed JSON from the real
 host config rather than from the writers' summaries. It also confirmed that
 every regression assertion in `checks/home-bitwarden` is either `false` or a
@@ -237,8 +242,10 @@ for this candidate, `assess` fell back to the exact plan it returns with RDD
 off. It graded the candidate **high risk** (`hot_path`, signal `security`, on
 the module README) and returned `{writerSelfVerification: true,
 structuralReadbackOnly: false, independentVerifier: true}`. A fresh independent
-verifier then ran over the committed range only — clean tree, exactly the six
-declared paths, `311 insertions / 19 deletions` — and confirmed claims 1 to 8
+verifier then ran over the committed range as it stood at `58fcf2a`, the first
+candidate — clean tree, exactly the six
+declared paths, `311 insertions / 19 deletions`, whereas the second candidate measures
+`347 / 19` — and confirmed eight of the nine claims in its brief
 with every command at exit 0, including the evaluated activation text, the
 rendered seed, `statix`, the formatter and the six checks.
 
@@ -249,11 +256,48 @@ corrected here rather than left standing:
   the 207-byte figure was right and the count was wrong;
 - the machine's state file is not a fixed 7855 bytes: it was already 7859 bytes
   at verification time, because the application rewrites it;
-- the `statix` re-nesting's before/after byte-identity is **not** reproducible
-  from the repository, since the pre-re-nesting text never existed in a commit.
+- the `statix` re-nesting's before/after byte-identity is reproducible after
+  all: the third pass below found the pre-re-nesting text as a dangling object.
 
 Two limits are unchanged by this pass: the Linux branch is evaluated but never
 built, and the original `EACCES` failure was not reproduced.
+
+### Third pass: the documentation candidate, and provenance
+
+Candidate B (`58fcf2a..0be5ab6`) was inspected and offered for native review;
+the human declined consent again, with the same candidate-scoped outcome and no
+lineage, and `assess` returned the same high-risk plan. Its independent verifier
+first proved the delta is documentation-only, because
+`git diff 58fcf2a..HEAD -- ':(exclude)odd'` is empty and the five code, check and
+README paths therefore carry their first-pass verdict unchanged. It then
+**refuted one of the corrections this record had just made**, plus two smaller
+defects now fixed above:
+
+- the `statix` pre-re-nesting text **is** recoverable, as the dangling blob
+  `ee7dee268c2d36a0e56eac6808ee7c96b71db17c` left by the failed `git add`;
+  and diffing it against the committed module proves the change was exactly
+  the re-nesting plus indentation, so that neutrality is now evidenced rather
+  than merely reported. The earlier "not reproducible" wording was wrong;
+- the range label and the `311 / 19` figures conflated candidate A with
+  candidate B, which measures `347 / 19`;
+- "seven falsifiable claims" and "claims 1 to 8" belong to two different
+  passes and were left unlabelled.
+
+Provenance, so a reader knows what each kind of statement rests on:
+
+- **Repository-verifiable:** the three commits and their diffs, the evaluated
+  home config and activation text, the rendered seed, the six checks, `statix`,
+  the formatter, the dangling-blob comparison, and the current state of
+  `~/Library/Application Support/Bitwarden/data.json`.
+- **Session-recorded, not repository-verifiable:** the native review envelopes
+  and outcomes, the `assess` grading and plan, the `EACCES` lines read from
+  `app.log`, the `/tmp` A/B probe, the 7855-byte figure at first launch, the
+  window, process and `kill` observations. They happened and are recorded as
+  testimony about this machine, not as artifacts a later reader can re-derive.
+
+Limits that remain: the Linux branch is evaluated but never built, the original
+`EACCES` failure was never re-reproduced, and the dangling blob disappears on
+the next `git gc`.
 
 ## Next step
 
