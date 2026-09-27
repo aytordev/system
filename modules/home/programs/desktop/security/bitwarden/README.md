@@ -27,7 +27,8 @@ Available options (see the module for full descriptions):
 - `biometricUnlock.requirePasswordOnStart` (default `true`)
 - `vault.timeout` (minutes, default `15`, `null` = never)
 - `vault.timeoutAction` (`"lock"` | `"logout"`, default `"lock"`)
-- `settings` — raw data.json overrides (e.g. `theme`)
+- `settings` — raw data.json overrides (e.g. `theme`), applied as first-run
+  defaults (see below)
 - `package` / `installPackage` — package and install strategy
 
 **Platform notes:**
@@ -36,6 +37,25 @@ Available options (see the module for full descriptions):
   Electron build failures); `installPackage` defaults to `false`.
 - On Linux the package is installed via Home Manager; `installPackage` defaults
   to `true`.
+
+**Settings are a first-run seed:**
+
+`data.json` is Bitwarden's mutable `electron-store` state file: alongside the
+declared settings it carries `stateVersion`, window geometry and cached server
+feature flags, and the application rewrites it on every launch. Home Manager can
+only symlink a store path into place, and store paths are read-only, so owning
+that file breaks the application's startup migration (`EACCES`).
+
+The module therefore publishes the declared settings as a read-only seed under
+`.local/share/aytordev/bitwarden-desktop/data.json` and a `bitwardenStateFile`
+activation entry copies it to the application's state path (`data.json` in
+`~/Library/Application Support/Bitwarden` on Darwin,
+`$XDG_CONFIG_HOME/Bitwarden` on Linux) only while Bitwarden does not own that
+file yet. From then on Bitwarden owns the file.
+
+The trade-off: changes made in the app UI persist and are not reverted by
+`darwin-switch`. To re-seed, delete the state file (or move it aside) and switch
+again.
 
 ## CLI
 

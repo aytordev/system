@@ -28,14 +28,21 @@
       }
       {aytordev.suites.common.enable = true;}
       {aytordev.suites.development.enable = true;}
+      {
+        aytordev.programs.desktop.security.bitwarden = {
+          enable = true;
+          installPackage = false;
+        };
+      }
     ];
   };
   inherit (home) config;
 
-  # Activation entries owned by the terminal/shell modules. Home Manager
-  # builtin entries (onFilesChange, copyApps, ...) wrap mutations in the `run`
-  # shell function and are out of scope here.
+  # Activation entries owned by the terminal/shell modules and by the desktop
+  # security modules. Home Manager builtin entries (onFilesChange, copyApps, ...)
+  # wrap mutations in the `run` shell function and are out of scope here.
   relevantNames = [
+    "bitwardenStateFile"
     "createFzfDataDir"
     "createSshControlmastersDir"
     "createStarshipTmpDir"
@@ -56,11 +63,11 @@
 
   entryChecks = lib.concatLines (
     map (e: ''
-      if ${lib.getExe pkgs.gnugrep} -nE '(^|[;|&[:space:]])[[:space:]]*(mkdir|chmod|mv|rm|ln)[[:space:]]' ${e.file} \
+      if ${lib.getExe pkgs.gnugrep} -nE '(^|[;|&[:space:]])[[:space:]]*(mkdir|chmod|mv|rm|ln|install)[[:space:]]' ${e.file} \
         | ${lib.getExe pkgs.gnugrep} -v '\$DRY_RUN_CMD' \
         | ${lib.getExe pkgs.gnugrep} -q .; then
         echo "FAIL: activation entry ${e.name} mutates without \$DRY_RUN_CMD:" >&2
-        ${lib.getExe pkgs.gnugrep} -nE '(^|[;|&[:space:]])[[:space:]]*(mkdir|chmod|mv|rm|ln)[[:space:]]' ${e.file} \
+        ${lib.getExe pkgs.gnugrep} -nE '(^|[;|&[:space:]])[[:space:]]*(mkdir|chmod|mv|rm|ln|install)[[:space:]]' ${e.file} \
           | ${lib.getExe pkgs.gnugrep} -v '\$DRY_RUN_CMD' || true
         failures=1
       fi

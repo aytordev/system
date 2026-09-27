@@ -1,5 +1,6 @@
 {
   inputs,
+  lib,
   pkgs,
   ...
 }: let
@@ -35,13 +36,19 @@
     ];
   };
   inherit (home) config;
-  settingsFile =
-    if pkgs.stdenv.hostPlatform.isDarwin
-    then config.home.file."Library/Application Support/Bitwarden/data.json"
-    else config.xdg.configFile."Bitwarden/data.json";
-  settings = builtins.fromJSON settingsFile.text;
+  settings =
+    builtins.fromJSON
+    config.home.file.".local/share/aytordev/bitwarden-desktop/data.json".text;
+  activationText = config.home.activation.bitwardenStateFile.data;
   tests = [
     (builtins.seq home.activationPackage true)
+    # The application's mutable state path must not be claimed by Home Manager.
+    (!(config.home.file ? "Library/Application Support/Bitwarden/data.json"))
+    (!(config.xdg.configFile ? "Bitwarden/data.json"))
+    # Activation seeds the state file once, behind a writable-file guard.
+    (lib.hasInfix "install -m 600" activationText)
+    (lib.hasInfix "[ -L \"$stateFile\" ]" activationText)
+    (lib.hasInfix "[ ! -e \"$stateFile\" ]" activationText)
     settings.enableBrowserIntegration
     settings.biometricUnlock
     (settings.vaultTimeout == 30)

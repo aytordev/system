@@ -11,7 +11,7 @@
   integratedHome = darwin.config.home-manager.users.${username};
   bitwardenSettings =
     builtins.fromJSON
-    home.home.file."Library/Application Support/Bitwarden/data.json".text;
+    home.home.file.".local/share/aytordev/bitwarden-desktop/data.json".text;
   activationText =
     lib.attrByPath [
       "system"
