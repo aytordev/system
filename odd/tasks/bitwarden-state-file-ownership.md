@@ -138,7 +138,7 @@ See `## Evidence` above. Additional facts used to design the fix:
 - `~/Library/Application Support/Bitwarden/` contains no `SingletonLock`,
   `SingletonCookie` or `SingletonSocket` — on macOS the instance handoff is not
   diagnosable through a lock file, unlike Linux.
-- `data.json` reaches Bitwarden at 207 bytes carrying only the six declared
+- `data.json` reaches Bitwarden at 207 bytes carrying only the eight declared
   settings and **no** `stateVersion`; a clean profile writes `stateVersion: 85`
   plus window geometry and server feature flags on first run.
 - Only three files reference the store-owned path (module and the two checks).
@@ -169,22 +169,27 @@ insertions, 19 deletions). The first commit attempt was blocked by the `statix`
 pre-commit hook (W20, repeated keys in an attribute set, because the three
 `home.*` assignments were plain rather than `mkIf`-wrapped); the fix was a pure
 re-nesting into one `home = { ... };`, and the evaluated activation string was
-read before and after to prove it byte-identical.
+read before and after to prove it byte-identical. Because both texts existed
+only in an uncommitted working tree, that byte-identity rests on the writer's
+reported before/after reads and is **not** reproducible from the repository;
+what the committed state supports is the correctness of the final activation
+text, which the verification reads directly.
 
 ### Work unit 2 (WU2) — the live machine, no repository change
 
-- [x] Replace the store symlink with a writable file preserving the six
+- [x] Replace the store symlink with a writable file preserving the eight
       settings, and prove a window appears.
 
 Machine evidence: at repair time the windowless process was **already gone** —
 `kill -TERM 41567` answered `No such process`, so no process was killed by this
 work and the record says so rather than claiming a kill. `data.json` was
-replaced by a `-rw-------` copy of the six settings; `open -a Bitwarden` then
+replaced by a `-rw-------` copy of the eight settings; `open -a Bitwarden` then
 returned 0 and created a window (`31150 | Bitwarden | Bitwarden` in
 `aerospace list-windows`), and `app.log` reached `State version: 85` with no
-`EACCES`. The app now owns a 7855-byte state file. The writer fired no live
-activation, so the repository fix is still only effective at build/eval level
-until the next switch.
+`EACCES`. The application now owns the state file and rewrites it: 7855 bytes
+at the 19:31 launch, 7859 bytes by 19:48 during independent verification. The
+writer fired no live activation, so the repository fix is still only effective
+at build/eval level until the next switch.
 
 ### Verification
 
@@ -218,6 +223,37 @@ What the verification explicitly does NOT prove, recorded rather than implied:
   clauses would not notice a wrong boolean connector; the exact guard is
   established by the direct read of the evaluated text, and the `$DRY_RUN_CMD`
   wrapping only by `checks/activation-dry-run`.
+
+### Risk-gated verification (native review declined)
+
+The native review was inspected before starting (`action: start`, committed
+range `ffdcda09..HEAD`, projected over the workspace) and the human then
+declined consent through the host UI: `outcome: consent-declined-this-candidate`,
+`lineage_created: false`, `mutation_performed: false`. That is a decline scoped
+to this candidate, not the review switch.
+
+Because Receipt-driven development is on while the native review did not close
+for this candidate, `assess` fell back to the exact plan it returns with RDD
+off. It graded the candidate **high risk** (`hot_path`, signal `security`, on
+the module README) and returned `{writerSelfVerification: true,
+structuralReadbackOnly: false, independentVerifier: true}`. A fresh independent
+verifier then ran over the committed range only — clean tree, exactly the six
+declared paths, `311 insertions / 19 deletions` — and confirmed claims 1 to 8
+with every command at exit 0, including the evaluated activation text, the
+rendered seed, `statix`, the formatter and the six checks.
+
+It also **refuted three statements this record had made**, which is why they are
+corrected here rather than left standing:
+
+- the rendered seed carries **eight** JSON keys, not "six declared settings";
+  the 207-byte figure was right and the count was wrong;
+- the machine's state file is not a fixed 7855 bytes: it was already 7859 bytes
+  at verification time, because the application rewrites it;
+- the `statix` re-nesting's before/after byte-identity is **not** reproducible
+  from the repository, since the pre-re-nesting text never existed in a commit.
+
+Two limits are unchanged by this pass: the Linux branch is evaluated but never
+built, and the original `EACCES` failure was not reproduced.
 
 ## Next step
 
