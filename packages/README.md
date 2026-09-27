@@ -10,7 +10,7 @@ platform by `flake/packages/default.nix`.
 | --- | --- | --- |
 | `engram` | Persistent memory MCP server for AI coding agents (Gentleman-Programming) | linux + darwin (x86_64/aarch64) |
 | `luaposix` | Lua 5.5-compatible `luaposix` build (upstream rockspec upper bound patched) | per nixpkgs |
-| `pencil-dev` | Pencil dev macOS app (dmg → `/Applications`) | aarch64-darwin only |
+| `pen-dev` | Pen canvas app (rebranded Pencil; dmg → `/Applications`) | aarch64-darwin only |
 | `sketchybar-app-font` | Ligature icon font + `icon_map.lua` for Sketchybar | per nixpkgs |
 
 ## How They Are Exposed

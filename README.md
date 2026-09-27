@@ -128,7 +128,7 @@ Available packages (built per platform in `packages/`):
 
 - `engram`
 - `luaposix`
-- `pencil-dev`
+- `pen-dev`
 - `sketchybar-app-font`
 
 ## Verification

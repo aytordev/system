@@ -34,7 +34,7 @@ in {
       };
     };
 
-    environment.systemPackages = [pkgs.aytordev.pencil-dev];
+    environment.systemPackages = [pkgs.aytordev.pen-dev];
 
     nix.settings = {
       keep-derivations = true;
