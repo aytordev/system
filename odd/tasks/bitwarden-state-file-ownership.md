@@ -167,7 +167,7 @@ Work unit 1 result: commit `18f6fd3 fix(bitwarden): stop owning the desktop
 state file` on branch `fix/bitwarden-state-file-ownership` (5 files, 79
 insertions, 19 deletions). The first commit attempt was blocked by the `statix`
 pre-commit hook (W20: the key `home` assigned three times in one attribute set,
-reproducible by running `statix` on the unreachable blob recorded below); the
+reproducible by running `statix` on that blob extracted to a file); the
 fix was a pure
 re-nesting into one `home = { ... };`.
 
@@ -261,12 +261,13 @@ corrected here rather than left standing:
 - the machine's state file is not a fixed 7855 bytes: it was already 7859 bytes
   at verification time, because the application rewrites it;
 - the `statix` re-nesting's before/after byte-identity is reproducible after
-  all: the third pass below found the pre-re-nesting text as a dangling object.
+  all: the section below found the pre-re-nesting text as an **unreachable**
+  object.
 
 Two limits are unchanged by this pass: the Linux branch is evaluated but never
 built, and the original `EACCES` failure was not reproduced.
 
-### Third pass: the documentation candidate, and provenance
+### Later passes on the record itself, and provenance
 
 Candidate B (`58fcf2a..0be5ab6`) was inspected and offered for native review;
 the human declined consent again, with the same candidate-scoped outcome and no
@@ -278,7 +279,7 @@ README paths therefore carry their first-pass verdict unchanged. It then
 defects now fixed above:
 
 - the `statix` pre-re-nesting text **is** recoverable, as the unreachable blob
-  `ee7dee268c2d36a0e56eac6808ee7c96b71db17c`, used only by unreachable trees;
+  `ee7dee268c2d36a0e56eac6808ee7c96b71db17c`, used only by one unreachable tree;
   and diffing it against the committed module proves the change was exactly
   the re-nesting plus indentation, so that neutrality is now evidenced rather
   than merely reported. The earlier "not reproducible" wording was wrong;
@@ -305,12 +306,19 @@ Limits that remain: the Linux branch is evaluated but never built, the original
 `EACCES` failure was never re-reproduced, and the unreachable blob is pruned
 once its two-week grace expires or if someone runs `--prune=now`.
 
-A fourth round then re-confirmed the five code paths, the six checks, `statix`,
+A later round then re-confirmed the five code paths, the six checks, `statix`,
 the formatter and the blob-to-module comparison, and found only precision
-items, all corrected above: the object is unreachable rather than dangling, the
-default `git gc` grace period is two weeks, the range holds four commits, and
-the per-pass claim counts are testimony so they are no longer given as exact
-numbers.
+items: the object is unreachable rather than dangling, the default `git gc`
+grace period is two weeks, the range holds five commits, and the per-pass claim
+counts are testimony so they are no longer given as exact numbers. Its last
+surviving items are corrected above: one `dangling` left in a forward reference,
+a plural, and the pass numbering itself, which this record no longer counts.
+
+No further verification round was run for this documentation-only follow-up.
+The five code paths are byte-identical to their originally verified state, so
+what remains is precision inside a testimony document, and whether to keep
+spending review rounds on that is a decision for the user rather than something
+to settle by looping.
 
 ## Next step
 
