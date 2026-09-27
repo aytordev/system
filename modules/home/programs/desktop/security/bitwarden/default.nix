@@ -20,6 +20,23 @@
       }
     );
   };
+  # `data.json` is Bitwarden's mutable `electron-store` state file: it carries
+  # `stateVersion`, window geometry and cached server feature flags alongside
+  # the desktop settings, and the application rewrites it on every launch.
+  # Home Manager can only symlink a store path into place and store paths are
+  # read-only, so owning that path makes the startup migration fail with
+  # `EACCES`; the main process then stays alive without a window and swallows
+  # every later launch.
+  #
+  # The rendered settings are therefore published as a read-only seed, and
+  # activation copies it into place only while the application does not own the
+  # file yet. From then on Bitwarden owns it: `settings` are first-run defaults,
+  # not enforced state.
+  seedPath = ".local/share/aytordev/bitwarden-desktop/data.json";
+  statePath =
+    if pkgs.stdenv.hostPlatform.isDarwin
+    then "$HOME/Library/Application Support/Bitwarden/data.json"
+    else "${config.xdg.configHome}/Bitwarden/data.json";
   bitwardenExecutable =
     if cfg.installPackage
     then "${cfg.package}/programs/Bitwarden.app/Contents/MacOS/Bitwarden"
@@ -60,7 +77,10 @@ in {
       '';
       description = ''
         Configuration settings for Bitwarden desktop application.
-        These settings will be written to the Bitwarden data directory.
+        These are first-run defaults: activation seeds them into the
+        application's data.json only while Bitwarden does not own that file
+        yet. Afterwards the application owns the file and these settings are
+        not re-applied.
       '';
     };
 
@@ -131,14 +151,20 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = lib.optional cfg.installPackage cfg.package;
+    home = {
+      packages = lib.optional cfg.installPackage cfg.package;
 
-    home.file = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-      "Library/Application Support/Bitwarden/data.json" = settingsFile;
-    };
+      file."${seedPath}" = settingsFile;
 
-    xdg.configFile = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
-      "Bitwarden/data.json" = settingsFile;
+      activation.bitwardenStateFile = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        stateFile="${statePath}"
+        seedFile="$HOME/${seedPath}"
+        if [ -L "$stateFile" ] || [ ! -e "$stateFile" ]; then
+          $DRY_RUN_CMD rm -f "$stateFile"
+          $DRY_RUN_CMD mkdir -p "$(dirname "$stateFile")"
+          $DRY_RUN_CMD install -m 600 "$seedFile" "$stateFile"
+        fi
+      '';
     };
 
     launchd.agents = lib.mkIf (pkgs.stdenv.hostPlatform.isDarwin && cfg.enableSystemStartup) {
