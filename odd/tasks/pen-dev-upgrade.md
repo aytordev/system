@@ -105,15 +105,19 @@ verifier.
 ## Tasks
 
 - [x] **PEN-1** Reconnaissance, evidence capture, and planning checkpoint.
-- [ ] **PEN-2** Rename the package to `pen-dev` 1.2.14 and update every reference
+      Commit `0695983`.
+- [x] **PEN-2** Rename the package to `pen-dev` 1.2.14 and update every reference
       in one atomic work unit. Deliverables: renamed directory, repinned
       immutable release URL and hash, `Pen.app` install path, updated check
-      assertion, updated suite reference, updated package lists.
-- [ ] **PEN-3** Independent verification: `nix fmt` cleanliness, package build,
-      overlay-composition check, flake evaluation on both systems.
+      assertion, updated suite reference, updated package lists. Commit
+      `8f9670c`, five paths.
+- [x] **PEN-3** Independent verification: `nix fmt` cleanliness, package build,
+      overlay-composition check, flake evaluation on both systems. All checks
+      pass, see Evidence.
 - [ ] **PEN-4** Record evidence, commit identities and the delivery decision here.
 - [ ] **PEN-5** Native review preflight for the candidate, per the RDD switch
-      state read from `gentle-ai review mode status`.
+      state read from `gentle-ai review mode status` (read back: `on`, decided
+      by default, no global or clone-local override).
 
 ## Verification plan
 
@@ -140,6 +144,60 @@ verifier.
   outside this authorization.
 - The upstream rebrand reuses the old bundle identifier. If upstream later
   assigns a new identifier, user data would split; not the case for 1.2.14.
+
+## Evidence and next action
+
+Candidate: branch `feat/pen-dev-upgrade`, commits `0695983` (plan) and `8f9670c`
+(implementation). Nothing pushed; no PR opened; no activation performed.
+
+Implemented change (`8f9670c`, 5 paths):
+
+- `packages/pencil-dev/package.nix` -> `packages/pen-dev/package.nix`: `pname`
+  `pen-dev`, `version` `1.2.14`, immutable release `src`, `cp -r "Pen.app"`,
+  `homepage` `https://pen.dev`.
+- `checks/overlay-composition/default.nix`: assertion `"pencil-dev"` -> `"pen-dev"`.
+- `modules/darwin/suites/development/default.nix`: `pkgs.aytordev.pencil-dev` ->
+  `pkgs.aytordev.pen-dev`.
+- `packages/README.md`, `README.md`: package lists updated.
+
+Observed verification results (commands run against the committed candidate):
+
+| Check | Command | Result |
+| --- | --- | --- |
+| Attribute rename | `nix eval --raw .#pen-dev.pname` / `.#pen-dev.version` | `pen-dev` / `1.2.14` |
+| Derivation build | `nix build .#pen-dev --no-link --print-out-paths` | PASS, `/nix/store/z9hn1rm3vqcyr6al2fzd6mx5xrplbaab-pen-dev-1.2.14` |
+| Built bundle | `PlistBuddy` on the build output | `CFBundleShortVersionString` 1.2.14; `CFBundleIdentifier` `dev.pencil.desktop`; `Contents/MacOS/Pen`; `Applications/` holds only `Pen.app` |
+| Formatting | `nix build .#checks.aarch64-darwin.treefmt --no-link` | PASS (`treefmt-check` built) |
+| Overlay assertion | `nix build .#checks.aarch64-darwin.production-overlay-composition --no-link` | PASS (`overlay-composition-tests` built) |
+| All packages | `nix build .#checks.aarch64-darwin.package-builds --no-link` | PASS (`package-builds-aarch64-darwin` built) |
+| Suite evaluation | `nix build .#darwinConfigurations.wang-lin.system --no-link --dry-run` | PASS, exit 0, `darwin-system-26.11.4cff07d.drv` resolved |
+| CI-style gate | `nix flake check --override-input secrets path:./checks/fixtures/secrets` | `all checks passed!` (with the expected notice that `x86_64-linux` was omitted) |
+| Residual refs | `grep -rn "pencil-dev" --include="*.nix" --include="*.md" .` | No hits outside this document and the historical provenance note |
+
+The pinned hash was validated end to end: the derivation's `fetchurl` accepted the
+verified SRI hash, so the immutable release asset matches the bytes inspected
+before planning. `Pen.app` was found by `installPhase`, which confirms the bundle
+name change was handled.
+
+Routing note for the record: the multi-file write and the independent
+verification were delegated as required, but both delegated runs were killed by a
+harness stall (the writer's launcher stalled twice; its second run did complete
+the edit and returned its evidence, while the verifier stalled after one call and
+returned nothing). Verification was therefore executed inline by the parent. The
+checks above are the parent's own observed output, not a delegated report.
+
+Next action: native review preflight (PEN-5), then the user decides on push, PR,
+and rebuild. The host still has the old `Pencil.app` copy under
+`/Applications/Nix Apps` until the next `darwin-rebuild switch`; the activation
+`rsync --delete` step removes it automatically at that point.
+
+## Delivery decision
+
+No push, no PR, no merge, and no activation are authorized by this document.
+Work-unit commits stay local on `feat/pen-dev-upgrade`. If the user accepts the
+candidate, the rebuild command is `just darwin-switch wang-lin`, which replaces
+`Pencil.app` with `Pen.app` in place; the unchanged bundle identifier means no
+user-data migration and no re-authentication in the app.
 
 ## Sources
 
