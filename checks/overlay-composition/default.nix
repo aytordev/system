@@ -22,7 +22,7 @@
     (builtins.hasAttr "default" overlays)
     (!(builtins.hasAttr "aytordev" overlays))
     (builtins.length appliedOverlays == builtins.length overlayNames)
-    (builtins.hasAttr "pencil-dev" darwin.pkgs.aytordev)
+    (builtins.hasAttr "pen-dev" darwin.pkgs.aytordev)
     (!darwin.pkgs.chromaprint.doCheck)
     (!darwin.pkgs.kvazaar.doCheck)
     (lib.hasInfix "internal/updater/install_darwin.go" darwin.pkgs.protonmail-bridge.postPatch)
