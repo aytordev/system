@@ -166,17 +166,21 @@ See `## Evidence` above. Additional facts used to design the fix:
 Work unit 1 result: commit `18f6fd3 fix(bitwarden): stop owning the desktop
 state file` on branch `fix/bitwarden-state-file-ownership` (5 files, 79
 insertions, 19 deletions). The first commit attempt was blocked by the `statix`
-pre-commit hook (W20, repeated keys in an attribute set, because the three
-`home.*` assignments were plain rather than `mkIf`-wrapped); the fix was a pure
+pre-commit hook (W20: the key `home` assigned three times in one attribute set,
+reproducible by running `statix` on the unreachable blob recorded below); the
+fix was a pure
 re-nesting into one `home = { ... };`.
 
 The pre-re-nesting text never existed in a commit, but it is still recoverable
-as the dangling blob `ee7dee268c2d36a0e56eac6808ee7c96b71db17c`, left behind by
-the `git add` that preceded the refused commit. Diffing that blob against the
-committed module shows the change is **exactly** the re-nesting plus
-indentation and nothing else, so the neutrality of the `statix` fix is evidenced
-from repository objects rather than resting on a reported before/after read.
-`git gc` would remove the blob, so that evidence has a shelf life.
+as the **unreachable** blob `ee7dee268c2d36a0e56eac6808ee7c96b71db17c`: it is
+unreachable rather than dangling because it is still directly used, by a tree
+that is itself unreachable, so `git fsck --dangling` omits it and
+`git fsck --unreachable` lists it. Diffing that blob against the committed
+module shows the change is **exactly** the re-nesting plus indentation and
+nothing else, so the neutrality of the `statix` fix is evidenced from repository
+objects rather than resting on a reported before/after read. The default
+`gc.pruneExpire` keeps unreachable objects for two weeks, so a plain `git gc`
+will not remove this one; only `--prune=now`, or a later gc, would.
 
 ### Work unit 2 (WU2) — the live machine, no repository change
 
@@ -206,8 +210,7 @@ All seven authorized commands exited 0 (`integration-home-bitwarden`,
 `production-home-integration`, `integration-activation-dry-run`,
 `integration-docs-generation`, `integration-module-contract`,
 `production-home-aytordev-wang-lin`, formatter with 4 files and 0 changed).
-The verifier independently confirmed each of the seven falsifiable claims in
-its brief, including by
+The verifier independently confirmed every claim in its brief, including by
 reading the evaluated activation text and the rendered seed JSON from the real
 host config rather than from the writers' summaries. It also confirmed that
 every regression assertion in `checks/home-bitwarden` is either `false` or a
@@ -245,7 +248,8 @@ structuralReadbackOnly: false, independentVerifier: true}`. A fresh independent
 verifier then ran over the committed range as it stood at `58fcf2a`, the first
 candidate — clean tree, exactly the six
 declared paths, `311 insertions / 19 deletions`, whereas the second candidate measures
-`347 / 19` — and confirmed eight of the nine claims in its brief
+`347 / 19` — and confirmed every claim in its brief except the one about repository
+recoverability of the `statix` text
 with every command at exit 0, including the evaluated activation text, the
 rendered seed, `statix`, the formatter and the six checks.
 
@@ -273,8 +277,8 @@ README paths therefore carry their first-pass verdict unchanged. It then
 **refuted one of the corrections this record had just made**, plus two smaller
 defects now fixed above:
 
-- the `statix` pre-re-nesting text **is** recoverable, as the dangling blob
-  `ee7dee268c2d36a0e56eac6808ee7c96b71db17c` left by the failed `git add`;
+- the `statix` pre-re-nesting text **is** recoverable, as the unreachable blob
+  `ee7dee268c2d36a0e56eac6808ee7c96b71db17c`, used only by unreachable trees;
   and diffing it against the committed module proves the change was exactly
   the re-nesting plus indentation, so that neutrality is now evidenced rather
   than merely reported. The earlier "not reproducible" wording was wrong;
@@ -283,21 +287,30 @@ defects now fixed above:
 - "seven falsifiable claims" and "claims 1 to 8" belong to two different
   passes and were left unlabelled.
 
-Provenance, so a reader knows what each kind of statement rests on:
+Provenance rule, stated once instead of per statement, because per-statement
+classification is itself what kept being wrong here:
 
-- **Repository-verifiable:** the three commits and their diffs, the evaluated
-  home config and activation text, the rendered seed, the six checks, `statix`,
-  the formatter, the dangling-blob comparison, and the current state of
-  `~/Library/Application Support/Bitwarden/data.json`.
-- **Session-recorded, not repository-verifiable:** the native review envelopes
-  and outcomes, the `assess` grading and plan, the `EACCES` lines read from
-  `app.log`, the `/tmp` A/B probe, the 7855-byte figure at first launch, the
-  window, process and `kill` observations. They happened and are recorded as
-  testimony about this machine, not as artifacts a later reader can re-derive.
+- A statement naming a git object (commit, blob, tree), a file path together
+  with its content, or a `nix build` / `nix eval` result is re-derivable from
+  the repository with the command it names.
+- Everything else in this document is testimony about the session that produced
+  it: the native review envelopes and outcomes, the `assess` plan, the counts of
+  claims given to each verifier, the `app.log` lines, the `/tmp` A/B probe, the
+  byte figures, the window, process and `kill` observations, and the live state
+  of `~/Library/Application Support/Bitwarden/data.json`. None of those leave a
+  repository artifact, and none should be read as evidence a later reader can
+  re-run.
 
 Limits that remain: the Linux branch is evaluated but never built, the original
-`EACCES` failure was never re-reproduced, and the dangling blob disappears on
-the next `git gc`.
+`EACCES` failure was never re-reproduced, and the unreachable blob is pruned
+once its two-week grace expires or if someone runs `--prune=now`.
+
+A fourth round then re-confirmed the five code paths, the six checks, `statix`,
+the formatter and the blob-to-module comparison, and found only precision
+items, all corrected above: the object is unreachable rather than dangling, the
+default `git gc` grace period is two weeks, the range holds four commits, and
+the per-pass claim counts are testimony so they are no longer given as exact
+numbers.
 
 ## Next step
 
