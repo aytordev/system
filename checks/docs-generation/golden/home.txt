@@ -54,6 +54,7 @@
 ## aytordev\.programs\.desktop\.editors\.vscode\.theme
 ## aytordev\.programs\.desktop\.editors\.zed\.enable
 ## aytordev\.programs\.desktop\.editors\.zed\.package
+## aytordev\.programs\.desktop\.editors\.zed\.terminal\.multiplexer
 ## aytordev\.programs\.desktop\.editors\.zed\.theme
 ## aytordev\.programs\.desktop\.launchers\.raycast\.enable
 ## aytordev\.programs\.desktop\.launchers\.raycast\.package
