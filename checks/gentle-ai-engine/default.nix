@@ -86,15 +86,13 @@
     });
   installed = home: package: lib.any (p: p.outPath == package.outPath) home.home.packages;
   tools = enabled.aytordev.programs.terminal.tools;
-  names = [
-    "aytordev-design-system"
-    "aytordev-interface-design"
-    "aytordev-pen-ops"
-    "dotfiles-coder"
-    "nix"
-    "skill-creator"
-    "skill-registry"
-  ];
+  localNames = ["aytordev-pen-ops" "dotfiles-coder" "nix" "skill-creator" "skill-registry"];
+  names = lib.sort builtins.lessThan (localNames ++ ["impeccable"]);
+  upstream = "${pkgs.aytordev.impeccable-skills}/share/impeccable";
+  source = name:
+    if name == "impeccable"
+    then upstream
+    else ../../modules/common/ai-tools/skills + "/${name}";
   targets = home: map (file: file.target) (builtins.attrValues home.home.file);
   under = root: home: lib.sort builtins.lessThan (lib.filter (lib.hasPrefix root) (targets home));
   expected = root: map (name: "${root}${name}") names;
@@ -165,15 +163,60 @@ in
             ${enabled.home-files}/${piRoot} \
             ${noClients.home-files}/${catalogRoot} \
             ${custom.home-files}/Data/aytordev/skills; do
-            diff -r ${../../modules/common/ai-tools/skills}/${name} "$root/${name}"
+            diff -r ${source name} "$root/${name}"
           done
           mkdir "$TMPDIR/isolated-${name}"
           cp -RL ${noClients.home-files}/${catalogRoot}/${name} "$TMPDIR/isolated-${name}/${name}"
-          python ${./portable-folder.py} "$TMPDIR/isolated-${name}/${name}"
+          ${lib.optionalString (name != "impeccable") ''
+            python ${./portable-folder.py} "$TMPDIR/isolated-${name}/${name}"
+          ''}
         '')
         names}
       python -c 'import os, sys; assert sorted(os.listdir(sys.argv[1])) == sys.argv[2:]' \
         ${noClients.home-files}/${catalogRoot} ${lib.escapeShellArgs names}
+      # Upstream is exempt from local metadata/rules conventions, not fidelity.
+      # Exercise the published launcher and dereferenced copy with no ambient
+      # engine, HOME cache, or download fallback. T1 validates the source pin.
+      python - <<'PY'
+      import os
+      from pathlib import Path
+      import subprocess
+
+      temporary = Path(os.environ["TMPDIR"])
+      home = temporary / "engine-home"
+      home.mkdir()
+      traps = temporary / "fallback-traps"
+      traps.mkdir()
+      marker = temporary / "fallback-used"
+      for command in ("curl", "wget", "impeccable"):
+          trap = traps / command
+          trap.write_text(f'#!/bin/sh\necho {command} >> "{marker}"\nexit 97\n')
+          trap.chmod(0o755)
+      env = {"HOME": str(home), "PATH": f"{traps}:${pkgs.coreutils}/bin"}
+      isolated = temporary / "isolated-impeccable/impeccable"
+      canonical = Path("${upstream}")
+      published = Path("${enabled.home-files}/${piRoot}impeccable")
+      manifest = {p.relative_to(canonical) for p in canonical.rglob("*") if p.is_file()}
+      assert {p.relative_to(isolated) for p in isolated.rglob("*") if p.is_file()} == manifest
+      for path in manifest:
+          assert (published / path).is_symlink(), path
+          assert (isolated / path).read_bytes() == (canonical / path).read_bytes(), path
+      assert all(not p.is_symlink() for p in published.rglob("*") if p.is_dir())
+      assert not any(p.is_symlink() for p in isolated.rglob("*"))
+      for root in (Path("${enabled.home-files}/${piRoot}"),
+                   Path("${noClients.home-files}/${catalogRoot}"),
+                   Path("${custom.home-files}/Data/aytordev/skills"),
+                   isolated.parent):
+          skill = root / "impeccable"
+          assert not (skill / "metadata.json").exists()
+          assert len(list((skill / "reference").rglob("*.md"))) == 42
+          result = subprocess.run([str(skill / "scripts/impeccable"), "engine-probe"],
+                                  cwd=temporary, env=env, text=True, capture_output=True, check=True)
+          assert result.stdout.strip() == "impeccable-engine 0.1.6", result
+      assert not marker.exists(), "launcher attempted fallback"
+      assert not list(home.iterdir()), "launcher populated HOME/cache"
+      print("PASS upstream publication and isolated offline engine without local metadata")
+      PY
       # Running --help uses the copied Nix helper, without invoking Nix builds.
       python "$TMPDIR/isolated-nix/nix/scripts/package-diff-report.py" --help > /dev/null
       # Prove missing support is detected in a completely separate copied folder.

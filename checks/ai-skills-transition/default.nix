@@ -6,10 +6,9 @@
   ...
 }: let
   names = [
-    "aytordev-design-system"
-    "aytordev-interface-design"
     "aytordev-pen-ops"
     "dotfiles-coder"
+    "impeccable"
     "nix"
     "skill-creator"
     "skill-registry"
@@ -55,6 +54,28 @@
       ai-skills.enable = true;
     };
   };
+  # Separate fixture for the later seven-skill per-file publication. Do not
+  # change the historical four-skill whole-root migration above.
+  retiredNames = ["aytordev-design-system" "aytordev-interface-design"];
+  retiredSkills = pkgs.runCommand "retired-design-skills-fixture" {} ''
+    for name in ${lib.escapeShellArgs retiredNames}; do
+      mkdir -p "$out/$name/references"
+      printf 'retired-%s\n' "$name" > "$out/$name/SKILL.md"
+      printf '{}\n' > "$out/$name/metadata.json"
+      printf 'retired support\n' > "$out/$name/references/guide.md"
+    done
+  '';
+  previous = mkHome {
+    home.file = lib.genAttrs (map (name: ".pi/agent/skills/${name}") (lib.filter (name: name != "impeccable") names ++ retiredNames)) (target: let
+      name = baseNameOf target;
+    in {
+      source =
+        if lib.elem name retiredNames
+        then "${retiredSkills}/${name}"
+        else ../../modules/common/ai-tools/skills + "/${name}";
+      recursive = true;
+    });
+  };
   fragment = config: name: pkgs.writeText "skills-${name}" config.home.activation.${name}.data;
   hmLib = pkgs.writeText "skills-hm-lib" current.lib.bash.initHomeManagerLib;
   prepare = ../../modules/common/ai-tools/scripts/prepare-pi-skills.sh;
@@ -68,12 +89,14 @@ in
       # Keep variable diagnostics in the build log, not the store output.
         ln -s ${old.home-files} "$TMPDIR/old-generation/home-files"
         ln -s ${current.home-files} "$TMPDIR/new-generation/home-files"
+        mkdir "$TMPDIR/previous-generation"
+        ln -s ${previous.home-files} "$TMPDIR/previous-generation/home-files"
 
         # A fresh shell per fragment matches activation's fail-fast boundary.
         hm() (
           export HOME="$1" HOME_MANAGER_BACKUP_EXT="$2"
           export HOME_MANAGER_BACKUP_COMMAND="" HOME_MANAGER_BACKUP_OVERWRITE=""
-          export VERBOSE_ARG="" newGenPath="$TMPDIR/new-generation" oldGenPath="$TMPDIR/old-generation"
+          export VERBOSE_ARG="" newGenPath="$TMPDIR/new-generation" oldGenPath="''${4:-$TMPDIR/old-generation}"
           unset DRY_RUN DRY_RUN_CMD VERBOSE || true
           cd "$HOME"
           . ${hmLib}
@@ -215,5 +238,59 @@ in
         test "$(readlink "$leaf")" = "$home/external"
         test "$(cat "$home/external")" = external
         printf 'PASS HM collisions, Darwin backups, and foreign symlink preservation\n'
+        # Retire only HM-owned leaves from the current per-file layout. Keep
+        # native skills/profile files, additions inside retained/retired folders,
+        # and foreign replacements at previously managed paths.
+        for backups in "" hm.old; do
+          for kind in managed file symlink; do
+            home="$TMPDIR/retirement-''${backups:-none}-$kind"
+            mkdir -p "$home"
+            (export HOME="$home" newGenPath="$TMPDIR/previous-generation" VERBOSE_ARG=""
+             unset oldGenPath DRY_RUN DRY_RUN_CMD VERBOSE || true
+             . ${hmLib}
+             . ${fragment previous "linkGeneration"})
+            mkdir -p "$home/.pi/agent/skills/native-skill"
+            printf 'native skill\n' > "$home/.pi/agent/skills/native-skill/SKILL.md"
+            printf 'native settings\n' > "$home/.pi/agent/settings.json"
+            printf 'native pen support\n' > "$home/.pi/agent/skills/aytordev-pen-ops/native.txt"
+            for name in ${lib.escapeShellArgs retiredNames}; do
+              directory="$home/.pi/agent/skills/$name"
+              test -L "$directory/SKILL.md"
+              printf 'native addition\n' > "$directory/keep.txt"
+              case "$kind" in
+                file) rm "$directory/SKILL.md"; printf 'foreign skill\n' > "$directory/SKILL.md" ;;
+                symlink)
+                  rm "$directory/SKILL.md"
+                  printf 'external skill\n' > "$home/external-$name"
+                  ln -s "$home/external-$name" "$directory/SKILL.md"
+                  ;;
+              esac
+            done
+            hm "$home" "$backups" ${fragment current "checkLinkTargets"} "$TMPDIR/previous-generation"
+            hm "$home" "$backups" ${fragment current "linkGeneration"} "$TMPDIR/previous-generation"
+            for name in ${lib.escapeShellArgs names}; do
+              test ! -L "$home/.pi/agent/skills/$name"
+              test "$(readlink "$home/.pi/agent/skills/$name/SKILL.md")" = "${current.home-files}/.pi/agent/skills/$name/SKILL.md"
+            done
+            for name in ${lib.escapeShellArgs retiredNames}; do
+              directory="$home/.pi/agent/skills/$name"
+              test ! -e "$directory/metadata.json" && test ! -L "$directory/metadata.json"
+              test ! -e "$directory/references/guide.md" && test ! -L "$directory/references/guide.md"
+              test "$(cat "$directory/keep.txt")" = 'native addition'
+              case "$kind" in
+                managed) test ! -e "$directory/SKILL.md" && test ! -L "$directory/SKILL.md" ;;
+                file) test ! -L "$directory/SKILL.md"; test "$(cat "$directory/SKILL.md")" = 'foreign skill' ;;
+                symlink)
+                  test "$(readlink "$directory/SKILL.md")" = "$home/external-$name"
+                  test "$(cat "$directory/SKILL.md")" = 'external skill'
+                  ;;
+              esac
+            done
+            test "$(cat "$home/.pi/agent/skills/native-skill/SKILL.md")" = 'native skill'
+            test "$(cat "$home/.pi/agent/settings.json")" = 'native settings'
+            test "$(cat "$home/.pi/agent/skills/aytordev-pen-ops/native.txt")" = 'native pen support'
+            printf 'PASS per-file retirement preserves native files: backups=%s kind=%s\n' "$backups" "$kind"
+          done
+        done
         touch "$out/passed"
     ''

@@ -93,11 +93,10 @@
   referenceProblems = referenceProblemsIn rawDeps validTargets skillNames;
   cycleProblems = builtins.map (name: "skill '${name}' participates in a dependency cycle") (cyclicNodesIn graph skillNames);
 
-  # The capability publishes exactly these individual leaves for each client.
+  # Validate authored dependencies only. Upstream impeccable is published too,
+  # but keeps its own contract and has no local metadata.json.
   clients = {
     collection = [
-      "aytordev-design-system"
-      "aytordev-interface-design"
       "aytordev-pen-ops"
       "dotfiles-coder"
       "nix"
@@ -105,8 +104,6 @@
       "skill-registry"
     ];
     pi = [
-      "aytordev-design-system"
-      "aytordev-interface-design"
       "aytordev-pen-ops"
       "dotfiles-coder"
       "nix"

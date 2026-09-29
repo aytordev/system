@@ -23,12 +23,18 @@ canonical module template (per-class variants + style rules) lives in the
 
 ### AI Tools (`ai-tools/`)
 
-Local knowledge skills: `aytordev-design-system`, `aytordev-interface-design`,
-`aytordev-pen-ops`,
-`dotfiles-coder`, `nix`, `skill-creator`, and `skill-registry`, with required
-support bundled inside each folder. Home Manager's
-`ai-skills` capability exports a neutral XDG data collection and publishes file
-links to the enabled Pi client. Native Gentle AI owns Pi's workflow;
+`ai-tools/catalog.nix` owns the six-entry pure-data inventory: two local skills
+(`dotfiles-coder`, `nix`), three adapted skills (`aytordev-pen-ops`,
+`skill-creator`, `skill-registry`), and intact upstream `impeccable`. The five
+authored folders bundle their own support. Catalog provenance pointers preserve
+local metadata authority; manual update policies introduce no updater.
+
+`ai-tools/upstream/impeccable/` owns private standalone package recipes and reads
+catalog pins. Public `packages/impeccable-{engine,skills}/package.nix` files are
+thin direct-import adapters. The external payload remains unmodified and outside
+the local metadata contract. Home Manager's `ai-skills` capability derives all
+six publication sources from the catalog, assembles the neutral XDG collection,
+and publishes recursive file links to the enabled Pi client. Native Gentle AI owns Pi's workflow;
 this subtree does not distribute agents or commands.
 
 `ai-tools/ai-skills.nix` is explicitly included by `mkHomeModules` in

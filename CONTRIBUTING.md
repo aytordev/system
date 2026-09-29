@@ -79,7 +79,9 @@ decision and its consequences; keep them short and readable.
 - **Style guide reference**: see the `nix` and `dotfiles-coder` skills in
   `modules/common/ai-tools/skills/`, plus the per-directory `AGENTS.md`.
 - **AI ownership**: follow the [native adoption guide](modules/common/ai-tools/README.md).
-  The repository publishes seven local skills; upstream owns Pi's workflow.
+  The repository publishes five authored skills plus unmodified upstream
+  Impeccable. Local metadata contracts apply only to authored folders; native
+  Gentle AI owns Pi's workflow.
 
 ## Notes
 
