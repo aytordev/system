@@ -1,0 +1,275 @@
+{
+  "schema": 1,
+  "target_version": "1.21.0",
+  "settings": [
+    {"path": ["colorize_brackets"], "expected": true},
+    {"path": ["code_lens"], "expected": "menu"},
+    {"path": ["toolbar", "code_actions"], "expected": true},
+    {"path": ["auto_signature_help"], "expected": false},
+    {"path": ["show_signature_help_after_edits"], "expected": false},
+    {"path": ["cli_default_open_behavior"], "expected": "existing_window"},
+    {"path": ["which_key", "enabled"], "expected": true},
+    {"path": ["which_key", "delay_ms"], "expected": 500},
+    {"path": ["vertical_scroll_margin"], "expected": 4},
+    {"path": ["horizontal_scroll_margin"], "expected": 8},
+    {"path": ["show_whitespaces"], "expected": "all"},
+    {"path": ["base_keymap"], "expected": "VSCode"},
+    {"path": ["vim_mode"], "expected": true},
+    {"path": ["relative_line_numbers"], "expected": "enabled"},
+    {"path": ["git", "inline_blame", "enabled"], "expected": true},
+    {"path": ["git_panel", "dock"], "expected": "right"},
+    {"path": ["git_panel", "collapse_untracked_diff"], "expected": true},
+    {"path": ["git_panel", "show_count_badge"], "expected": true},
+    {"path": ["git_panel", "diff_stats"], "expected": true},
+    {"path": ["git_panel", "file_icons"], "expected": true},
+    {"path": ["git_panel", "tree_view"], "expected": true},
+    {"path": ["file_finder", "modal_max_width"], "expected": "medium"},
+    {"path": ["tab_bar", "show"], "expected": true},
+    {"path": ["scrollbar", "show"], "expected": "never"},
+    {"path": ["tabs", "git_status"], "expected": true},
+    {"path": ["tabs", "file_icons"], "expected": true},
+    {"path": ["indent_guides", "enabled"], "expected": true},
+    {"path": ["indent_guides", "coloring"], "expected": "indent_aware"},
+    {"path": ["centered_layout", "left_padding"], "expected": 0.15},
+    {"path": ["centered_layout", "right_padding"], "expected": 0.15},
+    {"path": ["inlay_hints", "enabled"], "expected": true},
+    {"path": ["lsp", "tailwindcss-language-server", "settings", "classAttributes"], "expected": ["class", "className", "ngClass", "styles"]},
+    {"path": ["languages", "Python", "formatter", "language_server", "name"], "expected": "ruff"},
+    {"path": ["languages", "Go", "formatter", "language_server", "name"], "expected": "gopls"},
+    {"path": ["languages", "Rust", "formatter", "language_server", "name"], "expected": "rust-analyzer"},
+    {"path": ["languages", "Markdown", "format_on_save"], "expected": "off"},
+    {"path": ["languages", "Markdown", "preferred_line_length"], "expected": 80}
+  ],
+  "keymap": [
+    {
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "chord": "space g h d",
+      "expected": "editor::ToggleSelectedDiffHunks"
+    },
+    {
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "chord": "space g s",
+      "expected": "git_panel::ToggleFocus"
+    },
+    {
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "chord": "space t i",
+      "expected": "editor::ToggleInlayHints"
+    },
+    {
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "chord": "space u w",
+      "expected": "editor::ToggleSoftWrap"
+    },
+    {
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "chord": "space c z",
+      "expected": "workspace::ToggleCenteredLayout"
+    },
+    {
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "chord": "space m p",
+      "expected": "markdown::OpenPreview"
+    },
+    {
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "chord": "space m P",
+      "expected": "markdown::OpenPreviewToTheSide"
+    },
+    {
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "chord": "space f p",
+      "expected": "projects::OpenRecent"
+    },
+    {
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "chord": "space s w",
+      "expected": "pane::DeploySearch"
+    },
+    {
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "chord": "g f",
+      "expected": "editor::OpenExcerpts"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "ctrl-h",
+      "expected": "workspace::ActivatePaneLeft"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "ctrl-l",
+      "expected": "workspace::ActivatePaneRight"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "ctrl-k",
+      "expected": "workspace::ActivatePaneUp"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "ctrl-j",
+      "expected": "workspace::ActivatePaneDown"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space c a",
+      "expected": "editor::ToggleCodeActions"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space .",
+      "expected": "editor::ToggleCodeActions"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space c r",
+      "expected": "editor::Rename"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space c f",
+      "expected": "editor::Format"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "g d",
+      "expected": "editor::GoToDefinition"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "g D",
+      "expected": "editor::GoToDefinitionSplit"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "g i",
+      "expected": "editor::GoToImplementation"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "g I",
+      "expected": "editor::GoToImplementationSplit"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "g t",
+      "expected": "editor::GoToTypeDefinition"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "g T",
+      "expected": "editor::GoToTypeDefinitionSplit"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "g r",
+      "expected": "editor::FindAllReferences"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "] d",
+      "expected": "editor::GoToDiagnostic"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "[ d",
+      "expected": "editor::GoToPreviousDiagnostic"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "] e",
+      "expected": ["editor::GoToDiagnostic", {"severity": "error"}]
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "[ e",
+      "expected": ["editor::GoToPreviousDiagnostic", {"severity": "error"}]
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "] w",
+      "expected": ["editor::GoToDiagnostic", {"severity": "warning"}]
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "[ w",
+      "expected": ["editor::GoToPreviousDiagnostic", {"severity": "warning"}]
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space x x",
+      "expected": "diagnostics::Deploy"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "] h",
+      "expected": "editor::GoToHunk"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "[ h",
+      "expected": "editor::GoToPreviousHunk"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "shift-h",
+      "expected": "pane::ActivatePreviousItem"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "shift-l",
+      "expected": "pane::ActivateNextItem"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "shift-q",
+      "expected": "pane::CloseActiveItem"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "ctrl-q",
+      "expected": "pane::CloseActiveItem"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space b d",
+      "expected": "pane::CloseActiveItem"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space b o",
+      "expected": "pane::CloseOtherItems"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "ctrl-s",
+      "expected": "workspace::Save"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space space",
+      "expected": "file_finder::Toggle"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space /",
+      "expected": "pane::DeploySearch"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space e",
+      "expected": "pane::RevealInProjectPanel"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space f n",
+      "expected": "workspace::NewFile"
+    },
+    {
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "chord": "space q q",
+      "expected": "workspace::CloseWindow"
+    }
+  ]
+}

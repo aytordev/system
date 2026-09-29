@@ -1,0 +1,525 @@
+{
+  "keymap": [
+    {
+      "chord": "space g h d",
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "expected": "editor::ToggleSelectedDiffHunks"
+    },
+    {
+      "chord": "space g s",
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "expected": "git_panel::ToggleFocus"
+    },
+    {
+      "chord": "space t i",
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "expected": "editor::ToggleInlayHints"
+    },
+    {
+      "chord": "space u w",
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "expected": "editor::ToggleSoftWrap"
+    },
+    {
+      "chord": "space c z",
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "expected": "workspace::ToggleCenteredLayout"
+    },
+    {
+      "chord": "space m p",
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "expected": "markdown::OpenPreview"
+    },
+    {
+      "chord": "space m P",
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "expected": "markdown::OpenPreviewToTheSide"
+    },
+    {
+      "chord": "space f p",
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "expected": "projects::OpenRecent"
+    },
+    {
+      "chord": "space s w",
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "expected": "pane::DeploySearch"
+    },
+    {
+      "chord": "g f",
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+      "expected": "editor::OpenExcerpts"
+    },
+    {
+      "chord": "ctrl-h",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "workspace::ActivatePaneLeft"
+    },
+    {
+      "chord": "ctrl-l",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "workspace::ActivatePaneRight"
+    },
+    {
+      "chord": "ctrl-k",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "workspace::ActivatePaneUp"
+    },
+    {
+      "chord": "ctrl-j",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "workspace::ActivatePaneDown"
+    },
+    {
+      "chord": "space c a",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::ToggleCodeActions"
+    },
+    {
+      "chord": "space .",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::ToggleCodeActions"
+    },
+    {
+      "chord": "space c r",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::Rename"
+    },
+    {
+      "chord": "space c f",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::Format"
+    },
+    {
+      "chord": "g d",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::GoToDefinition"
+    },
+    {
+      "chord": "g D",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::GoToDefinitionSplit"
+    },
+    {
+      "chord": "g i",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::GoToImplementation"
+    },
+    {
+      "chord": "g I",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::GoToImplementationSplit"
+    },
+    {
+      "chord": "g t",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::GoToTypeDefinition"
+    },
+    {
+      "chord": "g T",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::GoToTypeDefinitionSplit"
+    },
+    {
+      "chord": "g r",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::FindAllReferences"
+    },
+    {
+      "chord": "] d",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::GoToDiagnostic"
+    },
+    {
+      "chord": "[ d",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::GoToPreviousDiagnostic"
+    },
+    {
+      "chord": "] e",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": [
+        "editor::GoToDiagnostic",
+        {
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "chord": "[ e",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": [
+        "editor::GoToPreviousDiagnostic",
+        {
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "chord": "] w",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": [
+        "editor::GoToDiagnostic",
+        {
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "chord": "[ w",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": [
+        "editor::GoToPreviousDiagnostic",
+        {
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "chord": "space x x",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "diagnostics::Deploy"
+    },
+    {
+      "chord": "] h",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::GoToHunk"
+    },
+    {
+      "chord": "[ h",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "editor::GoToPreviousHunk"
+    },
+    {
+      "chord": "shift-h",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "pane::ActivatePreviousItem"
+    },
+    {
+      "chord": "shift-l",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "pane::ActivateNextItem"
+    },
+    {
+      "chord": "shift-q",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "pane::CloseActiveItem"
+    },
+    {
+      "chord": "ctrl-q",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "pane::CloseActiveItem"
+    },
+    {
+      "chord": "space b d",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "pane::CloseActiveItem"
+    },
+    {
+      "chord": "space b o",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "pane::CloseOtherItems"
+    },
+    {
+      "chord": "ctrl-s",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "workspace::Save"
+    },
+    {
+      "chord": "space space",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "file_finder::Toggle"
+    },
+    {
+      "chord": "space /",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "pane::DeploySearch"
+    },
+    {
+      "chord": "space e",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "pane::RevealInProjectPanel"
+    },
+    {
+      "chord": "space f n",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "workspace::NewFile"
+    },
+    {
+      "chord": "space q q",
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+      "expected": "workspace::CloseWindow"
+    }
+  ],
+  "schema": 1,
+  "settings": [
+    {
+      "expected": true,
+      "path": [
+        "colorize_brackets"
+      ]
+    },
+    {
+      "expected": "menu",
+      "path": [
+        "code_lens"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "toolbar",
+        "code_actions"
+      ]
+    },
+    {
+      "expected": false,
+      "path": [
+        "auto_signature_help"
+      ]
+    },
+    {
+      "expected": false,
+      "path": [
+        "show_signature_help_after_edits"
+      ]
+    },
+    {
+      "expected": "existing_window",
+      "path": [
+        "cli_default_open_behavior"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "which_key",
+        "enabled"
+      ]
+    },
+    {
+      "expected": 500,
+      "path": [
+        "which_key",
+        "delay_ms"
+      ]
+    },
+    {
+      "expected": 4,
+      "path": [
+        "vertical_scroll_margin"
+      ]
+    },
+    {
+      "expected": 8,
+      "path": [
+        "horizontal_scroll_margin"
+      ]
+    },
+    {
+      "expected": "all",
+      "path": [
+        "show_whitespaces"
+      ]
+    },
+    {
+      "expected": "VSCode",
+      "path": [
+        "base_keymap"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "vim_mode"
+      ]
+    },
+    {
+      "expected": "enabled",
+      "path": [
+        "relative_line_numbers"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "git",
+        "inline_blame",
+        "enabled"
+      ]
+    },
+    {
+      "expected": "right",
+      "path": [
+        "git_panel",
+        "dock"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "git_panel",
+        "collapse_untracked_diff"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "git_panel",
+        "show_count_badge"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "git_panel",
+        "diff_stats"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "git_panel",
+        "file_icons"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "git_panel",
+        "tree_view"
+      ]
+    },
+    {
+      "expected": "medium",
+      "path": [
+        "file_finder",
+        "modal_max_width"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "tab_bar",
+        "show"
+      ]
+    },
+    {
+      "expected": "never",
+      "path": [
+        "scrollbar",
+        "show"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "tabs",
+        "git_status"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "tabs",
+        "file_icons"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "indent_guides",
+        "enabled"
+      ]
+    },
+    {
+      "expected": "indent_aware",
+      "path": [
+        "indent_guides",
+        "coloring"
+      ]
+    },
+    {
+      "expected": 0.15,
+      "path": [
+        "centered_layout",
+        "left_padding"
+      ]
+    },
+    {
+      "expected": 0.15,
+      "path": [
+        "centered_layout",
+        "right_padding"
+      ]
+    },
+    {
+      "expected": true,
+      "path": [
+        "inlay_hints",
+        "enabled"
+      ]
+    },
+    {
+      "expected": [
+        "class",
+        "className",
+        "ngClass",
+        "styles"
+      ],
+      "path": [
+        "lsp",
+        "tailwindcss-language-server",
+        "settings",
+        "classAttributes"
+      ]
+    },
+    {
+      "expected": "ruff",
+      "path": [
+        "languages",
+        "Python",
+        "formatter",
+        "language_server",
+        "name"
+      ]
+    },
+    {
+      "expected": "gopls",
+      "path": [
+        "languages",
+        "Go",
+        "formatter",
+        "language_server",
+        "name"
+      ]
+    },
+    {
+      "expected": "rust-analyzer",
+      "path": [
+        "languages",
+        "Rust",
+        "formatter",
+        "language_server",
+        "name"
+      ]
+    },
+    {
+      "expected": "off",
+      "path": [
+        "languages",
+        "Markdown",
+        "format_on_save"
+      ]
+    },
+    {
+      "expected": 80,
+      "path": [
+        "languages",
+        "Markdown",
+        "preferred_line_length"
+      ]
+    }
+  ],
+  "target_version": "1.21.0"
+}
