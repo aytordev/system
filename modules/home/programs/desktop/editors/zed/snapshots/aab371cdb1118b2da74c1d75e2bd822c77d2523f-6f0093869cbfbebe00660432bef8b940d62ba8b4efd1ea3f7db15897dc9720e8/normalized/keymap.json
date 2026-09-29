@@ -1,0 +1,298 @@
+[
+  {
+    "bindings": {
+      "g f": "editor::OpenExcerpts",
+      "space a a": "agent::OpenProjectAGENTS.mdRules",
+      "space a c": "agent::ToggleFocus",
+      "space a d": "agent::OpenAgentDiff",
+      "space a i": "assistant::InlineAssist",
+      "space a m": "agent::ToggleModelSelector",
+      "space a n": "agent::NewThread",
+      "space a s": "agent::OpenSettings",
+      "space c z": "workspace::ToggleCenteredLayout",
+      "space f p": "projects::OpenRecent",
+      "space g h d": "editor::ToggleSelectedDiffHunks",
+      "space g s": "git_panel::ToggleFocus",
+      "space m P": "markdown::OpenPreviewToTheSide",
+      "space m p": "markdown::OpenPreview",
+      "space s b": "buffer_search::Deploy",
+      "space s w": "pane::DeploySearch",
+      "space t i": "editor::ToggleInlayHints",
+      "space u w": "editor::ToggleSoftWrap"
+    },
+    "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu"
+  },
+  {
+    "bindings": {
+      "[ H": [
+        "editor::GoToPreviousDiagnostic",
+        {
+          "severity": "hint"
+        }
+      ],
+      "[ d": "editor::GoToPreviousDiagnostic",
+      "[ e": [
+        "editor::GoToPreviousDiagnostic",
+        {
+          "severity": "error"
+        }
+      ],
+      "[ h": "editor::GoToPreviousHunk",
+      "[ w": [
+        "editor::GoToPreviousDiagnostic",
+        {
+          "severity": "warning"
+        }
+      ],
+      "[b": "pane::ActivatePreviousItem",
+      "] H": [
+        "editor::GoToDiagnostic",
+        {
+          "severity": "hint"
+        }
+      ],
+      "] d": "editor::GoToDiagnostic",
+      "] e": [
+        "editor::GoToDiagnostic",
+        {
+          "severity": "error"
+        }
+      ],
+      "] h": "editor::GoToHunk",
+      "] w": [
+        "editor::GoToDiagnostic",
+        {
+          "severity": "warning"
+        }
+      ],
+      "]b": "pane::ActivateNextItem",
+      "alt-j": "editor::MoveLineDown",
+      "alt-k": "editor::MoveLineUp",
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-q": "pane::CloseActiveItem",
+      "ctrl-s": "workspace::Save",
+      "ctrl-shift-h": "vim::ResizePaneLeft",
+      "ctrl-shift-j": "vim::ResizePaneDown",
+      "ctrl-shift-k": "vim::ResizePaneUp",
+      "ctrl-shift-l": "vim::ResizePaneRight",
+      "g D": "editor::GoToDefinitionSplit",
+      "g I": "editor::GoToImplementationSplit",
+      "g T": "editor::GoToTypeDefinitionSplit",
+      "g d": "editor::GoToDefinition",
+      "g i": "editor::GoToImplementation",
+      "g r": "editor::FindAllReferences",
+      "g t": "editor::GoToTypeDefinition",
+      "s S": "project_symbols::Toggle",
+      "s s": "outline::Toggle",
+      "shift-h": "pane::ActivatePreviousItem",
+      "shift-l": "pane::ActivateNextItem",
+      "shift-q": "pane::CloseActiveItem",
+      "space .": "editor::ToggleCodeActions",
+      "space /": "pane::DeploySearch",
+      "space b b": "pane::ActivatePreviousItem",
+      "space b d": "pane::CloseActiveItem",
+      "space b o": "pane::CloseOtherItems",
+      "space c a": "editor::ToggleCodeActions",
+      "space c f": "editor::Format",
+      "space c r": "editor::Rename",
+      "space e": "pane::RevealInProjectPanel",
+      "space f n": "workspace::NewFile",
+      "space g b": "editor::ToggleGitBlameInline",
+      "space g d": "git::Diff",
+      "space g h e": "editor::ExpandAllDiffHunks",
+      "space q q": "workspace::CloseWindow",
+      "space space": "file_finder::Toggle",
+      "space w -": "pane::SplitDown",
+      "space w d": "pane::CloseActiveItem",
+      "space w w": "workspace::ActivatePreviousPane",
+      "space w |": "pane::SplitRight",
+      "space x x": "diagnostics::Deploy"
+    },
+    "context": "Editor && vim_mode == normal && !VimWaiting && !menu"
+  },
+  {
+    "bindings": {
+      "space a c": "agent::ToggleFocus",
+      "space f f": [
+        "task::Spawn",
+        {
+          "task_name": "fff-gpui: Files"
+        }
+      ],
+      "space f g": [
+        "task::Spawn",
+        {
+          "task_name": "fff-gpui: Grep"
+        }
+      ],
+      "space f p": "projects::OpenRecent",
+      "space g s": "git_panel::ToggleFocus",
+      "space space": "file_finder::Toggle"
+    },
+    "context": "EmptyPane || SharedScreen"
+  },
+  {
+    "bindings": {
+      "g c": "editor::ToggleComments",
+      "space a d": [
+        "assistant::InlineAssist",
+        {
+          "prompt": "Add concise inline documentation comments to the selected code without changing logic."
+        }
+      ],
+      "space a e": [
+        "assistant::InlineAssist",
+        {
+          "prompt": "Explain the selected code. Cover purpose, control flow, and non-obvious behavior."
+        }
+      ],
+      "space a f": [
+        "assistant::InlineAssist",
+        {
+          "prompt": "Fix bugs and issues in the selected code. Identify root causes, not just symptoms."
+        }
+      ],
+      "space a k": [
+        "assistant::InlineAssist",
+        {
+          "prompt": "Summarize the selected code. One-paragraph summary plus key takeaways."
+        }
+      ],
+      "space a n": "agent::NewThread",
+      "space a r": [
+        "assistant::InlineAssist",
+        {
+          "prompt": "Refactor the selected code for clarity and maintainability without changing external behavior. Extract functions, simplify conditions, remove duplication."
+        }
+      ],
+      "space a t": [
+        "assistant::InlineAssist",
+        {
+          "prompt": "Generate focused unit tests for the selected code. Use the project's test framework and conventions. Output with arrange/act/assert sections."
+        }
+      ],
+      "space a v": [
+        "action::Sequence",
+        [
+          "agent::ToggleFocus",
+          "agent::AddSelectionToThread"
+        ]
+      ]
+    },
+    "context": "Editor && vim_mode == visual && !VimWaiting && !menu"
+  },
+  {
+    "bindings": {
+      "j j": "vim::NormalBefore",
+      "j k": "vim::NormalBefore"
+    },
+    "context": "Editor && vim_mode == insert && !menu"
+  },
+  {
+    "bindings": {
+      "c": "vim::CurrentLine",
+      "r": "editor::Rename"
+    },
+    "context": "Editor && vim_operator == c"
+  },
+  {
+    "bindings": {
+      "a": "editor::ToggleCodeActions",
+      "c": "vim::CurrentLine"
+    },
+    "context": "Editor && vim_operator == c"
+  },
+  {
+    "bindings": {
+      "ctrl-\\": "terminal_panel::ToggleFocus"
+    },
+    "context": "Workspace"
+  },
+  {
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight"
+    },
+    "context": "Terminal"
+  },
+  {
+    "bindings": {
+      "A": "project_panel::NewDirectory",
+      "a": "project_panel::NewFile",
+      "c": "project_panel::Copy",
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "d": "project_panel::Delete",
+      "p": "project_panel::Paste",
+      "q": "workspace::ToggleRightDock",
+      "r": "project_panel::Rename",
+      "space e": "workspace::ToggleRightDock",
+      "x": "project_panel::Cut"
+    },
+    "context": "ProjectPanel && not_editing"
+  },
+  {
+    "bindings": {
+      "ctrl-w h": "workspace::ActivatePaneLeft",
+      "ctrl-w j": "workspace::ActivatePaneDown",
+      "ctrl-w k": "workspace::ActivatePaneUp",
+      "ctrl-w l": "workspace::ActivatePaneRight"
+    },
+    "context": "Dock"
+  },
+  {
+    "bindings": {
+      "cmd-b": "workspace::ToggleRightDock"
+    },
+    "context": "Workspace"
+  },
+  {
+    "bindings": {
+      "space r t": [
+        "editor::SpawnNearestTask",
+        {
+          "reveal": "no_focus"
+        }
+      ]
+    },
+    "context": "EmptyPane || SharedScreen || vim_mode == normal"
+  },
+  {
+    "bindings": {
+      "S": [
+        "vim::PushSneakBackward",
+        {}
+      ],
+      "s": [
+        "vim::PushSneak",
+        {}
+      ]
+    },
+    "context": "vim_mode == normal || vim_mode == visual"
+  },
+  {
+    "bindings": {
+      "space": null,
+      "space f f": [
+        "task::Spawn",
+        {
+          "task_name": "fff-gpui: Files"
+        }
+      ],
+      "space f g": [
+        "task::Spawn",
+        {
+          "task_name": "fff-gpui: Grep"
+        }
+      ]
+    },
+    "context": "(VimControl && !menu)"
+  }
+]

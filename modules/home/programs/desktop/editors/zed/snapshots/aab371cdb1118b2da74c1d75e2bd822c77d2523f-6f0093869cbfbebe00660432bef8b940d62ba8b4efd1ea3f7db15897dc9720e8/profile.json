@@ -1,0 +1,178 @@
+{
+  "keymap": [
+    {
+      "bindings": {
+        "g f": "editor::OpenExcerpts",
+        "space c z": "workspace::ToggleCenteredLayout",
+        "space f p": "projects::OpenRecent",
+        "space g h d": "editor::ToggleSelectedDiffHunks",
+        "space g s": "git_panel::ToggleFocus",
+        "space m P": "markdown::OpenPreviewToTheSide",
+        "space m p": "markdown::OpenPreview",
+        "space s w": "pane::DeploySearch",
+        "space t i": "editor::ToggleInlayHints",
+        "space u w": "editor::ToggleSoftWrap"
+      },
+      "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu"
+    },
+    {
+      "bindings": {
+        "[ d": "editor::GoToPreviousDiagnostic",
+        "[ e": [
+          "editor::GoToPreviousDiagnostic",
+          {
+            "severity": "error"
+          }
+        ],
+        "[ h": "editor::GoToPreviousHunk",
+        "[ w": [
+          "editor::GoToPreviousDiagnostic",
+          {
+            "severity": "warning"
+          }
+        ],
+        "] d": "editor::GoToDiagnostic",
+        "] e": [
+          "editor::GoToDiagnostic",
+          {
+            "severity": "error"
+          }
+        ],
+        "] h": "editor::GoToHunk",
+        "] w": [
+          "editor::GoToDiagnostic",
+          {
+            "severity": "warning"
+          }
+        ],
+        "ctrl-h": "workspace::ActivatePaneLeft",
+        "ctrl-j": "workspace::ActivatePaneDown",
+        "ctrl-k": "workspace::ActivatePaneUp",
+        "ctrl-l": "workspace::ActivatePaneRight",
+        "ctrl-q": "pane::CloseActiveItem",
+        "ctrl-s": "workspace::Save",
+        "g D": "editor::GoToDefinitionSplit",
+        "g I": "editor::GoToImplementationSplit",
+        "g T": "editor::GoToTypeDefinitionSplit",
+        "g d": "editor::GoToDefinition",
+        "g i": "editor::GoToImplementation",
+        "g r": "editor::FindAllReferences",
+        "g t": "editor::GoToTypeDefinition",
+        "shift-h": "pane::ActivatePreviousItem",
+        "shift-l": "pane::ActivateNextItem",
+        "shift-q": "pane::CloseActiveItem",
+        "space .": "editor::ToggleCodeActions",
+        "space /": "pane::DeploySearch",
+        "space b d": "pane::CloseActiveItem",
+        "space b o": "pane::CloseOtherItems",
+        "space c a": "editor::ToggleCodeActions",
+        "space c f": "editor::Format",
+        "space c r": "editor::Rename",
+        "space e": "pane::RevealInProjectPanel",
+        "space f n": "workspace::NewFile",
+        "space q q": "workspace::CloseWindow",
+        "space space": "file_finder::Toggle",
+        "space x x": "diagnostics::Deploy"
+      },
+      "context": "Editor && vim_mode == normal && !VimWaiting && !menu"
+    }
+  ],
+  "schema": 1,
+  "settings": {
+    "auto_signature_help": false,
+    "base_keymap": "VSCode",
+    "centered_layout": {
+      "left_padding": 0.15,
+      "right_padding": 0.15
+    },
+    "cli_default_open_behavior": "existing_window",
+    "code_lens": "menu",
+    "colorize_brackets": true,
+    "file_finder": {
+      "modal_max_width": "medium"
+    },
+    "git": {
+      "inline_blame": {
+        "enabled": true
+      }
+    },
+    "git_panel": {
+      "collapse_untracked_diff": true,
+      "diff_stats": true,
+      "dock": "right",
+      "file_icons": true,
+      "show_count_badge": true,
+      "tree_view": true
+    },
+    "horizontal_scroll_margin": 8,
+    "indent_guides": {
+      "coloring": "indent_aware",
+      "enabled": true
+    },
+    "inlay_hints": {
+      "enabled": true
+    },
+    "languages": {
+      "Go": {
+        "formatter": {
+          "language_server": {
+            "name": "gopls"
+          }
+        }
+      },
+      "Markdown": {
+        "format_on_save": "off",
+        "preferred_line_length": 80
+      },
+      "Python": {
+        "formatter": {
+          "language_server": {
+            "name": "ruff"
+          }
+        }
+      },
+      "Rust": {
+        "formatter": {
+          "language_server": {
+            "name": "rust-analyzer"
+          }
+        }
+      }
+    },
+    "lsp": {
+      "tailwindcss-language-server": {
+        "settings": {
+          "classAttributes": [
+            "class",
+            "className",
+            "ngClass",
+            "styles"
+          ]
+        }
+      }
+    },
+    "relative_line_numbers": "enabled",
+    "scrollbar": {
+      "show": "never"
+    },
+    "show_signature_help_after_edits": false,
+    "show_whitespaces": "all",
+    "tab_bar": {
+      "show": true
+    },
+    "tabs": {
+      "file_icons": true,
+      "git_status": true
+    },
+    "toolbar": {
+      "code_actions": true
+    },
+    "vertical_scroll_margin": 4,
+    "vim_mode": true,
+    "which_key": {
+      "delay_ms": 500,
+      "enabled": true
+    }
+  },
+  "target_version": "1.21.0"
+}

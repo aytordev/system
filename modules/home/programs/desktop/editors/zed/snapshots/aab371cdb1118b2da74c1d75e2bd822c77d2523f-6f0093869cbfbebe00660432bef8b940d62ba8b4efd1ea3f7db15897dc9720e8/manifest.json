@@ -1,0 +1,19 @@
+{
+  "artifacts": {
+    "adoption.json": "a0d68f49d358f400f30d0e5671c14658ab2565b75673f4ea588d7590fb86d19d",
+    "normalized/keymap.json": "43eef904d82368705f659408957e82f9e3a0bb5b0dd3740702eab3e441f9cedb",
+    "normalized/settings.json": "8153300dd8d03f93d7d71ba4a54339d487b7d99d6018fe2fd7f38ab8dc45b69a",
+    "normalized/tasks.json": "36f00df392915032100be957480fbe757fc41621e2ec52969c35806e0100ab05",
+    "profile.json": "f669d3f5a5012563da71513af340e07e016aa692dad709082d3f881c3fffbaaf",
+    "raw/LICENSE": "d534ba5efcce5ec9f8a8e34d624494c03f7eaa953c48a67d533ac3b5a582beaf",
+    "raw/keymap.json": "ce1050e9870bee17e13800bba4f356c709ecd7938074f0d282a11b699f7c0ebf",
+    "raw/settings.json": "124b00efaf1036d759afc9096f27b602c8ed882220d7433b56cb43a3b1402505",
+    "raw/tasks.json": "8db68f7d75702eb1b03dbf2e3debf11eb8d904033e29be9e73296ac900d3b8c3"
+  },
+  "schema": 1,
+  "source": {
+    "repository": "jellydn/zed-101-setup",
+    "revision": "aab371cdb1118b2da74c1d75e2bd822c77d2523f"
+  },
+  "target_version": "1.21.0"
+}
