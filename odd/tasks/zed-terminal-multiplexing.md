@@ -87,6 +87,15 @@ Normal Nix store/cache outputs are allowed. No activation, no Linux runtime clai
 - Fresh execution evidence: `integration-home-zed --rebuild` checked and passed; `unit-nix-unit --rebuild` first refused with `some outputs of '...nix-unit-check.drv' are not valid, so checking is not possible` — an unrealized-output precondition, not a product defect. After the suite run freshly built that output, one authorized rerun checked and passed. Both outcomes are reported separately and neither is hidden.
 - Strict TDD exception, declared rather than manufactured: this was test-strengthening of already-implemented and already-verified behaviour, so no meaningful pre-implementation RED existed. Every affected check was still run.
 
+### CI drift found after the first delivery attempt
+
+- PR 209's first CI run failed on `Check aarch64-darwin`. The failing check was `integration-docs-generation`, not any of the six focused checks: it reported `docs drift for home` and showed the missing `aytordev.programs.desktop.editors.zed.terminal.multiplexer` header.
+- Cause: the new option adds a header to the generated home option index, and the golden index in `checks/docs-generation/golden/` was never resynced.
+- Why it was missed: the parent's focused verification set omitted `integration-docs-generation`, and the all-system run used `--no-build`, which evaluates outputs without building the check that detects drift. This is a parent contract error, not a writer defect.
+- Fix: regenerated with the repository's `just docs-golden` recipe (`nix build .#packages.aarch64-darwin.docs-options`, then copy both indices). Result: exactly one added line in `home.txt`, `darwin.txt` unchanged. Committed as `0e2d2ed`.
+- Verified after the fix by building `integration-docs-generation` locally, which now exits 0.
+- Lesson recorded: an option-adding change must include the docs golden index in its verification set.
+
 ### Delivery record
 
 - Implementation, tests and documentation are committed together in `cd65892` (`feat(zed): multiplex terminals through zellij or tmux`), 12 files, 507 insertions and 35 deletions. Commit hooks passed conflict-marker, deadnix, statix, treefmt and typo checks without bypass. The hook's stash/restore cycle left the two externally refreshed lock files byte-identical, verified by hash afterwards.
