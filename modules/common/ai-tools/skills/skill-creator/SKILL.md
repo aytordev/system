@@ -49,7 +49,8 @@ Use this skill when:
 | Deterministic or fragile logic better run than described | `scripts/` |
 | Files the agent emits or consumes as output | `assets/` |
 | Conditional, runtime-loaded modules | `modules/` |
-| Identity and catalog fields | `SKILL.md` frontmatter + `metadata.json` |
+| Skill identity, description, and local version | `SKILL.md` frontmatter + `metadata.json` |
+| Repository ownership, source, and manual update policy | `modules/common/ai-tools/catalog.nix` (pointers, not duplicate local metadata) |
 
 ## Execution Steps
 
@@ -58,9 +59,12 @@ Use this skill when:
 2. Create `skills/<name>/SKILL.md` with valid frontmatter.
 3. Add `metadata.json` mirroring `name` and `description`, plus `version` and `organization`.
 4. Add supporting content in the directories selected above.
-5. For approved expansion, update the neutral collection's source, the `ai-skills` publication list, documented
-   inventory, and explicit inventory/dependency/publication expectations together
-   (see `rules/process-steps.md`). Do not recreate a workflow catalog or orchestrator.
+5. For approved expansion, add source/kind/update/origin/tracking/provenance to
+   `modules/common/ai-tools/catalog.nix`; publication derives from that catalog.
+   Update documented inventory and independent inventory/dependency/publication
+   expectations together (see `rules/process-steps.md`). Record baseline roles and
+   unknowns honestly; keep detailed provenance canonical. Do not recreate a runtime
+   registry, updater, or orchestrator.
 6. Verify metadata, standalone collection export, and actual client publication,
    including disabled-client guards and isolated-folder resource resolution.
 7. Audit or update by re-applying these rules; keep provenance honest.

@@ -1,4 +1,4 @@
-# AI Tools: Native Gentle AI and Local Skills
+# AI Tools: Native Gentle AI and Published Skills
 
 Nix installs Pi, the official public Gentle AI CLI **3.7.0**, Engram
 **2.0.0-rc.11**, and Node/npm. The official native installer owns the Pi profile,
@@ -70,7 +70,9 @@ surface (local skills, `models.json`, the startup header, Engram).
 | --- | --- |
 | Nix package capabilities | Pi, public `gentle-ai`, Engram, Node/npm, runtime environment |
 | Official `gentle-ai install --agent pi` | Native Pi profile, Shell package and private engine, extensions/workflow |
-| Local `ai-skills` capability | Neutral skill collection and thin recursive Pi publication |
+| This `ai-tools/` subtree | Skill ownership catalog, five authored sources, private upstream preparation recipes, and publication |
+| `packages/impeccable-{engine,skills}/package.nix` | Direct-import adapters for existing package discovery; no pins or recipe bodies |
+| `ai-skills` capability | Catalog-derived neutral collection and recursive Pi file publication |
 
 The development suite enables these capabilities with overridable defaults.
 The distributor lives in `modules/common/ai-tools/ai-skills.nix`, explicitly
@@ -86,14 +88,61 @@ Engram exports `ENGRAM_BIN` for native subprocess selection,
 executables through their Nix pins; native Shell/package/private-engine updates
 remain upstream-owned. This replacement does not migrate Engram data.
 
-## Local skills
+## Skill ownership and updates
 
-Sources remain under `modules/common/ai-tools/skills/`:
+[`catalog.nix`](catalog.nix) is the six-entry, pure-data ownership inventory.
+It records source locations, kind, manual update policy, structured origins,
+provenance pointers, and Impeccable's skill/engine pins and dependency. It is not a module, runtime
+registry, updater, or discovery mechanism. `ai-skills.nix` derives publication
+names and sources from it; the existing namespace, paths, and guards do not change.
 
-- `aytordev-design-system` — design-system discovery and evolution: tokens,
-  component anatomy/states, adoption and migration.
-- `aytordev-interface-design` — interface design and read-only evidence-based
-  review for the consuming project's system.
+| Kind | Skills | Maintenance |
+| --- | --- | --- |
+| `local` | `dotfiles-coder`, `nix` | Edit local content manually; frontmatter and `metadata.json` remain canonical |
+| `adapted` | `aytordev-pen-ops`, `skill-creator`, `skill-registry` | Review upstream evidence manually and retain deliberate local contracts |
+| `upstream` | `impeccable` | Update catalog pins/hashes manually as a coherent skill-and-engine pair; preserve upstream bytes |
+
+Adapted entries expose `origin.repository`, the upstream content `path`, and
+`baseline.{role,revision}`. Their `originalImportRevision` and `lastSyncRevision`
+are explicitly null where unknown. Local entries have `origin = null`: no
+external update source, including Nix's independently authored implementation.
+For every entry, `tracking = null` means no configured branch, release channel,
+or feed; `update` describes manual maintenance, not update discovery.
+
+Impeccable's `source.payloadPath` identifies the original upstream skill tree;
+`source.subdir` identifies its packaged destination. Its linked engine release
+records the verified revision and `tagPrefix`; the download tag is that prefix
+plus `engine.version`. Both recipes consume these locations/tag data, keeping
+update knowledge in the catalog without rewriting the external payload.
+
+Detailed provenance stays in its existing documents, not a second prose ledger.
+Pen's [provenance notice](skills/aytordev-pen-ops/references/provenance.md) records
+its concept-level adaptation and MIT notice. The [Nix skill](skills/nix/SKILL.md)
+records independent local implementation with behavior-level inspiration, not
+an imported upstream skill. The creator/registry
+[historical comparison](../../../docs/ai-tools/upstream-sources.md) uses Gentle AI
+v2.9.0 as an audit baseline: it does **not** identify their original-import or
+last-synchronized revisions, which remain unknown. No tracking branch or
+automatic synchronization policy is implied.
+
+Private standalone `callPackage` recipes live in
+[`upstream/impeccable/engine.nix`](upstream/impeccable/engine.nix) and
+[`upstream/impeccable/skill.nix`](upstream/impeccable/skill.nix). They consume
+catalog pins without Home Manager/config dependencies. The public package files
+are direct imports so `callPackage` still sees the recipes' named arguments.
+Package discovery, overlays, and public output names remain unchanged.
+
+For an approved update, edit content or pins at these owners, retain required
+notices, and run inventory, metadata/dependency, publication, and Impeccable
+checks. Inventory expansion additionally requires explicit approval and updated
+independent expectations; see the
+[creator workflow](skills/skill-creator/rules/process-steps.md).
+
+## Published skills
+
+Five authored sources (two local, three adapted) remain under
+`modules/common/ai-tools/skills/`:
+
 - `aytordev-pen-ops` — Pen session operations from observed capabilities:
   inspection, authorized bounded edits, verification.
 - `dotfiles-coder` — repository architecture and configuration patterns.
@@ -104,15 +153,32 @@ Sources remain under `modules/common/ai-tools/skills/`:
 Each source folder is self-contained: standard `SKILL.md` name/description plus
 its original rules, references, and scripts. Resolver guidance is bundled in
 `skill-registry/references/skill-resolver.md`; no sibling support folder is needed.
-`metadata.json` is our validation convention, not a universal client requirement.
+`metadata.json` is our authored-source validation convention, not a universal
+client requirement.
+
+The sixth skill, **`impeccable`**, comes from
+`${pkgs.aytordev.impeccable-skills}/share/impeccable`, not the authored tree.
+The catalog pins upstream **4.4.0** at commit
+`114ea1d3838fca73b253af45f873b9c4f5f213c8`, preserving all 54 payload files
+(including 42 references) unchanged. It adds only upstream LICENSE/NOTICE.md and
+the official **0.1.6** engine at the launcher's supported sibling path,
+`scripts/bin/{darwin-arm64,linux-x64}/impeccable`. There is no local metadata,
+prompt override, updater, or workflow wrapper. See the
+[catalog](catalog.nix) for pin ownership and the
+[package guide](../../../packages/README.md) for the external bundle contract.
+
+Impeccable replaces `aytordev-interface-design` and `aytordev-design-system`.
+`aytordev-pen-ops` and unrelated skills remain unchanged. Upstream guidance does
+not establish that a host has browser/Pen tools or authorize their use.
 
 | Publication | Path | Enabled when |
 | --- | --- | --- |
-| Neutral collection | `${config.xdg.dataHome}/aytordev/skills` (normally `~/.local/share/aytordev/skills`) | `ai-skills.enable`, even with both clients disabled |
+| Neutral collection | `${config.xdg.dataHome}/aytordev/skills` (normally `~/.local/share/aytordev/skills`) | `ai-skills.enable`, even with Pi disabled |
 | Pi / Gentle Shell | `~/.pi/agent/skills/<name>` | `ai-skills.enable` and `pi.enable` |
 
-The neutral collection links to the canonical source tree. Client publication is
-recursive: each skill directory stays real and its managed files are symlinks,
+The neutral collection assembles links to the five authored folders and the
+upstream package. Client publication is recursive: each skill directory stays
+real and its managed files are symlinks,
 matching Pi's native per-file layout. The client profile and whole skills root
 remain writable for native owners; additional native files survive. Source edits
 reach these linked locations on Nix activation; client reload behavior is native.
@@ -133,7 +199,9 @@ of these skill contents there is unverified: this is not an all-subagent guarant
 The local registry writes only on explicit request: `file` mode uses
 `.ai-local/skill-registry.md`, and `engram` mode uses topic
 `aytordev/local-skill-registry`. It never writes Shell's generated
-`.atl/skill-registry.md`, injects prompts, or schedules refreshes.
+`.atl/skill-registry.md`, injects prompts, or schedules refreshes. Its scanner
+reads full `SKILL.md` frontmatter and follows links; upstream Impeccable needs no
+`metadata.json` or registry adapter. Native Pi likewise discovers the entry point.
 
 ## Other clients: Pen manual import
 
@@ -162,7 +230,7 @@ managed profiles. These commands are operator instructions, not activation code:
 ```sh
 collection="${XDG_DATA_HOME:-$HOME/.local/share}/aytordev/skills"
 export_dir="$(mktemp -d "$HOME/aytordev-skills-export.XXXXXX")"
-for name in aytordev-design-system aytordev-interface-design aytordev-pen-ops dotfiles-coder nix skill-creator skill-registry; do
+for name in aytordev-pen-ops dotfiles-coder impeccable nix skill-creator skill-registry; do
     cp -RL "$collection/$name" "$export_dir/$name"
     chmod -R u+w "$export_dir/$name"
 done
@@ -171,11 +239,22 @@ done
 Import a folder from that export and keep it while registered. Copies do not
 auto-refresh: after a source update and activation, explicitly export again and
 re-add the chosen file in Pen. Checks prove copied resources remain complete;
-actual Pen import, model capabilities, and execution have not been validated.
+actual Pen import and model capabilities have not been validated. Impeccable's
+copied launcher is checked with the native Darwin sibling engine offline; Linux
+runtime execution and browser/design operations remain unverified. Copies carry
+the engine for the package's target platform, not a universal binary.
 
 ## Adoption: backup, prepare, activate, onboard
 
 These are operator instructions; repository verification does not execute them.
+
+**Already using per-file skill links?** The Impeccable replacement needs no
+preparation script or native reinstall. On the next reviewed activation, Home
+Manager removes unchanged managed links for the two retired skills and publishes
+Impeccable. Native additions and foreign replacements remain untouched; a
+foreign `SKILL.md` can therefore keep a retired name discoverable. Inspect those
+files yourself rather than deleting their folders. Historical whole-root
+migration instructions below still apply only to the older layout.
 
 1. **Before activation or onboarding, make consistent backups of both Pi and
    Engram.** Stop all Engram writers: Pi and other clients, MCP children,
@@ -235,13 +314,21 @@ These are operator instructions; repository verification does not execute them.
 environment, no profile/adapter ownership, and exact current skill-list publication with
 client guards, standalone neutral export, custom HOME/XDG paths, byte-for-byte
 projections, and isolated dereferenced copies with resolvable support. Retained
-AI checks cover inventory, dependencies, metadata, and documentation links.
+AI checks cover the independent six-entry ownership/shape contract (including
+invalid catalog fixtures), authored-only dependencies/metadata, and documentation
+links. `checks/impeccable` verifies thin adapters, standalone recipe arguments,
+adapter/private package identity parity on both platforms, upstream byte fidelity,
+and the pinned offline engine; publication checks compare the complete package in neutral/Pi exports
+and execute the published and copied launcher without fallback downloads.
 Theme transition tests retain real Home Manager collision and orphan-link
 coverage using a surviving themed app's managed theme directory (Yazi flavors).
 `checks/ai-skills-transition` executes the exact preparation script followed by
 the pinned HM collision/link fragments over the synthetic old Pi layout, with
 and without Darwin's `hm.old` backups. It also checks foreign-content and backup
-refusal. Native profile and memory migration remain operator actions.
+refusal. A separate seven-skill per-file fixture verifies removal of both
+retired publications with and without `hm.old`, preserving native files and
+foreign real-file/symlink replacements. Native profile and memory migration
+remain operator actions.
 
 The eleven records under `docs/ai-tools/` describe the retired local dual-client
 workflow. They remain historical evidence, not current onboarding instructions.
