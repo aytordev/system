@@ -2,6 +2,7 @@
 {
   lib,
   package,
+  terminalShell ? "system",
 }: {
   extensions = ["kanagawa-themes" "sora-theme"];
 
@@ -46,7 +47,7 @@
     };
     terminal = {
       font_family = "MonaspiceNe Nerd Font Mono";
-      shell = "system";
+      shell = terminalShell;
       env.EDITOR = "${lib.getExe package} --wait";
     };
     file_types = {

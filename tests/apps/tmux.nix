@@ -31,6 +31,45 @@
       palette = paletteFor family variant;
     };
 in {
+  testTmuxSessionNameSanitization = {
+    expr = map (import ../../modules/home/programs/terminal/tools/tmux/session.nix {inherit lib;}).sanitizeName [
+      "project"
+      "project.name:branch"
+      "..::"
+      ""
+      "a b"
+      "-project"
+      "/"
+    ];
+    expected = ["project" "project_name_branch" "____" "workspace" "a b" "-project" "/"];
+  };
+
+  testTmuxSessionCommandsUseSelectedPackage = {
+    expr = let
+      text = (import ../../modules/home/programs/terminal/tools/tmux/session.nix {inherit lib;}).script {
+        type = "derivation";
+        name = "custom-tmux";
+        outPath = "/nix/store/custom-tmux";
+        meta.mainProgram = "custom-tmux";
+      };
+    in {
+      defaultOpen = lib.hasInfix ''mode="''${1:-open}"'' text;
+      # Compare every complete emitted argv template, not a matching fragment.
+      # Quoting and extra/missing flags are significant; HM checks execute them.
+      commands =
+        builtins.filter (line: lib.hasPrefix "exec " line)
+        (map lib.strings.trim (lib.splitString "\n" text));
+    };
+    expected = {
+      defaultOpen = true;
+      commands = [
+        ''exec /nix/store/custom-tmux/bin/custom-tmux new-session -s "$session_name" -c "$(pwd)"''
+        ''exec /nix/store/custom-tmux/bin/custom-tmux attach-session -t "=$session_name"''
+        ''exec /nix/store/custom-tmux/bin/custom-tmux new-session -A -s "$session_name" -c "$(pwd)"''
+      ];
+    };
+  };
+
   # ─── Per-family resolution ────────────────────────────────────────────────
 
   testTmuxSoraDarkResolvesOfficial = {
