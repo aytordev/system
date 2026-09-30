@@ -1,10 +1,13 @@
+# Git extras: hunk owns the git pager/difftool wiring (pager.diff/show/log/blame
+# and difftool.hunk). git-delta stays installed as a standalone binary only
+# (git integration off); difftastic's git integration was inert and is retired.
 {
   config,
   lib,
   pkgs,
   ...
 }: let
-  inherit (lib) mkForce;
+  inherit (lib) mkForce mkIf mkMerge;
   cfg = config.aytordev.programs.terminal.tools.git;
   themeCfg = config.aytordev.theme;
 
@@ -45,29 +48,35 @@
     tig
   ];
 in {
-  config = lib.mkIf cfg.enable {
-    home.packages = gitPackages;
-    programs = {
-      delta = {
-        enable = true;
-        enableGitIntegration = true;
-        options = deltaOptions;
-      };
-      difftastic = {
-        git = {
+  config = mkMerge [
+    (mkIf cfg.enable {
+      home.packages = gitPackages;
+      programs = {
+        delta = {
           enable = true;
-          mode = "both";
+          enableGitIntegration = false;
+          options = deltaOptions;
         };
-        options = {
-          background = "dark";
-          display = "inline";
+        mergiraf = {
+          enable = true;
+          enableGitIntegration = true;
+          enableJujutsuIntegration = true;
         };
       };
-      mergiraf = {
-        enable = true;
-        enableGitIntegration = true;
-        enableJujutsuIntegration = true;
+    })
+    (mkIf (cfg.enable && config.aytordev.programs.terminal.tools.hunk.enable) {
+      programs.git.settings = {
+        pager = {
+          diff = "hunk pager";
+          show = "hunk pager";
+          log = "hunk pager";
+          blame = "hunk pager";
+        };
+        difftool = {
+          prompt = false;
+          hunk.cmd = "hunk difftool \"$LOCAL\" \"$REMOTE\" \"$MERGED\"";
+        };
       };
-    };
-  };
+    })
+  ];
 }
