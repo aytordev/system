@@ -14,6 +14,9 @@ auto-discovered and exposed as `devShells.<system>.<name>`. Use with
 | `node-22-lts` | Node.js 22 LTS + yarn/pnpm |
 | `node-24-lts` | Node.js 24 LTS + yarn/pnpm |
 | `node-26` | Node.js 26 + yarn/pnpm |
+| `java-25` | Java 25 LTS + Maven + Gradle |
+| `java-21` | Java 21 LTS + Maven + Gradle |
+| `java-17` | Java 17 LTS + Maven + Gradle |
 | `astro-hono` | Astro + Hono + Bun, pnpm workspaces, TypeScript + LSP |
 | `react` | Node 22 + pnpm/yarn/bun, TypeScript + LSP |
 
