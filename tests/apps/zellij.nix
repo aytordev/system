@@ -20,6 +20,38 @@
     };
 
   renderFor = family: variant: zellij.render {palette = theme.providers.${family}.variants.${variant};};
+
+  componentAssertions = palette: text: {
+    wraps = lib.hasInfix "themes {" text && lib.hasInfix "aytordev {" text;
+    textColors =
+      lib.hasInfix ''
+        text_unselected {
+              base "${palette.fg.hex}"
+              background "${palette.bg.hex}"
+              emphasis_0 "${palette.orange.hex}"
+              emphasis_1 "${palette.cyan.hex}"
+              emphasis_2 "${palette.green.hex}"
+              emphasis_3 "${palette.violet.hex}"
+      ''
+      text;
+    frameAccent = lib.hasInfix "frame_selected {\n      base \"${palette.accent.hex}\"" text;
+    ribbonAccent = lib.hasInfix "ribbon_selected {\n      base \"${palette.bg.hex}\"\n      background \"${palette.accent.hex}\"" text;
+    errorRed = lib.hasInfix "exit_code_error {\n      base \"${palette.red.hex}\"" text;
+    multiplayerAccent = lib.hasInfix "multiplayer_user_colors {\n      player_1 \"${palette.accent.hex}\"" text;
+    noLegacyBg = !(lib.hasInfix "\n    bg \"" text);
+    noLegacyFg = !(lib.hasInfix "\n    fg \"" text);
+  };
+
+  expectedComponents = {
+    wraps = true;
+    textColors = true;
+    frameAccent = true;
+    ribbonAccent = true;
+    errorRed = true;
+    multiplayerAccent = true;
+    noLegacyBg = true;
+    noLegacyFg = true;
+  };
 in {
   testZellijSessionCommandsPreserveModesAndPackage = {
     expr = let
@@ -126,18 +158,9 @@ in {
     expr = let
       palette = theme.providers.kanagawa.variants.dragon;
       text = renderFor "kanagawa" "dragon";
-    in {
-      wraps = lib.hasInfix "themes {" text && lib.hasInfix "aytordev {" text;
-      bg = lib.hasInfix "bg \"${palette.bg.hex}\"" text;
-      accent = lib.hasInfix "blue \"${palette.accent.hex}\"" text;
-      dim = lib.hasInfix "black \"${palette.bg_dim.hex}\"" text;
-    };
-    expected = {
-      wraps = true;
-      bg = true;
-      accent = true;
-      dim = true;
-    };
+    in
+      componentAssertions palette text;
+    expected = expectedComponents;
   };
 
   testZellijGeneratedThemeFollowsActiveFamily = {
@@ -145,8 +168,8 @@ in {
       palette = theme.providers.sora.variants.dark;
       text = renderFor "sora" "dark";
     in
-      lib.hasInfix "bg \"${palette.bg.hex}\"" text;
-    expected = true;
+      componentAssertions palette text;
+    expected = expectedComponents;
   };
 
   # ─── Theme files materialize only for a selection ─────────────────────────
