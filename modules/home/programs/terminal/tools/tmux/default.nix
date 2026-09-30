@@ -67,6 +67,12 @@ in {
   };
 
   config = mkIf cfg.enable {
+    home.packages = lib.mkIf (cfg.package != null) [
+      ((import ./session.nix {inherit lib;}).build {
+        inherit pkgs;
+        inherit (cfg) package;
+      })
+    ];
     programs.tmux = {
       enable = true;
       inherit (cfg) package;

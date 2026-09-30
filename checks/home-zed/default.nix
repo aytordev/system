@@ -10,8 +10,10 @@
     printf '#!/bin/sh\nexit 0\n' > "$out/bin/fixture-zed"
     chmod +x "$out/bin/fixture-zed"
   '';
-  evaluate = extra:
+  evaluate = evaluateWith null;
+  evaluateWith = homeModules: extra:
     (inputs.self.lib.system.mkHome {
+      inherit homeModules;
       username = "zed-test";
       hostname = "zed-test";
       system = pkgs.stdenv.hostPlatform.system;
@@ -34,6 +36,82 @@
       ];
     }).config;
   base = evaluate {};
+  multiplexed = evaluate {
+    aytordev.programs.terminal.tools.zellij.enable = true;
+    programs.zed-editor.mutableUserSettings = false;
+  };
+  tmuxTerminal = evaluate {
+    aytordev.programs.desktop.editors.zed.terminal.multiplexer = "tmux";
+    aytordev.programs.terminal.tools.tmux.enable = true;
+    programs.zed-editor.mutableUserSettings = false;
+  };
+  systemTerminal = evaluate {
+    aytordev.programs.desktop.editors.zed.terminal.multiplexer = "system";
+    aytordev.programs.terminal.tools = {
+      zellij.enable = true;
+      tmux.enable = true;
+    };
+    programs.zed-editor.mutableUserSettings = false;
+  };
+  fallbackTerminal = evaluate {
+    aytordev.programs.terminal.tools.zellij.enable = false;
+    programs.zed-editor.mutableUserSettings = false;
+  };
+  tmuxFallback = evaluate {
+    aytordev.programs.desktop.editors.zed.terminal.multiplexer = "tmux";
+    aytordev.programs.terminal.tools = {
+      tmux.enable = false;
+      zellij.enable = true;
+    };
+  };
+  nullTmux = evaluate {
+    aytordev.programs.desktop.editors.zed.terminal.multiplexer = "tmux";
+    aytordev.programs.terminal.tools.tmux = {
+      enable = true;
+      package = null;
+    };
+  };
+  absentCapabilities = evaluateWith [
+    ../../modules/home/theme
+    ../../modules/home/programs/desktop/editors/zed
+  ] {};
+  terminalOverride = evaluate {
+    aytordev.programs.terminal.tools.zellij.enable = true;
+    programs.zed-editor.userSettings.terminal.shell.program = lib.getExe package;
+  };
+  # The real generated settings keep the actual selected package references.
+  terminalHomes = {
+    default = multiplexed;
+    tmux = tmuxTerminal;
+    system = systemTerminal;
+    fallback = fallbackTerminal;
+  };
+  sessionFactories =
+    lib.genAttrs ["zellij" "tmux"] (name:
+      import (../../modules/home/programs/terminal/tools + "/${name}/session.nix") {inherit lib;});
+  sessionFor = name: home:
+    sessionFactories.${name}.build {
+      inherit pkgs;
+      inherit (home.aytordev.programs.terminal.tools.${name}) package;
+    };
+  # Independent of HM's composed shell value: construct the helpers directly
+  # and pin the executable names, while fallback cases require a literal string.
+  expectedTerminalShells = {
+    default.program = "${sessionFor "zellij" multiplexed}/bin/zellij-session";
+    tmux.program = "${sessionFor "tmux" tmuxTerminal}/bin/tmux-session";
+    system = "system";
+    fallback = "system";
+  };
+  # Execute wrappers against a harmless argument recorder, never a TTY/server.
+  recorder = pkgs.writeShellScriptBin "multiplexer-recorder" ''
+    printf '%s\n' "$@"
+  '';
+  sessionFixtures = lib.mapAttrs (_: factory:
+    factory.build {
+      inherit pkgs;
+      package = recorder;
+    })
+  sessionFactories;
   custom = evaluate {
     programs.zed-editor.userSettings = {
       which_key.delay_ms = 250;
@@ -257,6 +335,62 @@
     ];
   succeeds = value: (builtins.tryEval (builtins.deepSeq value value)).value == true;
   tests = {
+    defaultZellijTerminal = let
+      shell = multiplexed.programs.zed-editor.userSettings.terminal.shell;
+    in
+      builtins.isAttrs shell
+      && lib.hasPrefix "/nix/store/" shell.program
+      && lib.hasSuffix "/bin/zellij-session" shell.program;
+    tmuxTerminalSelection =
+      tmuxTerminal.programs.zed-editor.userSettings.terminal.shell
+      == {
+        program = lib.getExe (sessionFor "tmux" tmuxTerminal);
+      };
+    defaultUsesSharedSession =
+      multiplexed.programs.zed-editor.userSettings.terminal.shell
+      == {
+        program = lib.getExe (sessionFor "zellij" multiplexed);
+      };
+    systemTerminalSelection = systemTerminal.programs.zed-editor.userSettings.terminal.shell == "system";
+    disabledCapabilityFallback = builtins.all (home: home.programs.zed-editor.userSettings.terminal.shell == "system") [fallbackTerminal tmuxFallback nullTmux];
+    absentCapabilityFallback =
+      builtins.all (name: !(lib.hasAttrByPath ["aytordev" "programs" "terminal" "tools" name] absentCapabilities)) ["zellij" "tmux"]
+      && absentCapabilities.programs.zed-editor.userSettings.terminal.shell == "system";
+    packageLessFallbackHasNoHelpers = builtins.all (
+      home:
+        home.programs.zed-editor.userSettings.terminal.shell
+        == "system"
+        && lib.intersectLists ["zellij-session" "tmux-session"] (map lib.getName home.home.packages) == []
+    ) [nullTmux absentCapabilities];
+    terminalProgramIsDefaultLeaf = terminalOverride.programs.zed-editor.userSettings.terminal.shell.program == lib.getExe package;
+    terminalIsolation = builtins.all (
+      home:
+        home.programs.zed-editor.userSettings.terminal.env.EDITOR
+        == "${lib.getExe package} --wait"
+        && home.programs.zed-editor.userKeymaps == k
+        && builtins.removeAttrs home.programs.zed-editor.userSettings ["terminal"] == builtins.removeAttrs s ["terminal"]
+        && home.programs.zed-editor.userTasks == []
+        && !(home.home.activation ? zedTasksActivation)
+        && !(home.xdg.configFile ? "zed/tasks.json")
+        && home.programs.zed-editor.extraPackages == []
+        && !(home.home.sessionVariables ? EDITOR)
+        && !(home.home.sessionVariables ? SHELL)
+    ) (builtins.attrValues terminalHomes);
+    sessionPackagesShared =
+      builtins.elem (sessionFor "zellij" multiplexed) multiplexed.home.packages
+      && builtins.elem (sessionFor "tmux" tmuxTerminal) tmuxTerminal.home.packages;
+    zellijAliasesPreserved =
+      builtins.intersectAttrs {
+        zns = null;
+        zas = null;
+        zo = null;
+      }
+      multiplexed.home.shellAliases
+      == {
+        zns = "zellij-session new";
+        zas = "zellij-session attach";
+        zo = "zellij-session open";
+      };
     producerSchemaAccepted = succeeds (schemaSource == schemaProfile);
     producerCompositionPreserved = succeeds (schemaHome.programs.zed-editor.userKeymaps == schemaExpected);
     auditedKeys = let
@@ -420,6 +554,43 @@ in
       jq -e --slurpfile expected ${pkgs.writeText "zed-schema-expected.json" (builtins.toJSON schemaExpected)} '
         . == $expected[0]
       ' ${schemaHome.xdg.configFile."zed/keymap.json".source}
-      echo '${toString (builtins.length (builtins.attrNames tests))} real-HM Zed checks and 3 generated-JSON assertions passed'
-      touch "$out"
+      mkdir -p "$out"
+      ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: home: ''
+          mkdir -p "$out/${name}"
+          cp ${home.xdg.configFile."zed/settings.json".source} "$out/${name}/settings.json"
+          jq -e --argjson expected ${lib.escapeShellArg (builtins.toJSON expectedTerminalShells.${name})} \
+            --arg editor ${lib.escapeShellArg "${lib.getExe package} --wait"} '
+            .terminal.shell == $expected and .terminal.env.EDITOR == $editor and
+            (has("tasks") | not) and .file_finder == {modal_max_width: "medium"}
+          ' "$out/${name}/settings.json"
+        '')
+        terminalHomes)}
+
+      # Both factories preserve argument boundaries, select the provided binary,
+      # default to open, and reject unknown modes without launching a server.
+      mkdir -p 'project.name:with space'
+      cd 'project.name:with space'
+      cwd="$PWD"
+      zellij=${lib.getExe sessionFixtures.zellij}
+      tmux=${lib.getExe sessionFixtures.tmux}
+      test "$("$zellij")" = "$(printf '%s\n' attach --create 'project.name:with space' options --default-cwd "$cwd")"
+      test "$("$zellij" open)" = "$("$zellij")"
+      test "$("$zellij" new)" = "$(printf '%s\n' -s 'project.name:with space' options --default-cwd "$cwd")"
+      test "$("$zellij" attach)" = "$(printf '%s\n' a 'project.name:with space')"
+      test "$("$tmux")" = "$(printf '%s\n' new-session -A -s 'project_name_with space' -c "$cwd")"
+      test "$("$tmux" open)" = "$("$tmux")"
+      test "$("$tmux" new)" = "$(printf '%s\n' new-session -s 'project_name_with space' -c "$cwd")"
+      test "$("$tmux" attach)" = "$(printf '%s\n' attach-session -t '=project_name_with space')"
+      for helper in "$zellij" "$tmux"; do
+        if "$helper" invalid > invalid.out 2> invalid.err; then
+          echo "Unexpected success for an invalid session mode" >&2
+          exit 1
+        else
+          status=$?
+        fi
+        test "$status" -eq 1
+        test ! -s invalid.out
+        grep -q 'usage:' invalid.err
+      done
+      echo '${toString (builtins.length (builtins.attrNames tests))} real-HM Zed checks, generated-JSON and session-runtime assertions passed'
     ''

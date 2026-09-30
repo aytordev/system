@@ -21,6 +21,34 @@
 
   renderFor = family: variant: zellij.render {palette = theme.providers.${family}.variants.${variant};};
 in {
+  testZellijSessionCommandsPreserveModesAndPackage = {
+    expr = let
+      text = (import ../../modules/home/programs/terminal/tools/zellij/session.nix {inherit lib;}).script {
+        type = "derivation";
+        name = "custom-zellij";
+        outPath = "/nix/store/custom-zellij";
+        meta.mainProgram = "custom-zellij";
+      };
+    in {
+      defaultOpen = lib.hasInfix ''mode="''${1:-open}"'' text;
+      basename = lib.hasInfix ''session_name="$(basename "$(pwd)")"'' text;
+      # Compare every complete emitted argv template, not a matching fragment.
+      # Quoting and extra/missing flags are significant; HM checks execute them.
+      commands =
+        builtins.filter (line: lib.hasPrefix "exec " line)
+        (map lib.strings.trim (lib.splitString "\n" text));
+    };
+    expected = {
+      defaultOpen = true;
+      basename = true;
+      commands = [
+        ''exec /nix/store/custom-zellij/bin/custom-zellij -s "$session_name" options --default-cwd "$(pwd)"''
+        ''exec /nix/store/custom-zellij/bin/custom-zellij a "$session_name"''
+        ''exec /nix/store/custom-zellij/bin/custom-zellij attach --create "$session_name" options --default-cwd "$(pwd)"''
+      ];
+    };
+  };
+
   # ─── Official resource selection per family/variant ───────────────────────
 
   # ─── Families without a Zellij resource generate ──────────────────────────

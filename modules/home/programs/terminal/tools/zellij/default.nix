@@ -23,31 +23,10 @@
   generatedTheme = zellijTheme.render {inherit (themeCfg) palette;};
   officialThemeFile = zellijTheme.officialThemeFiles.${themeCfg.name} or null;
 
-  # zns/zas/zo need command substitution and a local variable; put the logic in
-  # a bin so it is shell-agnostic and `exec` preserves the TTY/signals for the
-  # interactive multiplexer. The aliases become thin, Nu-safe forwards.
-  zellijSession = pkgs.writeShellApplication {
-    name = "zellij-session";
-    runtimeInputs = [pkgs.zellij];
-    text = ''
-      mode="''${1:-}"
-      session_name="$(basename "$(pwd)")"
-      case "$mode" in
-        new)
-          exec ${lib.getExe cfg.package} -s "$session_name" options --default-cwd "$(pwd)"
-          ;;
-        attach)
-          exec ${lib.getExe cfg.package} a "$session_name"
-          ;;
-        open)
-          exec ${lib.getExe cfg.package} attach --create "$session_name" options --default-cwd "$(pwd)"
-          ;;
-        *)
-          echo "usage: zellij-session {new|attach|open}" >&2
-          exit 1
-          ;;
-      esac
-    '';
+  # Shared with Zed; aliases remain shell-agnostic, Nu-safe forwards.
+  zellijSession = (import ./session.nix {inherit lib;}).build {
+    inherit pkgs;
+    inherit (cfg) package;
   };
 in {
   imports = [

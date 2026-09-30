@@ -9,8 +9,20 @@
   cfg = config.aytordev.programs.desktop.editors.zed;
 
   profile = import ./profile.nix {inherit lib;};
+  terminal = import ./terminal.nix {};
+  # Synthetic homes need not import either multiplexer capability.
+  capabilities = lib.attrByPath ["aytordev" "programs" "terminal" "tools"] {} config;
+  terminalShell = terminal.shell {
+    inherit capabilities;
+    inherit (cfg.terminal) multiplexer;
+    helpers = lib.genAttrs ["zellij" "tmux"] (name:
+      lib.getExe ((import (../../../terminal/tools + "/${name}/session.nix") {inherit lib;}).build {
+        inherit pkgs;
+        inherit (capabilities.${name}) package;
+      }));
+  };
   preferences = import ./preferences.nix {
-    inherit lib;
+    inherit lib terminalShell;
     inherit (cfg) package;
   };
   ownedKeymap = import ./keymaps.nix;
@@ -59,6 +71,15 @@ in {
   options.aytordev.programs.desktop.editors.zed = {
     enable = mkEnableOption "Whether or not to enable zed-editor";
     package = mkPackageOption pkgs "zed-editor" {};
+    terminal.multiplexer = mkOption {
+      type = types.enum ["zellij" "tmux" "system"];
+      default = "zellij";
+      description = ''
+        Workspace-named terminal session helper. Falls back to the system shell
+        when the selected multiplexer capability is absent, disabled, or has no
+        package. Select system to opt out; the login shell is never changed.
+      '';
+    };
     theme = mkOption {
       type = types.nullOr (types.either types.str themeOverrideType);
       default = null;

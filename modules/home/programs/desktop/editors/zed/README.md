@@ -13,8 +13,9 @@ choices and task commands in those archives do not become active.
 ## Use the existing capability
 
 Enable `aytordev.programs.desktop.editors.zed.enable` through your home or suite.
-The existing `package` and `theme` overrides remain supported; no new options are
-needed. `config.nix` remains a pure theme adapter for Sora/Kanagawa and generated
+The existing `package` and `theme` overrides remain supported. Terminal sessions
+use Zellij by default when its capability is enabled (see below).
+`config.nix` remains a pure theme adapter for Sora/Kanagawa and generated
 fallbacks. This change does not activate Home Manager or edit live Zed files.
 
 | Area | Adopted | Deliberate boundary |
@@ -24,22 +25,58 @@ fallbacks. This change does not activate Home Manager or edit live Zed files.
 | Agent | Ask profile, confirmation by default, right sidebar, silent notifications and single-file review | No chosen agent model/provider, favorite models, ACP/MCP setup, custom profiles, sandbox grants or trust-all policy |
 | Languages | Python ty + Ruff; gopls/Rust analyzer formatters; Go tabs and Rust/JSON spaces; Markdown save formatting off, line length 80 | TypeScript inlay hints and Tailwind class attributes retained; project indentation is not globally overridden |
 | Search/tasks | Native file finder and project/buffer search | No codemux path, FFF dependency, upstream install script or global task definitions |
-| Privacy/editor | Telemetry remains false/false; private-value redaction | Terminal-local `EDITOR` derives from the selected package (`zeditor --wait`); global Neovim ownership and the system shell remain intact |
+| Privacy/editor | Telemetry remains false/false; private-value redaction | Terminal-local `EDITOR` derives from the selected package (`zeditor --wait`); global Neovim ownership and the login shell remain intact |
 
 The existing Zed edit-prediction setting is retained, independently of agent model
 selection. AI features require the user's runtime account/model configuration;
 this module provisions neither credentials nor subscriptions. Ask/confirm is a
 safe default, not a sandbox or a guarantee against existing user overrides.
 
+## Terminal sessions
+
+`aytordev.programs.desktop.editors.zed.terminal.multiplexer` selects `zellij`
+(default), `tmux`, or `system`. For example:
+
+```nix
+aytordev.programs.desktop.editors.zed.terminal.multiplexer = "tmux";
+aytordev.programs.terminal.tools.tmux.enable = true;
+```
+
+The selected capability must be enabled and have a package. Otherwise the
+configuration falls back to `terminal.shell = "system"`; missing capabilities
+are safe too. This is a **declarative fallback**, not recovery from a multiplexer
+runtime failure. Select `system` to opt out. Nothing changes the login shell.
+
+Zed runs the shared `zellij-session` or `tmux-session` helper by absolute Nix
+store path, with no arguments: the default action attaches or creates. No
+`extraPackages`, PATH lookup, third-party dependency, or global task is needed.
+Both helpers also accept `new`, `attach`, and `open`; existing Zellij aliases
+`zns`, `zas`, and `zo` retain those meanings. Terminal-local `EDITOR` still uses
+the selected Zed package with `--wait`.
+
+Session names use the terminal's initial working-directory basename (normally
+Zed's project directory), not a unique project identity. Zellij naming is
+unchanged; tmux replaces `.` and `:` with `_` and uses `workspace` for an empty
+name. Equal basenames or sanitized names share sessions. Unlike codemux, there
+is **no multi-window `-2`/`-3` suffix algorithm**: another terminal/window may
+attach to the same session. Nested multiplexers are not detected or unwrapped;
+inherited `TMUX`/`ZELLIJ` environments may trigger the multiplexer's own nesting
+restrictions. Use `system` when nesting is unwanted.
+
+Native file finder, project search, and global task absence are unchanged.
+Existing mutable settings may retain user-only shell keys; inspect live settings
+after a separately authorized activation. These checks do not launch Zed.
+
 ## Layers and customization
 
 | File | Responsibility |
 | --- | --- |
-| `default.nix` | Sole capability/option boundary; enable/package/theme and HM wiring |
+| `default.nix` | Sole capability/option boundary; enable/package/theme/terminal and HM wiring |
 | `snapshot.json`, `snapshots/<revision>-<manifest hash>/` | Pointer and immutable raw/normalized/policy/profile/manifest evidence |
 | `adoption.json` | Pending exact-value selection policy for the next reviewed refresh |
 | `profile.nix` | Constrained relative pointer, manifest/profile hash and schema checks; audited target provenance; pure composition |
 | `preferences.nix` | Owned fonts, language preferences, layout, extensions, privacy/agent defaults and package-derived terminal `EDITOR` |
+| `terminal.nix` | Pure capability resolution and helper-program selection; shared `session.nix` factories own naming and commands |
 | `keymaps.nix` | Owned differences only, plus explicit source chord exclusions |
 | `config.nix` | Unchanged pure theme resolver: explicit override → official exact theme → generated fallback → none |
 | `update.py`, `updater.nix` | Manually invoked, packaged refresh/verification; never edits owned preferences or live files |
@@ -53,7 +90,7 @@ leaves, not concatenated defaults. Privacy/redaction and agent ask/confirm use
 ordinary priority; they are defaults, not enforcement. A stronger explicit user
 definition such as `mkForce` can override them.
 
-Use the existing HM API in a home module; no additional public options:
+Use the capability options and existing HM API in a home module:
 
 ```nix
 { lib, pkgs, ... }: {
@@ -220,6 +257,8 @@ refactor/docs/summary request; no simulated typing or cross-panel action chains.
 
 ## Validation boundary and manual checks
 
+Pure tests in `tests/apps/zed-terminal.nix` cover terminal composition, selection,
+and missing capabilities; `tmux.nix` covers pure session-name sanitization.
 Pure tests in `tests/apps/zed-settings.nix` cover integrity failures, composition,
 settings and keymaps; existing `zed.nix` tests cover themes. The real pinned HM
 check in `checks/home-zed` covers definition priorities, list/extension/keymap
