@@ -128,8 +128,9 @@ in {
         {plugin = tmux-which-key;}
       ];
 
-      # Theme settings first, then the theme-independent layout so user
-      # preferences (for example `status-position top`) win over a sourced conf.
+      # Theme settings first, then the theme-independent layout. Status
+      # geometry stays with the theme resource (the official Sora conf sets
+      # `status-position bottom`; the generated fallback keeps tmux's default).
       extraConfig = tmuxTheme.composeExtraConfig {inherit themeExtraConfig;};
     };
   };

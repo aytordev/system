@@ -93,9 +93,9 @@
     };
 
   # Theme-independent settings: terminal handling, keymaps, floating
-  # scratchpad, performance and session options, and the status position. Kept
-  # pure so tests can assert the theme work never drops them; `default.nix`
-  # appends this after the theme's own settings so these preferences win.
+  # scratchpad, performance and session options. Kept pure so tests can assert
+  # the theme work never drops them; `default.nix` appends this after the
+  # theme's own settings, leaving status geometry to the theme resource.
   staticConfig =
     /*
     Bash
@@ -143,9 +143,6 @@
       set -g renumber-windows  on
       set -g allow-passthrough on
       set -g focus-events      on
-
-      # --- Status Bar ---
-      set -g status-position top
     '';
 
   # Compose the theme's app-level extraConfig with the theme-independent layout,
