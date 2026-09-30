@@ -52,3 +52,4 @@ Add `python3` to each Java development shell and add the Java Extension Pack (`v
 - `nix-instantiate --parse` passed for all four changed Nix files; `nix fmt -- --no-cache --fail-on-change <four changed Nix files>` passed with zero files changed; `git diff --check` passed.
 - `nix eval --raw .#devShells.aarch64-darwin.java-{17,21,25}.drvPath` passed individually for all three shells.
 - `nix develop .#java-{17,21,25} --command python3 --version` passed for all three shells and reported Python 3.14.7.
+- Implementation commit: `d281eb3` — `feat(dev-shells): add Python and Java VS Code pack`.
