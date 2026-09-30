@@ -8,6 +8,7 @@
     openjdk21
     maven
     gradle
+    python3
   ];
 in
   mkShell {

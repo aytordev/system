@@ -8,6 +8,7 @@
     openjdk17
     maven
     gradle
+    python3
   ];
 in
   mkShell {

@@ -30,3 +30,25 @@ Add auto-discovered Nix development shells for Java 25, 21, and 17, each with it
 ## Commits
 - `ebd6db8` — `feat(dev-shells): add Java 17, 21, and 25 environments` (shell definitions and README).
 - Commit and push explicitly authorized by the user.
+
+## Follow-up: Java Python and VS Code Support
+
+### Goal
+Add `python3` to each Java development shell and add the Java Extension Pack (`vscjava.vscode-java-pack`) to the configured VS Code extensions.
+
+### Tasks
+1. [x] Add `python3` to the package list exposed by Java 17, Java 21, and Java 25 shells.
+2. [x] Add the Java Extension Pack to the shared VS Code extension set and verify package resolution, shell evaluation, formatting, and diff hygiene.
+
+### Decisions
+- Apply `python3` consistently to all three Java shells.
+- Put the Java Extension Pack in the shared VS Code extension list so it is available to both configured profiles.
+- Preserve the pre-existing uncommitted changes in `flake.lock` and `flake/dev/flake.lock`.
+
+### Evidence
+- Read-only Nix evaluation resolved `pkgs.vscode-extensions.vscjava.vscode-java-pack` at version `0.31.1`.
+- The Java shell package lists now include `python3` in `dev-shells/java-17/default.nix`, `dev-shells/java-21/default.nix`, and `dev-shells/java-25/default.nix`.
+- `pkgs.vscode-extensions.vscjava.vscode-java-pack` resolves at version `0.31.1` and appears in the evaluated `wang-lin` default VS Code profile.
+- `nix-instantiate --parse` passed for all four changed Nix files; `nix fmt -- --no-cache --fail-on-change <four changed Nix files>` passed with zero files changed; `git diff --check` passed.
+- `nix eval --raw .#devShells.aarch64-darwin.java-{17,21,25}.drvPath` passed individually for all three shells.
+- `nix develop .#java-{17,21,25} --command python3 --version` passed for all three shells and reported Python 3.14.7.

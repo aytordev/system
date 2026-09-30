@@ -199,6 +199,7 @@ in {
           kanagawa-theme
           github.copilot
           github.copilot-chat
+          vscjava.vscode-java-pack
         ];
 
         nixExtensions = [
