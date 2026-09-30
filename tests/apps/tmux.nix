@@ -219,12 +219,12 @@ in {
     in {
       newlineAfterSource = lib.hasInfix "sora.tmux.conf\n" composed;
       layoutFollowsSource = lib.hasInfix "sora.tmux.conf\n# --- Terminal & Key Handling ---" composed;
-      statusTopStillPresent = lib.hasInfix "set -g status-position top" composed;
+      noStatusPositionOverride = !(lib.hasInfix "status-position" composed);
     };
     expected = {
       newlineAfterSource = true;
       layoutFollowsSource = true;
-      statusTopStillPresent = true;
+      noStatusPositionOverride = true;
     };
   };
 
@@ -248,7 +248,7 @@ in {
       scratchpad = lib.hasInfix "display-popup" config;
       escapeTime = lib.hasInfix "set -sg escape-time 0" config;
       history = lib.hasInfix "history-limit 50000" config;
-      statusTop = lib.hasInfix "set -g status-position top" config;
+      noStatusPositionOverride = !(lib.hasInfix "status-position" config);
     };
     expected = {
       terminalOverrides = true;
@@ -259,7 +259,7 @@ in {
       scratchpad = true;
       escapeTime = true;
       history = true;
-      statusTop = true;
+      noStatusPositionOverride = true;
     };
   };
 

@@ -56,28 +56,55 @@
       theme = resolution.id;
     };
 
-  # Palette -> Zellij theme keys, kept identical to the previously inlined
-  # theme so the extraction is behavior-preserving.
-  themeColors = palette: {
-    bg = palette.bg.hex;
-    fg = palette.fg.hex;
-    red = palette.red.hex;
-    green = palette.green.hex;
-    yellow = palette.yellow.hex;
-    blue = palette.accent.hex;
-    magenta = palette.violet.hex;
-    orange = palette.orange.hex;
-    cyan = palette.cyan.hex;
-    black = palette.bg_dim.hex;
-    white = palette.fg_reverse.hex;
+  # Map semantic roles directly to Zellij's component schema, avoiding the
+  # legacy palette parser's lossy conversion of text and frame colors.
+  themeComponents = palette: let
+    commonEmphases = ["orange" "cyan" "green" "violet"];
+    component = base: background: emphases: let
+      roles =
+        {inherit base background;}
+        // builtins.listToAttrs (lib.imap0 (index: role: {
+            name = "emphasis_${toString index}";
+            value = role;
+          })
+          emphases);
+    in
+      lib.mapAttrs (_: role: palette.${role}.hex) roles;
+  in {
+    text_unselected = component "fg" "bg" commonEmphases;
+    text_selected = component "fg" "selection" commonEmphases;
+    ribbon_unselected = component "fg_dim" "bg_dim" ["red" "fg" "accent" "violet"];
+    ribbon_selected = component "bg" "accent" ["red" "orange" "violet" "accent"];
+    table_title = component "accent" "bg_dim" commonEmphases;
+    table_cell_unselected = component "fg_dim" "bg" commonEmphases;
+    table_cell_selected = component "fg" "selection" commonEmphases;
+    list_unselected = component "fg_dim" "bg_dim" commonEmphases;
+    list_selected = component "fg" "selection" commonEmphases;
+    frame_unselected = component "border" "bg" commonEmphases;
+    frame_selected = component "accent" "bg" commonEmphases;
+    frame_highlight = component "yellow" "bg" commonEmphases;
+    exit_code_success = component "green" "bg" ["cyan" "green" "accent" "violet"];
+    exit_code_error = component "red" "bg" ["yellow" "red" "orange" "violet"];
+    multiplayer_user_colors = builtins.listToAttrs (lib.imap0 (index: role: {
+        name = "player_${toString (index + 1)}";
+        value = palette.${role}.hex;
+      })
+      ["accent" "blue" "violet" "yellow" "cyan" "orange" "red" "fg_dim" "pink" "green"]);
   };
 
-  # Standalone theme-file text: `themes { aytordev { ... } }`, the shape Zellij
-  # loads from `$XDG_CONFIG_HOME/zellij/themes/*.kdl`.
+  # Standalone component theme loaded from
+  # `$XDG_CONFIG_HOME/zellij/themes/*.kdl`; every color is a quoted hex string.
   render = {palette}: let
-    colors = themeColors palette;
-    lines = map (name: "    ${name} \"${colors.${name}}\"") (builtins.attrNames colors);
-  in "themes {\n  ${generatedId} {\n${lib.concatStringsSep "\n" lines}\n  }\n}\n";
+    colors = themeComponents palette;
+    renderComponent = name: let
+      keys =
+        if name == "multiplayer_user_colors"
+        then map (index: "player_${toString index}") (lib.range 1 10)
+        else ["base" "background" "emphasis_0" "emphasis_1" "emphasis_2" "emphasis_3"];
+      lines = map (key: "      ${key} \"${colors.${name}.${key}}\"") keys;
+    in "    ${name} {\n${lib.concatStringsSep "\n" lines}\n    }";
+    components = map renderComponent (builtins.attrNames colors);
+  in "themes {\n  ${generatedId} {\n${lib.concatStringsSep "\n" components}\n  }\n}\n";
 
   # `programs.zellij.themes` entries: the active family's vendored file when it
   # has one, plus the generated theme only when the resolver selected it.
