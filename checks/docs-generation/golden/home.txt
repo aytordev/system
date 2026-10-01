@@ -223,6 +223,7 @@
 ## aytordev\.programs\.terminal\.tools\.pi\.agent-profiles\.active
 ## aytordev\.programs\.terminal\.tools\.pi\.agent-profiles\.materialize
 ## aytordev\.programs\.terminal\.tools\.pi\.agent-profiles\.profiles
+## aytordev\.programs\.terminal\.tools\.pi\.guiEnvironment\.enable
 ## aytordev\.programs\.terminal\.tools\.pi\.providers
 ## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.enable
 ## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.art

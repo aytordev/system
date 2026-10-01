@@ -58,6 +58,12 @@ in {
         # Official executable only; native onboarding owns the Pi profile.
         gentle-ai.enable = true;
 
+        # Opt-in GUI adapter: publish Gentle Pi's subagent command override
+        # (GENTLE_PI_AGENTS_PI) into the GUI login launchd context so Pi
+        # resolves for subagents spawned by GUI hosts. See
+        # modules/home/programs/terminal/tools/pi/README.md.
+        pi.guiEnvironment.enable = true;
+
         # github.com resolves to the personal account; the work account uses the
         # `github-civislend` alias; Bitbucket uses its own key on the real host.
         ssh.hosts = {
