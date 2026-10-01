@@ -49,6 +49,8 @@
 ## aytordev\.programs\.desktop\.communications\.thunderbird\.package
 ## aytordev\.programs\.desktop\.communications\.vesktop\.enable
 ## aytordev\.programs\.desktop\.communications\.vesktop\.package
+## aytordev\.programs\.desktop\.databases\.dbgate\.enable
+## aytordev\.programs\.desktop\.databases\.dbgate\.package
 ## aytordev\.programs\.desktop\.editors\.vscode\.enable
 ## aytordev\.programs\.desktop\.editors\.vscode\.package
 ## aytordev\.programs\.desktop\.editors\.vscode\.theme
@@ -233,6 +235,8 @@
 ## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.maxWidthCells
 ## aytordev\.programs\.terminal\.tools\.podman-compose\.enable
 ## aytordev\.programs\.terminal\.tools\.podman-compose\.package
+## aytordev\.programs\.terminal\.tools\.rainfrog\.enable
+## aytordev\.programs\.terminal\.tools\.rainfrog\.package
 ## aytordev\.programs\.terminal\.tools\.rclone\.enable
 ## aytordev\.programs\.terminal\.tools\.rclone\.package
 ## aytordev\.programs\.terminal\.tools\.rclone\.remotes
@@ -287,6 +291,7 @@
 ## aytordev\.services\.protonmail-bridge\.logLevel
 ## aytordev\.suites\.business\.enable
 ## aytordev\.suites\.common\.enable
+## aytordev\.suites\.databases\.enable
 ## aytordev\.suites\.desktop\.enable
 ## aytordev\.suites\.development\.enable
 ## aytordev\.suites\.development\.aiEnable

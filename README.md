@@ -72,6 +72,19 @@ sudo nixos-rebuild switch --flake .#<hostname>
   Pi onboarding, five authored skills, and unmodified upstream Impeccable with
   its pinned engine. See the
   [ownership and adoption guide](modules/common/ai-tools/README.md).
+- **Database tooling**: the `databases` suite (work home `civislend` only)
+  installs official SQL/NoSQL CLI clients for automation (PostgreSQL
+  `psql`/`pg_dump`/`pg_restore`, MariaDB `mysql`/`mysqldump`, `sqlite3`,
+  `duckdb`, `redis-cli`, `mongosh`), rainfrog for SQL-only interactive use, and
+  DbGate as the single graphical SQL/MongoDB/Redis client. Client tooling only:
+  no stored credentials/connections, no database services enabled. Because
+  PostgreSQL and Redis ship no client-only output, a small `buildEnv`
+  projection exposes only the requested commands in the profile, while source
+  store paths can still carry full upstream server binaries in the Nix store
+  closure. QoreDB is absent from the pinned nixpkgs; DbGate (existing nixpkgs
+  package) is the fallback. macOS DbGate bundle: upstream GPL-3.0
+  (`nixpkgs` metadata says MIT — unrelated upstream discrepancy, left
+  untouched).
 
 ## Private Profile Contract
 
