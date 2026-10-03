@@ -10,5 +10,13 @@
   runtime = _: [pkgs.go];
   toolchain = _: [pkgs.go];
 
-  editor.vscode.extensions = [pkgs.vscode-extensions.golang.go];
+  editor = {
+    # Moved here from the Zed editor module: this language owns these settings.
+    zed.languages.Go = {
+      hard_tabs = true;
+      format_on_save = "on";
+    };
+
+    vscode.extensions = [pkgs.vscode-extensions.golang.go];
+  };
 }

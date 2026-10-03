@@ -635,6 +635,16 @@ in {
     };
   };
 
+  testZedExtraLanguagesReachLanguageSettings = {
+    expr =
+      (evaluate {
+        aytordev.programs.desktop.editors.zed.extraLanguages = {
+          TypeScript.inlay_hints.enabled = true;
+        };
+      }).programs.zed-editor.userSettings.languages.TypeScript.inlay_hints.enabled;
+    expected = true;
+  };
+
   testZedPreservesOwnershipAndAppearance = {
     expr = {
       inherit (settings) telemetry buffer_font_family buffer_font_size ui_font_size;
@@ -698,13 +708,28 @@ in {
   };
 
   testZedLanguageLocalIndentationAndFormatters = {
-    expr = {
-      globalTabs = settings.hard_tabs or null;
-      python = settings.languages.Python;
-      go = settings.languages.Go or null;
-      rust = settings.languages.Rust or null;
-      json = settings.languages.JSON or null;
-      markdown = settings.languages.Markdown or null;
+    expr = let
+      localSettings =
+        (evaluate {
+          aytordev.programs.desktop.editors.zed.extraLanguages = {
+            Python = {
+              language_servers = ["ty" "ruff" "!basedpyright" "!pyright" "!pyrefly" "!pylsp"];
+              format_on_save = "on";
+              code_actions_on_format."source.organizeImports.ruff" = true;
+            };
+            Go = {
+              hard_tabs = true;
+              format_on_save = "on";
+            };
+          };
+        }).programs.zed-editor.userSettings;
+    in {
+      globalTabs = localSettings.hard_tabs or null;
+      python = localSettings.languages.Python;
+      go = localSettings.languages.Go or null;
+      rust = localSettings.languages.Rust or null;
+      json = localSettings.languages.JSON or null;
+      markdown = localSettings.languages.Markdown or null;
     };
     expected = {
       globalTabs = null;
@@ -746,13 +771,11 @@ in {
       ];
       shell = settings.terminal.shell or "system";
       tailwind = settings.lsp."tailwindcss-language-server".settings.classAttributes;
-      typescript = settings.languages.TypeScript.inlay_hints.enabled;
     };
     expected = {
       forbidden = [];
       shell = "system";
       tailwind = ["class" "className" "ngClass" "styles"];
-      typescript = true;
     };
   };
 

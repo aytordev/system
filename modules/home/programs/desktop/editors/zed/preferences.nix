@@ -23,22 +23,6 @@
       single_file_review = true;
     };
     languages = {
-      TypeScript.inlay_hints = {
-        enabled = true;
-        show_parameter_hints = false;
-        show_other_hints = true;
-        show_type_hints = true;
-      };
-      Python = {
-        # Built-in adapters; project environments supply Python dependencies.
-        language_servers = ["ty" "ruff" "!basedpyright" "!pyright" "!pyrefly" "!pylsp"];
-        format_on_save = "on";
-        code_actions_on_format."source.organizeImports.ruff" = true;
-      };
-      Go = {
-        hard_tabs = true;
-        format_on_save = "on";
-      };
       Rust = {
         hard_tabs = false;
         format_on_save = "on";

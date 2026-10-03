@@ -203,6 +203,14 @@ profiles on all hosts with no way to opt out.
 - Pre-existing error fixed while there: both dev-shells documents pointed the auto-discovery
   loader at `flake/dev/devshells/default.nix`, which does not exist; it is
   `flake/dev/dev-shells/default.nix`.
+- Editor settings migration: the Zed `languages.Python`, `languages.Go` and `languages.TypeScript` values
+  and the VS Code `[javascript]` formatter moved out of the editor modules into the catalog entries that
+  own them, and the node, python and go packs publish them through the `extraSettings` and
+  `extraLanguages` seams. The settings that belong to languages with no pack (`[dockerfile]`,
+  `[gitconfig]`, `[html]`, `[json]`, `[lua]`, `[shellscript]`, `[xml]`, `languages.Rust`,
+  `languages.JSON`) stay unconditional editor policy on purpose.
+- The change is behaviour-preserving while both homes enable node, python and go: the parent verified the
+  evaluated Zed and VS Code settings are byte-identical before and after.
 
 ## Open questions
 
@@ -210,9 +218,6 @@ These are decisions a human must make; the work above deliberately did not take 
 
 - **Pylance.** The python pack ships only `ms-python.python`, because Pylance is unfree and
   license-restricted. Adding it is a deliberate choice.
-- **Editor settings migration.** The Zed `languages` map and the VS Code per-language formatter
-  blocks are still unconditional. Moving them into packs would change editor behaviour on hosts
-  that do not enable the language, so it needs a decision.
 - **Nix editor extensions.** They remain the profile-gated `nixExtensions` list. `extraExtensions`
   reaches every profile, so migrating them would erase the distinction the `Nix` profile exists
   for.

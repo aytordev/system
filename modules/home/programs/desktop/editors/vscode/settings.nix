@@ -60,9 +60,6 @@
   "[html]" = {
     "editor.defaultFormatter" = "vscode.html-language-features";
   };
-  "[javascript]" = {
-    "editor.defaultFormatter" = "vscode.typescript-language-features";
-  };
   "[json]" = {
     "editor.defaultFormatter" = "vscode.json-language-features";
   };
