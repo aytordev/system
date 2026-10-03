@@ -20,8 +20,18 @@
     # Filter for directories that contain a default.nix
     isCheckDir = name: type: type == "directory" && builtins.pathExists (checksPath + "/${name}/default.nix");
 
+    # Checks excluded on Darwin: `parse-lix` builds an entire Lix from source,
+    # no Lix series is cached for aarch64-darwin, and Lix's Darwin build
+    # currently fails the Meson compiler sanity check. Parsing is
+    # platform-independent, so the Linux run carries the signal.
+    darwinExcludedCheckNames = ["parse-lix"];
+
     # Get list of valid check directories
-    checkDirs = lib.filterAttrs isCheckDir (builtins.readDir checksPath);
+    checkDirs = lib.filterAttrs (
+      name: type:
+        isCheckDir name type
+        && !(lib.elem name darwinExcludedCheckNames && pkgs.stdenv.hostPlatform.isDarwin)
+    ) (builtins.readDir checksPath);
     unitCheckNames = [
       "ai-tools-dependencies"
       "ai-tools-inventory"
