@@ -53,3 +53,28 @@ Add `python3` to each Java development shell and add the Java Extension Pack (`v
 - `nix eval --raw .#devShells.aarch64-darwin.java-{17,21,25}.drvPath` passed individually for all three shells.
 - `nix develop .#java-{17,21,25} --command python3 --version` passed for all three shells and reported Python 3.14.7.
 - Implementation commit: `d281eb3` — `feat(dev-shells): add Python and Java VS Code pack`.
+
+## Follow-up: Install Java Pack Members Explicitly
+
+### Goal
+Install all six extensions listed in the Java Extension Pack manifest alongside the pack itself.
+
+### Tasks
+1. [x] Add all six pack members to the shared VS Code extension list.
+2. [x] Verify each package is available and appears in the evaluated VS Code profile.
+
+### Members
+- `redhat.java`
+- `vscjava.vscode-java-debug`
+- `vscjava.vscode-java-test`
+- `vscjava.vscode-maven`
+- `vscjava.vscode-gradle`
+- `vscjava.vscode-java-dependency`
+
+### Evidence
+- Each Nixpkgs extension package resolves successfully on `aarch64-darwin`.
+- `nix-instantiate --parse`, `nix fmt -- --no-cache --fail-on-change modules/home/programs/desktop/editors/vscode/default.nix`, and `git diff --check` passed.
+- Evaluating `wang-lin`'s default VS Code profile includes all six packages and `vscjava.vscode-java-pack`.
+- Nixpkgs builds the pack as a plain marketplace extension with no propagated members (verified in the pinned nixpkgs at `pkgs/applications/editors/vscode/extensions/default.nix:5227-5241`), which is why the members are listed explicitly.
+- Implementation commit: `e81244e` — `feat(vscode): install Java extension pack members explicitly`.
+- Follow-up out of scope: the extensions sit in the shared `commonExtensions` list, so they reach every VS Code profile on every host. Gating them per language is tracked as the separate `language-packs` feature.
