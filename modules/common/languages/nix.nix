@@ -28,4 +28,9 @@ in {
   # Both roles resolve to the same set, and the version argument is ignored.
   runtime = _: toolchain;
   toolchain = _: toolchain;
+
+  editor.vscode.extensions = [
+    # Empty on purpose: the Nix editor extensions stay in the profile-gated
+    # list inside the VS Code module, so this language contributes none.
+  ];
 }

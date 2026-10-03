@@ -74,7 +74,7 @@ profiles on all hosts with no way to opt out.
 5b. [x] Add the python, node and go packs. Enabling those installs their toolchains on the
         hosts for the first time, so the per-host choice is still open.
 6. [x] Rewire `dev-shells/*` to the catalog, preserving the public `.#<name>` attributes.
-7. [ ] Add `checks/language-packs`, regenerate the docs golden, and update README/AGENTS.
+7. [x] Add `checks/language-packs`, regenerate the docs golden, and update README/AGENTS.
 
 ## Constraints
 
@@ -188,6 +188,14 @@ profiles on all hosts with no way to opt out.
   their own project tools, instead of the general Node toolchain. Using `toolchain` had reordered
   react and added `yarn` to astro-hono, and a refactor must not change what a shell contains.
   After this correction all eleven dev-shell derivations are byte-identical to before the rewire.
+- Task 7: `checks/language-packs` enforces the catalog contract and EVALUATES every pack through
+  `lib.evalModules`, so a pack that reads a key the catalog omits fails here instead of at home
+  activation. That is the durable form of the lesson the node bug taught.
+- `nix.nix` now declares an empty `editor.vscode.extensions` so the contract rule that a pack
+  reads the key unconditionally holds for every language, without exception.
+- `modules/common/languages/AGENTS.md` records the directory rules, including the one thing a
+  future contributor would otherwise break: the absence of a `default.nix`.
+- No docs golden change: this task adds no option.
 
 ## Commits
 
