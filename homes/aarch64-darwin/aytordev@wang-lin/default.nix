@@ -38,6 +38,13 @@ in {
       networking = enabled; # Network tools
     };
 
+    # Java support is opt-in per host. The pack owns the JDK and the VS Code
+    # extensions that used to be unconditional in the editor module.
+    languages.java = {
+      enable = true;
+      version = "25";
+    };
+
     # Temporary: exercise the Sora family end to end on this host.
     theme = {
       name = "sora";

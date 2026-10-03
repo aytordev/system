@@ -69,6 +69,7 @@ profiles on all hosts with no way to opt out.
 3. [x] Add the editor seams: VS Code `extraExtensions`/`extraSettings`, Zed
        `extraLanguages`/`extraExtensions`, and align `checks/home-zed`.
 4. [x] Add the Java pack and migrate the Java extensions out of `commonExtensions`.
+4b. [x] Enable the language on the concrete homes.
 5. [ ] Add the remaining v1 languages and migrate `suites.development.nixEnable` to
        `aytordev.languages.nix`.
 6. [ ] Rewire `dev-shells/*` to the catalog, preserving the public `.#<name>` attributes.
@@ -140,6 +141,8 @@ profiles on all hosts with no way to opt out.
   the parent verifies the pack with a direct module evaluation and the real home evaluation.
 - Regenerating the docs golden is required again: the pack adds the
   `aytordev.languages.java.enable` and `aytordev.languages.java.version` option headers.
+- Task 4b: both homes enable `aytordev.languages.java` at version 25, which restores the Java
+  extensions the migration removed and makes the choice per-host explicit for the first time.
 
 ## Commits
 

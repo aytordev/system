@@ -47,6 +47,13 @@ in {
       networking = enabled;
     };
 
+    # Java support is opt-in per host. The pack owns the JDK and the VS Code
+    # extensions that used to be unconditional in the editor module.
+    languages.java = {
+      enable = true;
+      version = "25";
+    };
+
     # Default theme family for this work host.
     theme = {
       name = "sora";
