@@ -149,3 +149,45 @@ Parsing is platform-independent, and `unit-parse-nix` still covers Darwin.
 Two upstream workarounds now live in the repository only to make this bump green. They should
 move out with the lockfile refresh into its own change, where each one can be retested and
 retired independently.
+
+### Retirement: attempted and blocked
+
+An attempt was made to retire both workarounds, and it was reverted. It is recorded here so the next
+attempt starts from evidence instead of repeating the diagnosis.
+
+Upstream fixed both root causes in `c59305bab2065cfecc4944690d9eedbb56f3a9fa`:
+
+- mergiraf gained `env.NIX_CFLAGS_COMPILE = "-fno-strict-aliasing"`, because older tree-sitter
+  grammars bundle an `array.h` that breaks strict aliasing. That missing fix was the memory
+  corruption the aborting test hit.
+- lix applies `NIX_LDFLAGS` only on ELF, because Apple's `ld64` rejects `-z`. That was the Meson
+  `Compiler clang++ cannot compile programs` failure.
+
+Both rebuilt outputs are in `cache.nixos.org`, `lix-2.95.3` for `aarch64-darwin` and
+`mergiraf-0.19.1` for `x86_64-linux`. Because Hydra builds with the test phase, those entries are
+the proof that the mergiraf tests pass and that lix compiles on Darwin. With that revision
+`unit-parse-lix` is registered on Darwin again and it fetches lix from the cache rather than
+building it, so the check costs no extra Darwin build time.
+
+The blocker is unrelated to either workaround. The same revision changes the `herdr-0.9.1`
+derivation, so it has to be built instead of fetched, and its `aarch64-darwin` build fails inside
+the vendored `libghostty-vt` with `/bin/cp: Operation not permitted` and exit code 126, because Zig
+invokes the macOS system tools by absolute path and the Nix sandbox denies them. Two hypotheses
+were tested and discarded: the recipe's Linux-only `postPatch` is not involved, since it
+substitutes `bundle_compiler_rt` and `bundle_ubsan_rt` rather than paths, and `herdr` is absent
+from `cache.nixos.org` for Darwin, so that revision cannot be fetched either.
+
+That is the dangerous combination: a sandbox-free CI runner can build `herdr` while a workstation
+whose sandbox is `relaxed` and whose `sandbox-extra-paths` omits `/bin/cp` cannot, so this bump
+would pass CI and still break the local `darwin-switch`.
+
+Retirement conditions, either of which makes the bump free:
+
+1. the `herdr` Darwin output for the new revision appears in `cache.nixos.org`, which removes the
+   build entirely; or
+2. upstream stops calling the macOS system tools by absolute path, which is worth reporting there.
+
+Operational detail learned while attempting this: the `dev` partition's nixpkgs follows
+`root/nixpkgs`, so it has no `nixpkgs` input of its own and `nix flake update nixpkgs` fails inside
+`flake/dev` with `does not match any input of this flake`. The lever is `nix flake update root`
+from that directory, which moves the follower.
