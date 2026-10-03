@@ -71,7 +71,7 @@ profiles on all hosts with no way to opt out.
 4. [x] Add the Java pack and migrate the Java extensions out of `commonExtensions`.
 4b. [x] Enable the language on the concrete homes.
 5a. [x] Migrate `suites.development.nixEnable` to `aytordev.languages.nix`.
-5b. [ ] Add the python, node and go packs. Enabling those installs their toolchains on the
+5b. [x] Add the python, node and go packs. Enabling those installs their toolchains on the
         hosts for the first time, so the per-host choice is still open.
 6. [ ] Rewire `dev-shells/*` to the catalog, preserving the public `.#<name>` attributes.
 7. [ ] Add `checks/language-packs`, regenerate the docs golden, and update README/AGENTS.
@@ -157,6 +157,25 @@ profiles on all hosts with no way to opt out.
   `nixExtensions` list in the VS Code module, which is an open question because
   `extraExtensions` reaches every profile; migrating them would erase the distinction the
   `Nix` profile exists for.
+- Task 5b: python, node and go packs added, and both homes enable all three.
+  `python` offers 3.12 to 3.14 defaulting to 3.13, `node` offers 22, 24 and 26 defaulting to 24,
+  and `go` has no version axis because nixpkgs carries a single supported toolchain, which is
+  exactly the unversioned shape the catalog contract defines.
+- `java.runtime` now returns a one-element list like every other entry, and its pack no longer
+  wraps the call. The contract in `catalog.nix` says `runtime` returns packages, so the single
+  package it used to return was a latent inconsistency.
+- Pylance stays out of the python pack on purpose: it is unfree and license-restricted, so the
+  pack ships only the official python extension.
+- Node contributes no VS Code extension because the editor already bundles TypeScript and
+  JavaScript support; inventing an extension would add a package nobody asked for.
+- Editor settings migration is still open: the Zed `languages` map and the VS Code per-language
+  formatter blocks remain unconditional, and moving them into packs would change behaviour on
+  hosts that do not opt in.
+- Bug caught by evaluating a real home rather than by the unit suite: `node.nix` omitted the
+  `editor` key while its pack read `editor.vscode.extensions`, so the home failed to evaluate.
+  The key is now declared with an empty list, and the catalog contract records the rule.
+- That gap is a lesson for task 7: `checks/language-packs` must FORCE each pack's config, because
+  neither parsing nor the catalog unit tests reach a pack body and would not have caught this.
 
 ## Commits
 

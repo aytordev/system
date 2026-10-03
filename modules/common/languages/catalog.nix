@@ -19,10 +19,16 @@
 #                  passes null, so a consumer never branches on the language.
 #   toolchain      version -> the fuller set a development shell adds.
 #   editor         optional editor contributions: vscode.extensions and
-#                  vscode.settings, zed.extensions and zed.languages.
+#                  vscode.settings, zed.extensions and zed.languages. A pack
+#                  reads vscode.extensions unconditionally, so a language that
+#                  contributes no extension declares an empty list rather than
+#                  omitting the key.
 #
 # See ADR-0018 (docs/decisions/0018-language-pack-class.md).
 {pkgs}: {
+  go = import ./go.nix {inherit pkgs;};
   java = import ./java.nix {inherit pkgs;};
   nix = import ./nix.nix {inherit pkgs;};
+  node = import ./node.nix {inherit pkgs;};
+  python = import ./python.nix {inherit pkgs;};
 }

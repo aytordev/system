@@ -21,7 +21,7 @@ in {
   versions = builtins.attrNames jdks;
 
   # The runtime this language is about.
-  runtime = version: jdks.${version};
+  runtime = version: [jdks.${version}];
 
   # The full toolchain a development shell needs.
   toolchain = version: [jdks.${version}] ++ buildTools jdks.${version};

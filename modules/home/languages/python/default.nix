@@ -6,16 +6,16 @@
 }: let
   inherit (lib) mkEnableOption mkIf mkOption types;
   catalog = import ../../../common/languages/catalog.nix {inherit pkgs;};
-  lang = catalog.java;
-  cfg = config.aytordev.languages.java;
+  lang = catalog.python;
+  cfg = config.aytordev.languages.python;
 in {
-  options.aytordev.languages.java = {
-    enable = mkEnableOption "Java language support";
+  options.aytordev.languages.python = {
+    enable = mkEnableOption "Python language support";
     version = mkOption {
       type = types.enum lang.versions;
       default = lang.defaultVersion;
       description = ''
-        Java version to install and to point the editor tooling at.
+        Python version to install and to point the editor tooling at.
       '';
     };
   };

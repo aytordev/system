@@ -1,7 +1,12 @@
 ## aytordev\.host\.name
+## aytordev\.languages\.go\.enable
 ## aytordev\.languages\.java\.enable
 ## aytordev\.languages\.java\.version
 ## aytordev\.languages\.nix\.enable
+## aytordev\.languages\.node\.enable
+## aytordev\.languages\.node\.version
+## aytordev\.languages\.python\.enable
+## aytordev\.languages\.python\.version
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.enable
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.package
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.bar\.blurRadius

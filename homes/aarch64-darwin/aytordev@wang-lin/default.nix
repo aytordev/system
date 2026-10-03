@@ -40,11 +40,20 @@ in {
     # Language support is opt-in per host. A pack owns the toolchain and the
     # editor extensions that used to be unconditional in the editor module.
     languages = {
+      go.enable = true;
       java = {
         enable = true;
         version = "25";
       };
       nix.enable = true;
+      node = {
+        enable = true;
+        version = "24";
+      };
+      python = {
+        enable = true;
+        version = "313";
+      };
     };
 
     # Temporary: exercise the Sora family end to end on this host.
