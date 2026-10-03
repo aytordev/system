@@ -200,6 +200,12 @@ in {
           github.copilot
           github.copilot-chat
           vscjava.vscode-java-pack
+          redhat.java
+          vscjava.vscode-java-debug
+          vscjava.vscode-java-test
+          vscjava.vscode-maven
+          vscjava.vscode-gradle
+          vscjava.vscode-java-dependency
         ];
 
         nixExtensions = [
