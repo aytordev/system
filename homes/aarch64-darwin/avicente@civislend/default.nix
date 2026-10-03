@@ -45,6 +45,11 @@ in {
       # `.ovpn` profile lives outside the repo under ~/.config/openvpn/, so it
       # is never managed by Nix or committed.
       networking = enabled;
+      # SQL/NoSQL client tooling: PostgreSQL/MariaDB/SQLite/DuckDB/Redis/
+      # mongosh CLIs plus rainfrog (SQL-only TUI) and DbGate (GUI client).
+      # Client tools only: no database servers, daemons, or stored
+      # connections/credentials are managed here.
+      databases = enabled;
     };
 
     # Default theme family for this work host.
