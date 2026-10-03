@@ -30,7 +30,6 @@ in {
         enable = true;
         podmanEnable = true;
         kubernetesEnable = true;
-        nixEnable = true;
         aiEnable = true;
       }; # Editors, dev tools
       business = enabled; # Thunderbird, bitwarden-cli
@@ -38,11 +37,14 @@ in {
       networking = enabled; # Network tools
     };
 
-    # Java support is opt-in per host. The pack owns the JDK and the VS Code
-    # extensions that used to be unconditional in the editor module.
-    languages.java = {
-      enable = true;
-      version = "25";
+    # Language support is opt-in per host. A pack owns the toolchain and the
+    # editor extensions that used to be unconditional in the editor module.
+    languages = {
+      java = {
+        enable = true;
+        version = "25";
+      };
+      nix.enable = true;
     };
 
     # Temporary: exercise the Sora family end to end on this host.

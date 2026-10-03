@@ -70,8 +70,9 @@ profiles on all hosts with no way to opt out.
        `extraLanguages`/`extraExtensions`, and align `checks/home-zed`.
 4. [x] Add the Java pack and migrate the Java extensions out of `commonExtensions`.
 4b. [x] Enable the language on the concrete homes.
-5. [ ] Add the remaining v1 languages and migrate `suites.development.nixEnable` to
-       `aytordev.languages.nix`.
+5a. [x] Migrate `suites.development.nixEnable` to `aytordev.languages.nix`.
+5b. [ ] Add the python, node and go packs. Enabling those installs their toolchains on the
+        hosts for the first time, so the per-host choice is still open.
 6. [ ] Rewire `dev-shells/*` to the catalog, preserving the public `.#<name>` attributes.
 7. [ ] Add `checks/language-packs`, regenerate the docs golden, and update README/AGENTS.
 
@@ -143,6 +144,19 @@ profiles on all hosts with no way to opt out.
   `aytordev.languages.java.enable` and `aytordev.languages.java.version` option headers.
 - Task 4b: both homes enable `aytordev.languages.java` at version 25, which restores the Java
   extensions the migration removed and makes the choice per-host explicit for the first time.
+- Task 5a: `aytordev.suites.development.nixEnable` is gone; the twelve Nix toolchain packages
+  moved into `modules/common/languages/nix.nix` and are installed by `aytordev.languages.nix`.
+  Both homes now express one thing in one place: `aytordev.languages`.
+- The catalog contract is documented in `modules/common/languages/catalog.nix`: versioned
+  families expose `versions` plus `runtime`/`toolchain` as functions of a version, and an
+  unversioned language exposes `versions = []`, `defaultVersion = null` and functions that
+  ignore the argument, so no consumer has to branch on the language.
+- Task 5b is deferred on purpose: python, node and go are not installed on these hosts today, so
+  adding their packs would put three new toolchains on two machines. That is a per-host choice.
+- Nix editor extensions are NOT part of the pack. They remain the Profile-gated
+  `nixExtensions` list in the VS Code module, which is an open question because
+  `extraExtensions` reaches every profile; migrating them would erase the distinction the
+  `Nix` profile exists for.
 
 ## Commits
 

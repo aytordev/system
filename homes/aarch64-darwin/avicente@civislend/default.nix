@@ -35,7 +35,6 @@ in {
         # remotely. Pi provider configuration and auth are completed by native
         # setup.
         aiEnable = true;
-        nixEnable = true;
         # Podman + podman-compose: project docs invoke `docker-compose`, which
         # the podman-compose capability forwards to `podman compose`.
         podmanEnable = true;
@@ -47,11 +46,14 @@ in {
       networking = enabled;
     };
 
-    # Java support is opt-in per host. The pack owns the JDK and the VS Code
-    # extensions that used to be unconditional in the editor module.
-    languages.java = {
-      enable = true;
-      version = "25";
+    # Language support is opt-in per host. A pack owns the toolchain and the
+    # editor extensions that used to be unconditional in the editor module.
+    languages = {
+      java = {
+        enable = true;
+        version = "25";
+      };
+      nix.enable = true;
     };
 
     # Default theme family for this work host.

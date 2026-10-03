@@ -18,6 +18,18 @@
         vscode-java-dependency = marker "vscjava.vscode-java-dependency";
       };
     };
+    hydra-check = marker "hydra-check";
+    nix-bisect = marker "nix-bisect";
+    nix-diff = marker "nix-diff";
+    nix-fast-build = marker "nix-fast-build";
+    nix-health = marker "nix-health";
+    nix-index = marker "nix-index";
+    nix-output-monitor = marker "nix-output-monitor";
+    nix-update = marker "nix-update";
+    nixpkgs-hammering = marker "nixpkgs-hammering";
+    nixpkgs-lint-community = marker "nixpkgs-lint-community";
+    nixpkgs-review = marker "nixpkgs-review";
+    nurl = marker "nurl";
   };
 
   catalog = import ../../modules/common/languages/catalog.nix {pkgs = stubPkgs;};
@@ -29,8 +41,13 @@ in {
   };
 
   testLanguageCatalogRegistersJava = {
-    expr = builtins.attrNames catalog;
-    expected = ["java"];
+    expr = builtins.elem "java" (builtins.attrNames catalog);
+    expected = true;
+  };
+
+  testLanguageCatalogRegistersNix = {
+    expr = builtins.elem "nix" (builtins.attrNames catalog);
+    expected = true;
   };
 
   testLanguageCatalogDefaultVersionIsKnown = {

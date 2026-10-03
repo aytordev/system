@@ -1,6 +1,7 @@
 ## aytordev\.host\.name
 ## aytordev\.languages\.java\.enable
 ## aytordev\.languages\.java\.version
+## aytordev\.languages\.nix\.enable
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.enable
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.package
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.bar\.blurRadius
@@ -297,7 +298,6 @@
 ## aytordev\.suites\.development\.enable
 ## aytordev\.suites\.development\.aiEnable
 ## aytordev\.suites\.development\.kubernetesEnable
-## aytordev\.suites\.development\.nixEnable
 ## aytordev\.suites\.development\.podmanEnable
 ## aytordev\.suites\.networking\.enable
 ## aytordev\.suites\.social\.enable
