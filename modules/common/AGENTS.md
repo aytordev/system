@@ -19,6 +19,12 @@ canonical module template (per-class variants + style rules) lives in the
 **`dotfiles-coder` skill**
 (`modules/common/ai-tools/skills/dotfiles-coder/rules/patterns-module.md`).
 
+**Language packs** add a seventh class. Their pure-data catalog lives in
+`modules/common/languages/` with no `default.nix`, following the `ai-tools/`
+precedent, and the packs themselves are Home Manager modules under
+`modules/home/languages/`. See
+[ADR-0018](docs/decisions/0018-language-pack-class.md).
+
 ## Module Categories
 
 ### AI Tools (`ai-tools/`)

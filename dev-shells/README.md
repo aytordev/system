@@ -20,6 +20,11 @@ auto-discovered and exposed as `devShells.<system>.<name>`. Use with
 | `astro-hono` | Astro + Hono + Bun, pnpm workspaces, TypeScript + LSP |
 | `react` | Node 22 + pnpm/yarn/bun, TypeScript + LSP |
 
+The language shells listed above do not carry their own toolchain. The versions
+and build tools come from the pure-data catalog in `modules/common/languages`, so
+`java-21` and the Java language pack always agree. See
+[ADR-0018](../docs/decisions/0018-language-pack-class.md).
+
 ## Usage
 
 ```bash
@@ -27,7 +32,7 @@ nix develop .#react          # enter a shell
 nix develop .#python --command "uv run my.py"   # run a command
 ```
 
-All shells share a common wrapper (`flake/dev/devshells`) that injects common
+All shells share a common wrapper (`flake/dev/dev-shells`) that injects common
 tools and handles pre-commit integration. Pre-commit hooks are disabled on
 Darwin due to a broken Swift dependency in nixpkgs.
 

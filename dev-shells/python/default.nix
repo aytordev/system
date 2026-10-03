@@ -4,10 +4,8 @@
   ...
 }: let
   inherit (pkgs) lib;
-  pythonPackages = with pkgs; [
-    python313
-    uv
-  ];
+  catalog = import ../../modules/common/languages/catalog.nix {inherit pkgs;};
+  pythonPackages = catalog.python.toolchain "313";
 in
   mkShell {
     packages = pythonPackages;

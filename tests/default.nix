@@ -367,3 +367,4 @@ in
   }
   // importTestFiles ./theme
   // importTestFiles ./apps
+  // importTestFiles ./languages

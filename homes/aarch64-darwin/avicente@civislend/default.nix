@@ -35,7 +35,6 @@ in {
         # remotely. Pi provider configuration and auth are completed by native
         # setup.
         aiEnable = true;
-        nixEnable = true;
         # Podman + podman-compose: project docs invoke `docker-compose`, which
         # the podman-compose capability forwards to `podman compose`.
         podmanEnable = true;
@@ -50,6 +49,25 @@ in {
       # Client tools only: no database servers, daemons, or stored
       # connections/credentials are managed here.
       databases = enabled;
+    };
+
+    # Language support is opt-in per host. A pack owns the toolchain and the
+    # editor extensions that used to be unconditional in the editor module.
+    languages = {
+      go.enable = true;
+      java = {
+        enable = true;
+        version = "25";
+      };
+      nix.enable = true;
+      node = {
+        enable = true;
+        version = "24";
+      };
+      python = {
+        enable = true;
+        version = "313";
+      };
     };
 
     # Default theme family for this work host.

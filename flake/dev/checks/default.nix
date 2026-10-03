@@ -39,6 +39,7 @@
       "file-parsers"
       "home-users-contract"
       "input-policy"
+      "language-packs"
       "library-exports"
       "library-overlay"
       "lua-shell-quoting"

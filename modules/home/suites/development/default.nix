@@ -50,7 +50,6 @@ in {
     enable = lib.mkEnableOption "common development configuration";
     podmanEnable = lib.mkEnableOption "podman development configuration";
     kubernetesEnable = lib.mkEnableOption "kubernetes development configuration";
-    nixEnable = lib.mkEnableOption "nix development configuration";
     aiEnable = lib.mkEnableOption "ai development configuration";
   };
 
@@ -72,20 +71,6 @@ in {
         ++ lib.optionals cfg.podmanEnable [
           podman
           podman-tui
-        ]
-        ++ lib.optionals cfg.nixEnable [
-          hydra-check
-          nix-bisect
-          nix-diff
-          nix-fast-build
-          nix-health
-          nix-index
-          nix-output-monitor
-          nix-update
-          nixpkgs-hammering
-          nixpkgs-lint-community
-          nixpkgs-review
-          nurl
         ];
 
       # Only shell-agnostic aliases in home.shellAliases (applies to all shells including Nushell)

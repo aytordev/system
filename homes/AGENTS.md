@@ -128,12 +128,14 @@ aytordev.programs.desktop = {
       development = {
         enable = true;
         aiEnable = true;
-        nixEnable = true;
         podmanEnable = true;
       };
       business = enabled;
       social = enabled;
     };
+
+    # Nix development tooling is a language pack, not a suite flag.
+    languages.nix.enable = true;
 
     theme.variant = "dragon"; # optional; theme.name defaults to kanagawa
   };
@@ -158,7 +160,7 @@ Suites enable groups of related programs. Common suites:
 
 - `common` - Essential CLI tools
 - `desktop` - Desktop programs
-- `development` - Dev tools (with aiEnable, nixEnable, podmanEnable, etc.)
+- `development` - Dev tools (with aiEnable, podmanEnable, etc.)
 - `business` - Business programs
 - `networking` - Network and VPN tooling
 - `social` - Communication apps
@@ -169,10 +171,12 @@ aytordev.suites = {
   development = {
     enable = true;
     aiEnable = true;
-    nixEnable = true;
     podmanEnable = true;
   };
 };
+
+# Nix development tooling is a language pack, not a suite flag.
+aytordev.languages.nix.enable = true;
 ```
 
 ## Key Decisions

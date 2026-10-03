@@ -1,4 +1,12 @@
 ## aytordev\.host\.name
+## aytordev\.languages\.go\.enable
+## aytordev\.languages\.java\.enable
+## aytordev\.languages\.java\.version
+## aytordev\.languages\.nix\.enable
+## aytordev\.languages\.node\.enable
+## aytordev\.languages\.node\.version
+## aytordev\.languages\.python\.enable
+## aytordev\.languages\.python\.version
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.enable
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.package
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.bar\.blurRadius
@@ -53,9 +61,13 @@
 ## aytordev\.programs\.desktop\.databases\.dbgate\.package
 ## aytordev\.programs\.desktop\.editors\.vscode\.enable
 ## aytordev\.programs\.desktop\.editors\.vscode\.package
+## aytordev\.programs\.desktop\.editors\.vscode\.extraExtensions
+## aytordev\.programs\.desktop\.editors\.vscode\.extraSettings
 ## aytordev\.programs\.desktop\.editors\.vscode\.theme
 ## aytordev\.programs\.desktop\.editors\.zed\.enable
 ## aytordev\.programs\.desktop\.editors\.zed\.package
+## aytordev\.programs\.desktop\.editors\.zed\.extraExtensions
+## aytordev\.programs\.desktop\.editors\.zed\.extraLanguages
 ## aytordev\.programs\.desktop\.editors\.zed\.terminal\.multiplexer
 ## aytordev\.programs\.desktop\.editors\.zed\.theme
 ## aytordev\.programs\.desktop\.launchers\.raycast\.enable
@@ -296,7 +308,6 @@
 ## aytordev\.suites\.development\.enable
 ## aytordev\.suites\.development\.aiEnable
 ## aytordev\.suites\.development\.kubernetesEnable
-## aytordev\.suites\.development\.nixEnable
 ## aytordev\.suites\.development\.podmanEnable
 ## aytordev\.suites\.networking\.enable
 ## aytordev\.suites\.social\.enable

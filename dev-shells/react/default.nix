@@ -4,14 +4,10 @@
   ...
 }: let
   inherit (pkgs) lib;
-  reactPackages = with pkgs; [
-    nodejs_22
-    pnpm
-    yarn
-    bun
-    typescript
-    typescript-language-server
-  ];
+  catalog = import ../../modules/common/languages/catalog.nix {inherit pkgs;};
+  reactPackages =
+    catalog.node.runtime "22"
+    ++ [pkgs.pnpm pkgs.yarn pkgs.bun pkgs.typescript pkgs.typescript-language-server];
 in
   mkShell {
     packages = reactPackages;
