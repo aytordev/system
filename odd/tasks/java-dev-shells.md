@@ -78,3 +78,30 @@ Install all six extensions listed in the Java Extension Pack manifest alongside 
 - Nixpkgs builds the pack as a plain marketplace extension with no propagated members (verified in the pinned nixpkgs at `pkgs/applications/editors/vscode/extensions/default.nix:5227-5241`), which is why the members are listed explicitly.
 - Implementation commit: `e81244e` — `feat(vscode): install Java extension pack members explicitly`.
 - Follow-up out of scope: the extensions sit in the shared `commonExtensions` list, so they reach every VS Code profile on every host. Gating them per language is tracked as the separate `language-packs` feature.
+
+## Correction: Pin the Build Tools to the Shell JDK
+
+### Finding
+Native review `R3-001` (CRITICAL, reliability, introduced by this candidate): the shells listed
+`maven` and `gradle` straight from `pkgs`. Both ship wrappers that pin their own JDK, so `mvn`
+and `gradle` ran on a different JDK than the one the shell advertises, defeating the
+version-specific environment. The original evidence below only asserted `java --version` and
+`python3 --version`, never `mvn --version` or `gradle --version`.
+
+### Fix
+- Pin the build tools to the shell JDK: `maven.override { jdk_headless = jdk; }` and
+  `gradle.override { java = jdk; }`.
+- Export `JAVA_HOME` in each shell hook.
+
+### Evidence
+- Both wrappers use `--set-default`, so the shell's exported `JAVA_HOME` also wins at runtime.
+- Gradle default confirmed in the pinned dev nixpkgs:
+  `pkgs/development/tools/build-managers/gradle/default.nix:156` (`java ? defaultJava`) and
+  `:392` (`gradle_8 = mkGradle { … defaultJava = jdk21; }`).
+- Maven default confirmed at `pkgs/by-name/ma/maven/package.nix:30-32`
+  (`--set-default JAVA_HOME "${jdk_headless}"`).
+- `nix develop .#java-17|21|25` now reports the shell JDK from both build tools:
+  - `java-17`: `Java version: 17.0.19` (maven), `Launcher JVM: 17.0.19` (gradle)
+  - `java-21`: `Java version: 21.0.11` (maven), `Launcher JVM: 21.0.11` (gradle)
+  - `java-25`: `Java version: 25.0.3` (maven), `Launcher JVM: 25.0.3` (gradle)
+- `nix-instantiate --parse` passed for all three shells; `git diff --check` passed.
