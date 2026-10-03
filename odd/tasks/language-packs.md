@@ -196,6 +196,13 @@ profiles on all hosts with no way to opt out.
 - `modules/common/languages/AGENTS.md` records the directory rules, including the one thing a
   future contributor would otherwise break: the absence of a `default.nix`.
 - No docs golden change: this task adds no option.
+- Docs alignment: the root README lists language packs as a feature, the `modules/common` and
+  `modules/home` entries name the new directories, and `dev-shells/README.md` and
+  `dev-shells/AGENTS.md` state that language shells read the catalog instead of listing their
+  own toolchain. That is the part of task 7 the first pass had missed.
+- Pre-existing error fixed while there: both dev-shells documents pointed the auto-discovery
+  loader at `flake/dev/devshells/default.nix`, which does not exist; it is
+  `flake/dev/dev-shells/default.nix`.
 
 ## Open questions
 
@@ -225,4 +232,4 @@ These are decisions a human must make; the work above deliberately did not take 
 - `18f1014b` — `refactor(dev-shells): source language toolchains from the catalog`
 - `43b874c9` — `test(languages): enforce the language pack contract`
 
-The branch is pushed to `origin/feat/language-packs`; CI has not yet validated the last commits.
+The branch is pushed to `origin/feat/language-packs`, tracked by issue #222 and pull request #223.

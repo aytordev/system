@@ -50,6 +50,10 @@ sudo nixos-rebuild switch --flake .#<hostname>
   (`modules/darwin`), and Home Manager (`modules/home`), all under the
   `aytordev.*` option namespace and governed by Module Contract V1
   ([ADR-0008](docs/decisions/0008-module-contract-v1.md)).
+- **Language packs**: a pure-data catalog in `modules/common/languages` plus one
+  pack per language under `modules/home/languages`, so a host enables a language
+  and gets its toolchain and editor extensions
+  ([ADR-0018](docs/decisions/0018-language-pack-class.md)).
 - **Home-First**: user programs and services live in Home Manager; system modules
   are reserved for privileged capabilities. See
   [ADR-0007](docs/decisions/0007-gui-service-ownership.md).
@@ -93,10 +97,10 @@ in [`checks/fixtures/secrets`](checks/fixtures/secrets/README.md).
 The configuration is split by concern:
 
 - **`modules/common`**: reusable cross-platform modules (capabilities, suites,
-  AI tooling).
+  the language catalog, AI tooling).
 - **`modules/darwin`**: nix-darwin system configuration (macOS only).
 - **`modules/home`**: Home Manager user configuration (programs, services,
-  suites, theme).
+  suites, language packs, theme).
 - **`libraries`**: custom Nix functions exported under `flake.lib`.
 - **`packages`**: custom package derivations (see [Exported
   Packages](#exported-packages)).
