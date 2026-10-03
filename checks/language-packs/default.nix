@@ -90,7 +90,7 @@
       )
       catalog);
 
-  # WHY: the two options a pack writes, stubbed so `lib.evalModules` can
+  # WHY: the options a pack writes, stubbed so `lib.evalModules` can
   # evaluate a pack in isolation without pulling in Home Manager.
   packStub = {
     options = {
@@ -101,6 +101,14 @@
       aytordev.programs.desktop.editors.vscode.extraExtensions = lib.mkOption {
         type = lib.types.listOf lib.types.anything;
         default = [];
+      };
+      aytordev.programs.desktop.editors.vscode.extraSettings = lib.mkOption {
+        type = lib.types.attrsOf lib.types.anything;
+        default = {};
+      };
+      aytordev.programs.desktop.editors.zed.extraLanguages = lib.mkOption {
+        type = lib.types.attrsOf lib.types.anything;
+        default = {};
       };
     };
   };

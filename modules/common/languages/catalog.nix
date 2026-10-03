@@ -19,10 +19,11 @@
 #                  passes null, so a consumer never branches on the language.
 #   toolchain      version -> the fuller set a development shell adds.
 #   editor         optional editor contributions: vscode.extensions and
-#                  vscode.settings, zed.extensions and zed.languages. A pack
-#                  reads vscode.extensions unconditionally, so a language that
-#                  contributes no extension declares an empty list rather than
-#                  omitting the key.
+#                  vscode.settings, zed.extensions and zed.languages.
+#                  vscode.extensions is mandatory (empty when the language
+#                  contributes none) because checks/language-packs enforces
+#                  it; the settings maps are optional and a pack reads them
+#                  with `or {}`.
 #
 # See ADR-0018 (docs/decisions/0018-language-pack-class.md).
 {pkgs}: {
