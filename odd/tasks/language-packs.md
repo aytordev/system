@@ -64,7 +64,7 @@ profiles on all hosts with no way to opt out.
 
 1. [x] Adopt the language pack class in an ADR, and reference it from the relevant
        `AGENTS.md`/`README.md` so the protocol is discoverable next to the code.
-2. [ ] Build the catalog in `modules/common/languages/` with Java as the pilot, plus unit
+2. [x] Build the catalog in `modules/common/languages/` with Java as the pilot, plus unit
        tests for the catalog shape.
 3. [ ] Add the editor seams: VS Code `extraExtensions`/`extraSettings`, Zed
        `extraLanguages`/`extraExtensions`, and align `checks/home-zed`.
@@ -109,6 +109,17 @@ profiles on all hosts with no way to opt out.
 - Task 1 needs no docs golden change: `checks/docs-generation` diffs the `## ` header index of
   the generated *option* docs, and the mdbook SUMMARY is built from option declarations
   (`flake/docs/default.nix:59-63`), so repository ADRs are not part of that site.
+- Task 2: catalog added at `modules/common/languages/{catalog,java}.nix` with Java as the pilot, and
+  `tests/languages/catalog.nix` asserts the shape plus the R3-001 JDK-pinning contract through a
+  stub `pkgs`, because the nix-unit harness passes test files no `pkgs`.
+- The catalog keeps `python3` out of Java's toolchain: it is a need of those specific shells, not
+  part of Java language support, so it stays a shell-local extra.
+- Gotcha for the remaining tasks: a new directory must be staged before Nix can see it. A flake
+  Git tree hides untracked paths, so `importTestFiles ./languages` first failed with
+  `Path 'tests/languages' ... is not tracked by Git`. Stage or `git add -N` new paths before
+  evaluating, or a check fails for the wrong reason.
+- Task 2 verification: `unit-nix-unit` built against the fixture secrets, and the composed test set
+  reports 411 tests, of which 9 are the new `testLanguage*` cases.
 
 ## Commits
 
