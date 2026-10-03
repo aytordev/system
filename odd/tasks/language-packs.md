@@ -62,7 +62,7 @@ profiles on all hosts with no way to opt out.
 
 ## Tasks
 
-1. [ ] Adopt the language pack class in an ADR, and reference it from the relevant
+1. [x] Adopt the language pack class in an ADR, and reference it from the relevant
        `AGENTS.md`/`README.md` so the protocol is discoverable next to the code.
 2. [ ] Build the catalog in `modules/common/languages/` with Java as the pilot, plus unit
        tests for the catalog shape.
@@ -102,7 +102,13 @@ profiles on all hosts with no way to opt out.
 - Nixpkgs builds `vscjava.vscode-java-pack` without propagated members, verified at the pinned
   revision `pkgs/applications/editors/vscode/extensions/default.nix:5227-5241`, which is why
   the members are listed explicitly and why the pack needs to own that list.
-- ADR numbering: the next free index is **0018**; `0009` is `per-user-identity`.
+- ADR numbering: the next free index is **0018**; `0009` is `per-user-identity`. The highest
+  index before this change was 0017.
+- Task 1: `docs/decisions/0018-language-pack-class.md` landed and is referenced from the Module
+  Contract V1 sections of `modules/common/AGENTS.md` and `modules/home/AGENTS.md`.
+- Task 1 needs no docs golden change: `checks/docs-generation` diffs the `## ` header index of
+  the generated *option* docs, and the mdbook SUMMARY is built from option declarations
+  (`flake/docs/default.nix:59-63`), so repository ADRs are not part of that site.
 
 ## Commits
 

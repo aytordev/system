@@ -30,9 +30,13 @@ configuration.
   `isLinux` guards.
 - Large capabilities may use contained sibling files, but the directory's
   `default.nix` remains the only discovered module and owns the option namespace.
+- Language packs (`languages/<lang>/`) form their own class: they declare
+  `aytordev.languages.<lang>` and own a *set* of packages rather than one primary
+  `package`, so they stay out of the module-contract capability list.
 
 For the full contract and runtime rules, see
-`docs/decisions/0008-module-contract-v1.md`.
+`docs/decisions/0008-module-contract-v1.md` and
+[ADR-0018](docs/decisions/0018-language-pack-class.md).
 
 ## Module Categories
 
