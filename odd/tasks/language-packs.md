@@ -68,7 +68,7 @@ profiles on all hosts with no way to opt out.
        tests for the catalog shape.
 3. [x] Add the editor seams: VS Code `extraExtensions`/`extraSettings`, Zed
        `extraLanguages`/`extraExtensions`, and align `checks/home-zed`.
-4. [ ] Add the Java pack and migrate the Java extensions out of `commonExtensions`.
+4. [x] Add the Java pack and migrate the Java extensions out of `commonExtensions`.
 5. [ ] Add the remaining v1 languages and migrate `suites.development.nixEnable` to
        `aytordev.languages.nix`.
 6. [ ] Rewire `dev-shells/*` to the catalog, preserving the public `.#<name>` attributes.
@@ -130,6 +130,16 @@ profiles on all hosts with no way to opt out.
   `just golden-update`, but the real recipe is `docs-golden`).
 - Proving the VS Code seam carries a real pack is deferred to task 4 on purpose: the Java pack
   is the end-to-end evidence, and no module-level VS Code test harness exists today.
+- Task 4: `modules/home/languages/java/default.nix` is the first pack, declaring
+  `aytordev.languages.java.{enable,version}` with `version` typed as an enum over the catalog's
+  versions, and writing `home.packages` plus the VS Code `extraExtensions` seam.
+- The seven Java entries left `commonExtensions`, which makes Java opt-in per host for the first
+  time. A host that previously received them unconditionally now gets them only with
+  `aytordev.languages.java.enable = true`, so the concrete homes must be wired deliberately.
+- The durable check for this class (`checks/language-packs`) is task 7 by design; for this change
+  the parent verifies the pack with a direct module evaluation and the real home evaluation.
+- Regenerating the docs golden is required again: the pack adds the
+  `aytordev.languages.java.enable` and `aytordev.languages.java.version` option headers.
 
 ## Commits
 

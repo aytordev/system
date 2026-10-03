@@ -215,13 +215,9 @@ in {
           kanagawa-theme
           github.copilot
           github.copilot-chat
-          vscjava.vscode-java-pack
-          redhat.java
-          vscjava.vscode-java-debug
-          vscjava.vscode-java-test
-          vscjava.vscode-maven
-          vscjava.vscode-gradle
-          vscjava.vscode-java-dependency
+          # Language extensions are not listed here: a language pack contributes them
+          # through aytordev.programs.desktop.editors.vscode.extraExtensions, which
+          # still reaches every profile.
         ];
 
         nixExtensions = [

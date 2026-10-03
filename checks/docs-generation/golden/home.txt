@@ -1,4 +1,6 @@
 ## aytordev\.host\.name
+## aytordev\.languages\.java\.enable
+## aytordev\.languages\.java\.version
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.enable
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.package
 ## aytordev\.programs\.desktop\.bars\.sketchybar\.bar\.blurRadius
