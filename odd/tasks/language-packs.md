@@ -197,6 +197,32 @@ profiles on all hosts with no way to opt out.
   future contributor would otherwise break: the absence of a `default.nix`.
 - No docs golden change: this task adds no option.
 
+## Open questions
+
+These are decisions a human must make; the work above deliberately did not take them.
+
+- **Pylance.** The python pack ships only `ms-python.python`, because Pylance is unfree and
+  license-restricted. Adding it is a deliberate choice.
+- **Editor settings migration.** The Zed `languages` map and the VS Code per-language formatter
+  blocks are still unconditional. Moving them into packs would change editor behaviour on hosts
+  that do not enable the language, so it needs a decision.
+- **Nix editor extensions.** They remain the profile-gated `nixExtensions` list. `extraExtensions`
+  reaches every profile, so migrating them would erase the distinction the `Nix` profile exists
+  for.
+- **The `Nix` profile.** If its extensions ever move to the pack, the profile has no remaining
+  purpose and should be retired or redefined.
+
 ## Commits
 
-- (none yet)
+- `99110e59` — `docs(odd): track the language-packs feature`
+- `51c4c852` — `docs(adr): adopt the language pack class` (ADR-0018)
+- `13eb2984` — `feat(languages): add the language catalog with Java as the pilot`
+- `8aa35e23` — `feat(editors): add language pack seams to vscode and zed`
+- `fed73476` — `feat(languages): add the Java pack and make Java opt-in`
+- `a996c836` — `feat(languages): enable the Java pack on both homes`
+- `8574cc54` — `refactor(languages): migrate nixEnable into the Nix language pack`
+- `7b91d5d4` — `feat(languages): add python, node and go packs`
+- `18f1014b` — `refactor(dev-shells): source language toolchains from the catalog`
+- `43b874c9` — `test(languages): enforce the language pack contract`
+
+The branch is pushed to `origin/feat/language-packs`; CI has not yet validated the last commits.
