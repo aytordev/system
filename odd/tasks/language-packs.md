@@ -73,7 +73,7 @@ profiles on all hosts with no way to opt out.
 5a. [x] Migrate `suites.development.nixEnable` to `aytordev.languages.nix`.
 5b. [x] Add the python, node and go packs. Enabling those installs their toolchains on the
         hosts for the first time, so the per-host choice is still open.
-6. [ ] Rewire `dev-shells/*` to the catalog, preserving the public `.#<name>` attributes.
+6. [x] Rewire `dev-shells/*` to the catalog, preserving the public `.#<name>` attributes.
 7. [ ] Add `checks/language-packs`, regenerate the docs golden, and update README/AGENTS.
 
 ## Constraints
@@ -176,6 +176,18 @@ profiles on all hosts with no way to opt out.
   The key is now declared with an empty list, and the catalog contract records the rule.
 - That gap is a lesson for task 7: `checks/language-packs` must FORCE each pack's config, because
   neither parsing nor the catalog unit tests reach a pack body and would not have caught this.
+- Task 6: the Java, Python and Node shells now take their toolchain from the catalog instead of
+  listing it locally, and the Java shells no longer duplicate the Maven and Gradle JDK pinning
+  that finding R3-001 introduced. The public `.#<name>` attributes are unchanged, because
+  `.github/workflows/build-dev-shells.yml` and the Justfile consume them.
+- `dev-shells/default` and `dev-shells/nix` were deliberately not rewired: neither is a language
+  shell, so the catalog has nothing to say about their packages.
+- `python3` stays a shell-local extra in the Java shells on purpose: it is a need of those
+  shells, not part of Java language support.
+- Task 6 correction: `react` and `astro-hono` now take the Node runtime from the catalog and keep
+  their own project tools, instead of the general Node toolchain. Using `toolchain` had reordered
+  react and added `yarn` to astro-hono, and a refactor must not change what a shell contains.
+  After this correction all eleven dev-shell derivations are byte-identical to before the rewire.
 
 ## Commits
 

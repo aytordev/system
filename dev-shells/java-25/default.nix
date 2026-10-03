@@ -4,18 +4,12 @@
   ...
 }: let
   inherit (pkgs) lib;
+  catalog = import ../../modules/common/languages/catalog.nix {inherit pkgs;};
   jdk = pkgs.openjdk25;
 
-  # Maven and Gradle ship wrappers that pin their own JDK (Gradle defaults to
-  # jdk25 for gradle_9 but jdk21 for gradle_8, Maven to jdk_headless), so
-  # without these overrides `mvn` and `gradle` would run on a different JDK
-  # than the one this shell advertises.
-  javaPackages = [
-    jdk
-    (pkgs.maven.override {jdk_headless = jdk;})
-    (pkgs.gradle.override {java = jdk;})
-    pkgs.python3
-  ];
+  # python3 is a need of this shell, not part of Java language support, so it
+  # stays a shell-local extra instead of moving into the catalog.
+  javaPackages = catalog.java.toolchain "25" ++ [pkgs.python3];
 in
   mkShell {
     packages = javaPackages;

@@ -4,13 +4,10 @@
   ...
 }: let
   inherit (pkgs) lib;
-  astroHonoPackages = with pkgs; [
-    nodejs_22
-    pnpm
-    bun
-    typescript
-    typescript-language-server
-  ];
+  catalog = import ../../modules/common/languages/catalog.nix {inherit pkgs;};
+  astroHonoPackages =
+    catalog.node.runtime "22"
+    ++ [pkgs.pnpm pkgs.bun pkgs.typescript pkgs.typescript-language-server];
 in
   mkShell {
     packages = astroHonoPackages;

@@ -4,11 +4,8 @@
   ...
 }: let
   inherit (pkgs) lib;
-  nodePackages = with pkgs; [
-    nodejs_22
-    yarn
-    pnpm
-  ];
+  catalog = import ../../modules/common/languages/catalog.nix {inherit pkgs;};
+  nodePackages = catalog.node.toolchain "22";
 in
   mkShell {
     packages = nodePackages;
