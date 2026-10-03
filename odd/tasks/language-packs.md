@@ -66,7 +66,7 @@ profiles on all hosts with no way to opt out.
        `AGENTS.md`/`README.md` so the protocol is discoverable next to the code.
 2. [x] Build the catalog in `modules/common/languages/` with Java as the pilot, plus unit
        tests for the catalog shape.
-3. [ ] Add the editor seams: VS Code `extraExtensions`/`extraSettings`, Zed
+3. [x] Add the editor seams: VS Code `extraExtensions`/`extraSettings`, Zed
        `extraLanguages`/`extraExtensions`, and align `checks/home-zed`.
 4. [ ] Add the Java pack and migrate the Java extensions out of `commonExtensions`.
 5. [ ] Add the remaining v1 languages and migrate `suites.development.nixEnable` to
@@ -120,6 +120,16 @@ profiles on all hosts with no way to opt out.
   evaluating, or a check fails for the wrong reason.
 - Task 2 verification: `unit-nix-unit` built against the fixture secrets, and the composed test set
   reports 411 tests, of which 9 are the new `testLanguage*` cases.
+- Task 3: editor seams added. `vscode.extraExtensions`/`extraSettings` feed both the `default`
+  and `Nix` profiles, and `zed.extraExtensions`/`extraLanguages` feed
+  `programs.zed-editor.extensions` and the `languages` key of `userSettings`.
+- With empty defaults the seams are identities, so `checks/home-zed`,
+  `checks/home-portability`, `tests/apps/{vscode,zed,zed-settings,zed-terminal}.nix` and
+  `checks/module-contract` all pass untouched. The only forced consequence is the docs golden:
+  four new option headers require `just docs-golden` (the docs-generation error message names
+  `just golden-update`, but the real recipe is `docs-golden`).
+- Proving the VS Code seam carries a real pack is deferred to task 4 on purpose: the Java pack
+  is the end-to-end evidence, and no module-level VS Code test harness exists today.
 
 ## Commits
 

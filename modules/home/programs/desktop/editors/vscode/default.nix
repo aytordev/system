@@ -177,6 +177,22 @@ in {
         leaves VS Code's own default and installs no generated extension.
       '';
     };
+    extraExtensions = mkOption {
+      type = types.listOf types.package;
+      default = [];
+      description = ''
+        Extra VS Code extensions appended to every profile. Language packs write
+        here so they never need to know which profiles exist.
+      '';
+    };
+    extraSettings = mkOption {
+      type = types.attrsOf types.anything;
+      default = {};
+      description = ''
+        Extra VS Code settings merged into every profile, with
+        `lib.recursiveUpdate` semantics.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -233,18 +249,18 @@ in {
         };
       in {
         default = {
-          extensions = mkExtensions commonExtensions;
+          extensions = mkExtensions (commonExtensions ++ cfg.extraExtensions);
           enableUpdateCheck = false;
           enableExtensionUpdateCheck = false;
-          userSettings = commonSettings;
+          userSettings = lib.recursiveUpdate commonSettings cfg.extraSettings;
         };
         # Same settings as the default profile so the theme, fonts and
         # formatters apply here too — VS Code profiles do not inherit settings.
         # `enableUpdateCheck`/`enableExtensionUpdateCheck` are default-profile
         # only, so they are intentionally omitted here.
         Nix = {
-          extensions = mkExtensions (commonExtensions ++ nixExtensions);
-          userSettings = commonSettings;
+          extensions = mkExtensions (commonExtensions ++ nixExtensions ++ cfg.extraExtensions);
+          userSettings = lib.recursiveUpdate commonSettings cfg.extraSettings;
         };
       };
     };

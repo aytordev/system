@@ -51,9 +51,13 @@
 ## aytordev\.programs\.desktop\.communications\.vesktop\.package
 ## aytordev\.programs\.desktop\.editors\.vscode\.enable
 ## aytordev\.programs\.desktop\.editors\.vscode\.package
+## aytordev\.programs\.desktop\.editors\.vscode\.extraExtensions
+## aytordev\.programs\.desktop\.editors\.vscode\.extraSettings
 ## aytordev\.programs\.desktop\.editors\.vscode\.theme
 ## aytordev\.programs\.desktop\.editors\.zed\.enable
 ## aytordev\.programs\.desktop\.editors\.zed\.package
+## aytordev\.programs\.desktop\.editors\.zed\.extraExtensions
+## aytordev\.programs\.desktop\.editors\.zed\.extraLanguages
 ## aytordev\.programs\.desktop\.editors\.zed\.terminal\.multiplexer
 ## aytordev\.programs\.desktop\.editors\.zed\.theme
 ## aytordev\.programs\.desktop\.launchers\.raycast\.enable

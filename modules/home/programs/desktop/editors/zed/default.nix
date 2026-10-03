@@ -89,6 +89,23 @@ in {
         theme; `{ mode = "none"; }` leaves Zed's own default.
       '';
     };
+    extraExtensions = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = ''
+        Extra Zed extension names, appended to the extensions this module pins.
+      '';
+    };
+    extraLanguages = mkOption {
+      type = types.attrsOf types.anything;
+      default = {};
+      description = ''
+        Per-language Zed settings keyed by Zed's language name. They are merged
+        under `languages` with `lib.recursiveUpdate` semantics, so a list leaf
+        such as `language_servers` is replaced rather than concatenated, which
+        is how this module already composes settings.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -96,9 +113,11 @@ in {
       enable = true;
       inherit (cfg) package;
       # Ordinary HM list definitions remain additive; mkForce replaces the list.
-      inherit (preferences) extensions;
+      extensions = preferences.extensions ++ cfg.extraExtensions;
       userSettings =
+        lib.recursiveUpdate
         (lib.recursiveUpdate (profile.defaultLeaves composed.settings) preferences.safety)
+        {languages = cfg.extraLanguages;}
         // themeSettings;
       userKeymaps = composed.keymaps;
     };
