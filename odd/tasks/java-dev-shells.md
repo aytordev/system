@@ -246,12 +246,56 @@ and the `0.9.3` derivation matches Hydra's queued build exactly.
 by shipping prebuilt release binaries on Darwin.
 
 ### Follow-up
-- [ ] Retire `overlays/mergiraf/default.nix` and `darwinExcludedCheckNames = ["parse-lix"]` in
-`flake/dev/checks/default.nix` as its own work unit. Upstream fixed both root causes in
-`c59305bab...`, and the herdr blocker that stopped the first attempt is gone. `parse-lix` is
-verifiable on this host because lix `2.95.3` is cached for Darwin; `mergiraf` needs the
-`x86_64-linux` CI signal because its failing test is Linux-only.
-- [ ] Apply the generation with `just darwin-switch wang-lin`; activation is the user's step and
-was not run here.
+- [x] Retired `overlays/mergiraf/default.nix`. `darwinExcludedCheckNames = ["parse-lix"]` stays,
+with a corrected rationale; both are recorded in the retirement section below.
+- [x] `just darwin-switch wang-lin` applied: the active generation is `system-17` →
+`/nix/store/f4yidgnkpj8mgkw14j6ahirh07558q92-darwin-system-26.11.4cff07d`, equal to the build of
+commit `1403154c`, and `herdr --version` reports `0.9.3` resolved from
+`/nix/store/0ihn964xj10ynqx08q4lzvdwark7jc7k-herdr-0.9.3`.
 - [ ] Report the sandboxed Darwin build to `NixOS/nixpkgs#565882` and `#569162`, and open the
 upstream `herdr` issue asking for the absolute tool paths to be resolved through `$PATH`.
+
+## Retirement: mergiraf Overlay Removed, parse-lix Exclusion Kept
+
+### Signal
+With the herdr blocker gone, the two workarounds that only existed to make the bump green were
+retested. Retesting produced two different answers, and one earlier claim had to be corrected.
+
+### Decision
+- mergiraf: retire the overlay. The unmodified `x86_64-linux` derivation is exactly the one Hydra
+already built with its test phase, and its output is in `cache.nixos.org`, so CI now gets a cache
+hit where the overlay used to disable the tests.
+- parse-lix: keep the Darwin exclusion, for a different reason than before. The upstream Meson
+sanity-check failure is fixed, but no Lix derivation for the pinned revision is cached for
+`aarch64-darwin`, so registering the check on Darwin means building Lix from source on every Mac
+and on the macOS CI runner.
+
+### Change
+- Removed `overlays/mergiraf/default.nix`. `flake/overlays/default.nix` discovers overlays by
+directory, and no other file referenced the directory, so nothing else needed editing.
+- Rewrote the `darwinExcludedCheckNames` comment in `flake/dev/checks/default.nix`; the exclusion
+is now a build-cost decision, not a workaround for a broken build.
+
+### Evidence
+- At the pinned revision, `x86_64-linux` mergiraf evaluates to
+`b1iynf0hcwh7kszmb5yhqk9kjnp548h4-mergiraf-0.20.0.drv` with the repository overlays applied and
+mergiraf's removed — byte-identical to Hydra build 347829364 (`buildstatus: 0`, test phase
+included) — and that build's output `/nix/store/7i4jgpzmrkq7z70rk5xkad8w1yns7vkz-mergiraf-0.20.0`
+is valid on `cache.nixos.org`.
+- nixpkgs carries the root-cause fix: `env.NIX_CFLAGS_COMPILE = "-fno-strict-aliasing"` in
+`pkgs/by-name/me/mergiraf/package.nix`, now at version 0.20.0 rather than the 0.19.1 the overlay
+was written against.
+- Remaining overlays after the change: `chromaprint`, `kvazaar`, `protonmail-bridge`.
+- Lix is not substitutable at this revision, which corrects the earlier note that `unit-parse-lix`
+would fetch it from the cache: the pinned nixpkgs yields drv `94rvbpg05n2ciwiqdv1sd38w1m36dx9f` →
+`/nix/store/p0fp464hfdkk5qaawj88mlji1a7p4xfi-lix-2.95.3`, not on `cache.nixos.org`, while Hydra's
+cached Darwin build belongs to a different derivation (`wd45a0x6392shpssm592bid88c4hin3c` →
+`/nix/store/8cabslp5zbyibvsc25pgi0hxakvdi7i3-lix-2.95.3`). The cache claim held only for the
+revision it was measured at.
+- `nix flake check` in `flake/dev` and the CI-shaped `nix flake check --override-input secrets
+path:./checks/fixtures/secrets --accept-flake-config` at the repository root both report
+`all checks passed!` after the change.
+
+### Commits
+- `1403154c` — `fix(flake): adopt the upstream herdr darwin sandbox fix`.
+- `refactor(overlays): retire the mergiraf test workaround` — this work unit.
