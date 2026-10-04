@@ -150,10 +150,11 @@ Two upstream workarounds now live in the repository only to make this bump green
 move out with the lockfile refresh into its own change, where each one can be retested and
 retired independently.
 
-### Retirement: attempted and blocked
+### Retirement: first attempt, blocked by a stale revision
 
 An attempt was made to retire both workarounds, and it was reverted. It is recorded here so the next
-attempt starts from evidence instead of repeating the diagnosis.
+attempt starts from evidence instead of repeating the diagnosis. The blocker turned out to be the
+chosen revision, not the approach; see "Resolution" below.
 
 Upstream fixed both root causes in `c59305bab2065cfecc4944690d9eedbb56f3a9fa`:
 
@@ -191,3 +192,66 @@ Operational detail learned while attempting this: the `dev` partition's nixpkgs 
 `root/nixpkgs`, so it has no `nixpkgs` input of its own and `nix flake update nixpkgs` fails inside
 `flake/dev` with `does not match any input of this flake`. The lever is `nix flake update root`
 from that directory, which moves the follower.
+
+## Resolution: Bump to the Upstream herdr Fix
+
+### Signal
+The pinned revision produced `herdr-0.9.1` locally, and its `aarch64-darwin` build failed inside the
+vendored `libghostty-vt` because Zig invokes the macOS system tools by absolute path and the Nix
+sandbox denies executing them.
+
+### Decision
+Adopt upstream's fix instead of carrying a local workaround. `NixOS/nixpkgs#565882` ("herdr: fix
+build in darwin sandbox") merged on 2026-10-01 as `ff7ddf2da92f07589d28c082701500a3a666a20c`, and
+the pinned revision `c59305bab2065cfecc4944690d9eedbb56f3a9fa` (2026-10-01T02:47Z) predates that
+merge by about sixteen hours. That gap was the entire blocker. No `overlays/herdr`, no
+`extra-sandbox-paths` addition, no `sandbox = false`, no revision pin: only the bump.
+
+### Change
+- `flake.lock`: `nixpkgs` `c59305bab...` → `a7868a727837f3c09cee2ce0ca671c76b1589fed` (2026-10-03).
+- `flake/dev/flake.lock`: follower moved with `nix flake update root` from `flake/dev`.
+- The revision carries `herdr 0.9.3` with the Darwin `postPatch` that resolves the absolute macOS
+tool paths through `$PATH`: `/usr/bin/xcrun` → `xcrun`, `/bin/ln` → `ln`, `/bin/cp` → `cp`,
+`/usr/bin/ranlib` → `ranlib`.
+
+### Evidence
+- The fetched nixpkgs tree `/nix/store/5wwvz80gd6v1z981bsrvr7c1vhkyc3as-source` contains that
+Darwin `postPatch` and `version = "0.9.3"` in `pkgs/by-name/he/herdr/package.nix`.
+- Sandboxed `aarch64-darwin` build of `herdr` with no sandbox relaxation: derivation
+`xbi16cnky2lk2f6d3asl2b3czx7xjwld-herdr-0.9.3.drv`, output
+`/nix/store/0ihn964xj10ynqx08q4lzvdwark7jc7k-herdr-0.9.3`, and `herdr --version` reports
+`herdr 0.9.3`. That derivation path is identical to the one Hydra queued for
+`nixpkgs:unstable:herdr.aarch64-darwin` (build 347885706), so this local build is also the
+sandboxed Darwin verification the upstream pull request did not include: its successor
+`#569162` records "Darwin used the host's existing `sandbox = false` setting; sandboxed Darwin
+building was not verified".
+- `just darwin-build wang-lin` completes:
+`/nix/store/nz42cmgyp1m4f997jrsaxpwncwr8x16k-darwin-system-26.11.4cff07d`.
+- The earlier `herdr-0.9.1` Darwin derivation is cached as well:
+`/nix/store/wz9171k4km1qd92phb0yn4a67hsk6lxf-herdr-0.9.1` is valid on `cache.nixos.org`, so any
+revision between `ff7ddf2d` and the `0.9.3` update substitutes instead of building.
+- Where the sandbox denials were located before the fix, for the record:
+`vendor/libghostty-vt/src/build/LibtoolStep.zig:73` (`/bin/cp`, `/usr/bin/ranlib`),
+`vendor/libghostty-vt/pkg/apple-sdk/native_link.zig:34` (`/usr/bin/xcrun`), and
+`vendor/libghostty-vt/src/build/GhosttyLibVt.zig` (`/bin/ln`). A minimal probe derivation returned
+`rc=126` for all of them inside the sandbox, and `extra-sandbox-paths` made them runnable. Upstream
+resolved the paths through `$PATH` instead, which needs no sandbox relaxation.
+
+### Retirement status
+- Condition 1, cache: satisfied. The patched `herdr-0.9.1` Darwin output is in `cache.nixos.org`,
+and the `0.9.3` derivation matches Hydra's queued build exactly.
+- Condition 2, no absolute macOS paths: satisfied inside nixpkgs by `#565882`. It remains open in
+`herdr`/`ghostty` themselves, which is why the nixpkgs `postPatch` exists at all
+(`herdrdev/herdr#830`, `herdrdev/herdr#405`). `numtide/llm-agents.nix` sidesteps the same problem
+by shipping prebuilt release binaries on Darwin.
+
+### Follow-up
+- [ ] Retire `overlays/mergiraf/default.nix` and `darwinExcludedCheckNames = ["parse-lix"]` in
+`flake/dev/checks/default.nix` as its own work unit. Upstream fixed both root causes in
+`c59305bab...`, and the herdr blocker that stopped the first attempt is gone. `parse-lix` is
+verifiable on this host because lix `2.95.3` is cached for Darwin; `mergiraf` needs the
+`x86_64-linux` CI signal because its failing test is Linux-only.
+- [ ] Apply the generation with `just darwin-switch wang-lin`; activation is the user's step and
+was not run here.
+- [ ] Report the sandboxed Darwin build to `NixOS/nixpkgs#565882` and `#569162`, and open the
+upstream `herdr` issue asking for the absolute tool paths to be resolved through `$PATH`.
