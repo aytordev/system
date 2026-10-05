@@ -24,7 +24,7 @@ are no non-Nix build steps.
 | `check.yml` | PR, push to `main`, manual | ubuntu + macos | `nix flake check` (unit/integration/production checks + package builds) plus `flake-checker` input hygiene |
 | `fmt.yml` | PR, push to `main`, manual | ubuntu | `nix build .#checks.x86_64-linux.treefmt` — formatting, lint (statix), dead code (deadnix) |
 | `build-dev-shells.yml` | PR/push (path-filtered), weekly | ubuntu + macos | build and cache every dev shell in Cachix (`anyrun`) |
-| `update-flakes.yml` | nightly + manual | ubuntu | bump inputs, open a PR when `nixpkgs` changed |
+| `update-flakes.yml` | nightly + manual | ubuntu | bump every input except `secrets`, open a PR when `nixpkgs` changed |
 | `label.yml` | PR | ubuntu | apply area labels from `.github/labeler.yml` |
 
 ### Secrets → Fixture Flow
@@ -42,9 +42,15 @@ checks/fixtures/secrets/flake.nix  →  username/useremail/userfullname (dummy)
 flake/configs/default.nix  →  identity = self.lib.identity.fromSecrets inputs.secrets
 ```
 
-`update-flakes.yml` updates every input **except** `secrets` (explicitly listed
-in the `nix flake update` command), so the lock bump never needs the private
-repo.
+`update-flakes.yml` updates every input **except** `secrets`, so the lock bump
+never needs the private repo. The list is derived from `flake.lock` (root
+inputs whose lock entry is a node name, not a `follows` path) instead of being
+hardcoded, so a new flake input is picked up without editing the workflow. The
+dev lock is re-locked in the same run, with `root` in the list: the dev
+partition's `nixpkgs` follows `root/nixpkgs`, so only re-locking `root` moves the
+follower. Both commands target an explicit path (`flake.lock` and
+`./flake/dev`); a bare relative path such as `flake/dev` is read as a flake
+registry reference and fails.
 
 ## Local Verification
 
@@ -92,3 +98,12 @@ nix build .#checks.x86_64-linux.treefmt --override-input secrets path:./checks/f
   `CACHIX_AUTH_TOKEN` (optional; enables cache push — set to activate).
 - Prefer `actions/create-github-app-token` (as `update-flakes.yml`) over
   hardcoded tokens.
+- `update-flakes.yml` requests only `Contents: read and write` and
+  `Pull requests: read and write` from the App installation. Asking for a
+  permission the installation does not grant fails the token step with HTTP 422
+  (`The permissions requested are not granted to this installation`), which is
+  what the nightly run hit for 100 consecutive runs. That step is
+  `continue-on-error`, so a missing grant degrades to `GITHUB_TOKEN` with a
+  `::warning::` instead of failing the run. The fallback PR does not trigger CI
+  on its own, and opening it also needs "Allow GitHub Actions to create and
+  approve pull requests" in the repository Actions settings.

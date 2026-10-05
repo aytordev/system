@@ -4,23 +4,38 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
+concurrency:
+  # A manual dispatch must not race the nightly run over the update-flake-lock
+  # branch.
+  group: update-flakes
+  cancel-in-progress: false
+# The repository default for GITHUB_TOKEN is read-only, and the fallback path
+# below has to push a branch and open the pull request.
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   update-flake-lock:
     runs-on: ubuntu-latest
     steps:
       - name: Create GitHub App token
-        uses: actions/create-github-app-token@v3
-        if: vars.CI_APP_ID
         id: app-token
+        if: vars.CI_APP_ID
+        # A token request for a permission the App installation does not grant
+        # fails with HTTP 422. That must not kill the nightly run: without a
+        # token the job falls back to GITHUB_TOKEN and warns below.
+        continue-on-error: true
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ vars.CI_APP_ID }}
           private-key: ${{ secrets.CI_APP_PRIVATE_KEY }}
+          # Only what this workflow uses. Requesting more than the installation
+          # grants is what broke the nightly run.
           permission-contents: write
           permission-pull-requests: write
-          permission-issues: write
       - name: Get GitHub App user info
         id: user-info
-        if: vars.CI_APP_ID
+        if: vars.CI_APP_ID && steps.app-token.outputs.token != ''
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           SLUG: ${{ steps.app-token.outputs.app-slug }}
@@ -32,6 +47,15 @@ jobs:
             echo "name=$name"
             echo "email=$id+$name@users.noreply.github.com"
           } >> "$GITHUB_OUTPUT"
+      - name: Report token mode
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          if [ -n "$APP_TOKEN" ]; then
+            echo "Using the GitHub App token; the update PR will trigger CI."
+          else
+            echo "::warning::No GitHub App token available, falling back to GITHUB_TOKEN. The update PR will not trigger CI by itself, and opening it also needs 'Allow GitHub Actions to create and approve pull requests' in the repository Actions settings. Grant the App 'Contents: read and write' and 'Pull requests: read and write' to restore the bot path."
+          fi
       - uses: actions/checkout@v7
       - name: Setup Git
         env:
@@ -48,11 +72,52 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{steps.app-token.outputs.token || github.token}}
       - name: Update flake.lock
-        # Update every input except the private `secrets` repo, which CI cannot
-        # fetch (git+ssh) and must never be auto-bumped.
-        run: nix flake update nixpkgs flake-parts nix-darwin home-manager sops-nix yazi-flavors nix-index-database nix-rosetta-builder mcp-servers-nix nvf aytordev-nvim
+        # Every input except the private `secrets` repo, which CI cannot fetch
+        # (git+ssh) and must never be auto-bumped. The list is derived from
+        # flake.lock rather than hardcoded: the previous hardcoded list had
+        # rotted into naming an input that no longer exists, which fails the
+        # update outright.
+        run: |
+          set -euo pipefail
+          mapfile -t inputs < <(
+            jq -r '
+              .nodes.root.inputs
+              | to_entries[]
+              | select(.value | type == "string")
+              | select(.key != "secrets")
+              | .key
+            ' flake.lock
+          )
+          if [ "${#inputs[@]}" -eq 0 ]; then
+            echo "::error::could not derive any updatable input from flake.lock"
+            exit 1
+          fi
+          printf 'Updating: %s\n' "${inputs[*]}"
+          nix flake update "${inputs[@]}"
       - name: Update dev flake.lock
-        run: nix flake update --flake flake/dev treefmt-nix git-hooks-nix nix-unit
+        # `root` must be in the list: the dev partition's nixpkgs follows
+        # root/nixpkgs, so only re-locking `root` moves the follower. Inputs
+        # that follow another flake are stored as paths in the lock and are
+        # skipped by the `type == "string"` filter.
+        run: |
+          set -euo pipefail
+          mapfile -t inputs < <(
+            jq -r '
+              .nodes.root.inputs
+              | to_entries[]
+              | select(.value | type == "string")
+              | .key
+            ' flake/dev/flake.lock
+          )
+          if [ "${#inputs[@]}" -eq 0 ]; then
+            echo "::error::could not derive any updatable input from flake/dev/flake.lock"
+            exit 1
+          fi
+          printf 'Updating dev inputs: %s\n' "${inputs[*]}"
+          # The `./` prefix is required: a bare relative path is read as a flake
+          # registry reference and fails with "cannot find flake
+          # 'flake:flake/dev'".
+          nix flake update --flake ./flake/dev "${inputs[@]}"
       - name: Check for nixpkgs updates
         id: check-nixpkgs
         run: |
@@ -84,7 +149,5 @@ jobs:
             This PR was created by workflow run [${{ github.run_id }}].
 
             [${{ github.run_id }}]: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          labels: |
-            merge-queue
           committer: ${{ steps.user-info.outputs.name || 'github-actions[bot]' }} <${{ steps.user-info.outputs.email || '41898282+github-actions[bot]@users.noreply.github.com' }}>
           author: ${{ steps.user-info.outputs.name || 'github-actions[bot]' }} <${{ steps.user-info.outputs.email || '41898282+github-actions[bot]@users.noreply.github.com' }}>
