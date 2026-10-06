@@ -9,6 +9,12 @@
 # their fix went GREEN. Tests stub launchctl and run HM activation fragments
 # inline under `set -eu` with a sentinel, never a real launchctl or
 # activation; builds write to the Nix sandbox/store only.
+#
+# PGE-S1 adds the stable-command contract: the published value must be the
+# Home Manager profile indirection for the configured package, never the
+# version-pinned store path that left a long-lived GUI tree on an older pi
+# (odd/tasks/pi-gui-environment-stable-command.md). Observed RED against the
+# version-pinned publication before the adapter was corrected.
 {
   inputs,
   pkgs,
@@ -143,8 +149,18 @@ in
     reconcileActivation = enabled.home.activation.reconcilePiGuiEnvironment;
     cleanupFragment = pkgs.writeText "pi-gui-cleanup-fragment" cleanupActivation.data;
     reconcileFragment = pkgs.writeText "pi-gui-reconcile-fragment" reconcileActivation.data;
+    # Published-command contract: the stable profile indirection for the
+    # configured package. `home.packages = [cfg.package]` (the sibling
+    # default.nix) is what makes `<profileDirectory>/bin/pi` the configured
+    # pi, and every activation re-points the profile in place, so a GUI host
+    # that captured the override follows an upgrade without a republish.
+    publishedCommand = "${enabled.home.profileDirectory}/bin/pi";
+    profileExposesConfiguredPi = lib.any (package: (package.name or "") == "pi") enabled.home.packages;
   in
     assert linuxGuardAsserts;
+    # The stable command is only correct because the profile carries the
+    # configured package; losing that would silently publish a dangling path.
+    assert profileExposesConfiguredPi;
     assert lib.length (lib.attrNames enabledAgents) == 1;
     # One-shot GUI-domain agent: runs once when loaded and at login.
     assert publisherConfig.RunAtLoad or false;
@@ -175,21 +191,27 @@ in
               mkdir -p "$out"
 
               # --- Configuration contract -------------------------------------
-              # The enabled scenario's agent must reference the absolute executable
-              # of the configured custom package: directly as an argument, inside a
-              # publisher script, or inside a wrapped command string.
+              # The enabled scenario's agent must reference the stable profile
+              # command for the configured package: directly as an argument,
+              # inside a publisher script, or inside a wrapped command string.
+              # A version-pinned store path must not appear: that pin is what
+              # kept a long-lived GUI tree on an older, still-executable pi.
               found=""
               for arg in ${lib.escapeShellArgs publisherArgs}; do
-                if [ "$arg" = ${lib.escapeShellArg piExe} ]; then
+                if [ "$arg" = ${lib.escapeShellArg publishedCommand} ]; then
                   found="$arg"
-                elif [ -f "$arg" ] && grep -qF ${lib.escapeShellArg piExe} "$arg"; then
+                elif [ -f "$arg" ] && grep -qF ${lib.escapeShellArg publishedCommand} "$arg"; then
                   found="$arg"
-                elif printf '%s' "$arg" | grep -qF ${lib.escapeShellArg piExe}; then
+                elif printf '%s' "$arg" | grep -qF ${lib.escapeShellArg publishedCommand}; then
                   found="$arg"
                 fi
               done
               if [ -z "$found" ]; then
-                echo "publisher does not reference the absolute fixture command ${piExe}" >&2
+                echo "publisher does not reference the stable profile command ${publishedCommand}" >&2
+                exit 1
+              fi
+              if [ "$found" != ${lib.escapeShellArg publishedCommand} ] && grep -qF ${lib.escapeShellArg piExe} "$found"; then
+                echo "publisher still references the version-pinned fixture command ${piExe}" >&2
                 exit 1
               fi
               # The publisher must not publish a PATH override; it publishes only
@@ -202,7 +224,7 @@ in
                 echo "publisher does not publish ${overrideVar}" >&2
                 exit 1
               fi
-              printf 'PASS publisher references absolute fixture command via %s\n' "$found"
+              printf 'PASS publisher references the stable profile command via %s\n' "$found"
 
               # --- Stubbed lifecycle (no real launchctl, no HM activation) ----
               sbx="$TMPDIR/lifecycle"
@@ -294,7 +316,11 @@ in
                 rm -f "$guiStore" "$guiStore.fail" "$guiStore.getenvfail"
               }
 
-              piExe=${lib.escapeShellArg piExe}
+              # Expected published command for every lifecycle assertion: the
+              # stable profile indirection, rewritten for the sandbox home
+              # exactly as the baked scripts are rewritten below. A stale pin
+              # is therefore a test failure, not a latent environment hazard.
+              piExe="$(printf '%s' ${lib.escapeShellArg publishedCommand} | sed 's|/Users/pi-gui-ci|'"$home"'|g')"
 
               # Fresh publish: empty GUI env, no managed state; private state.
               clean_state
@@ -365,6 +391,46 @@ in
               test "$(cat "$guiStore")" = "$piExe"
               test "$(cat "$stateFile")" = "$piExe"
               printf 'PASS managed update after package change\n'
+
+              # Version independence: the published value is the stable profile
+              # path, never a version-pinned store path.
+              clean_state
+              "$sbx/publisher"
+              test "$(cat "$guiStore")" = "$piExe"
+              case "$(cat "$guiStore")" in
+                */nix/store/*)
+                  echo 'published command is a version-pinned store path' >&2
+                  exit 1
+                  ;;
+              esac
+              printf 'PASS published command is the stable profile indirection\n'
+
+              # Staleness regression: a GUI host that captured the override
+              # before an upgrade keeps the captured string, and the profile
+              # re-point alone must make it resolve the new pi with no
+              # republish, no launchctl write and no state change.
+              clean_state
+              mkdir -p "$(dirname "$piExe")"
+              printf '#!/bin/sh\necho pi-v1\n' > "$sbx/pi-v1"
+              printf '#!/bin/sh\necho pi-v2\n' > "$sbx/pi-v2"
+              chmod +x "$sbx/pi-v1" "$sbx/pi-v2"
+              ln -sfn "$sbx/pi-v1" "$piExe"
+              "$sbx/publisher"
+              captured="$(cat "$guiStore")"
+              recorded="$(cat "$stateFile")"
+              if [ "$("$captured")" != pi-v1 ]; then
+                echo 'captured override did not resolve the pre-upgrade pi' >&2
+                exit 1
+              fi
+              ln -sfn "$sbx/pi-v2" "$piExe"
+              if [ "$("$captured")" != pi-v2 ]; then
+                echo 'captured override did not follow the profile re-point' >&2
+                exit 1
+              fi
+              test "$(cat "$guiStore")" = "$captured"
+              test "$(cat "$stateFile")" = "$recorded"
+              test "$captured" = "$recorded"
+              printf 'PASS captured override follows an upgrade without republishing\n'
 
               # Failed setenv: non-zero exit, retry state preserved, then success.
               clean_state

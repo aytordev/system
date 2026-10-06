@@ -48,3 +48,12 @@ Final verification: focused derivation `/nix/store/43vcs7ihy326m547828vkd7vbxgsc
 Delivery: source commit `49d4dcf3458e582211e8943d21ca2785423be5fe` published to `origin/fix/pi-gui-environment`. Commit hooks passed conflict-marker, deadnix, statix, treefmt and typos checks; eslint/luacheck skipped because no applicable files. Committed-range risk assessment remained unavailable while this evidence file was still untracked; the same independently verified source candidate was not changed or implicitly approved. This task document is synchronized in a separate documentation commit after the source push.
 
 Live activation and Pen inheritance/spawn verification remain separate user actions. Source changes alone do not fix an already-running app. Next: authorized activation for civislend, then relaunch GUI host and test actual subagent spawn. Source files are now tracked in Git; no system activation, app restart, PR or merge performed.
+
+## Superseded by pi-gui-environment-stable-command
+
+The published command is no longer `lib.getExe' cfg.package "pi"`. That version-pinned store path
+stranded a long-lived GUI process tree on an older, still-executable `pi` after an upgrade, which
+surfaced as a hard subagent failure (`createCodemodeExtension is not a function`). The successor
+work unit `odd/tasks/pi-gui-environment-stable-command.md` publishes the stable Home Manager profile
+command instead; the ownership, locking, atomic-state and cleanup semantics recorded above are
+unchanged.
