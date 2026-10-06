@@ -96,8 +96,10 @@ Cloud configuration is now in scope, but only as the operator's own enrollment o
 
 - [ ] **EN-0 — Cloud intent recorded; no clear.** Record, as done above, that cloud replication is wanted and that the 9402 pending mutations must not be cleared. Remaining operator input: the cloud server URL, entered in their own terminal. Closes when EN-7 runs; it does not block EN-1 to EN-6.
 - [x] **EN-1 — Version guard as the failing test, observed RED.** Added `engramPackageVersion = pkgs.aytordev.engram.version == "3.1.0";` to the `checks` set in `checks/gentle-ai-engine/default.nix`, nine inserted lines, no other attribute, option namespace or override touched. Observed RED verbatim: `error: AI ownership failures: engramPackageVersion`, exit 1, with `packages/engram/package.nix` still at `version = "2.0.0-rc.11"`. Evidence and the corrected guard location are in "Verified evidence" below.
-- [ ] **EN-2 — Pin bump to 3.1.0, observed GREEN.** `packages/engram/package.nix`: `version = "3.1.0"`, `rev = "v${version}"` unchanged, refresh `fetchFromGitHub.hash` and `vendorHash`. Re-examine the `doCheck = false` workaround and its recorded reason. Confirm the upstream `/v2` to `/v3` Go module path move is transparent for `subPackages = ["cmd/engram"]`, and record why if it is not.
-- [ ] **EN-3 — Focused build and checks.** Build the package and run the engram check plus `integration-gentle-ai-engine` and `integration-ai-tools-docs-links` with fixture secrets. An independent verifier confirms the binary reports `engram 3.1.0` and that the wrapper still resolves `ENGRAM_DATA_DIR`.
+- [x] **EN-2 — Pin bump to 3.1.0, observed GREEN.** `packages/engram/package.nix`: `version = "3.1.0"`, `rev = "v${version}"` unchanged, `hash` and `vendorHash` refreshed by discovery rather than guessed. Source `hash = "sha256-Dyzi/OH0XwT3Z1QfDM/Tvd6bYcXvQux/jff86st5t30="` independently reproduced with `nix store prefetch-file --json --unpack` against the `v3.1.0` archive, whose tag resolves to `e5c2277f856a5ee8739f297a006cabf6432ba77d`; `vendorHash = "sha256-roVQ+K9Hsz0qi61f+zzb+JvgleOmBHSMcKfhwhI0snQ="`. The package builds to `/nix/store/vzj537fc2pbd8pnbf4y5nk6vvfp0wb90-engram-3.1.0` and that binary reports `engram 3.1.0`; the guard runner exits 0. The `/v2` to `/v3` module path move is confirmed real (`go.mod` declares `module github.com/Gentleman-Programming/engram/v3`) and transparent for `subPackages = ["cmd/engram"]`, which needed no change.
+
+  `doCheck = false` re-examined by observation, not by argument. It was temporarily set to `true` and the build failed exactly as the inherited comment predicted but had never demonstrated for 3.1.0: `net/http/httptest.newLocalListener` panics from `cmd/engram/autosync_e2e_test.go` in `TestMutationTransportAdapterForwardsPromptAuthority`, and `cmd/engram` fails. The workaround is therefore still required, and the comment was updated to record the observed failure and its exact test instead of an inherited claim. Reverting to `false` reproduced the identical store path `/nix/store/vzj537fc…`, confirming the revert was exact.
+- [ ] **EN-3 — Focused build and checks. BLOCKED on the subagent defect below.** The focused work is done: `packages.aarch64-darwin.engram` builds, `integration-gentle-ai-engine` exits 0, and `integration-ai-tools-docs-links` exits 0, all with fixture secrets. What remains unmeetable is the independent verifier: `subagent_run` cannot start any child Pi on this host right now, so the required independent confirmation of `engram 3.1.0` and of the wrapper's `ENGRAM_DATA_DIR` resolution has NOT been obtained and must not be reported as if it had.
 - [ ] **EN-4 — Store backup and doctor baseline.** Owner-only backup of `engram.db` plus `-shm`/`-wal` and the relevant configuration, on a local filesystem, with a manifest recording the pre-upgrade engine version, the full `engram doctor` output and byte counts. Independent stat-only permission audit. No credential contents inspected or logged. This must precede every store mutation, including the cloud configuration in EN-7.
 - [ ] **EN-5 — Activation and readback (interactive sudo handoff).** The operator runs `just darwin-switch civislend`. Then independently read back the live generation, Pi and both engram binaries, and confirm the store path is unchanged and the old generation remains as rollback.
 - [ ] **EN-6 — Restart and live capability verification.** Restart the long-running `engram serve` daemon and Pi. Verify `GET /health` advertises `capabilities.isolated_session_registration: true` and version `3.1.0`, that `mem_list_projects` no longer returns HTTP 404, and that `engram doctor repair --check sync_target_closed_space --plan` is now supported rather than rejected.
@@ -151,6 +153,32 @@ Corrected guard location. My first attempt asserted `tools.engram.package.versio
 The pin is therefore asserted on `pkgs.aytordev.engram`, the derivation the wrapper execs. The wrapper's linkage is already covered by the check's existing `engramEnvironment` assertion (`ENGRAM_BIN == lib.getExe tools.engram.package`).
 
 Placement decision, correcting the candidate recorded when this feature was opened. The original plan named a new `checks/engram-engine/default.nix`. `checks/gentle-ai-engine/default.nix` already owns the AI package-ownership assertions and already references `engram` in `packagesEnabled`, `packagesDisabled`, `packageOverrides` and `engramEnvironment`, so a new directory would have duplicated surface and split one regression suite. `checks/AGENTS.md` also directs naming a check by the behavior it tests and notes that new directories default to the `integration-*` prefix. The guard was added to the existing check instead.
+
+## Blocking defect found during EN-3: subagents cannot start (2026-10-06)
+
+Every `subagent_run` fails before the agent settles:
+
+```
+Failed to load extension "~/.pi/agent/npm/node_modules/gentle-pi/extensions/quiet-tools.ts":
+  Failed to load extension: (0, _piCodingAgent.createCodemodeExtension) is not a function
+Hint: Start without extensions using "pi -ne".
+```
+
+Established by reading, not by guessing:
+
+- `gentle-pi/lib/codemode-renderer.ts:2` imports `createCodemodeExtension`, and line 177 uses it as a default parameter: `factory: ExtensionFactory = createCodemodeExtension()`. The failure is that call.
+- Pi `1.0.3` **does** export it: `dist/index.d.ts:29` re-exports it and `dist/index.js` re-exports it from `./extensions/codemode/…`. So this is a resolution or interop defect in the Pi `1.0.3` plus `gentle-pi@4.0.0` combination on the child-process path, not a missing host API.
+- `gentle-pi@4.0.0` declares `@earendil-works/pi-coding-agent >=0.99.1` as its peer, which `1.0.3` satisfies, so the peer range did not warn about this.
+- A non-interactive parent-side run (`pi -p --no-session`) only emits the cosmetic `builtin:codemode` warning, while the child-process path fails hard. The two paths differ, which is why an in-session smoke test did not catch this.
+
+Impact on this feature: EN-3's independent verifier cannot run, and every other delegation in the ODD ladder is degraded to inline work. This is reported as blocked, never as verified.
+
+Options, none taken yet, and the choice is the operator's:
+
+1. Disable the renderer with its own supported switch. `lib/quiet-tools-config.ts:1` defines `QUIET_TOOLS_ENV = "GENTLE_PI_QUIET_TOOLS"` and line 5 reads `env[QUIET_TOOLS_ENV] !== "0"`, so `GENTLE_PI_QUIET_TOOLS=0` turns it off. `extensions/quiet-tools.ts:793` then returns early. Cost: the compact codemode cards and the `pi-pretty` suppression of `read`/`bash`/`ls`/`find`/`grep` are lost. This cannot be tested from inside the current session, whose environment is already fixed; it needs a relaunch by the operator.
+2. Filter the extension out in `~/.pi/agent/settings.json` by extending the existing filter to `["!startup-banner.ts", "!quiet-tools.ts"]`. The mechanism is already proven in place by `!startup-banner.ts`. Trade-off: `settings.json` is native-owned, and `gentle-ai sync` is documented to normalise managed entries. Testable in-session because both parent and child read that file.
+3. Bump Pi to upstream `1.0.4`, which is above the nixpkgs pin, and see whether the interop is fixed. Unproven, and it collides with the unresolved uncommitted `flake.lock` divergence.
+4. Report upstream and accept degraded delegation until a fixed pairing ships.
 
 ## Next action
 
