@@ -108,12 +108,20 @@ Strict TDD, focused runner:
 
 ## Remaining work and delivery
 
-Not committed. Commit, push, PR and merge require explicit authorization. Only the three files
-above plus this document belong to the work unit: the pre-existing uncommitted `flake.lock` and
-`flake/dev/flake.lock` changes are the user's and are never staged here.
+Source work unit committed as `821dabe5` (`fix(pi): publish a stable profile command for the GUI
+override`) on branch `fix/pi-gui-environment-stable-command`, five files, and pushed to `origin`.
+Commit hooks green: conflict-marker, deadnix, statix, treefmt, typos. The pre-existing uncommitted
+`flake.lock` and `flake/dev/flake.lock` changes are the user's and were deliberately left unstaged.
 
-Live remediation is a user action and is independent of this source change: an already-running GUI
-process tree keeps its captured value until relaunched (restart `herdr`, or open a new login
-session, or start `pi` with `env -u GENTLE_PI_AGENTS_PI pi` so `piCommand()` falls back to the
-parent's own entrypoint). After one relaunch with the new published value, later `pi` upgrades are
-followed without any republish.
+Pull request: not created. `gh` has no session on this host
+(`To get started with GitHub CLI, please run: gh auth login`) and no token is present in the
+environment, so the remote write was impossible rather than refused; the prepared body is at
+`/tmp/pr-body-pi-gui-stable-command.md`. Target policy for this repository is path-based
+auto-labeling only (`.github/labeler.yml`): it enforces neither issue linkage nor a `type:*` label,
+so no issue reference is invented and no protected label is requested. Base is `main`.
+
+Live remediation remains a user action and is independent of this source change: an already-running
+GUI process tree keeps its captured value until relaunched (restart `herdr`, open a new login
+session, or start `pi` with `env -u GENTLE_PI_AGENTS_PI pi`). After one relaunch with the new
+published value, later `pi` upgrades are followed without any republish. Merging or merging plus
+activating are separate decisions; no activation was performed for this work.
