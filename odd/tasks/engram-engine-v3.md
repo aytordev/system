@@ -4,7 +4,7 @@
 
 Target: move the Nix `packages/engram` pin from **`2.0.0-rc.11`** to **`3.1.0`**, so the pinned engine satisfies the floors the current Pi plugin `gentle-engram@0.2.0` already declares, and so the store's one doctor error becomes repairable. The plugin is current and is not changed by this feature; the engine is the mismatched half.
 
-Authorized so far: creating this feature record, the feature branch and its worktree, the documentation commit `708a9d15`, and an isolated capability probe of the published 3.1.0 binary. **Not authorized yet:** the pin bump, Nix activation, cloud configuration, store repairs, further commits, branch push, or a pull request. The operator supplies the cloud server URL and any token in their own terminal, never in chat.
+Authorized so far: creating this feature record, the feature branch and its worktree, the documentation commits `708a9d15` and `2e4b7e5f`, and an isolated capability probe of the published 3.1.0 binary. The EN-1 source edit was then made in the working tree and its RED observed; that edit is **uncommitted, pending explicit commit authorization**. **Not authorized yet:** the pin bump, Nix activation, cloud configuration, store repairs, further commits, branch push, or a pull request. The operator supplies the cloud server URL and any token in their own terminal, never in chat.
 
 Worktree `../system-engram-engine-v3`, branch `feat/engram-engine-v3`, base `e537e7bf45b1873b3708163e8d582aab3bbf8c96` (`main`, merge of PR #232). Pi/Pen restart and any interactive `sudo` remain manual.
 
@@ -95,7 +95,7 @@ Cloud configuration is now in scope, but only as the operator's own enrollment o
 ## Tasks
 
 - [ ] **EN-0 — Cloud intent recorded; no clear.** Record, as done above, that cloud replication is wanted and that the 9402 pending mutations must not be cleared. Remaining operator input: the cloud server URL, entered in their own terminal. Closes when EN-7 runs; it does not block EN-1 to EN-6.
-- [ ] **EN-1 — Version guard as the failing test, observed RED.** Add the missing engram version assertion mirroring `checks/gentle-ai-engine/default.nix`. Run the exact runner against the pinned `2.0.0-rc.11`, record the RED output verbatim, and keep overrides and option namespaces untouched.
+- [x] **EN-1 — Version guard as the failing test, observed RED.** Added `engramPackageVersion = pkgs.aytordev.engram.version == "3.1.0";` to the `checks` set in `checks/gentle-ai-engine/default.nix`, nine inserted lines, no other attribute, option namespace or override touched. Observed RED verbatim: `error: AI ownership failures: engramPackageVersion`, exit 1, with `packages/engram/package.nix` still at `version = "2.0.0-rc.11"`. Evidence and the corrected guard location are in "Verified evidence" below.
 - [ ] **EN-2 — Pin bump to 3.1.0, observed GREEN.** `packages/engram/package.nix`: `version = "3.1.0"`, `rev = "v${version}"` unchanged, refresh `fetchFromGitHub.hash` and `vendorHash`. Re-examine the `doCheck = false` workaround and its recorded reason. Confirm the upstream `/v2` to `/v3` Go module path move is transparent for `subPackages = ["cmd/engram"]`, and record why if it is not.
 - [ ] **EN-3 — Focused build and checks.** Build the package and run the engram check plus `integration-gentle-ai-engine` and `integration-ai-tools-docs-links` with fixture secrets. An independent verifier confirms the binary reports `engram 3.1.0` and that the wrapper still resolves `ENGRAM_DATA_DIR`.
 - [ ] **EN-4 — Store backup and doctor baseline.** Owner-only backup of `engram.db` plus `-shm`/`-wal` and the relevant configuration, on a local filesystem, with a manifest recording the pre-upgrade engine version, the full `engram doctor` output and byte counts. Independent stat-only permission audit. No credential contents inspected or logged. This must precede every store mutation, including the cloud configuration in EN-7.
@@ -131,6 +131,27 @@ Two failures observed in the GU-4 cycle must not be repeated here: a verify step
 - Adding a second engram store, removing the wrapper, or moving the data directory.
 - Repairing store findings this feature did not cause, beyond the EN-7 to EN-9 items explicitly decided here. `engram-single-store` retains its own deferred items.
 
+## Verified evidence
+
+EN-1 RED, captured with the exact runner from the execution contract:
+
+```
+error: AI ownership failures: engramPackageVersion
+```
+
+Exit 1, with `packages/engram/package.nix` still at `version = "2.0.0-rc.11"`. This matches the GU-1 shape (`AI ownership failures: packageVersion` while the gentle-ai pin was 3.7.0).
+
+The guard is proven well-formed rather than merely failing: `nix eval --raw path:.#packages.aarch64-darwin.engram.version` returns `2.0.0-rc.11` and `.name` returns `engram-2.0.0-rc.11`, and evaluation reaches the `throw` instead of an attribute error. The only reason it fails is the pin value; EN-2 should turn it GREEN.
+
+Corrected guard location. My first attempt asserted `tools.engram.package.version` and produced `error: attribute 'version' missing` — a broken-guard error, not a RED, and it was not reported as EN-1 evidence. The module option asymmetry is real and deliberate:
+
+- `gentle-ai` uses `mkPackageOption pkgs "gentle-ai" { default = ["aytordev" "gentle-ai"]; }`, so `tools.gentle-ai.package` is the derivation and `.version` exists. That is why the neighbouring `packageVersion` guard works.
+- `engram` declares `package = lib.mkOption { type = lib.types.package; default = engramWrapped; }`, where `engramWrapped = pkgs.runCommand "engram-wrapped" ...` wraps `pkgs.aytordev.engram` and has no `version` attribute. The module comment records why: `mkPackageOption` cannot express a derivation-valued default.
+
+The pin is therefore asserted on `pkgs.aytordev.engram`, the derivation the wrapper execs. The wrapper's linkage is already covered by the check's existing `engramEnvironment` assertion (`ENGRAM_BIN == lib.getExe tools.engram.package`).
+
+Placement decision, correcting the candidate recorded when this feature was opened. The original plan named a new `checks/engram-engine/default.nix`. `checks/gentle-ai-engine/default.nix` already owns the AI package-ownership assertions and already references `engram` in `packagesEnabled`, `packagesDisabled`, `packageOverrides` and `engramEnvironment`, so a new directory would have duplicated surface and split one regression suite. `checks/AGENTS.md` also directs naming a check by the behavior it tests and notes that new directories default to the `integration-*` prefix. The guard was added to the existing check instead.
+
 ## Next action
 
-EN-1 is the next authorized step and it is a source write: add the missing engram version guard and observe it fail against the still-pinned `2.0.0-rc.11`. EN-0 no longer blocks it, because the decision is recorded and the repair dependency runs the other way. EN-7 and EN-9 additionally wait on the operator: the cloud server URL, entered in their own terminal, and the project name that owns session `manual-save`.
+EN-2 is the next step and it now has the failing test it needs: bump `packages/engram/package.nix` to `3.1.0`, refresh `hash` and `vendorHash`, and watch this same runner turn GREEN. It is **not authorized yet**, and neither is committing the EN-1 edit. EN-7 and EN-9 additionally wait on the operator: the cloud server URL, entered in their own terminal, and the project name that owns session `manual-save`.

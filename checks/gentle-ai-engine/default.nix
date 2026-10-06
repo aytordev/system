@@ -103,6 +103,15 @@
     # only. User overrides stay authoritative; this never rejects custom
     # versions in the module options.
     packageVersion = tools.gentle-ai.package.version == "4.0.0";
+    # Regression: the Nix-owned Engram engine pin. Asserted on the underlying
+    # derivation, not on the module option: `tools.engram.package` is
+    # deliberately the `engram-wrapped` runCommand, which has no `version`
+    # attribute, while the wrapper execs `pkgs.aytordev.engram`. The Pi plugin
+    # `gentle-engram@0.2.0` needs an engine that advertises
+    # `capabilities.isolated_session_registration`, answers `/projects`, and
+    # supports the `sync_target_closed_space` repair, so an unguarded downgrade
+    # here must fail this check instead of degrading silently at runtime.
+    engramPackageVersion = pkgs.aytordev.engram.version == "3.1.0";
     packagesEnabled = lib.all (name: installed enabled tools.${name}.package) ["pi" "gentle-ai" "engram"];
     packagesDisabled = lib.all (name: !(installed disabled tools.${name}.package)) ["pi" "gentle-ai" "engram"];
     packageOverrides = lib.all (name: overrides.aytordev.programs.terminal.tools.${name}.package == selected) ["pi" "gentle-ai" "engram"] && installed overrides selected;
