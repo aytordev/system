@@ -99,6 +99,10 @@
   piRoot = ".pi/agent/skills/";
   catalogRoot = ".local/share/aytordev/skills";
   checks = {
+    # Regression: the Nix-owned public CLI pin, asserted on the default package
+    # only. User overrides stay authoritative; this never rejects custom
+    # versions in the module options.
+    packageVersion = tools.gentle-ai.package.version == "4.0.0";
     packagesEnabled = lib.all (name: installed enabled tools.${name}.package) ["pi" "gentle-ai" "engram"];
     packagesDisabled = lib.all (name: !(installed disabled tools.${name}.package)) ["pi" "gentle-ai" "engram"];
     packageOverrides = lib.all (name: overrides.aytordev.programs.terminal.tools.${name}.package == selected) ["pi" "gentle-ai" "engram"] && installed overrides selected;
@@ -152,6 +156,28 @@ in
     } ''
       # Realize the public archive and HM leaf publication without executing a CLI.
       test -x ${tools.gentle-ai.package}/bin/gentle-ai
+      # Run the real pinned binary offline: isolated HOME/XDG and the
+      # self-update guard only, expecting the installer's exact version format
+      # and no native onboarding profile.
+      versionHome="$TMPDIR/gentle-ai-version-home"
+      mkdir -p "$versionHome"
+      HOME="$versionHome" \
+      XDG_CONFIG_HOME="$versionHome/config" \
+      XDG_DATA_HOME="$versionHome/data" \
+      XDG_CACHE_HOME="$versionHome/cache" \
+      GENTLE_AI_NO_SELF_UPDATE=1 \
+        ${tools.gentle-ai.package}/bin/gentle-ai version > "$TMPDIR/gentle-ai-version.out" || {
+          echo 'gentle-ai version command failed' >&2
+          exit 1
+        }
+      grep -qx 'gentle-ai 4.0.0' "$TMPDIR/gentle-ai-version.out" || {
+        echo "unexpected gentle-ai version output: $(cat "$TMPDIR/gentle-ai-version.out")" >&2
+        exit 1
+      }
+      test ! -e "$versionHome/.pi" || {
+        echo 'gentle-ai version run created a native onboarding profile' >&2
+        exit 1
+      }
       ${lib.concatMapStringsSep "\n" (name: ''
           test -d ${enabled.home-files}/${piRoot}${name}
           test ! -L ${enabled.home-files}/${piRoot}${name}
