@@ -119,13 +119,33 @@
   # writes to, and given concrete sandbox paths through
   # `builtins.placeholder "out"` so the generated text operates inside this
   # check's build directory.
+  # The stub mirrors nix-darwin's own shape (`types.lines` per entry, which is
+  # what makes `mkAfter` mergeable), because the adapter publishes its fragment
+  # through `postActivation` after the custom entry name trap.
+  # Minimal module-system surface that the adapter and the Darwin suite touch.
+  # `system.activationScripts` mirrors nix-darwin's own shape (`types.lines` per
+  # entry, which is what makes `mkAfter` mergeable), because the adapter
+  # publishes its fragment through `postActivation` after the custom entry name
+  # trap. `assertions` is declared because nix-darwin declares it and the
+  # adapter now carries a guard in it.
+  harnessStub = {
+    options = {
+      assertions = lib.mkOption {type = lib.types.listOf lib.types.unspecified;};
+      system.activationScripts = lib.mkOption {
+        type = lib.types.attrsOf (lib.types.submodule {
+          options.text = lib.mkOption {
+            type = lib.types.lines;
+            default = "";
+          };
+        });
+        default = {};
+      };
+    };
+  };
+
   adapterModules = [
     ../../modules/darwin/services/docker-socket
-    {
-      options.system.activationScripts = lib.mkOption {
-        type = lib.types.attrsOf lib.types.anything;
-      };
-    }
+    harnessStub
   ];
 
   adapterFor = socketName:
@@ -143,7 +163,7 @@
         ];
     };
   socketAdapter = adapterFor "docker.sock";
-  activationFragment = socketAdapter.config.system.activationScripts.docker-socket.text;
+  activationFragment = socketAdapter.config.system.activationScripts.postActivation.text;
 
   # The fragment calls Darwin's absolute activation-time tool paths
   # (`/usr/bin/readlink`, `/bin/echo`, `/usr/bin/ln`). The symlink state
@@ -180,7 +200,7 @@
       .config
       .system
       .activationScripts
-      .docker-socket
+      .postActivation
       .text).success;
 
   # With `enable = false` the adapter must contribute nothing.
@@ -202,10 +222,9 @@
         [
           ../../modules/darwin/suites/development
           ../../modules/darwin/services/docker-socket
+          harnessStub
           {
             options = {
-              assertions = lib.mkOption {type = lib.types.listOf lib.types.unspecified;};
-              system.activationScripts = lib.mkOption {type = lib.types.attrsOf lib.types.anything;};
               homebrew.casks = lib.mkOption {
                 type = lib.types.listOf lib.types.str;
                 default = [];
@@ -317,7 +336,15 @@
     # must contribute nothing to `system.activationScripts`.
     (!(adapterOptionTree.targetPath ? default))
     missingTargetPathThrows
-    (!(disabledAdapter.config.system.activationScripts ? docker-socket))
+    (!(disabledAdapter.config.system.activationScripts ? postActivation))
+
+    # Reachability contract: nix-darwin runs only the entry names it inlines in
+    # its own activate script, so the fragment must be published through one of
+    # them. A custom entry name is accepted by the module system and never
+    # executed — that is how this fragment stayed dead until a functional host
+    # check found /var/run/docker.sock missing.
+    (!(socketAdapter.config.system.activationScripts ? docker-socket))
+    (lib.hasInfix "refusing to replace" activationFragment)
 
     # T8b: the Darwin development suite's evaluation-time conflict guard
     # fires only when the Docker Desktop cask and the adapter are both
