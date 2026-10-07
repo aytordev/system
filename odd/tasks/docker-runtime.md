@@ -202,18 +202,22 @@ records this and the runtime is installed from exactly one source: nixpkgs.
       rejected alternatives with their reasons, the two observed Colima behaviours, and
       the consequences (one socket owner, opt-in shim, no plugin wiring, one install
       source, start-on-demand VM cost).
-- [ ] T3 — New home capability `aytordev.programs.terminal.tools.docker`
-      (`package = pkgs.docker-client`, which already bundles the Compose and Buildx
-      plugins in its runtime closure; the capability writes nothing under `~/.docker`).
-      Add `pkgs.docker-compose` to `home.packages` only if the hyphenated name must
-      belong to Docker, which is exactly what makes the Podman shim opt-in (D3/T5).
-- [ ] T4 — New home capability `aytordev.programs.terminal.tools.colima`
-      (`package = pkgs.colima`; no autostart by default — `brew services` is not
-      available to a nixpkgs install, so decoration is either manual `colima start` or
-      an explicit Home Manager launchd agent).
-- [ ] T5 — Make the podman-compose shim opt-in and keep the `containers.conf` provider
-      pin; reference ADR 0019 from `modules/home/AGENTS.md` and `modules/darwin/AGENTS.md`
-      so the container-runtime protocol is discoverable next to the code it governs.
+- [x] T3 — `modules/home/programs/terminal/tools/docker/default.nix` created:
+      `aytordev.programs.terminal.tools.docker` with `enable` and
+      `package = mkPackageOption pkgs "docker-client" {}`, emitting only
+      `home.packages`. The comment records why nothing is written under `~/.docker`.
+      `pkgs.docker-compose` was deliberately **not** added.
+- [x] T4 — `modules/home/programs/terminal/tools/colima/default.nix` created:
+      `aytordev.programs.terminal.tools.colima` with `enable` and
+      `package = mkPackageOption pkgs "colima" {}`. No `lima`/`qemu` added because both
+      are already in colima's runtime closure, and no autostart: the comment records that
+      upstream's `brew services start colima` does not apply to a nixpkgs install.
+- [x] T5 — Shim made opt-in in
+      `modules/home/programs/terminal/tools/podman-compose/default.nix`: a new
+      `dockerComposeShim.enable` (`mkEnableOption`, default false) guards only
+      `dockerComposeCompat` in `home.packages`; `package` and the `containers.conf`
+      provider pin are behaviourally unchanged. The ADR references in the AGENTS.md files
+      moved to T11, outside that task's edit surfaces.
 - [ ] T6 — Darwin: privileged `/var/run/docker.sock` adapter (idempotent activation)
       plus the rename of the cask flag to `dockerDesktopEnable`, and a conflict
       assertion when the Desktop cask is enabled together with Colima.
@@ -228,7 +232,8 @@ records this and the runtime is installed from exactly one source: nixpkgs.
       `nix build .#darwinConfigurations.civislend.system`.
 - [ ] T11 — Host functional verification after the user runs
       `just darwin-switch civislend`: `docker run`, `docker compose up`, `podman run`,
-      `docker context ls`. Then update README/AGENTS docs.
+      `docker context ls`. Then reference ADR 0019 from `modules/home/AGENTS.md` and
+      `modules/darwin/AGENTS.md`, per `docs/AGENTS.md`, and update the README docs.
 
 ## Risks and open questions
 
@@ -254,3 +259,8 @@ records this and the runtime is installed from exactly one source: nixpkgs.
 - **Unrelated dirty state** in `flake.lock` and `flake/dev/flake.lock` (15 changed
   lines, input revisions) belongs to no task here. By explicit user instruction it is left
   untouched and must not be swept into this feature's commits.
+- **Operational note: `.#` cannot see untracked files.** Nix's `git+file` fetch excludes
+  them, so any `.#`-based verification silently evaluates a tree without new modules.
+  New capability files must be staged before `just docs-golden` or any
+  `nix build .#…` check is treated as evidence; the T3–T5 receipts were re-run after
+  staging for exactly that reason.
