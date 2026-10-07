@@ -52,3 +52,11 @@ against the repo-pinned nixpkgs:
   policy, not just swapping a package.
 - Colima is MIT but effectively maintained by one person; the provider stays behind a
   capability so it can be replaced without editing its consumers.
+- The socket adapter must publish through an entry that nix-darwin actually inlines in
+  its activate script — `postActivation` today. A custom
+  `system.activationScripts.<name>` is a valid option that is **never executed**: it gets
+  its own derivation and appears in the option surface, so nothing complains while the
+  host stays unconfigured. Publishing there left this host silently without
+  `/var/run/docker.sock` until a functional host check found it. The module now asserts
+  that its fragment is present in `system.activationScripts.script.text`, which is the
+  script that runs, so a regression fails at evaluation instead of on the machine.

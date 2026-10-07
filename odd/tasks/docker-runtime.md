@@ -314,7 +314,30 @@ records this and the runtime is installed from exactly one source: nixpkgs.
       `just darwin-switch civislend`: `docker run`, `docker compose up`, `podman run`,
       `docker context ls`, and that `/var/run/docker.sock` exists and points at the Colima
       socket. The ADR references in the AGENTS.md files landed in T6/T7; update other
-      human-facing docs only if they actually enumerate container tooling.
+      human-facing docs only if they actually enumerate container tooling. **First attempt
+      (2026-10-07) did the switch, found the dead fragment below, and requires a re-switch
+      after T12 before the functional checks can run.**
+- [x] T12 — **The host verification caught the fragment never running.**
+      `/var/run/docker.sock` did not exist after the switch, and the activated
+      `/run/current-system/activate` contained none of the fragment. Root cause, read from
+      nix-darwin's own `modules/system/activation-scripts.nix`: its top-level activate
+      script inlines a **fixed allow-list** of entry names (`preActivation` … `homebrew`,
+      `postActivation`), so a custom `system.activationScripts.<name>` is a valid option
+      that is never executed. Fixed by publishing through
+      `system.activationScripts.postActivation.text` with `lib.mkAfter` (the entry's `text`
+      is `types.lines`, so concurrent writers concatenate), and by adding a module
+      assertion that the fragment is present in
+      `system.activationScripts.script.text` — the script that actually runs. The check
+      gained the same reachability contract (`!(… ? docker-socket)` plus the fragment being
+      in `postActivation.text`). Evidence: the real civislend config now contains the
+      fragment three times inside `script.text`, every entry in `config.assertions` is
+      `true`, the option-docs golden is unchanged, and the full `nix flake check` reports
+      "all checks passed!".
+- [ ] T13 — **Open, deliberately not bundled here**: `modules/darwin/system/rosetta/default.nix`
+      publishes `system.activationScripts.rosetta`, so the Rosetta 2 fragment has never run
+      either — `Installing Rosetta 2` is absent from the activated script while
+      `aytordev.system.rosetta.enable` is `true` on civislend. It is the same defect class as
+      T12 and belongs in its own work unit, not in this feature's candidate.
 
 ## Risks and open questions
 
