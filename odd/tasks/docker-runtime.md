@@ -316,7 +316,16 @@ records this and the runtime is installed from exactly one source: nixpkgs.
       socket. The ADR references in the AGENTS.md files landed in T6/T7; update other
       human-facing docs only if they actually enumerate container tooling. **First attempt
       (2026-10-07) did the switch, found the dead fragment below, and requires a re-switch
-      after T12 before the functional checks can run.**
+      after T12 before the socket checks can run.**
+      **Partial functional evidence, on the activated system without the T12 fix**: `colima
+      start` works, `docker run hello-world` succeeds, `docker context show` is `colima`
+      pointing at `unix:///Users/avicente/.config/colima/default/docker.sock`, and all three
+      binaries are on PATH from the Home side — so the CLI path never needed the standard
+      socket. Only a client that hardcodes `unix:///var/run/docker.sock` fails
+      (`connect: no such file or directory`). The missing publication is therefore not a
+      blocker for CLI workflows; it matters for tools that ignore Docker contexts. Still
+      pending: the same functional checks after the re-switch, plus `podman run`
+      coexistence.
 - [x] T12 — **The host verification caught the fragment never running.**
       `/var/run/docker.sock` did not exist after the switch, and the activated
       `/run/current-system/activate` contained none of the fragment. Root cause, read from
