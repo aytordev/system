@@ -16,7 +16,7 @@ in {
       desktop.enable = lib.mkDefault true;
       development = {
         enable = lib.mkDefault true;
-        dockerEnable = lib.mkDefault false;
+        dockerDesktopEnable = lib.mkDefault false;
         podmanEnable = lib.mkDefault true;
       };
       networking.enable = lib.mkDefault true;

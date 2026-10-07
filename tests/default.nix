@@ -60,7 +60,7 @@
               type = lib.types.bool;
               default = false;
             };
-            dockerEnable = lib.mkOption {
+            dockerDesktopEnable = lib.mkOption {
               type = lib.types.bool;
               default = false;
             };

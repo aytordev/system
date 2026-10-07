@@ -163,6 +163,12 @@ macOS-specific system services and daemons.
 User-facing services (launchd agents) belong in Home Manager under
 `modules/home/services/`, per the home-first principle.
 
+The `docker-socket` adapter publishes the provider Docker socket at
+`/var/run/docker.sock`, refuses to replace an entry it does not own, and must
+never be enabled alongside the Docker Desktop cask: exactly one provider may
+own that socket. See `docs/decisions/0019-container-runtime-policy.md` for the
+full container-runtime protocol.
+
 **Service patterns:**
 
 ```nix
