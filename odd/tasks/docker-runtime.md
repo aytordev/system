@@ -281,17 +281,40 @@ records this and the runtime is installed from exactly one source: nixpkgs.
       `aytordev.services.docker-socket` with its explicit `targetPath` in
       `systems/aarch64-darwin/civislend/default.nix`; (d) reference ADR 0019 from
       `modules/home/AGENTS.md`; (e) confirm the home golden is unchanged.
-- [ ] T8 — Checks: register the new capabilities in `checks/module-contract`, replace
-      the `dockerEnable` portability assertion with the new invariant, extend
-      `tests/default.nix` synthetic options.
-- [ ] T9 — Regenerate `checks/docs-generation/golden/{darwin,home}.txt`.
-- [ ] T10 — Verification: `nix flake check --override-input secrets
-      path:./checks/fixtures/secrets` and
-      `nix build .#darwinConfigurations.civislend.system`.
-- [ ] T11 — Host functional verification after the user runs
+- [x] T8 — **done**, in two units. **T8a**: new `checks/container-runtime` with six
+      synthetic homes asserting the policy (podman-only yields the shim, docker-only and
+      both-runtimes give the hyphenated name to Docker, lazydocker follows either runtime,
+      Podman stays installed, the two-owners guard fires, package options stay replaceable,
+      and nothing under `~/.docker` is managed), plus a `runCommand` body validating the real
+      `docker`, `docker-compose` and `colima` artifacts with no daemon, network or VM; the two
+      capabilities registered in `checks/module-contract`; the renamed archetype default locked
+      in the nix-unit suite; the new check listed in `checks/AGENTS.md`. **T8b**: the privileged
+      fragment is now *executed* — the adapter is evaluated standalone with `lib.evalModules`,
+      published into the check's own build directory through `builtins.placeholder`, and run
+      against four real filesystem states (create with a dangling target, an idempotent silent
+      second run, a foreign symlink owner, a regular-file owner), each refusal leaving the entry
+      untouched, naming the owner and the remediation, and exiting zero; plus the `targetPath`
+      no-default contract, the disabled-adapter no-op, and the Darwin conflict guard firing only
+      when both providers are requested. Both units carried a negative control that was observed
+      to fail before being restored. The `!(developmentOptions ? dockerEnable)` assertion in
+      `checks/home-portability` was left as is: it is the guard that forced this design and it
+      already covers the decision, so the new check adds the behaviour it never had.
+      Evidence: `integration-container-runtime`, `integration-module-contract`, `unit-nix-unit`
+      and the Linux evaluation of the new check all pass.
+- [x] T9 — **done**. `checks/docs-generation/golden/{darwin,home}.txt` were regenerated
+      natively under `.#` after each task and are stable: re-running the recipe produces no
+      worktree change, `integration-docs-generation` passes, and the final
+      `nix flake check` builds it along with everything else.
+- [x] T10 — **done**. `nix flake check --no-build --all-systems` and the full
+      `nix flake check` (build every check) both report "all checks passed!" on
+      aarch64-darwin, with `--override-input secrets path:./checks/fixtures/secrets`, and the
+      real `darwinConfigurations.civislend.system` builds. Not covered here: an
+      x86_64-linux **build** (only its evaluation), which CI performs.
+- [ ] T11 — Host functional verification, after the user runs
       `just darwin-switch civislend`: `docker run`, `docker compose up`, `podman run`,
-      `docker context ls`. Then reference ADR 0019 from `modules/home/AGENTS.md` and
-      `modules/darwin/AGENTS.md`, per `docs/AGENTS.md`, and update the README docs.
+      `docker context ls`, and that `/var/run/docker.sock` exists and points at the Colima
+      socket. The ADR references in the AGENTS.md files landed in T6/T7; update other
+      human-facing docs only if they actually enumerate container tooling.
 
 ## Risks and open questions
 
