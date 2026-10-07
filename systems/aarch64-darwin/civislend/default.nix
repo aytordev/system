@@ -24,6 +24,14 @@ in {
       workstation = enabled;
     };
 
+    # Publish the Colima Docker socket at the path docker-aware tools hardcode
+    # (ADR 0019). The link dangles while the VM is stopped, which is the same
+    # practical outcome as the socket not existing.
+    services.docker-socket = {
+      enable = true;
+      targetPath = "/Users/${username}/.config/colima/default/docker.sock";
+    };
+
     # SOPS is enabled so Pi can wire the nan.builders provider from the
     # SOPS-managed API key. Requires the machine's age key and a
     # `hard-secrets/${username}.yaml` entry in the private secrets flake.
