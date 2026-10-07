@@ -148,9 +148,33 @@ Therefore:
 
 ### D4 — Disambiguate the flag names
 
-`dockerEnable` currently means "install the Docker Desktop cask", which collides with
-the new meaning "the docker capability is on". The Darwin cask flag becomes
-`dockerDesktopEnable`; `dockerEnable` at the home suite means the Docker CLI + engine.
+The Darwin cask flag becomes `dockerDesktopEnable`; the Home capability
+`aytordev.programs.terminal.tools.docker` is what actually means "docker is available".
+
+**No home suite flag is added.** `checks/home-portability/default.nix:255` asserts that the
+home development suite has no `dockerEnable`, next to `azureEnable`, `gameEnable`,
+`goEnable` and `sqlEnable`: platform and host decisions do not become home booleans. The
+runtime choice is therefore expressed directly on the capabilities, and each concrete host
+selects it — which is both ADR-0008-compliant and more precise than one flag standing for
+two programs.
+
+### D6 — Who publishes the hyphenated `docker-compose`
+
+Exactly one package may publish `bin/docker-compose` in `home.packages`; two is a build
+collision. The rule: **Docker owns the Docker name whenever the docker capability is
+enabled**. `docker` publishes `pkgs.docker-compose` (the Compose binary, which also serves
+the `docker compose` subcommand form as the plugin already inside `docker-client`), and the
+Podman shim serves the legacy name only on hosts with no Docker. The suite derives both
+sides with `mkDefault` and asserts if the two are ever explicitly requested together.
+
+### D7 — The privileged socket adapter publishes, never clobbers
+
+A Darwin adapter owns `/var/run/docker.sock`, pointing at the Colima socket, because
+tools that hardcode that path ignore Docker contexts. It is idempotent and refuses to
+replace an entry it does not own, and the pair (Docker Desktop cask + this adapter) is
+rejected by an evaluation-time assertion. The symlink dangles while the Colima VM is
+stopped, which is the same practical outcome as the socket not existing: a running VM is a
+precondition either way.
 
 ### D5 — PATH precedence is a documented hazard
 
@@ -218,11 +242,45 @@ records this and the runtime is installed from exactly one source: nixpkgs.
       `dockerComposeCompat` in `home.packages`; `package` and the `containers.conf`
       provider pin are behaviourally unchanged. The ADR references in the AGENTS.md files
       moved to T11, outside that task's edit surfaces.
-- [ ] T6 — Darwin: privileged `/var/run/docker.sock` adapter (idempotent activation)
-      plus the rename of the cask flag to `dockerDesktopEnable`, and a conflict
-      assertion when the Desktop cask is enabled together with Colima.
-- [ ] T7 — Home `development` suite: compose `dockerEnable`/`dockerDesktopEnable`/
-      `podmanEnable` with `mkDefault`; single default runtime; no silent overlap.
+- [x] T6 — **done**. `modules/darwin/services/docker-socket/default.nix` created with the
+      three-branch idempotent fragment; `dockerEnable` renamed to `dockerDesktopEnable` in the
+      suite, the workstation archetype and the `tests/default.nix` stub; the eval-time conflict
+      assertion landed; the Darwin golden was regenerated natively and is stable under `.#`;
+      ADR 0019 is referenced from `modules/darwin/AGENTS.md`. Native receipts after staging the
+      new module: `integration-synthetic-darwin`, `integration-docs-generation`,
+      `integration-module-contract` and `unit-architecture-layers` all build, and `nix fmt`
+      changed nothing.
+      Frozen spec as implemented: (a) new `modules/darwin/services/docker-socket/default.nix`
+      owning `aytordev.services.docker-socket` with `enable`, `socketPath` (default
+      `/var/run/docker.sock`) and a **required** `targetPath` (no derived default, so option
+      evaluation never forces user identity); (b) a named
+      `system.activationScripts.docker-socket` fragment that is idempotent, compares the
+      current symlink target, and on a foreign owner prints a loud error and leaves it
+      untouched instead of clobbering or aborting the whole activation; (c) rename
+      `dockerEnable` → `dockerDesktopEnable` in the darwin suite, the workstation archetype
+      and the `tests/default.nix` synthetic stub; (d) an eval-time assertion in the darwin
+      development suite rejecting the Desktop cask together with the adapter; (e) reference
+      ADR 0019 from `modules/darwin/AGENTS.md`.
+- [x] T7 — **done**. The home suite derives `lazydocker` from either runtime and yields the
+      hyphenated name whenever Docker is on, with an assertion against two owners; the docker
+      capability publishes `pkgs.docker-compose`; civislend enables `docker` + `colima` and the
+      socket adapter with an explicit target. Verified natively on the real host configuration:
+      `docker.enable = true`, `colima.enable = true`, `dockerComposeShim.enable = false`,
+      `lazydocker.enable = true`, adapter target
+      `/Users/avicente/.config/colima/default/docker.sock`; home golden unchanged; five focused
+      checks and the real `darwinConfigurations.civislend.system` build all pass. The delegated
+      writer timed out after writing every surface and before reporting, so the parent ran the
+      entire verification itself rather than accepting an unreported claim.
+      Frozen spec as implemented: (a) `modules/home/suites/development/default.nix` derives
+      `lazydocker.enable = mkDefault (podmanEnable || docker.enable)`,
+      `podman-compose.dockerComposeShim.enable = mkDefault (podmanEnable && !docker.enable)`
+      and adds an assertion rejecting docker plus the shim; (b) the docker capability
+      publishes `pkgs.docker-compose` so Docker owns the hyphenated name (D6); (c) the
+      host files enable the capabilities — `programs.terminal.tools.{docker,colima}.enable`
+      in `homes/aarch64-darwin/avicente@civislend/default.nix` and
+      `aytordev.services.docker-socket` with its explicit `targetPath` in
+      `systems/aarch64-darwin/civislend/default.nix`; (d) reference ADR 0019 from
+      `modules/home/AGENTS.md`; (e) confirm the home golden is unchanged.
 - [ ] T8 — Checks: register the new capabilities in `checks/module-contract`, replace
       the `dockerEnable` portability assertion with the new invariant, extend
       `tests/default.nix` synthetic options.
@@ -259,6 +317,11 @@ records this and the runtime is installed from exactly one source: nixpkgs.
 - **Unrelated dirty state** in `flake.lock` and `flake/dev/flake.lock` (15 changed
   lines, input revisions) belongs to no task here. By explicit user instruction it is left
   untouched and must not be swept into this feature's commits.
+- **Delegation incident during T7.** The writer timed out after applying all five surfaces
+  but before reporting. Its work was complete, so nothing was lost, but every claim in this
+  document was re-verified by the parent: a timed-out writer leaves unverified surfaces, not
+  accepted ones, and its partial output must never be committed on the strength of its own
+  silence.
 - **Operational note: `.#` cannot see untracked files.** Nix's `git+file` fetch excludes
   them, so any `.#`-based verification silently evaluates a tree without new modules.
   New capability files must be staged before `just docs-golden` or any
