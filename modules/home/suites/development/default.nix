@@ -13,6 +13,7 @@
   # body uses bash syntax; fish needs `set -gx`/`(cat ...)`).
   cfg = config.aytordev.suites.development;
   isWSL = osConfig.aytordev.archetypes.wsl.enable or false;
+  dockerOn = config.aytordev.programs.terminal.tools.docker.enable;
 
   # Bash-specific aliases (uses bash syntax like $(), f(){}, $VAR)
   bashAliases = {
@@ -54,6 +55,17 @@ in {
   };
 
   config = mkIf cfg.enable {
+    # The hyphenated `docker-compose` name may have exactly one provider in
+    # `home.packages`: `pkgs.docker-compose` (from the docker capability) and
+    # the Podman shim both publish that path, so requesting both is a build
+    # collision (ADR 0019 D6). Disable one of the two.
+    assertions = [
+      {
+        assertion = !(dockerOn && config.aytordev.programs.terminal.tools.podman-compose.dockerComposeShim.enable);
+        message = "aytordev.suites.development: the docker capability and podman-compose.dockerComposeShim both publish bin/docker-compose; exactly one may own that name — disable the shim when Docker is enabled.";
+      }
+    ];
+
     home = {
       packages = with pkgs;
         [
@@ -130,8 +142,11 @@ in {
             jujutsu = mkDefault enabled;
             jjui = mkDefault enabled;
             k9s.enable = mkDefault cfg.kubernetesEnable;
-            lazydocker.enable = mkDefault cfg.podmanEnable;
+            # Container runtimes: Docker (via Colima) and Podman are separate
+            # capabilities; the suite only derives the shared tooling (ADR 0019).
+            lazydocker.enable = mkDefault (cfg.podmanEnable || dockerOn);
             podman-compose.enable = mkDefault cfg.podmanEnable;
+            podman-compose.dockerComposeShim.enable = mkDefault (cfg.podmanEnable && !dockerOn);
             lazygit = mkDefault enabled;
             # oh-my-posh = mkDefault enabled;  # TODO: module doesn't exist
           };

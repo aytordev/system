@@ -135,6 +135,8 @@
 ## aytordev\.programs\.terminal\.tools\.btop\.theme
 ## aytordev\.programs\.terminal\.tools\.carapace\.enable
 ## aytordev\.programs\.terminal\.tools\.carapace\.package
+## aytordev\.programs\.terminal\.tools\.colima\.enable
+## aytordev\.programs\.terminal\.tools\.colima\.package
 ## aytordev\.programs\.terminal\.tools\.comma\.enable
 ## aytordev\.programs\.terminal\.tools\.comma\.package
 ## aytordev\.programs\.terminal\.tools\.dircolors\.enable
@@ -143,6 +145,8 @@
 ## aytordev\.programs\.terminal\.tools\.direnv\.package
 ## aytordev\.programs\.terminal\.tools\.direnv\.nix-direnv
 ## aytordev\.programs\.terminal\.tools\.direnv\.silent
+## aytordev\.programs\.terminal\.tools\.docker\.enable
+## aytordev\.programs\.terminal\.tools\.docker\.package
 ## aytordev\.programs\.terminal\.tools\.engram\.enable
 ## aytordev\.programs\.terminal\.tools\.engram\.package
 ## aytordev\.programs\.terminal\.tools\.eza\.enable
@@ -247,6 +251,7 @@
 ## aytordev\.programs\.terminal\.tools\.pi\.startup-header\.maxWidthCells
 ## aytordev\.programs\.terminal\.tools\.podman-compose\.enable
 ## aytordev\.programs\.terminal\.tools\.podman-compose\.package
+## aytordev\.programs\.terminal\.tools\.podman-compose\.dockerComposeShim\.enable
 ## aytordev\.programs\.terminal\.tools\.rainfrog\.enable
 ## aytordev\.programs\.terminal\.tools\.rainfrog\.package
 ## aytordev\.programs\.terminal\.tools\.rclone\.enable

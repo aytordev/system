@@ -18,11 +18,23 @@
 in {
   options.aytordev.programs.terminal.tools.podman-compose = {
     enable = mkEnableOption "podman-compose";
+
     package = mkPackageOption pkgs "podman-compose" {};
+
+    dockerComposeShim = {
+      # The bare hyphenated `docker-compose` name is a real collision: Docker
+      # must be able to own it (ADR-0019), so the Podman shim is opt-in instead
+      # of derived from this capability. `docker compose` (subcommand form)
+      # never resolves through PATH — verified with a shadowing experiment —
+      # so only the hyphenated alias is gated.
+      enable = mkEnableOption "the docker-compose-to-podman compatibility shim";
+    };
   };
 
   config = mkIf cfg.enable {
-    home.packages = [cfg.package dockerComposeCompat];
+    home.packages =
+      [cfg.package]
+      ++ lib.optionals cfg.dockerComposeShim.enable [dockerComposeCompat];
 
     # Pin `podman compose` to the provider this module installs. The absolute
     # store path keeps the lookup off PATH, so it can never re-enter the

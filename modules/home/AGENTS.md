@@ -59,6 +59,9 @@ CLI tools and terminal programs.
   `~/.config/mcp/mcp.json`), `pen` (Pen desktop MCP bridge; wraps the server
   bundled in `Pen.app` as `pen-mcp` and registers it).
 - **Emulators:** ghostty
+- **Container runtimes:** `docker` (Colima-backed) and `podman` are separate
+  capabilities; exactly one owner publishes the hyphenated `docker-compose`
+  name. See `docs/decisions/0019-container-runtime-policy.md`.
 
 **Pattern:**
 
