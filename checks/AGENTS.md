@@ -19,7 +19,7 @@ any other check directory becomes integration.
   `library-overlay`, `lua-shell-quoting`, `nix-unit`, `parse-lix`,
   `parse-nix`).
 - `integration-*`: Synthetic Home Manager and system compositions
-  (`docs-generation`, `home-bitwarden`, `home-identity`, `home-module`,
+  (`container-runtime`, `docs-generation`, `home-bitwarden`, `home-identity`, `home-module`,
   `home-portability`,
   `module-contract`, `shell-init-uniqueness`, `shell-runtime-syntax`,
   `shell-history-privacy`, `shell-closure`, `activation-dry-run`,

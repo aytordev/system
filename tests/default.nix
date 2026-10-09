@@ -60,7 +60,7 @@
               type = lib.types.bool;
               default = false;
             };
-            dockerEnable = lib.mkOption {
+            dockerDesktopEnable = lib.mkOption {
               type = lib.types.bool;
               default = false;
             };
@@ -108,11 +108,12 @@ in
     testArchetypesAllowHostOverrides = {
       expr = {
         inherit (archetypes.config.aytordev.suites) common music;
-        inherit (archetypes.config.aytordev.suites.development) podmanEnable;
+        inherit (archetypes.config.aytordev.suites.development) dockerDesktopEnable podmanEnable;
       };
       expected = {
         common.enable = false;
         music.enable = false;
+        dockerDesktopEnable = false;
         podmanEnable = false;
       };
     };

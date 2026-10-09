@@ -20,12 +20,12 @@ not inherit the shell profile's PATH.
 
 | Topic         | Behavior                                                                                                                                 |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Published     | Only `GENTLE_PI_AGENTS_PI`, pointing at the absolute `pi` from the configured `package`; never a PATH change or any other variable         |
+| Published     | Only `GENTLE_PI_AGENTS_PI`, pointing at the stable Home Manager profile command `<profileDirectory>/bin/pi` for the configured `package`; never a PATH change or any other variable |
 | Scope         | Future GUI processes only; already-running apps (including an open Pen) keep their current environment until relaunched                    |
 | Agent         | One-shot user LaunchAgent (`RunAtLoad`, no `KeepAlive`): runs when loaded and at each login                                                |
 | Repair        | Every activation while enabled re-runs the publisher, so a lost login environment or a failed agent run is repaired without waiting        |
 | State         | The successfully published value is tracked privately (0700 directory, 0600 files, atomic rename) in `~/.local/state/aytordev/pi-gui-environment/` |
-| Updates       | A previously managed value (e.g. after a package change) is reconciled to the new command                                                  |
+| Updates       | Version-independent by design: the published value does not change when `package` changes, and the in-place profile re-point reaches every later spawn, so a captured override follows an upgrade with no republish. A pre-existing version-pinned managed value is reconciled to the stable command |
 | Ownership     | A live value that matches the desired command but has no managed state is never adopted: it may be a same-valued foreign publication       |
 | Overrides     | A live value that is neither empty nor the managed value is a foreign override: it is never clobbered or unset, including on package change |
 | Serialization | The agent and the activation repair serialize on a bounded lock (see limitations)                                                           |
@@ -39,6 +39,15 @@ not inherit the shell profile's PATH.
   publication (or after their next launch) inherit the value; running apps,
   including an open Pen, do not — until relaunched. Terminal shells usually
   resolve `pi` through their profile instead.
+- The published command is the profile indirection, not a pinned package
+  build, so an upgrade needs neither a republish nor a relaunch to take
+  effect: a long-lived GUI host keeps resolving the current `pi`. A host that
+  captured an **older version-pinned** publication (from before this behavior)
+  must be relaunched once; no publication can rewrite the environment of an
+  already-running process.
+- The stable command is correct only because the Pi module puts `cfg.package`
+  in `home.packages`, making `<profileDirectory>/bin/pi` the configured `pi`.
+  A profile path published without that guarantee would be dangling.
 - No startup-order guarantee against applications restored at login; restored
   apps may capture the environment before the agent or repair publishes.
 - The lock never steals a held or abandoned lock: a run waits briefly (~5s),

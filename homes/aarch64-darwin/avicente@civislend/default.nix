@@ -35,8 +35,10 @@ in {
         # remotely. Pi provider configuration and auth are completed by native
         # setup.
         aiEnable = true;
-        # Podman + podman-compose: project docs invoke `docker-compose`, which
-        # the podman-compose capability forwards to `podman compose`.
+        # Podman stays installed and unaffected: it is available as `podman`
+        # and `podman compose` (ADR 0019). The podman-compose capability no
+        # longer forwards `docker-compose` to `podman compose` on this host:
+        # Docker owns the hyphenated name, so the shim defaults off.
         podmanEnable = true;
       };
       business = enabled;
@@ -78,6 +80,11 @@ in {
 
     programs = {
       terminal.tools = {
+        # Docker engine via Colima (ADR 0019): the provider and the client are
+        # two capabilities. Podman stays installed and unaffected.
+        docker.enable = true;
+        colima.enable = true;
+
         # Official executable only; native onboarding owns the Pi profile.
         gentle-ai.enable = true;
 

@@ -14,9 +14,15 @@
   gui = cfg.guiEnvironment;
 
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-  # Absolute command derived from the configured package; never a hardcoded
-  # user or profile path.
-  piCommand = lib.getExe' cfg.package "pi";
+  # Stable command: the Home Manager profile exposes the configured package's
+  # `pi` (`home.packages = [cfg.package]` in the sibling module) and every
+  # activation re-points that profile in place. A GUI host captures this
+  # override once and never re-reads it, so publishing the package's
+  # version-pinned store path would strand the host on an older, still
+  # executable `pi` after an upgrade
+  # (odd/tasks/pi-gui-environment-stable-command.md). Never a hardcoded user
+  # or profile path.
+  piCommand = "${config.home.profileDirectory}/bin/pi";
 
   # Private state: only the successfully published value is tracked, with
   # 0700 directory and 0600 file permissions.

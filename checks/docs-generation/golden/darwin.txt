@@ -26,6 +26,9 @@
 ## aytordev\.security\.sops\.defaultSopsFile
 ## aytordev\.security\.sops\.secrets
 ## aytordev\.security\.sudo\.enable
+## aytordev\.services\.docker-socket\.enable
+## aytordev\.services\.docker-socket\.socketPath
+## aytordev\.services\.docker-socket\.targetPath
 ## aytordev\.services\.jankyborders\.enable
 ## aytordev\.services\.jankyborders\.logPath
 ## aytordev\.services\.openssh\.enable
@@ -35,7 +38,7 @@
 ## aytordev\.suites\.common\.enable
 ## aytordev\.suites\.desktop\.enable
 ## aytordev\.suites\.development\.enable
-## aytordev\.suites\.development\.dockerEnable
+## aytordev\.suites\.development\.dockerDesktopEnable
 ## aytordev\.suites\.development\.podmanEnable
 ## aytordev\.suites\.music\.enable
 ## aytordev\.suites\.networking\.enable
