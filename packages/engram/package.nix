@@ -4,7 +4,7 @@
   fetchFromGitHub,
   ...
 }: let
-  version = "2.0.0-rc.11";
+  version = "3.1.0";
 in
   buildGoModule {
     pname = "engram";
@@ -14,16 +14,20 @@ in
       owner = "Gentleman-Programming";
       repo = "engram";
       rev = "v${version}";
-      hash = "sha256-Zy+RRs9IJ3ETLsiBrxFICdrMpmCnJH2gLR7QjMDNbHA=";
+      hash = "sha256-Dyzi/OH0XwT3Z1QfDM/Tvd6bYcXvQux/jff86st5t30=";
     };
 
-    vendorHash = "sha256-tLWuHdnJgBSlzcyvXLzxtvzHSgoZqVXhmUjg2phBgYw=";
+    vendorHash = "sha256-roVQ+K9Hsz0qi61f+zzb+JvgleOmBHSMcKfhwhI0snQ=";
 
     subPackages = ["cmd/engram"];
 
-    # v2.0.0-rc adds autosync e2e tests that bind a loopback port via
-    # `httptest`, which the Nix sandbox forbids. The package compiles cleanly;
-    # only the sandbox-incompatible checks are skipped.
+    # v2.0.0-rc and v3.1.0 autosync e2e tests bind a loopback port via
+    # `httptest`, which the Nix sandbox forbids. Re-verified against 3.1.0 by
+    # temporarily enabling the checks: `net/http/httptest.newLocalListener`
+    # panics from `cmd/engram/autosync_e2e_test.go` in
+    # TestMutationTransportAdapterForwardsPromptAuthority and `cmd/engram`
+    # fails. The package compiles cleanly; only the sandbox-incompatible
+    # checks are skipped.
     doCheck = false;
 
     ldflags = [
