@@ -102,7 +102,7 @@
     # Regression: the Nix-owned public CLI pin, asserted on the default package
     # only. User overrides stay authoritative; this never rejects custom
     # versions in the module options.
-    packageVersion = tools.gentle-ai.package.version == "4.0.0";
+    packageVersion = tools.gentle-ai.package.version == "4.1.1";
     packagesEnabled = lib.all (name: installed enabled tools.${name}.package) ["pi" "gentle-ai" "engram"];
     packagesDisabled = lib.all (name: !(installed disabled tools.${name}.package)) ["pi" "gentle-ai" "engram"];
     packageOverrides = lib.all (name: overrides.aytordev.programs.terminal.tools.${name}.package == selected) ["pi" "gentle-ai" "engram"] && installed overrides selected;
@@ -170,7 +170,7 @@ in
           echo 'gentle-ai version command failed' >&2
           exit 1
         }
-      grep -qx 'gentle-ai 4.0.0' "$TMPDIR/gentle-ai-version.out" || {
+      grep -qx 'gentle-ai 4.1.1' "$TMPDIR/gentle-ai-version.out" || {
         echo "unexpected gentle-ai version output: $(cat "$TMPDIR/gentle-ai-version.out")" >&2
         exit 1
       }
