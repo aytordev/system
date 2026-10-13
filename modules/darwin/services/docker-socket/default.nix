@@ -57,6 +57,15 @@ in {
     # activation with a non-zero exit would leave the machine half-configured,
     # so a foreign owner only produces a loud error and leaves the entry
     # untouched.
+    #
+    # Tool paths are absolute on purpose: this runs privileged and must not
+    # depend on the ambient `PATH` of `darwin-rebuild switch`. Darwin's layout is
+    # split and differs from Linux, so each path is vetted, never inferred:
+    # `ln` and `echo` live in `/bin`, while `/usr/bin/readlink` is real and
+    # `/bin/readlink` is not. `/usr/bin/ln` does not exist, and because the
+    # generated activate script runs with `set -e`, calling it aborted the whole
+    # activation and left the host on the previous generation. The vetted set is
+    # enforced by `checks/activation-dry-run`.
     system.activationScripts.postActivation.text = lib.mkAfter ''
       socketPath="${cfg.socketPath}"
       targetPath="${cfg.targetPath}"
@@ -72,7 +81,7 @@ in {
       elif [ -L "$socketPath" ] || [ -e "$socketPath" ]; then
         /bin/echo "aytordev.services.docker-socket: refusing to replace $socketPath, which is owned by $(/usr/bin/readlink "$socketPath" 2>/dev/null || /bin/echo "a non-symlink entry (socket or regular file)"). Remove the existing entry or disable the competing provider; exactly one provider may own this socket."
       else
-        /usr/bin/ln -sfn "$targetPath" "$socketPath"
+        /bin/ln -sfn "$targetPath" "$socketPath"
       fi
     '';
 
