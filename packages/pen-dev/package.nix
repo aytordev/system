@@ -5,7 +5,7 @@
   undmg,
   ...
 }: let
-  version = "1.2.14";
+  version = "1.2.16";
 in
   stdenvNoCC.mkDerivation {
     pname = "pen-dev";
@@ -14,10 +14,10 @@ in
     # Pen is the rebranded Pencil canvas app (renamed upstream on 2026-09-17).
     # Releases moved to a new repository, so pin the immutable versioned release
     # asset instead of the site's /download/<name>.dmg alias, which is a moving
-    # target that still serves the retired Pencil 1.2.0 build.
+    # target that follows whatever build upstream publishes last.
     src = fetchurl {
       url = "https://github.com/highagency/pen-desktop-releases/releases/download/v${version}/Pen-${version}-mac-arm64.dmg";
-      hash = "sha256-5e5Z6SjAfOZrgXxtVqIkq+jsqO76qM8WO08NfEq7Liw=";
+      hash = "sha256-0NF37bSyrWFiKghQFjW4Vt3DYRSqxtDud/6wirQB6n8=";
     };
 
     nativeBuildInputs = [undmg];
