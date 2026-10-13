@@ -137,12 +137,14 @@ Host prerequisites for Shell 4.1.0 are already satisfied on `civislend`: Pi
   two platforms; engine check GREEN; eight related AI-tools checks exit 0;
   `just fmt-check` exit 0; `just darwin-build civislend` exit 0 to
   `/nix/store/s4pqwzzw6rwpn0jg9jchdq5qy20pxnw8-darwin-system-26.11.4cff07d`
-  whose closure carries `gentle-ai-4.1.1` and unchanged `pi-coding-agent-1.0.2`;
+  whose closure carries `gentle-ai-4.1.1` and `pi-coding-agent-1.0.2`;
   all-systems evaluation exit 0 (107 checks, 55 Darwin / 52 Linux); CI-parity
   Darwin `nix flake check` exit 0 with all 55 checks green; `flake.lock`
-  unchanged; no stale live `4.0.0` statement left. The verifier could not
-  independently reproduce RED end to end (the check cannot be overridden without
-  editing the tree) and confirmed the binding structurally instead.
+  unchanged **at that revision** (the later merge with `main` adopts main's
+  lock; see the post-merge section below); no stale live `4.0.0` statement left.
+  The verifier could not independently reproduce RED end to end (the check
+  cannot be overridden without editing the tree) and confirmed the binding
+  structurally instead.
 - [x] **GS-5 — Commit and native review.** Work-unit commit `5ce89368
   feat(ai-tools): bump the Gentle AI pin to v4.1.1` (3 files, +20/-13),
   repository pre-commit hooks green. Native RDD review
@@ -181,6 +183,58 @@ Host prerequisites for Shell 4.1.0 are already satisfied on `civislend`: Pi
   manual restart: this session loaded Shell 4.0.0, so its in-memory extension and
   the on-disk engine are now different versions and no further native capture,
   delegation or review is run from here.
+
+## Post-merge reconciliation and publication
+
+`main` advanced to `3669165c` while this work sat above `c63e899d`, so the pull
+request reported `CONFLICTING` and the branch was merged with `origin/main` in
+commit `1bec79a8`. Both sides had touched
+`checks/gentle-ai-engine/default.nix` in adjacent lines — main added the Engram
+engine assertion, this branch changed the CLI version assertions — and the local
+`mergiraf` merge driver resolved the adjacency that GitHub cannot. The resolved
+file keeps all three bindings exactly once: `packageVersion` `4.1.1` (line 105),
+`engramPackageVersion` `3.1.0` (line 114, byte-identical to main) and
+`grep -qx 'gentle-ai 4.1.1'` (line 182).
+
+What the merge imported from main, and the two facts it changed for this change:
+
+- **Pi moves to 1.0.3**, not the 1.0.2 the pre-merge evidence recorded. Main's
+  nixpkgs bump (`151fa4e8`) carries it; the branch tip's lock (`494ce7fd`) is
+  superseded so the validated lock equals the landing lock. The live host still
+  runs Pi 1.0.2 from its activated generation until the next switch.
+- **Engram is pinned at 3.1.0** by main, while the sentence in
+  `modules/common/ai-tools/README.md` that states the toolchain still read
+  `2.0.0-rc.11`. That sentence is the one this change edits for the CLI version,
+  so the stale value was corrected here rather than left half-true.
+- Main's activation tool-path work (`checks/activation-dry-run`, the Darwin
+  docker socket fragment, `packages/engram`) arrives unchanged.
+
+Post-merge re-verification, independent of the writer, on `1bec79a8`:
+`git diff --stat origin/main...HEAD` lists exactly the four intended paths;
+`flake.lock` and `flake/dev/flake.lock` are byte-identical to main's; the engine
+check exits 0 and still exercises the real binary; `just fmt-check` exits 0
+(641 traversed, 404 emitted, 0 changed); all-systems evaluation exits 0 with
+107 checks (55 Darwin / 52 Linux); CI-parity Darwin `nix flake check` exits 0
+with every check green; `just darwin-build civislend` exits 0 to
+`/nix/store/6k577w1g4q3hxw51dcg32ml4d0idabkh-darwin-system-26.11.4cff07d`,
+whose closure carries `gentle-ai-4.1.1`, `engram-3.1.0` and
+`pi-coding-agent-1.0.3`.
+
+### Publication
+
+Issue **#241** (`status:approved`) and pull request **#242**, opened with the
+personal account through the module's `ghp` wrapper (the default `gh` wrapper
+authenticates as the work account). The pull request carries `type:feature` and
+`dependencies`, and the labeler added `Packages`, `Modules` and `Checks`.
+
+### Review position after the merge
+
+The merge created a revision that neither burned lineage covers: the source
+work unit was reviewed and acknowledged at the pre-merge tree, and the two
+review targets since then are documentation-only deltas. No review facade call
+is made after the native swap, because this session's loaded extension is Shell
+4.0.0 while the engine on disk is 4.1.1; the pull request states that position
+explicitly instead of implying a review that does not exist.
 
 ## Verified evidence and limitations
 
@@ -222,6 +276,7 @@ or unexercised after the swap:
 | Shell pin in `settings.json` | `npm:gentle-pi@4.1.0` (banner filter kept) |
 | Pi | `1.0.2` (unchanged) |
 | Live system | generation 52, `m3ih8rk6i86in8nvcgbvql9gkyklyvyc-darwin-system-26.11.4cff07d` |
+| Landing tree (post-merge) | `gentle-ai 4.1.1`, `engram 3.1.0`, `pi-coding-agent 1.0.3` |
 | Session in memory | Shell 4.0.0 until restart |
 
 ## Next action
@@ -229,5 +284,6 @@ or unexercised after the swap:
 Restart Pi from a terminal so the session loads Shell 4.1.0 with the 4.1.1
 engine, then verify the running session: the header renders, no loader error
 appears, the managed skills and MCP servers still resolve, and a trivial RDD
-flow reports provider contract `1.3.0`. Nothing was pushed; delivery stays under
-ordinary repository policy.
+flow reports provider contract `1.3.0`. The next Darwin switch also moves the
+host from Pi 1.0.2 to the 1.0.3 that main's lock carries. Merge remains the
+operator's decision; the pull request holds every check performed here.
