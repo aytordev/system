@@ -153,33 +153,81 @@ Host prerequisites for Shell 4.1.0 are already satisfied on `civislend`: Pi
   SUGGESTION) records that the version literal now lives in three files; it
   opened no correction and is deliberately not acted on, since the engine check
   is the drift guard.
-- [ ] **GS-6 — Nix activation (operator-run).** `just darwin-switch civislend`,
-  then read back `gentle-ai --version` = 4.1.1 and the resulting system
-  generation.
-- [ ] **GS-7 — Shell install and sync.** `pi install npm:gentle-pi@4.1.0`,
-  verify the versioned pin and banner filter survived, run `gentle-ai sync` with
-  the 4.1.1 CLI, and read back persona, MCP, and package state.
-- [ ] **GS-8 — Close.** Honest report of every passed, failed, skipped or
-  pending check, with explicit restart handoff.
+- [x] **GS-6 — Nix activation (operator-run).** Operated in the terminal on
+  2026-10-13. Independent readback: `gentle-ai --version` reports **4.1.1**; the
+  PATH entry resolves to
+  `/nix/store/hr8pyhys4c68y2k1rac4rgws1vkcn1r4-gentle-ai-4.1.1/bin/gentle-ai`; the
+  live system is
+  `/nix/store/m3ih8rk6i86in8nvcgbvql9gkyklyvyc-darwin-system-26.11.4cff07d`
+  (generation 52, previous 51) with an integrated Home Manager generation at
+  `/nix/store/p0r8bs43yq9xljklc261yf0vjsmzr7sn-home-manager-generation`. Pi stays
+  `1.0.2`. `nix store diff-closures` between the pre-switch verified build and
+  the live system reports only a `source: 10.5 KiB` metadata entry: no package
+  drift, and the closure carries `gentle-ai-4.1.1` and `pi-coding-agent-1.0.2`.
+- [x] **GS-7 — Shell install and sync.** `pi install npm:gentle-pi@4.1.0`
+  installed 4.1.0 and kept the versioned pin **`npm:gentle-pi@4.1.0`** together
+  with the `!startup-banner.ts` filter; `settings.json` changed in no other way,
+  and `mcp.json`, `~/.pi/gentle-ai/`, the extension set and the npm dependency
+  declarations are byte-identical. The package-local engine landed at
+  `.gentle-ai/v4.1.1/gentle-ai` and reports `gentle-ai 4.1.1`; its
+  `integrity.json` pins asset `gentle-ai_4.1.1_darwin_arm64.tar.gz` with sha256
+  `8093dced37130cb26534d81663013f81d9039342e33f00b8c85aa5319aa7eea9`, the same
+  digest this change pins in Nix. `gentle-ai sync` (4.1.1) exited 0 and executed
+  exactly one change, `~/.config/gga/config` (the generated Guardian Angel
+  config); the RDD switch still reads `on`. npm warned that the package's
+  `postinstall` is not covered by its allow list, yet the engine asset and its
+  integrity manifest were present and verifiable.
+- [x] **GS-8 — Close.** Reported honestly below. The only live check left is the
+  manual restart: this session loaded Shell 4.0.0, so its in-memory extension and
+  the on-disk engine are now different versions and no further native capture,
+  delegation or review is run from here.
 
 ## Verified evidence and limitations
 
 Nothing above is checked off without observed evidence. What remains unproven
-or unexercised at this point:
+or unexercised after the swap:
 
 - The archive digests for `x86_64-darwin` and `aarch64-linux` were verified
   against the two upstream sources (release `checksums.txt` and the tagged
   installer) and against each other, but no local bytes were downloaded for
-  those two platforms; only `darwin_arm64` and `linux_amd64` were matched
-  against real downloaded archives.
+  those two platforms; `darwin_arm64` and `linux_amd64` were matched against real
+  downloaded archives, and `darwin_arm64` was confirmed again by the installed
+  engine's own `integrity.json`.
 - `fetchurl` verifies SHA-256 only; the release's minisign signature is not
   verified by this derivation.
 - RED was observed by the writer against the real check; the independent
   verifier could only reproduce the assertion structurally, not the original
   failure, because the check cannot be overridden without editing the tree.
 - The v4.1 behavior described in the README (high-risk-only automatic review,
-  provider contract 1.3.0, `sync` retiring SDD artifacts) is taken from the
-  published release notes and the shipped provider-contract asset, not from live
-  runtime observation on this host.
-- Nix activation, the Shell install, and `sync` are still pending; the live
-  system and the native package remain at 4.0.0 until GS-6 and GS-7.
+  provider contract 1.3.0, `sync` retiring SDD artifacts) comes from the release
+  notes and the shipped provider-contract asset, not from live observation on
+  this host. `sync` reported no SDD artifact to retire here, so that path stayed
+  unexercised.
+- No restart verification yet: the running session still carries Shell 4.0.0
+  in memory while the package on disk is 4.1.0 with engine 4.1.1. Session
+  behavior under the new Shell, live UI and native MCP dispatch remain
+  restart-dependent.
+- The native package swap mints a new review candidate. The final commit on this
+  branch touches only this task document: it is a passive documentation-only
+  delta, so it is reported and deliberately left unreviewed rather than
+  re-invoking the review facade after the engine/extension versions diverged.
+
+## Live state at close
+
+| Surface | Value |
+| --- | --- |
+| Operator CLI (`PATH`) | `gentle-ai 4.1.1` |
+| Shell package (`~/.pi/agent/npm`) | `gentle-pi 4.1.0` |
+| Shell package-local engine | `.gentle-ai/v4.1.1/gentle-ai` = `gentle-ai 4.1.1` |
+| Shell pin in `settings.json` | `npm:gentle-pi@4.1.0` (banner filter kept) |
+| Pi | `1.0.2` (unchanged) |
+| Live system | generation 52, `m3ih8rk6i86in8nvcgbvql9gkyklyvyc-darwin-system-26.11.4cff07d` |
+| Session in memory | Shell 4.0.0 until restart |
+
+## Next action
+
+Restart Pi from a terminal so the session loads Shell 4.1.0 with the 4.1.1
+engine, then verify the running session: the header renders, no loader error
+appears, the managed skills and MCP servers still resolve, and a trivial RDD
+flow reports provider contract `1.3.0`. Nothing was pushed; delivery stays under
+ordinary repository policy.
