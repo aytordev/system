@@ -166,15 +166,27 @@
   activationFragment = socketAdapter.config.system.activationScripts.postActivation.text;
 
   # The fragment calls Darwin's absolute activation-time tool paths
-  # (`/usr/bin/readlink`, `/bin/echo`, `/usr/bin/ln`). The symlink state
-  # machine under test is platform-independent and the sandbox provides the
-  # same tools through coreutils on PATH, so the prefixes are rewritten to
-  # plain lookups and the identical logic executes on every platform this
-  # check builds on.
+  # (`/usr/bin/readlink`, `/bin/echo`, `/bin/ln`). The symlink state machine
+  # under test is platform-independent and the sandbox provides the same tools
+  # through coreutils on PATH, so each absolute path is rewritten to a plain
+  # lookup and the identical logic executes on every platform this check builds
+  # on.
+  #
+  # The paths are recovered from the fragment instead of a hardcoded list. That
+  # is the point: this check previously carried its own literal rewrite list, and
+  # rewriting a non-existent Darwin tool path into a working sandbox lookup is
+  # exactly how `/usr/bin/ln` passed every check while aborting a real host
+  # switch. Deriving the list means a path the fragment adds is translated here
+  # automatically and must be vetted by `checks/activation-dry-run`, which owns
+  # the Darwin allow-list. Nothing can be erased silently any more.
+  fragmentToolPaths =
+    lib.unique (lib.filter (token: builtins.match "/(usr/)?s?bin/[A-Za-z0-9._-]+" token != null)
+      (lib.splitString " " (lib.replaceStrings ["\n" "\t" "\"" "'" "`" "(" ")" "$" ";" "|" "&" "," "<" ">"] (lib.genList (_: " ") 14) activationFragment)));
+
   sandboxedActivationFragment =
     lib.replaceStrings
-    ["/usr/bin/readlink" "/bin/echo" "/usr/bin/ln"]
-    ["readlink" "echo" "ln"]
+    fragmentToolPaths
+    (map builtins.baseNameOf fragmentToolPaths)
     activationFragment;
 
   # Option contract: `targetPath` must have no default, because a derived
@@ -346,6 +358,14 @@
     (!(socketAdapter.config.system.activationScripts ? docker-socket))
     (lib.hasInfix "refusing to replace" activationFragment)
 
+    # No Darwin tool path may survive the sandbox rewrite. Paired with
+    # `fragmentToolPaths`, this proves the translation is complete rather than
+    # selective: a path left behind here would run as an absolute path in the
+    # sandbox and fail, and a path erased without being vetted is precisely the
+    # defect that let `/usr/bin/ln` reach a real host switch.
+    (!(lib.hasInfix "/bin/" sandboxedActivationFragment))
+    (!(lib.hasInfix "/sbin/" sandboxedActivationFragment))
+
     # T8b: the Darwin development suite's evaluation-time conflict guard
     # fires only when the Docker Desktop cask and the adapter are both
     # enabled; each one alone stays clean.
@@ -417,7 +437,8 @@ in
             # T8b: execute the privileged activation fragment from
             # aytordev.services.docker-socket against real filesystem states inside
             # $out. The generated text calls Darwin's absolute activation-time tool
-            # paths, rewritten to PATH lookups in `sandboxedActivationFragment`, so
+            # paths, translated to PATH lookups in `sandboxedActivationFragment`
+            # by extracting them from the fragment itself, so
             # the identical symlink logic runs in the sandbox on every platform
             # this check builds on. `set -e` is active, so a non-zero fragment exit
             # aborts this check: refusing is the fail-closed action (D7), and

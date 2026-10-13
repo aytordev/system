@@ -230,6 +230,16 @@ system.activationScripts.postActivation.text = ''
 **Caution:** Activation scripts run on every rebuild. Keep them idempotent and
 never use them to create, chown, or mutate files under a user's home directory.
 
+**Tool paths follow Darwin's split layout, never Linux habit.** Privileged
+fragments call absolute paths on purpose (they must not depend on the ambient
+`PATH` of a switch), and the layout is split: `ln`, `echo`, `rm`, `mkdir`,
+`bash` and `sh` live in `/bin`, while `readlink`, `arch`, `true`, `env`,
+`find` and `touch` live in `/usr/bin` (`softwareupdate` in `/usr/sbin`);
+`/bin/readlink` and `/usr/bin/ln` do not exist. `/usr/bin/ln` aborted a real
+switch under `set -e` and left the host half-configured. Only use paths probed
+on a real macOS host; the vetted allow-list is enforced by
+`checks/activation-dry-run`.
+
 ### SIP (System Integrity Protection)
 
 Some tools require disabling SIP to interact with other applications. If a

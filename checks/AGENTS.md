@@ -46,6 +46,17 @@ behavior they test, not the level.
 > `docs/theme-support-matrix.md` drifts. Regenerate with
 > `bash checks/theme-catalog/regenerate.sh`.
 
+> `integration-activation-dry-run` owns two contracts: Home Manager mutation
+> entries must wrap mutating commands in `$DRY_RUN_CMD`, and Darwin-authored
+> activation fragments may only call tool paths on the vetted Darwin
+> allow-list. Maintained scope is explicit, not repo-wide: the Darwin system
+> fragments enumerated in the check (`docker-socket`, `rosetta`) plus Home
+> Manager activation entries on Darwin builds only; launchd program paths and
+> nix-darwin's own upstream activate body are out of scope, and new fragments
+> must be added to the check's source list by hand. The tool-path extraction
+> is a punctuation-aware token scanner, not a shell parser, and "unvetted"
+> means unverified on a real macOS host, not proven nonexistent.
+
 ## Secrets Handling
 
 `integration-gentle-ai-engine` verifies package/environment ownership, the
