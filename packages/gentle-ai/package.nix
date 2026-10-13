@@ -4,17 +4,17 @@
   fetchurl,
   ...
 }: let
-  version = "4.0.0";
+  version = "4.1.1";
 
-  # Official v4.0.0 release archive digests from the publisher's tagged
-  # installer (gentle-ai-installer.mjs, INSTALLER_VERSION 4.0.0), converted to
-  # SRI locally. fetchurl verifies the SHA-256; it does not verify the
-  # release's minisign signature.
+  # Official v4.1.1 release archive digests from the publisher's tagged
+  # installer (gentle-ai-installer.mjs, INSTALLER_VERSION 4.1.1, gentle-shell
+  # tag v4.1.0), converted to SRI locally. fetchurl verifies the SHA-256; it
+  # does not verify the release's minisign signature.
   hashes = {
-    x86_64-darwin = "sha256-tbdPIrOOwzObOOjGj3l9x2/xLtZYCCam5CXVxxjagME=";
-    aarch64-darwin = "sha256-0hWcr21o82exiDDs5q9x7yaWPV9TINffanlHc/Rcx+k=";
-    x86_64-linux = "sha256-X0QXzynJachtpHmZQv1nM2iECQG+G7Ccd5oS1+1gluo=";
-    aarch64-linux = "sha256-E4OwQMlc/GkgZmDXPCGQexStcKuRP0EJF8VPQ9MUflc=";
+    x86_64-darwin = "sha256-8umuv7owVuiKjXxxk+TowEKC3BJtXqoiFryAferez/0=";
+    aarch64-darwin = "sha256-gJPc7TcTDLJlNNgWYwE/gdkDk0LjPwC4yFqlMZqn7qk=";
+    x86_64-linux = "sha256-V4aevNuluplCSTq0E7vBXRRuJFHE3KPqr88WP8vWRrQ=";
+    aarch64-linux = "sha256-X4+jhXPuoPIRCQLwmWqgsAiqxY3A+aarvfMB3LyT9Os=";
   };
 
   releaseArch = {

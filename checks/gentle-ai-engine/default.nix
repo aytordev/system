@@ -102,7 +102,7 @@
     # Regression: the Nix-owned public CLI pin, asserted on the default package
     # only. User overrides stay authoritative; this never rejects custom
     # versions in the module options.
-    packageVersion = tools.gentle-ai.package.version == "4.0.0";
+    packageVersion = tools.gentle-ai.package.version == "4.1.1";
     # Regression: the Nix-owned Engram engine pin. Asserted on the underlying
     # derivation, not on the module option: `tools.engram.package` is
     # deliberately the `engram-wrapped` runCommand, which has no `version`
@@ -179,7 +179,7 @@ in
           echo 'gentle-ai version command failed' >&2
           exit 1
         }
-      grep -qx 'gentle-ai 4.0.0' "$TMPDIR/gentle-ai-version.out" || {
+      grep -qx 'gentle-ai 4.1.1' "$TMPDIR/gentle-ai-version.out" || {
         echo "unexpected gentle-ai version output: $(cat "$TMPDIR/gentle-ai-version.out")" >&2
         exit 1
       }
