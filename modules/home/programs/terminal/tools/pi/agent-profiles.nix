@@ -286,12 +286,14 @@ in {
       default = {
         opensource = ./profiles/opensource.json;
         openai-subscription-complex = ./profiles/openai-subscription.json;
+        hybrid-nan-openai = ./profiles/hybrid-nan-openai.json;
       };
       description = ''
         Export envelopes (`gentle-pi.agent_model_profile`) keyed by profile
         name. Each path is a JSON document with `kind`, `version`, `name` and a
-        non-empty routing `config`. Bundled profiles are `opensource` and
-        `openai-subscription-complex` (ChatGPT/Codex subscription).
+        non-empty routing `config`. Bundled profiles are `opensource`,
+        `openai-subscription-complex` (ChatGPT/Codex subscription), and
+        `hybrid-nan-openai` (nan plus ChatGPT/Codex subscription).
       '';
     };
 

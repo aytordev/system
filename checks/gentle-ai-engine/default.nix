@@ -96,6 +96,50 @@
       agent-profiles.active = subscriptionProfileName;
     };
   };
+  hybridProfileName = "hybrid-nan-openai";
+  hybridHome = mkHome {
+    pi = {
+      enable = true;
+      agent-profiles.active = hybridProfileName;
+    };
+  };
+  expectedHybridProfile =
+    lib.genAttrs [
+      "orchestrator"
+      "sdd-spec"
+      "sdd-verify"
+      "sdd-sync"
+      "sdd-archive"
+      "jd-fix-agent"
+      "sdd-proposal"
+      "review-reliability"
+      "review-validator"
+    ] (_: {
+      model = "openai-codex/gpt-6.1-sol";
+      thinking = "high";
+    })
+    // lib.genAttrs ["sdd-design" "jd-judge-b" "review-risk"] (_: {
+      model = "openai-codex/gpt-6-astra";
+      thinking = "high";
+    })
+    // lib.genAttrs ["sdd-explore" "jd-judge-a" "review-refuter" "sdd-research" "review-resilience"] (_: {
+      model = "nan/deepseek-v4-flash";
+      thinking = "high";
+    })
+    // lib.genAttrs ["sdd-apply" "sdd-tasks"] (_: {
+      model = "nan/glm5.3-flash";
+      thinking = "high";
+    })
+    // lib.genAttrs ["sdd-onboard" "review-readability" "sdd-init"] (_: {
+      model = "nan/glm5.3-flash";
+      thinking = "medium";
+    })
+    // {
+      sdd-status = {
+        model = "nan/qwen3.8-flash";
+        thinking = "low";
+      };
+    };
   localNames = ["aytordev-pen-ops" "dotfiles-coder" "nix" "skill-creator" "skill-registry"];
   names = lib.sort builtins.lessThan (localNames ++ ["impeccable"]);
   upstream = "${pkgs.aytordev.impeccable-skills}/share/impeccable";
@@ -164,6 +208,29 @@
           inherit (entry) model;
           effort = entry.thinking;
         }) (builtins.removeAttrs profile ["orchestrator" "review-refuter" "review-validator"]));
+    hybridProfileRegistered = agentProfileStore.profiles ? ${hybridProfileName};
+    hybridProfileRouting =
+      agentProfileStore.profiles ? ${hybridProfileName}
+      && (let
+        profile = agentProfileStore.profiles.${hybridProfileName};
+        rendered = hybridHome.aytordev.programs.terminal.tools.pi.agent-profiles.rendered;
+        orchestrator = builtins.fromJSON rendered.orchestrator;
+      in
+        profile
+        == expectedHybridProfile
+        && (builtins.fromJSON rendered.store).active == hybridProfileName
+        && orchestrator
+        == {
+          defaultProvider = "openai-codex";
+          defaultModel = "gpt-6.1-sol";
+          defaultThinkingLevel = "high";
+        }
+        && builtins.fromJSON rendered.models == builtins.removeAttrs expectedHybridProfile ["orchestrator"]
+        && (builtins.fromJSON rendered.subagents).model_profiles
+        == builtins.mapAttrs (_: entry: {
+          inherit (entry) model;
+          effort = entry.thinking;
+        }) (builtins.removeAttrs expectedHybridProfile ["orchestrator" "review-refuter" "review-validator"]));
     defaultAgentProfileUnchanged =
       agentProfiles.active
       == "opensource"
