@@ -1,0 +1,99 @@
+{
+  "kind": "gentle-pi.agent_model_profile",
+  "version": 1,
+  "name": "openai-subscription-complex",
+  "config": {
+    "orchestrator": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "sdd-explore": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "sdd-spec": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "sdd-design": {
+      "model": "openai-codex/gpt-6-astra",
+      "thinking": "high"
+    },
+    "sdd-verify": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "sdd-sync": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "sdd-archive": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "sdd-apply": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "jd-judge-a": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "jd-judge-b": {
+      "model": "openai-codex/gpt-6-astra",
+      "thinking": "high"
+    },
+    "jd-fix-agent": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "review-risk": {
+      "model": "openai-codex/gpt-6-astra",
+      "thinking": "high"
+    },
+    "review-refuter": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "sdd-research": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "sdd-proposal": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "sdd-tasks": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "sdd-onboard": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "medium"
+    },
+    "review-readability": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "medium"
+    },
+    "review-reliability": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "review-resilience": {
+      "model": "openai-codex/gpt-6-astra",
+      "thinking": "high"
+    },
+    "review-validator": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "high"
+    },
+    "sdd-status": {
+      "model": "openai-codex/gpt-6-luna",
+      "thinking": "low"
+    },
+    "sdd-init": {
+      "model": "openai-codex/gpt-6.1-sol",
+      "thinking": "medium"
+    }
+  }
+}

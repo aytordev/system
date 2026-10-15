@@ -47,10 +47,6 @@
       "model": "nan/glm5.3-flash",
       "thinking": "high"
     },
-    "gentle-ai-worker": {
-      "model": "nan/glm5.3-flash",
-      "thinking": "high"
-    },
     "review-risk": {
       "model": "nan/glm5.3-flash",
       "thinking": "high"
@@ -75,10 +71,6 @@
       "model": "nan/deepseek-v4-flash",
       "thinking": "high"
     },
-    "gentle-ai-explore": {
-      "model": "nan/deepseek-v4-flash",
-      "thinking": "high"
-    },
     "review-readability": {
       "model": "nan/deepseek-v4-flash",
       "thinking": "high"
@@ -96,10 +88,6 @@
       "thinking": "high"
     },
     "sdd-status": {
-      "model": "nan/deepseek-v4-flash",
-      "thinking": "high"
-    },
-    "gentle-ai-verify": {
       "model": "nan/deepseek-v4-flash",
       "thinking": "high"
     },

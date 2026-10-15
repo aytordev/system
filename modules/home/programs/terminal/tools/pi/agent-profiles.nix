@@ -283,11 +283,15 @@ in {
 
     profiles = mkOption {
       type = types.attrsOf types.path;
-      default = {opensource = ./profiles/opensource.json;};
+      default = {
+        opensource = ./profiles/opensource.json;
+        openai-subscription-complex = ./profiles/openai-subscription.json;
+      };
       description = ''
         Export envelopes (`gentle-pi.agent_model_profile`) keyed by profile
         name. Each path is a JSON document with `kind`, `version`, `name` and a
-        non-empty routing `config`.
+        non-empty routing `config`. Bundled profiles are `opensource` and
+        `openai-subscription-complex` (ChatGPT/Codex subscription).
       '';
     };
 

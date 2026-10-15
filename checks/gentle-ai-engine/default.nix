@@ -86,6 +86,15 @@
     });
   installed = home: package: lib.any (p: p.outPath == package.outPath) home.home.packages;
   tools = enabled.aytordev.programs.terminal.tools;
+  agentProfiles = tools.pi.agent-profiles;
+  agentProfileStore = builtins.fromJSON agentProfiles.rendered.store;
+  subscriptionProfileName = "openai-subscription-complex";
+  subscriptionHome = mkHome {
+    pi = {
+      enable = true;
+      agent-profiles.active = subscriptionProfileName;
+    };
+  };
   localNames = ["aytordev-pen-ops" "dotfiles-coder" "nix" "skill-creator" "skill-registry"];
   names = lib.sort builtins.lessThan (localNames ++ ["impeccable"]);
   upstream = "${pkgs.aytordev.impeccable-skills}/share/impeccable";
@@ -131,6 +140,37 @@
       builtins.attrNames tools.pi
       == ["agent-profiles" "enable" "guiEnvironment" "package" "providers" "startup-header"]
       && builtins.attrNames tools.gentle-ai == ["enable" "package"];
+    subscriptionProfileRegistered = agentProfileStore.profiles ? ${subscriptionProfileName};
+    subscriptionProfileRouting =
+      agentProfileStore.profiles ? ${subscriptionProfileName}
+      && (let
+        profile = agentProfileStore.profiles.${subscriptionProfileName};
+        rendered = subscriptionHome.aytordev.programs.terminal.tools.pi.agent-profiles.rendered;
+        orchestrator = builtins.fromJSON rendered.orchestrator;
+        models = builtins.fromJSON rendered.models;
+        subagents = (builtins.fromJSON rendered.subagents).model_profiles;
+      in
+        profile
+        != {}
+        && lib.all (entry: lib.hasPrefix "openai-codex/" entry.model) (builtins.attrValues profile)
+        && (builtins.fromJSON rendered.store).active == subscriptionProfileName
+        && orchestrator.defaultProvider == "openai-codex"
+        && "${orchestrator.defaultProvider}/${orchestrator.defaultModel}" == profile.orchestrator.model
+        && orchestrator.defaultThinkingLevel == profile.orchestrator.thinking
+        && models == builtins.removeAttrs profile ["orchestrator"]
+        && subagents
+        == builtins.mapAttrs (_: entry: {
+          inherit (entry) model;
+          effort = entry.thinking;
+        }) (builtins.removeAttrs profile ["orchestrator" "review-refuter" "review-validator"]));
+    defaultAgentProfileUnchanged =
+      agentProfiles.active
+      == "opensource"
+      && agentProfileStore.active == "opensource"
+      && agentProfileStore.profiles.opensource
+      == (builtins.fromJSON (builtins.readFile ../../modules/home/programs/terminal/tools/pi/profiles/opensource.json)).config
+      && builtins.fromJSON agentProfiles.rendered.models
+      == builtins.removeAttrs agentProfileStore.profiles.opensource ["orchestrator"];
     noProfile = under ".pi/" noSkills == [] && !(enabled.home.sessionVariables ? PI_CODING_AGENT_DIR);
     piPublishedSkills = under ".pi/" enabled == expected piRoot;
     providersDefaultAbsent = !(lib.elem providersTarget (targets enabled)) && !(lib.elem providersTarget (targets noSkills));
