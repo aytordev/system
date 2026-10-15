@@ -1,5 +1,21 @@
 # Pi theme and GUI environment
 
+## Model profiles
+
+The bundled agent-model profiles are `opensource`,
+`openai-subscription-complex`, and `hybrid-nan-openai`. The hybrid profile keeps
+nan's DeepSeek/GLM/Qwen routes and uses `openai-codex/gpt-6.1-sol` and
+`openai-codex/gpt-6-astra` for ChatGPT/Codex subscription-backed roles, following
+the existing subscription profile. It does not configure OpenAI API keys or
+perform login; the corresponding provider must already be authenticated in Pi.
+
+Adding a profile does not activate it: `opensource` remains the default.
+To select the hybrid profile declaratively, set
+`aytordev.programs.terminal.tools.pi.agent-profiles.active = "hybrid-nan-openai"`
+and rebuild. `/gentle:profiles` can also select it at runtime; with
+`agent-profiles.materialize = true`, the next activation restores the declared
+active profile. Set `materialize = false` to leave routing selection to the TUI.
+
 ## Theme
 
 Enabling Pi publishes `~/.pi/agent/themes/aytordev.json` from the active
