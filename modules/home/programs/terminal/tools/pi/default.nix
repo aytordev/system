@@ -12,6 +12,7 @@ in {
     ./startup-header.nix
     ./agent-profiles.nix
     ./gui-environment.nix
+    ./theme-default.nix
   ];
 
   options.aytordev.programs.terminal.tools.pi = {

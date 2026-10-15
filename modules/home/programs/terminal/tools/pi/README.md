@@ -1,4 +1,30 @@
-# Pi GUI environment
+# Pi theme and GUI environment
+
+## Theme
+
+Enabling Pi publishes `~/.pi/agent/themes/aytordev.json` from the active
+`aytordev.theme` palette. The stable `aytordev` name follows the repository's
+generated-theme convention; it contains Sora colors when the global family is
+Sora, not an upstream Sora resource. The role structure follows Gentle's themes,
+with neutral tool/card surfaces so Gentle Shell does not tint its header,
+sidebar and editor green. Success/error indicators and diffs retain their
+semantic colors.
+
+Home Manager owns only this theme file, not the themes directory or the native
+Gentle themes. Activation inserts `"theme": "aytordev"` only when the key is
+absent; existing selections (including `Sora`, `system` or `null`) are preserved.
+Malformed settings are reported and left untouched. The mutable `settings.json`
+is never linked into the Nix store.
+
+After rebuilding, run `/reload` and select **aytordev** in `/settings` → **Theme**
+if you already had a selection. In particular, the standalone `Sora.json` created
+before this integration is not removed or silently selected over. Subsequent
+rebuilds update the generated colors, not your theme preference. Disabling Pi
+removes the managed theme but leaves the selection alone; choose another theme
+if you keep running Pi outside Home Manager. Activation is not serialized with
+Pi's runtime settings writers: avoid changing settings while rebuilding.
+
+## GUI environment
 
 Publishes Gentle Pi's subagent command override (`GENTLE_PI_AGENTS_PI`) into
 the user's GUI login launchd context, so subagents spawned by GUI hosts (e.g.

@@ -82,7 +82,7 @@ surface (local skills, `models.json`, the startup header, Engram).
 
 | Owner | Surface |
 | --- | --- |
-| Nix package capabilities | Pi, public `gentle-ai`, Engram, Node/npm, runtime environment |
+| Nix capabilities | Pi, public `gentle-ai`, Engram, Node/npm, runtime environment, and Pi's palette-generated `themes/aytordev.json`; activation seeds only an absent `theme` key |
 | Official `gentle-ai install --agent pi` | Native Pi profile, Shell package and private engine, extensions/workflow |
 | This `ai-tools/` subtree | Skill ownership catalog, five authored sources, private upstream preparation recipes, and publication |
 | `packages/impeccable-{engine,skills}/package.nix` | Direct-import adapters for existing package discovery; no pins or recipe bodies |
