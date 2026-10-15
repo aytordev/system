@@ -1,5 +1,10 @@
 [default]
-extend-ignore-re = ["^flake/dev/checks/default\\.nix$"]
+extend-ignore-re = [
+  "^flake/dev/checks/default\\.nix$",
+  # Preserve complete historical identifiers in ODD evidence, not generic words.
+  '\bz3kzxkd2246j8vaj75vnn3r01gir4z8g\b',
+  '\bcloud:harness-civislend-analisis\b',
+]
 
 [files]
 extend-exclude = [
