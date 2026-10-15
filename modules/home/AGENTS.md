@@ -169,8 +169,9 @@ not cover falls back to the app's generated resource when it has one (most
 adapters do, e.g. Ghostty) or resolves to `none`. Otherwise the app leaves its
 default and exposes a nullable `theme` override (a bare id or
 `{ mode = "auto"|"manual"|"none"; id = ...; }`). Apps with no upstream resource
-(Sketchybar, JankyBorders) generate from the palette for every family. Pi's
-native profile and themes are owned by the official Gentle AI installer. Sora
+(Sketchybar, JankyBorders) generate from the palette for every family. Pi publishes one palette-generated `aytordev.json` theme and seeds its
+selection only when the mutable settings file has no `theme` key. Native profile
+management and bundled Gentle themes remain owned by the official installer. Sora
 is dark-only with a synthetic light companion, so its integrations cover only
 `dark`. Runtime switching is Sketchybar-scoped; other apps re-read their theme on
 restart. The full human guide is `docs/theme-system.md`; the derived per-family

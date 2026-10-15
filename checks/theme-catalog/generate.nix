@@ -93,6 +93,12 @@
       path = ../../modules/home/programs/terminal/tools/lazygit/config.nix;
     }
     {
+      id = "pi";
+      generated = "aytordev";
+      note = "Palette-generated Pi theme with neutral Gentle Shell surfaces; activation seeds only an absent theme selection.";
+      path = ../../modules/home/programs/terminal/tools/pi/theme.nix;
+    }
+    {
       id = "sketchybar";
       generated = "palette";
       note = "No upstream resource; runtime family/variant picker (the only hot-reloading consumer).";

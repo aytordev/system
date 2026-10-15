@@ -49,6 +49,7 @@
     "createXdgDirs"
     "createZoxideDataDir"
     "fishDirs"
+    "piThemeDefault"
     "zshDir"
     "zshSessionDir"
   ];

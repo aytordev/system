@@ -133,7 +133,7 @@ promised.
 | App / case | Behavior |
 | --- | --- |
 | Firefox | `userChrome` is generated from the palette for **every** family. The declared id is a Firefox Color theme title, not a UI selection. |
-| Pi | Native profile and theme ownership belongs to the official Gentle AI installer; Pi is outside this repository's theme catalog. |
+| Pi | Generates `aytordev.json` from the active palette, with neutral Gentle Shell surfaces. Activation selects `aytordev` only when `settings.json` has no `theme` key; existing selections remain unchanged. The native profile and bundled Gentle themes remain runtime-owned. |
 | Sora `light` | Synthetic, unofficial companion. Sora resources are `dark`-only (`complete = false`), so `light` resolves to generated where the app has a fallback, otherwise `none`. |
 | Neovim | Built from the `aytordev-nvim` distribution with the family/variant from `aytordev.theme` (through its `lib.mkAytordevNeovim` builder). Sora is dark-only, so the synthetic `light` companion uses the editor default (`none`). |
 | tmux | Sources the Sora theme when the family provides one; otherwise generates from the palette. |

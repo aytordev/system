@@ -54,6 +54,7 @@
     ai-skills.enable = true;
   };
   providersTarget = ".pi/agent/models.json";
+  themeTarget = ".pi/agent/themes/aytordev.json";
   withProviders = mkHome (enabledTools
     // {
       pi = {
@@ -171,13 +172,20 @@
       == (builtins.fromJSON (builtins.readFile ../../modules/home/programs/terminal/tools/pi/profiles/opensource.json)).config
       && builtins.fromJSON agentProfiles.rendered.models
       == builtins.removeAttrs agentProfileStore.profiles.opensource ["orchestrator"];
-    noProfile = under ".pi/" noSkills == [] && !(enabled.home.sessionVariables ? PI_CODING_AGENT_DIR);
-    piPublishedSkills = under ".pi/" enabled == expected piRoot;
+    # Pi owns one generated theme leaf, never the profile/settings/themes root.
+    noProfile =
+      under ".pi/" noSkills
+      == [themeTarget]
+      && !(enabled.home.file ? ".pi/agent")
+      && !(enabled.home.file ? ".pi/agent/settings.json")
+      && !(enabled.home.file ? ".pi/agent/themes")
+      && !(enabled.home.sessionVariables ? PI_CODING_AGENT_DIR);
+    piPublishedSkills = under ".pi/" enabled == lib.sort builtins.lessThan (expected piRoot ++ [themeTarget]);
     providersDefaultAbsent = !(lib.elem providersTarget (targets enabled)) && !(lib.elem providersTarget (targets noSkills));
     providersPublished = lib.elem providersTarget (targets withProviders);
     providersOnlyExtra =
       under ".pi/" withProviders
-      == lib.sort builtins.lessThan (expected piRoot ++ [providersTarget]);
+      == lib.sort builtins.lessThan (expected piRoot ++ [providersTarget themeTarget]);
     providersContent = let
       file = builtins.getAttr providersTarget withProviders.home.file;
     in
