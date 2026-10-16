@@ -16,6 +16,26 @@ and rebuild. `/gentle:profiles` can also select it at runtime; with
 `agent-profiles.materialize = true`, the next activation restores the declared
 active profile. Set `materialize = false` to leave routing selection to the TUI.
 
+### Role vocabulary
+
+Every profile routes exactly the roles gentle-pi ships: the ten agent
+definitions `gentle-ai-explore`, `gentle-ai-verify`, `gentle-ai-worker`,
+`jd-fix-agent`, `jd-judge-a`, `jd-judge-b`, `review-readability`,
+`review-reliability`, `review-resilience` and `review-risk`, plus the
+`orchestrator` keys. The two provider review roles, `review-refuter` and
+`review-validator`, are also declared: the review relay reads them from
+`models.json` and they never become `subagents.json` entries
+(`PROVIDER_REVIEW_ROLES`). No other role belongs in a profile. The retired
+`sdd-*` family is not routed: those agents no longer exist, so their entries
+were dead configuration.
+
+`checks/gentle-ai-engine` asserts the vocabulary in both directions
+(`agentRoleVocabulary`, `agentRoleCoverage`), so a role that is not shipped and
+a shipped agent left unrouted both fail `nix flake check`. The routing files are
+runtime-owned and the activation merge is additive: removing a role from a
+profile stops it being re-asserted but does not delete an existing entry, which
+must be cleaned once by hand.
+
 ## Theme
 
 Enabling Pi publishes `~/.pi/agent/themes/aytordev.json` from the active

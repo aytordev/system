@@ -7,32 +7,20 @@
       "model": "openai-codex/gpt-6.1-sol",
       "thinking": "high"
     },
-    "sdd-explore": {
+    "gentle-ai-explore": {
       "model": "nan/deepseek-v4-flash",
       "thinking": "high"
     },
-    "sdd-spec": {
+    "gentle-ai-verify": {
       "model": "openai-codex/gpt-6.1-sol",
       "thinking": "high"
     },
-    "sdd-design": {
-      "model": "openai-codex/gpt-6-astra",
-      "thinking": "high"
-    },
-    "sdd-verify": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "sdd-sync": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "sdd-archive": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "sdd-apply": {
+    "gentle-ai-worker": {
       "model": "nan/glm5.3-flash",
+      "thinking": "high"
+    },
+    "jd-fix-agent": {
+      "model": "openai-codex/gpt-6.1-sol",
       "thinking": "high"
     },
     "jd-judge-a": {
@@ -42,34 +30,6 @@
     "jd-judge-b": {
       "model": "openai-codex/gpt-6-astra",
       "thinking": "high"
-    },
-    "jd-fix-agent": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "review-risk": {
-      "model": "openai-codex/gpt-6-astra",
-      "thinking": "high"
-    },
-    "review-refuter": {
-      "model": "nan/deepseek-v4-flash",
-      "thinking": "high"
-    },
-    "sdd-research": {
-      "model": "nan/deepseek-v4-flash",
-      "thinking": "high"
-    },
-    "sdd-proposal": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "sdd-tasks": {
-      "model": "nan/glm5.3-flash",
-      "thinking": "high"
-    },
-    "sdd-onboard": {
-      "model": "nan/glm5.3-flash",
-      "thinking": "medium"
     },
     "review-readability": {
       "model": "nan/glm5.3-flash",
@@ -83,17 +43,17 @@
       "model": "nan/deepseek-v4-flash",
       "thinking": "high"
     },
+    "review-risk": {
+      "model": "openai-codex/gpt-6-astra",
+      "thinking": "high"
+    },
+    "review-refuter": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
     "review-validator": {
       "model": "openai-codex/gpt-6.1-sol",
       "thinking": "high"
-    },
-    "sdd-status": {
-      "model": "nan/qwen3.8-flash",
-      "thinking": "low"
-    },
-    "sdd-init": {
-      "model": "nan/glm5.3-flash",
-      "thinking": "medium"
     }
   }
 }

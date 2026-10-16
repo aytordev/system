@@ -89,6 +89,25 @@
   tools = enabled.aytordev.programs.terminal.tools;
   agentProfiles = tools.pi.agent-profiles;
   agentProfileStore = builtins.fromJSON agentProfiles.rendered.store;
+  # The role vocabulary the repository's profiles may route: exactly the agent
+  # definitions gentle-pi ships (package `assets/agents/`), the two
+  # provider-owned review roles the review relay reads from `models.json`, and
+  # the orchestrator key. Anything else is routing for an agent that does not
+  # exist, and a missing entry is a shipped agent left unrouted.
+  shippedAgents = [
+    "gentle-ai-explore"
+    "gentle-ai-verify"
+    "gentle-ai-worker"
+    "jd-fix-agent"
+    "jd-judge-a"
+    "jd-judge-b"
+    "review-readability"
+    "review-reliability"
+    "review-resilience"
+    "review-risk"
+  ];
+  providerReviewRoles = ["review-refuter" "review-validator"];
+  profileRoles = shippedAgents ++ providerReviewRoles ++ ["orchestrator"];
   subscriptionProfileName = "openai-subscription-complex";
   subscriptionHome = mkHome {
     pi = {
@@ -106,40 +125,30 @@
   expectedHybridProfile =
     lib.genAttrs [
       "orchestrator"
-      "sdd-spec"
-      "sdd-verify"
-      "sdd-sync"
-      "sdd-archive"
+      "gentle-ai-verify"
       "jd-fix-agent"
-      "sdd-proposal"
       "review-reliability"
       "review-validator"
     ] (_: {
       model = "openai-codex/gpt-6.1-sol";
       thinking = "high";
     })
-    // lib.genAttrs ["sdd-design" "jd-judge-b" "review-risk"] (_: {
+    // lib.genAttrs ["jd-judge-b" "review-risk"] (_: {
       model = "openai-codex/gpt-6-astra";
       thinking = "high";
     })
-    // lib.genAttrs ["sdd-explore" "jd-judge-a" "review-refuter" "sdd-research" "review-resilience"] (_: {
+    // lib.genAttrs ["gentle-ai-explore" "jd-judge-a" "review-refuter" "review-resilience"] (_: {
       model = "nan/deepseek-v4-flash";
       thinking = "high";
     })
-    // lib.genAttrs ["sdd-apply" "sdd-tasks"] (_: {
+    // lib.genAttrs ["gentle-ai-worker"] (_: {
       model = "nan/glm5.3-flash";
       thinking = "high";
     })
-    // lib.genAttrs ["sdd-onboard" "review-readability" "sdd-init"] (_: {
+    // lib.genAttrs ["review-readability"] (_: {
       model = "nan/glm5.3-flash";
       thinking = "medium";
-    })
-    // {
-      sdd-status = {
-        model = "nan/qwen3.8-flash";
-        thinking = "low";
-      };
-    };
+    });
   localNames = ["aytordev-pen-ops" "dotfiles-coder" "nix" "skill-creator" "skill-registry"];
   names = lib.sort builtins.lessThan (localNames ++ ["impeccable"]);
   upstream = "${pkgs.aytordev.impeccable-skills}/share/impeccable";
@@ -185,6 +194,33 @@
       builtins.attrNames tools.pi
       == ["agent-profiles" "enable" "guiEnvironment" "package" "providers" "startup-header"]
       && builtins.attrNames tools.gentle-ai == ["enable" "package"];
+    # Regression: no profile routes a role gentle-pi does not ship. The profiles
+    # declared thirteen retired `sdd-*` roles before this assertion existed.
+    # `lib.subtractLists a b` is `b \ a`, so this call tests declared \ allowed.
+    agentRoleVocabulary =
+      lib.all (profile: lib.subtractLists profileRoles (builtins.attrNames profile) == [])
+      (builtins.attrValues agentProfileStore.profiles);
+    # Regression: every profile routes every shipped agent, the two provider
+    # review roles and the orchestrator. The delegation trio
+    # (`gentle-ai-explore`/`-verify`/`-worker`) was missing from all three.
+    # This call tests allowed \ declared.
+    agentRoleCoverage =
+      lib.all (profile: lib.subtractLists (builtins.attrNames profile) profileRoles == [])
+      (builtins.attrValues agentProfileStore.profiles);
+    # Regression: the default profile stays an all-nan route, which is its point.
+    defaultProfileAllNan =
+      lib.all (entry: lib.hasPrefix "nan/" entry.model)
+      (builtins.attrValues agentProfileStore.profiles.opensource);
+    # Regression: the two provider review roles reach `models.json` and never
+    # `subagents.json` in the default profile too.
+    defaultProviderRolesExcludedFromSubagents = let
+      models = builtins.fromJSON agentProfiles.rendered.models;
+      subagents = (builtins.fromJSON agentProfiles.rendered.subagents).model_profiles;
+    in
+      (models ? "review-refuter")
+      && (models ? "review-validator")
+      && !(subagents ? "review-refuter")
+      && !(subagents ? "review-validator");
     subscriptionProfileRegistered = agentProfileStore.profiles ? ${subscriptionProfileName};
     subscriptionProfileRouting =
       agentProfileStore.profiles ? ${subscriptionProfileName}

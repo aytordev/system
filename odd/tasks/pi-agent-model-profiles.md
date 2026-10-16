@@ -80,6 +80,10 @@ should run.
   with no shipped agent definition: `sdd-sync` (retired), `review-refuter` and
   `review-validator` (provider roles). They are kept: the store is the profile's
   own record and `review-refuter`/`review-validator` are live review roles.
+  **Superseded for the `sdd-*` ids** by
+  [pi-agent-role-alignment](pi-agent-role-alignment.md): the whole SDD family was
+  retired upstream in the Gentle 4.1 cycle, so the profiles no longer route it.
+  The rationale still holds for the two provider roles, which stay.
 - **The package does not validate model ids against providers at write time**; a
   missing provider or model only fails at launch. Keep the declared ids in sync
   with `provider.nix` (`nan` provider: `deepseek-v4-flash`, `glm5.3-flash`,
@@ -232,3 +236,16 @@ the fact that the routing is already effective on this machine.
 Run `darwin-switch wang-lin` to publish the module; the CI `nix flake check` on
 PR #197 is the last gate before merge. Nothing else is pending on this machine: a
 Pi started now already reports the declarative routing.
+
+## Log
+
+- **2026-10-16 — role vocabulary realigned** (successor feature:
+  [pi-agent-role-alignment](pi-agent-role-alignment.md)). The constraint above
+  relied on the SDD agents still existing; upstream retired the whole family in
+  the Gentle 4.1 cycle, so the thirteen `sdd-*` roles became dead routing and the
+  delegation trio (`gentle-ai-explore`, `gentle-ai-verify`, `gentle-ai-worker`)
+  was missing from every profile. The profiles now route the ten shipped agents
+  plus the two provider review roles, and `checks/gentle-ai-engine` asserts that
+  vocabulary in both directions. The store, `models.json` and `subagents.json`
+  were cleaned of the `sdd-*` keys, which the additive activation merge would
+  otherwise have preserved forever.

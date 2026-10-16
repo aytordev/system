@@ -7,31 +7,19 @@
       "model": "openai-codex/gpt-6.1-sol",
       "thinking": "high"
     },
-    "sdd-explore": {
+    "gentle-ai-explore": {
       "model": "openai-codex/gpt-6.1-sol",
       "thinking": "high"
     },
-    "sdd-spec": {
+    "gentle-ai-verify": {
       "model": "openai-codex/gpt-6.1-sol",
       "thinking": "high"
     },
-    "sdd-design": {
-      "model": "openai-codex/gpt-6-astra",
-      "thinking": "high"
-    },
-    "sdd-verify": {
+    "gentle-ai-worker": {
       "model": "openai-codex/gpt-6.1-sol",
       "thinking": "high"
     },
-    "sdd-sync": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "sdd-archive": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "sdd-apply": {
+    "jd-fix-agent": {
       "model": "openai-codex/gpt-6.1-sol",
       "thinking": "high"
     },
@@ -42,34 +30,6 @@
     "jd-judge-b": {
       "model": "openai-codex/gpt-6-astra",
       "thinking": "high"
-    },
-    "jd-fix-agent": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "review-risk": {
-      "model": "openai-codex/gpt-6-astra",
-      "thinking": "high"
-    },
-    "review-refuter": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "sdd-research": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "sdd-proposal": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "sdd-tasks": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "high"
-    },
-    "sdd-onboard": {
-      "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "medium"
     },
     "review-readability": {
       "model": "openai-codex/gpt-6.1-sol",
@@ -83,17 +43,17 @@
       "model": "openai-codex/gpt-6-astra",
       "thinking": "high"
     },
-    "review-validator": {
+    "review-risk": {
+      "model": "openai-codex/gpt-6-astra",
+      "thinking": "high"
+    },
+    "review-refuter": {
       "model": "openai-codex/gpt-6.1-sol",
       "thinking": "high"
     },
-    "sdd-status": {
-      "model": "openai-codex/gpt-6-luna",
-      "thinking": "low"
-    },
-    "sdd-init": {
+    "review-validator": {
       "model": "openai-codex/gpt-6.1-sol",
-      "thinking": "medium"
+      "thinking": "high"
     }
   }
 }

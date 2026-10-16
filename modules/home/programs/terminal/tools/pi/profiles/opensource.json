@@ -7,31 +7,19 @@
       "model": "nan/deepseek-v4-flash",
       "thinking": "high"
     },
-    "sdd-explore": {
-      "model": "nan/glm5.3-flash",
-      "thinking": "high"
-    },
-    "sdd-spec": {
-      "model": "nan/glm5.3-flash",
-      "thinking": "high"
-    },
-    "sdd-design": {
+    "gentle-ai-explore": {
       "model": "nan/deepseek-v4-flash",
       "thinking": "high"
     },
-    "sdd-verify": {
+    "gentle-ai-verify": {
       "model": "nan/deepseek-v4-flash",
       "thinking": "high"
     },
-    "sdd-sync": {
+    "gentle-ai-worker": {
       "model": "nan/glm5.3-flash",
       "thinking": "high"
     },
-    "sdd-archive": {
-      "model": "nan/glm5.3-flash",
-      "thinking": "medium"
-    },
-    "sdd-apply": {
+    "jd-fix-agent": {
       "model": "nan/glm5.3-flash",
       "thinking": "high"
     },
@@ -40,34 +28,6 @@
       "thinking": "high"
     },
     "jd-judge-b": {
-      "model": "nan/deepseek-v4-flash",
-      "thinking": "high"
-    },
-    "jd-fix-agent": {
-      "model": "nan/glm5.3-flash",
-      "thinking": "high"
-    },
-    "review-risk": {
-      "model": "nan/glm5.3-flash",
-      "thinking": "high"
-    },
-    "review-refuter": {
-      "model": "nan/deepseek-v4-flash",
-      "thinking": "high"
-    },
-    "sdd-research": {
-      "model": "nan/deepseek-v4-flash",
-      "thinking": "high"
-    },
-    "sdd-proposal": {
-      "model": "nan/deepseek-v4-flash",
-      "thinking": "high"
-    },
-    "sdd-tasks": {
-      "model": "nan/deepseek-v4-flash",
-      "thinking": "high"
-    },
-    "sdd-onboard": {
       "model": "nan/deepseek-v4-flash",
       "thinking": "high"
     },
@@ -83,16 +43,16 @@
       "model": "nan/deepseek-v4-flash",
       "thinking": "high"
     },
+    "review-risk": {
+      "model": "nan/glm5.3-flash",
+      "thinking": "high"
+    },
+    "review-refuter": {
+      "model": "nan/deepseek-v4-flash",
+      "thinking": "high"
+    },
     "review-validator": {
       "model": "nan/deepseek-v4-flash",
-      "thinking": "high"
-    },
-    "sdd-status": {
-      "model": "nan/deepseek-v4-flash",
-      "thinking": "high"
-    },
-    "sdd-init": {
-      "model": "nan/qwen3.8-flash",
       "thinking": "high"
     }
   }
