@@ -142,6 +142,25 @@ shell body. `just darwin-switch` was **not** run: the runtime half of the change
 is not live on this machine yet.
 
 
+## Progress
+
+Two work-unit commits on `main`, pushed 2026-10-16 over the range
+`d916e7ab..5159f29f` (`git push origin main`, exit 0, local and `origin/main` in
+0/0 afterwards):
+
+- `eec64e8e` `fix(pi): align agent-model profiles with the shipped role
+  vocabulary` — 6 files, +122/−169: the three profiles,
+  `checks/gentle-ai-engine/default.nix`, the Pi README and the reconciliation
+  in `odd/tasks/pi-agent-model-profiles.md`.
+- `5159f29f` `docs(odd): track the pi-agent-role-alignment feature document` —
+  1 file, +173: this document.
+
+Both passed the repository pre-commit hooks (conflict markers, deadnix, statix,
+treefmt, typos) and carry an SSH signature. The user chose a direct push to
+`main` over a feature branch and pull request, so the branch/PR conventions this
+repository normally uses were explicitly overridden for this change; this
+evidence note is committed separately, after that push.
+
 ## Log
 
 - **L1 (user, verbatim):** "por que los agentes gentle-ai-* siguen disponibles?"
@@ -171,3 +190,6 @@ is not live on this machine yet.
 - **L9 (verification finding, 2026-10-16):** the independent verifier found that
   `lib.subtractLists a b` is `b \ a`, inverting both new checks' arguments
   against their names. Corrected; see "Verification evidence".
+- **L10 (user, verbatim):** "commitea y push directamente en main." — explicit
+  authorization to commit and publish, overriding the repository's branch and
+  pull-request convention for this change.
