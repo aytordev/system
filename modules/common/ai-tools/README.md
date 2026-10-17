@@ -1,6 +1,6 @@
 # AI Tools: Native Gentle AI and Published Skills
 
-Nix installs Pi, the official public Gentle AI CLI **4.1.1**, Engram
+Nix installs Pi, the official public Gentle AI CLI **4.2.0**, Engram
 **3.1.0**, and Node/npm. The official native installer owns the Pi profile,
 Shell package, private engine, extensions, and workflow. Building this flake
 does **not** install Shell or validate its live runtime/data compatibility.
@@ -9,13 +9,14 @@ The Shell package is pinned by upstream's own documented upgrade path,
 `pi install npm:gentle-pi@<version>`, so its version lives in
 `~/.pi/agent/settings.json` rather than in this flake; a versioned npm spec is
 skipped by `pi update`, which is what keeps it from drifting. The pin is
-currently **`npm:gentle-pi@4.1.0`**. The banner-filter
+currently **`npm:gentle-pi@4.3.0`**. The banner-filter
 merge matches the bare or pinned source and preserves the pin. Updating Shell
 is an operator action: run the upstream `pi install` command, then
 `gentle-ai sync`.
 
-Shell 4 raises its native prerequisites: the host Pi must be at least
-**0.99.1** and Node at least **22.19**. Its workflow is ODD-only: v4 retired
+Shell 4 raises its native prerequisites, and Shell 4.2 raises the Pi floor
+again: the host Pi must be at least **1.2.0** (Shell 4.0 accepted **0.99.1**)
+and Node at least **22.19**. Its workflow is ODD-only: v4 retired
 upstream's Strict TDD selector and the SDD/OpenSpec workflow, and this
 repository must not re-add them. The v4 `sync` also retires the
 `pi-mcp-adapter` extension in favor of Pi's built-in MCP client; sequence that
@@ -24,9 +25,16 @@ replacement only after the live profile already satisfies the Pi prerequisite.
 Shell 4.1 changes what this profile does automatically: native review now
 fires only for **`high`** risk — a `medium` candidate reports
 `review_due: false` with `under_budget` and gets no automatic review — and the
-review provider contract moves to **1.3.0**, an additive change. After the
+review provider contract moved to **1.3.0**, an additive change. After the
 upgrade, `gentle-ai sync` retires installed Gentle-owned SDD artifacts and
 refreshes orchestrator prompts, permissions, and reviewer assets.
+
+Shell 4.3 pins its private engine at Gentle AI **4.2.0**, so the session engine
+and this flake's operator CLI converge on one release for the first time. That
+engine moves the review provider contract again, from 1.3.0 to **1.4.0**, which
+adds a `routing` bundle entry carrying Gentle AI's ODD routing canon; Shell
+renders its own ODD steps from that block instead of hand-copying them. The
+module path stays at `/v4` and no review CLI flag changed.
 
 That pin does not survive on its own. Any `gentle-ai install` — including a
 narrow `--component persona` run — re-registers the agent's npm packages and
