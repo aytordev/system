@@ -26,6 +26,11 @@
     (!darwin.pkgs.chromaprint.doCheck)
     (!darwin.pkgs.kvazaar.doCheck)
     (lib.hasInfix "internal/updater/install_darwin.go" darwin.pkgs.protonmail-bridge.postPatch)
+    # The zed overlay must stay Darwin-only and must not disturb the Linux derivation.
+    (lib.hasInfix "osx.info_plist_exts" darwin.pkgs.zed-editor.postPatch)
+    # The overlay must restrict the bundle format so the sandboxed installPhase never needs hdiutil.
+    (lib.hasInfix "--format osx" darwin.pkgs.zed-editor.installPhase)
+    (overlaidLinuxPkgs.zed-editor.drvPath == baseLinuxPkgs.zed-editor.drvPath)
     (overlaidLinuxPkgs.kvazaar.drvPath == baseLinuxPkgs.kvazaar.drvPath)
     (overlaidLinuxPkgs.chromaprint.drvPath == baseLinuxPkgs.chromaprint.drvPath)
     (overlaidLinuxPkgs.protonmail-bridge.drvPath == baseLinuxPkgs.protonmail-bridge.drvPath)
