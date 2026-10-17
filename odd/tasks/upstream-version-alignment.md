@@ -81,22 +81,22 @@ What blocks what:
 
 ## Tasks
 
-1. [ ] Create this feature document, its Engram mirror, and the visible todo list.
-2. [ ] Full lock refresh: `nix flake update` in the root, then
+1. [x] Create this feature document, its Engram mirror, and the visible todo list.
+2. [x] Full lock refresh: `nix flake update` in the root, then
        `nix flake update root` in `flake/dev`; record the new revisions and the
        Pi version they resolve to.
-3. [ ] Re-measure the bump debt at the new revision: `parse-lix` cache
+3. [x] Re-measure the bump debt at the new revision: `parse-lix` cache
        availability for `aarch64-darwin`, the `overlay-composition` contract
        (`chromaprint`/`kvazaar`/`protonmail-bridge`), and `herdr`. Change an
        exclusion or overlay only when the measurement demands it.
-4. [ ] Gentle AI 4.2.0 pin: derive the four SRI hashes three ways (publisher
+4. [x] Gentle AI 4.2.0 pin: derive the four SRI hashes three ways (publisher
        installer at the matching `gentle-shell` tag, the release
        `checksums.txt`, a local download), bump `packages/gentle-ai/package.nix`,
        and update `checks/gentle-ai-engine/default.nix:168` and `:333` in the
        same commit.
-5. [ ] Verify: `nix flake check --override-input secrets
+5. [x] Verify: `nix flake check --override-input secrets
        path:./checks/fixtures/secrets` and a build of the Darwin system.
-6. [ ] Doc alignment: `modules/common/ai-tools/README.md` (CLI 4.2.0, Shell pin
+6. [x] Doc alignment: `modules/common/ai-tools/README.md` (CLI 4.2.0, Shell pin
        4.3.0, Pi floor 1.2.0, contract 1.4.0) and this task file's evidence.
 7. [ ] Operator activation, then runtime: `npm install-scripts approve
        gentle-pi`, `pi install npm:gentle-pi@4.3.0`, `gentle-ai sync`, and
@@ -198,15 +198,96 @@ binary prints exactly `gentle-ai 4.2.0`; the engine check
 history), and a new paragraph recording Shell 4.3's private engine `4.2.0` and
 the review provider contract move to `1.4.0`.
 
+### Task 5 - verification (done)
+
+The first `nix flake check` run (CI secrets fixture) went red, and the failure
+was a **regression introduced by the bump**, not by this cycle's edits:
+
+```
+error: unknown field `osx_info_plist_exts`, expected one of `name`, `identifier`, `icon`, ...
+```
+
+`zed-editor` 1.23.2 (the version `55bfb4d7` carries) has an `installPhase` that
+renames `[package.metadata.bundle-stable]` to `[package.metadata.bundle]` but
+leaves the macOS keys in cargo-bundle's old schema, so `cargo bundle` aborts and
+takes `production-darwin-*`, `home-manager-*`, and `activation-script` with it.
+The previous pin carried zed 1.22.0 and never hit this.
+
+Timeline, from the nixpkgs history:
+
+| nixpkgs | zed-editor | macOS installPhase |
+| --- | --- | --- |
+| `151fa4e8` (previous pin) | 1.22.0 | works |
+| `55bfb4d7` (nixos-unstable HEAD) | 1.23.2 | **broken**: `92b0c84387` bumped the version, `913a51e7e0` fixed the keys |
+| from `913a51e7e0` (2026-10-15 08:56) | 1.24.2 | works |
+
+`nixos-unstable` HEAD is still `55bfb4d7` (2026-10-14), so the revision that
+brings Pi 1.2.0 is exactly the one that brings the broken Zed. This blocks
+activation on the Darwin host, not only the check suite.
+
+Operator decision (2026-10-17): keep tracking `nixos-unstable` and apply the
+same key rename upstream used, through a Darwin-only local overlay, instead of
+pinning a master commit that Hydra has not built.
+
+Work unit `b9dc4313` adds `overlays/zed-editor/default.nix`, which migrates the
+three legacy keys in `postPatch` and rewrites the pinned `installPhase` to build
+with `--format osx`; pins both sides of the contract in
+`checks/overlay-composition/default.nix` — the Darwin migration present, the
+Linux derivation byte-identical — and updates the overlay inventory in
+`overlays/AGENTS.md`.
+
+The overlay took three iterations, and each one is worth recording because the
+build is expensive and the failure modes are invisible until `installPhase`:
+
+1. Migrating only `osx_info_plist_exts` in `installPhase` got past that key and
+   failed on the next one, `osx_minimum_system_version`.
+2. Migrating all three keys in `postPatch` cleared the schema and then failed
+   producing a `.dmg`: the pinned `installPhase` runs a bare `cargo bundle
+   --release`, which builds every format and needs `hdiutil`, absent in the
+   sandbox.
+3. Upstream's full fix is three key migrations **plus** `--format osx`. With
+   both, zed builds.
+
+Final evidence at `b9dc4313` (the overlay work unit):
+
+| Check | Result |
+| --- | --- |
+| `production-overlay-composition` | green |
+| `zed-editor` build | `/nix/store/x5v5wx0a82wv5f2kqr2ff5frifx51zi9-zed-editor-1.23.2`, `versionCheckPhase` reports `Zed 1.23.2`, bundle output is `Zed.app` only |
+| `nix flake check --override-input secrets path:./checks/fixtures/secrets` | **all checks passed** (x86_64-linux omitted: incompatible with this host) |
+| `nix build .#darwinConfigurations.wang-lin.system` | `/nix/store/kgx5raad3z8s6l4b09a4bfsdj3a57443-darwin-system-26.11.4cff07d` |
+| closure readback | carries `pi-coding-agent` 1.2.0, `gentle-ai` 4.2.0, `zed-editor` 1.23.2, `engram` 3.1.0 |
+
 ## Follow-ups (not in this cycle)
 
-1. **Retire `overlays/chromaprint/default.nix`** — provable no-op at the new
+1. **Retire `overlays/zed-editor/default.nix`** — retirement condition recorded
+   in the overlay itself: `nixos-unstable` carries zed-editor 1.24.2 or newer.
+2. **Retire `overlays/chromaprint/default.nix`** — provable no-op at the new
    revision (identical drvPath). Needs its own work unit because it also edits
    `checks/overlay-composition/default.nix` and the overlay inventory docs.
-2. **Re-verify the `kvazaar` overlay** with a from-source, checks-enabled
+3. **Re-verify the `kvazaar` overlay** with a from-source, checks-enabled
    Darwin build: `nix build --rebuild --no-link --impure --expr '... .kvazaar'`.
    Its cached un-overlaid output suggests the `signal 9` cause is gone.
-3. **Pi 1.3.0** — take it with a later `nix flake update` once
-   `nixos-unstable` includes it (~2026-10-15+), no code change needed.
-4. **Stale premise in `odd/tasks/java-dev-shells.md:291`** about lix `2.95.3`
+4. **Pi 1.3.0** — take it with a later `nix flake update` once
+   `nixos-unstable` includes it (nixpkgs master got it on 2026-10-15), no code
+   change needed.
+5. **Stale premise in `odd/tasks/java-dev-shells.md:291`** about lix `2.95.3`
    cache availability; correct the record if that file is next touched.
+
+## Pending: operator activation and runtime
+
+The repository side is complete and verified. What remains cannot be done from
+inside this session:
+
+1. Operator runs `just darwin-switch wang-lin` (interactive `sudo`). The new
+   generation carries Pi 1.2.0, which is Shell 4.3.0's prerequisite.
+2. `npm install-scripts approve gentle-pi` — version-keyed, so it must be
+   re-issued for 4.3.0.
+3. `pi install npm:gentle-pi@4.3.0`.
+4. `gentle-ai sync` — required by the 4.2.0 release notes; the provider contract
+   moves to 1.4.0.
+5. Readback: `~/.pi/agent/npm/node_modules/gentle-pi/.gentle-ai/v4.2.0/gentle-ai
+   --version` must report 4.2.0, matching the Nix-owned CLI pin for the first
+   time.
+6. Restart Pi before running any native capture, delegation, or review: the
+   in-memory extension keeps the pre-swap version until then.
