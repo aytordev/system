@@ -276,8 +276,36 @@ Final evidence at `b9dc4313` (the overlay work unit):
 
 ## Pending: operator activation and runtime
 
-The repository side is complete and verified. What remains cannot be done from
-inside this session:
+### Native review: blocked by consent-binding expiry
+
+The repository side is verified, so the cycle attempted the native review on the
+candidate it produces: base `dacc4f62`, six commits, nine paths. `inspect`
+returned `status: ready` with `fresh_target_ready`, target
+`sha256:0bcbae9751ce955992136a41218e14aaaa77ee14ecf52d8290fe027f2fee1663`.
+
+`START` never produced a usable consent envelope. Three attempts, in order:
+
+1. `native-operation-failed` — the candidate-view `checkout-index` timed out at
+   10 s. `lineage_created: false`, `mutation_performed: false`.
+2. `consent-binding-stale` — binding `28eb1901-2b12-4788-ad00-797ee17d9eab`
+   reported as "expired after 10 minutes without an answer".
+3. `consent-binding-stale` — binding `74fc10cc-d8d0-48e7-8db5-e72bf25d2bf0`
+   reported with the same message, seconds after it was issued.
+
+A binding that expires immediately is not a human timeout: it is the recorded
+harness/provider skew. This session runs the pre-swap stack (Shell package
+3.5.1, package-local engine 3.5.0) against a provider contract the engine has
+already moved past. Nothing was created and nothing was mutated:
+`lineage_created: false` on all three attempts.
+
+The resolution is the pending steps below, in this order: activation (Pi 1.2.0),
+Shell 4.3.0, `gentle-ai sync`, Pi restart. The candidate identity is stable, so
+the review can be started fresh after the restart against the same commit range
+without redoing any work.
+
+### Runtime steps
+
+What remains cannot be done from inside this session:
 
 1. Operator runs `just darwin-switch wang-lin` (interactive `sudo`). The new
    generation carries Pi 1.2.0, which is Shell 4.3.0's prerequisite.
