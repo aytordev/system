@@ -98,10 +98,10 @@ What blocks what:
        path:./checks/fixtures/secrets` and a build of the Darwin system.
 6. [x] Doc alignment: `modules/common/ai-tools/README.md` (CLI 4.2.0, Shell pin
        4.3.0, Pi floor 1.2.0, contract 1.4.0) and this task file's evidence.
-7. [ ] Operator activation, then runtime: `npm install-scripts approve
+7. [x] Operator activation, then runtime: `npm install-scripts approve
        gentle-pi`, `pi install npm:gentle-pi@4.3.0`, `gentle-ai sync`, and
        readback of the engine path and version.
-8. [ ] Native review inspect on the delivered work units, then close.
+8. [x] Native review inspect on the delivered work units, then close.
 
 ## Recorded decisions
 
@@ -274,7 +274,7 @@ Final evidence at `b9dc4313` (the overlay work unit):
 5. **Stale premise in `odd/tasks/java-dev-shells.md:291`** about lix `2.95.3`
    cache availability; correct the record if that file is next touched.
 
-## Pending: operator activation and runtime
+## Runtime and review outcome
 
 ### Native review: blocked by consent-binding expiry
 
@@ -309,19 +309,48 @@ Shell 4.3.0, `gentle-ai sync`, Pi restart. The candidate identity is stable, so
 the review can be started fresh after the restart against the same commit range
 without redoing any work.
 
-### Runtime steps
+### Runtime steps (done)
 
-What remains cannot be done from inside this session:
+Executed in this order, after the operator ran `just darwin-switch wang-lin`:
 
-1. Operator runs `just darwin-switch wang-lin` (interactive `sudo`). The new
-   generation carries Pi 1.2.0, which is Shell 4.3.0's prerequisite.
-2. `npm install-scripts approve gentle-pi` — version-keyed, so it must be
-   re-issued for 4.3.0.
-3. `pi install npm:gentle-pi@4.3.0`.
-4. `gentle-ai sync` — required by the 4.2.0 release notes; the provider contract
-   moves to 1.4.0.
-5. Readback: `~/.pi/agent/npm/node_modules/gentle-pi/.gentle-ai/v4.2.0/gentle-ai
-   --version` must report 4.2.0, matching the Nix-owned CLI pin for the first
-   time.
-6. Restart Pi before running any native capture, delegation, or review: the
-   in-memory extension keeps the pre-swap version until then.
+1. `just darwin-switch wang-lin` (operator; interactive `sudo`). Activated
+   generation `xn279jym…`, whose path differs from the fixture build
+   (`kgx5raad…`) because the real secrets input is used.
+2. `npm install-scripts approve gentle-pi`, run inside `~/.pi/agent/npm`.
+   **Correction to the original plan:** pi 1.2.0 has no `install-scripts`
+   subcommand; the postinstall gate belongs to npm. Without this step the
+   postinstall (`node scripts/install-gentle-ai.mjs`) never runs and the private
+   engine is never installed.
+3. `pi install npm:gentle-pi@4.3.0`, which keeps the versioned spec and the
+   `!startup-banner.ts` filter (`pi list` reports
+   `npm:gentle-pi@4.3.0 (filtered)`).
+4. `gentle-ai sync`, which changed three files (Pi `settings.json`, the npm
+   `package.json`, `~/.config/gga/config`) across the persona, engram, context7,
+   gga, and skills components.
+5. Readback: the package-local engine reports `gentle-ai 4.2.0`, identical to
+   the Nix-owned CLI. The two executables converge for the first time.
+6. Pi restarted; the session now runs Shell 4.3.0 with engine 4.2.0.
+
+`gentle-ai doctor` reports 7 passed, 1 failed, 1 warning: `gga` is not on PATH
+(a managed component new in 4.2.0 that this flake does not provide) and
+`pi:mcp` warns that the pre-existing `-builtin:mcp` entry disables built-in MCP
+while `pi-mcp-adapter` is undeclared. Both are separate findings.
+
+### Native review: approved
+
+The pre-swap attempts below never produced a lineage. After the restart the
+same candidate started cleanly on the first try, which is the practical proof
+that the harness/provider skew was the cause.
+
+| Field | Value |
+| --- | --- |
+| Lineage | `review-6498b7f47335124f` |
+| Target | `sha256:12d08dc7…` (base `dacc4f62`, 9 paths, 488 lines) |
+| Tier / lens | `medium` / `review-reliability` |
+| Forecast | 1 model run, `pi_host_relay`, acknowledged |
+| Outcome | **approved** |
+| Findings | `R3-001`, `checks/overlay-composition/default.nix:30`, severity `SUGGESTION`, disposition `informational` |
+| Acknowledgement | `authority: burned`, `gentle-ai.review-acknowledged/v1` |
+
+Delivery stays under ordinary repository policy: nothing is pushed, opened, or
+merged by this cycle.
