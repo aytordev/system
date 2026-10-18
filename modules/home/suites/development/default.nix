@@ -124,6 +124,7 @@ in {
             # AI tools - use mkDefault so home config can override
             engram.enable = mkDefault cfg.aiEnable;
             gentle-ai.enable = mkDefault cfg.aiEnable;
+            gga.enable = mkDefault cfg.aiEnable;
             ai-skills.enable = mkDefault cfg.aiEnable;
             herdr.enable = mkDefault cfg.aiEnable;
             pi = {
