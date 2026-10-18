@@ -87,6 +87,7 @@ in {
 
         # Official executable only; native onboarding owns the Pi profile.
         gentle-ai.enable = true;
+        gga.enable = true;
 
         # Opt-in GUI adapter: publish Gentle Pi's subagent command override
         # (GENTLE_PI_AGENTS_PI) into the GUI login launchd context so Pi
