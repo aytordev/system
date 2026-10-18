@@ -163,6 +163,8 @@
 ## aytordev\.programs\.terminal\.tools\.fzf\.theme
 ## aytordev\.programs\.terminal\.tools\.gentle-ai\.enable
 ## aytordev\.programs\.terminal\.tools\.gentle-ai\.package
+## aytordev\.programs\.terminal\.tools\.gga\.enable
+## aytordev\.programs\.terminal\.tools\.gga\.package
 ## aytordev\.programs\.terminal\.tools\.gh\.enable
 ## aytordev\.programs\.terminal\.tools\.gh\.package
 ## aytordev\.programs\.terminal\.tools\.gh\.auth\.accounts
