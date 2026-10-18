@@ -8,13 +8,11 @@ Nixpkgs overlays. This directory contains overlays that modify or extend the pac
 overlays/
 ├── chromaprint/
 │   └── default.nix         # Disable chromaprint tests on Darwin
-├── kvazaar/
-│   └── default.nix         # Disable kvazaar tests on Darwin
 ├── protonmail-bridge/
 │   ├── default.nix         # No-op the self-updater on Darwin
 │   └── install_darwin.go   # Replacement updater source
-└── zed-editor/
-    └── default.nix         # Migrate Zed's macOS bundle metadata for cargo-bundle
+└── kvazaar/
+    └── default.nix         # Disable kvazaar tests on Darwin
 ```
 
 ## How It Works

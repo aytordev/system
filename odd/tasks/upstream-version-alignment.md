@@ -258,10 +258,22 @@ Final evidence at `b9dc4313` (the overlay work unit):
 | `nix build .#darwinConfigurations.wang-lin.system` | `/nix/store/kgx5raad3z8s6l4b09a4bfsdj3a57443-darwin-system-26.11.4cff07d` |
 | closure readback | carries `pi-coding-agent` 1.2.0, `gentle-ai` 4.2.0, `zed-editor` 1.23.2, `engram` 3.1.0 |
 
+### Lock refresh to `fe132422`
+
+A follow-up refresh moved nixpkgs (root and dev follower) from `55bfb4d7`
+(2026-10-14) to `fe132422` (nixos-unstable HEAD, 2026-10-15). It brings
+zed-editor 1.24.2, satisfying the overlay's recorded retirement condition, and
+simultaneously fixed the lix 2.95.4 mimalloc failure (unknown meson option
+`mimalloc`) that had failed CI on x86_64-linux, via upstream `8d8ca25b2e` — no
+lix overlay needed.
+
 ## Follow-ups (not in this cycle)
 
-1. **Retire `overlays/zed-editor/default.nix`** — retirement condition recorded
-   in the overlay itself: `nixos-unstable` carries zed-editor 1.24.2 or newer.
+1. [x] **Retire `overlays/zed-editor/default.nix`** — done: the lock refresh
+   to `fe132422` carries zed-editor 1.24.2, and the overlay was removed because
+   its `--replace-fail` substitutions would fail against the migrated source
+   (nixpkgs `913a51e7e0` already applied the same key migration and
+   `--format osx`).
 2. **Retire `overlays/chromaprint/default.nix`** — provable no-op at the new
    revision (identical drvPath). Needs its own work unit because it also edits
    `checks/overlay-composition/default.nix` and the overlay inventory docs.
