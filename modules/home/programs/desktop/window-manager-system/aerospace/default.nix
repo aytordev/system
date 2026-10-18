@@ -5,7 +5,16 @@
   ...
 }: let
   cfg = config.aytordev.programs.desktop.window-manager-system.aerospace;
+  sketchybarCfg = config.aytordev.programs.desktop.bars.sketchybar;
   sketchybar = lib.getExe config.programs.sketchybar.package;
+
+  # Sketchybar floats over the desktop and reserves no space of its own, so a
+  # display whose `visibleFrame` does not already exclude a menu-bar strip has to
+  # be padded by the bar's full geometry: its y-offset plus its height.
+  barTopClearance =
+    if sketchybarCfg.enable
+    then sketchybarCfg.bar.yOffset + sketchybarCfg.bar.height
+    else 0;
 in {
   options = {
     aytordev.programs.desktop.window-manager-system.aerospace = {
@@ -71,11 +80,14 @@ in {
         ];
 
         # Dynamic gaps per monitor.
-        # AeroSpace adds these on top of each monitor's `visibleFrame`, which
-        # already excludes the built-in's menu bar/notch. The built-in gets a
-        # small extra gap (8) on top of the menu bar while the Dell (no menu
-        # bar) keeps the full margin, keeping the top separation close across
-        # displays.
+        # AeroSpace adds these on top of each monitor's `visibleFrame`. macOS only
+        # excludes the menu-bar strip from `visibleFrame` on a display that keeps
+        # one: the notched built-in does, while an external display with the menu
+        # bar auto-hidden reports the full screen. A monitor *role* (the old
+        # `monitor.main` rule) does not decide this: the main display at home is
+        # the LG, which has no notch, so it received the 8px built-in gap and the
+        # tiled windows covered the 40px bar. Select by display instead, and let
+        # every unlisted display clear the bar through `barTopClearance`.
         gaps = {
           inner = {
             horizontal = 10;
@@ -85,9 +97,13 @@ in {
             left = 7;
             bottom = 7;
             top = [
-              {monitor.main = 8;}
+              # Notched built-in: `visibleFrame` already holds the menu-bar strip
+              # open, so only the extra separation is needed.
+              {monitor."Built-in" = 8;}
+              # Work Dell: 40 already clears the bar; kept so civislend keeps the
+              # spacing it has today.
               {monitor."dell" = 40;}
-              40
+              barTopClearance
             ];
             right = 7;
           };
