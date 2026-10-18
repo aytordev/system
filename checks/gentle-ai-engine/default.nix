@@ -351,14 +351,17 @@ in
       }
       # Run the packaged gga hermetically with the same isolated HOME/XDG
       # harness, expecting the tag-derived version line; the trailing ANSI
-      # reset is tolerated, not matched.
+      # reset is tolerated, not matched. The symlink, not the store path, is
+      # the point of the assertion: it reproduces how a profile or
+      # `home.packages` invokes the binary through a profile `bin` link.
       ggaHome="$TMPDIR/gga-version-home"
-      mkdir -p "$ggaHome"
+      mkdir -p "$ggaHome" "$TMPDIR/gga-profile-bin"
+      ln -s ${pkgs.aytordev.gga}/bin/gga "$TMPDIR/gga-profile-bin/gga"
       HOME="$ggaHome" \
       XDG_CONFIG_HOME="$ggaHome/config" \
       XDG_DATA_HOME="$ggaHome/data" \
       XDG_CACHE_HOME="$ggaHome/cache" \
-        ${pkgs.aytordev.gga}/bin/gga --version > "$TMPDIR/gga-version.out" || {
+        "$TMPDIR/gga-profile-bin/gga" --version > "$TMPDIR/gga-version.out" || {
           echo 'gga --version command failed' >&2
           exit 1
         }

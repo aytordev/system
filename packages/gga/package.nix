@@ -32,18 +32,24 @@ in
         --replace-fail 'VERSION="''${GGA_VERSION:-dev}"' 'VERSION="${version}"'
     '';
 
-    # Pure Bash: no build step. `bin/gga` resolves its libraries from
-    # `$(dirname $SCRIPT_DIR)/lib/gga`, so `$out/bin/gga` plus
-    # `$out/lib/gga/*.sh` needs no LIB_DIR patching. Runtime dependencies are
-    # provider-dependent (curl, python3, gh, plus the chosen provider CLI) and
-    # are deliberately not pinned or wrapped.
+    # Pure Bash: no build step. Upstream `bin/gga` resolves its libraries
+    # relative to its own invocation path (`BASH_SOURCE[0]`), and the
+    # home-manager profile links only `bin/`, never package `lib/`
+    # directories. The real script therefore lives at
+    # `$out/libexec/gga/gga` with the libraries at `$out/libexec/lib/gga/`,
+    # satisfying upstream's `$(dirname "$SCRIPT_DIR")/lib/gga` candidate,
+    # and `$out/bin/gga` is a tiny POSIX wrapper that execs the absolute
+    # store path so the profile symlink reaches the same layout.
     installPhase = ''
       runHook preInstall
-      install -Dm755 bin/gga $out/bin/gga
-      install -Dm644 lib/providers.sh -t $out/lib/gga/
-      install -Dm644 lib/cache.sh -t $out/lib/gga/
-      install -Dm644 lib/pr_mode.sh -t $out/lib/gga/
+      install -Dm755 bin/gga $out/libexec/gga/gga
+      install -Dm644 lib/providers.sh -t $out/libexec/lib/gga/
+      install -Dm644 lib/cache.sh -t $out/libexec/lib/gga/
+      install -Dm644 lib/pr_mode.sh -t $out/libexec/lib/gga/
       install -Dm644 LICENSE $out/share/gga/LICENSE
+      mkdir -p $out/bin
+      printf '#! /bin/sh\nexec %s "$@"\n' "$out/libexec/gga/gga" > $out/bin/gga
+      chmod 755 $out/bin/gga
       runHook postInstall
     '';
 
