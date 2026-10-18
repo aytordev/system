@@ -76,8 +76,19 @@ configured servers, and drop the undeclared adapter.
 4. [ ] Verify: `nix flake check` and a Darwin system build.
 5. [ ] Restore the live theme to `aytordev`.
 6. [ ] Apply the MCP recommendation and re-run `gentle-ai doctor`.
-7. [ ] Strengthen the overlay assertion for `R3-001`.
+7. [x] Strengthen the overlay assertion for `R3-001` — later **dropped**, see
+   the note below.
 8. [ ] Issue, push, and one PR.
+
+## R3-001 became moot
+
+The strengthened assertion was implemented, then dropped during the rebase onto
+`main`. The alignment PR retired `overlays/zed-editor` outright: the refreshed
+nixpkgs carries zed-editor 1.24.2, whose own installPhase already migrates the
+three cargo-bundle keys and restricts the bundle format. There is no overlay
+left to assert against, so the suggestion the finding pointed at no longer
+exists in the tree. Nothing was lost: the reason it was raised is recorded in
+the alignment task file.
 
 ## Evidence log
 
