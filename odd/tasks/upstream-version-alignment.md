@@ -283,7 +283,7 @@ candidate it produces: base `dacc4f62`, six commits, nine paths. `inspect`
 returned `status: ready` with `fresh_target_ready`, target
 `sha256:0bcbae9751ce955992136a41218e14aaaa77ee14ecf52d8290fe027f2fee1663`.
 
-`START` never produced a usable consent envelope. Three attempts, in order:
+`START` never produced a usable consent envelope. Four attempts, in order:
 
 1. `native-operation-failed` — the candidate-view `checkout-index` timed out at
    10 s. `lineage_created: false`, `mutation_performed: false`.
@@ -291,12 +291,18 @@ returned `status: ready` with `fresh_target_ready`, target
    reported as "expired after 10 minutes without an answer".
 3. `consent-binding-stale` — binding `74fc10cc-d8d0-48e7-8db5-e72bf25d2bf0`
    reported with the same message, seconds after it was issued.
+4. After the two documentation commits changed the candidate to
+   `sha256:24b07b96c08d2bb21891edcfb65bd8cd0285e0ccf89d19a74b745f0ad3e0dad4`
+   (lineage `review-3104018e59856a5c`), `consent-binding-stale` again: binding
+   `d7836f57-2baa-4b3f-a9f5-df84b8f6b071`, reported expired on issue, with
+   `native_invocation_attempted: false`.
 
 A binding that expires immediately is not a human timeout: it is the recorded
 harness/provider skew. This session runs the pre-swap stack (Shell package
 3.5.1, package-local engine 3.5.0) against a provider contract the engine has
-already moved past. Nothing was created and nothing was mutated:
-`lineage_created: false` on all three attempts.
+already moved past. No consent envelope ever reached the relay, so there was no
+human decision to record. Nothing was created and nothing was mutated:
+`lineage_created: false` on all four attempts.
 
 The resolution is the pending steps below, in this order: activation (Pi 1.2.0),
 Shell 4.3.0, `gentle-ai sync`, Pi restart. The candidate identity is stable, so
