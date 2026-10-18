@@ -27,7 +27,14 @@
     (!darwin.pkgs.kvazaar.doCheck)
     (lib.hasInfix "internal/updater/install_darwin.go" darwin.pkgs.protonmail-bridge.postPatch)
     # The zed overlay must stay Darwin-only and must not disturb the Linux derivation.
-    (lib.hasInfix "osx.info_plist_exts" darwin.pkgs.zed-editor.postPatch)
+    # All three legacy cargo-bundle keys must be migrated, not just one: pinning a
+    # single key let an incomplete overlay look correct while installPhase failed
+    # on the next key it reached.
+    (builtins.all (key: lib.hasInfix key darwin.pkgs.zed-editor.postPatch) [
+      "osx.minimum_system_version"
+      "osx.info_plist_exts"
+      "osx.url_schemes"
+    ])
     # The overlay must restrict the bundle format so the sandboxed installPhase never needs hdiutil.
     (lib.hasInfix "--format osx" darwin.pkgs.zed-editor.installPhase)
     (overlaidLinuxPkgs.zed-editor.drvPath == baseLinuxPkgs.zed-editor.drvPath)
