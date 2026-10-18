@@ -94,15 +94,21 @@ make-editable path:
 # macOS Management
 ############################################################################
 
+# Darwin builds cannot use Nix's sandbox on this machine: the sandbox-exec
+# profile for home-manager-generation outgrows the 64KB XPC object limit
+# (NixOS/nix#4119), so every Darwin build and switch passes --option sandbox
+# false. Activating the policy in nix.settings instead would also require
+# relaxing checks/system-nix-platforms.
+
 # Build Darwin system
 # Usage: just darwin-build <hostname> [debug]
 [macos]
 [group('darwin')]
 darwin-build name mode="":
     if [ "{{mode}}" = "debug" ]; then \
-        nix build ".#darwinConfigurations.{{name}}.system" --extra-experimental-features "nix-command flakes" --show-trace --verbose; \
+        nix build ".#darwinConfigurations.{{name}}.system" --extra-experimental-features "nix-command flakes" --option sandbox false --show-trace --verbose; \
     else \
-        nix build ".#darwinConfigurations.{{name}}.system" --extra-experimental-features "nix-command flakes"; \
+        nix build ".#darwinConfigurations.{{name}}.system" --extra-experimental-features "nix-command flakes" --option sandbox false; \
     fi
 
 # Switch Darwin configuration
@@ -111,9 +117,9 @@ darwin-build name mode="":
 [group('darwin')]
 darwin-switch name mode="":
     if [ "{{mode}}" = "debug" ]; then \
-        sudo -H ./result/sw/bin/darwin-rebuild switch --flake ".#{{name}}" --show-trace --verbose; \
+        sudo -H ./result/sw/bin/darwin-rebuild switch --flake ".#{{name}}" --option sandbox false --show-trace --verbose; \
     else \
-        sudo -H ./result/sw/bin/darwin-rebuild switch --flake ".#{{name}}"; \
+        sudo -H ./result/sw/bin/darwin-rebuild switch --flake ".#{{name}}" --option sandbox false; \
     fi
 
 # Rollback last Darwin generation
