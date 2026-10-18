@@ -9,6 +9,7 @@ platform by `flake/packages/default.nix`.
 | Package | Description | Platforms |
 | --- | --- | --- |
 | `engram` | Persistent memory MCP server for AI coding agents (Gentleman-Programming) | linux + darwin (x86_64/aarch64) |
+| `gga` | Provider-agnostic AI code review CLI (Gentleman-Programming, pure Bash, pinned to tag `v2.10.1`) | linux + darwin (x86_64/aarch64) |
 | `impeccable-engine` | Official Impeccable engine 0.1.6, byte-preserved release binary | aarch64-darwin + x86_64-linux |
 | `impeccable-skills` | Complete upstream Impeccable Pi skill 4.4.0 with sibling engine | aarch64-darwin + x86_64-linux |
 | `luaposix` | Lua 5.5-compatible `luaposix` build (upstream rockspec upper bound patched) | per nixpkgs |

@@ -1,7 +1,7 @@
 # AI Tools: Native Gentle AI and Published Skills
 
 Nix installs Pi, the official public Gentle AI CLI **4.2.0**, Engram
-**3.1.0**, and Node/npm. The official native installer owns the Pi profile,
+**3.1.0**, the GGA review CLI **2.10.1**, and Node/npm. The official native installer owns the Pi profile,
 Shell package, private engine, extensions, and workflow. Building this flake
 does **not** install Shell or validate its live runtime/data compatibility.
 

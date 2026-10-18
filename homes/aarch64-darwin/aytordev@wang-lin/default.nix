@@ -82,6 +82,7 @@ in {
         tools = {
           # Official executable only; native onboarding owns the Pi profile.
           gentle-ai.enable = true;
+          gga.enable = true;
 
           # Custom shell integrations
           atuin = {

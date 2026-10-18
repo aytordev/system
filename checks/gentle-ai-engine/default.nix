@@ -34,6 +34,8 @@
   enabledTools = {
     pi.enable = true;
     gentle-ai.enable = true;
+    # Regression: gga is a first-class Nix-owned tool in the development suite.
+    gga.enable = true;
     engram.enable = true;
     ai-skills.enable = true;
   };
@@ -81,6 +83,10 @@
         package = selected;
       };
       engram = {
+        enable = true;
+        package = selected;
+      };
+      gga = {
         enable = true;
         package = selected;
       };
@@ -175,9 +181,12 @@
     # supports the `sync_target_closed_space` repair, so an unguarded downgrade
     # here must fail this check instead of degrading silently at runtime.
     engramPackageVersion = pkgs.aytordev.engram.version == "3.1.0";
-    packagesEnabled = lib.all (name: installed enabled tools.${name}.package) ["pi" "gentle-ai" "engram"];
-    packagesDisabled = lib.all (name: !(installed disabled tools.${name}.package)) ["pi" "gentle-ai" "engram"];
-    packageOverrides = lib.all (name: overrides.aytordev.programs.terminal.tools.${name}.package == selected) ["pi" "gentle-ai" "engram"] && installed overrides selected;
+    # Regression: the drift guard for gentle-ai's own `GGAVersion` pin in
+    # `internal/versions/versions.go`, which Nix cannot see mechanically.
+    ggaPackageVersion = pkgs.aytordev.gga.version == "2.10.1";
+    packagesEnabled = lib.all (name: installed enabled tools.${name}.package) ["pi" "gentle-ai" "gga" "engram"];
+    packagesDisabled = lib.all (name: !(installed disabled tools.${name}.package)) ["pi" "gentle-ai" "gga" "engram"];
+    packageOverrides = lib.all (name: overrides.aytordev.programs.terminal.tools.${name}.package == selected) ["pi" "gentle-ai" "gga" "engram"] && installed overrides selected;
     npmPrerequisite = installed enabled pkgs.nodejs;
     noSelfUpdate = enabled.home.sessionVariables.GENTLE_AI_NO_SELF_UPDATE == "1";
     engramEnvironment =
@@ -193,7 +202,9 @@
     noLegacyOptions =
       builtins.attrNames tools.pi
       == ["agent-profiles" "enable" "guiEnvironment" "package" "providers" "startup-header"]
-      && builtins.attrNames tools.gentle-ai == ["enable" "package"];
+      && builtins.attrNames tools.gentle-ai == ["enable" "package"]
+      # Regression: gga's option surface stays exactly `enable` + `package`.
+      && builtins.attrNames tools.gga == ["enable" "package"];
     # Regression: no profile routes a role gentle-pi does not ship. The profiles
     # declared thirteen retired `sdd-*` roles before this assertion existed.
     # `lib.subtractLists a b` is `b \ a`, so this call tests declared \ allowed.
@@ -336,6 +347,23 @@ in
       }
       test ! -e "$versionHome/.pi" || {
         echo 'gentle-ai version run created a native onboarding profile' >&2
+        exit 1
+      }
+      # Run the packaged gga hermetically with the same isolated HOME/XDG
+      # harness, expecting the tag-derived version line; the trailing ANSI
+      # reset is tolerated, not matched.
+      ggaHome="$TMPDIR/gga-version-home"
+      mkdir -p "$ggaHome"
+      HOME="$ggaHome" \
+      XDG_CONFIG_HOME="$ggaHome/config" \
+      XDG_DATA_HOME="$ggaHome/data" \
+      XDG_CACHE_HOME="$ggaHome/cache" \
+        ${pkgs.aytordev.gga}/bin/gga --version > "$TMPDIR/gga-version.out" || {
+          echo 'gga --version command failed' >&2
+          exit 1
+        }
+      grep -q 'gga v2.10.1' "$TMPDIR/gga-version.out" || {
+        echo "unexpected gga version output: $(cat "$TMPDIR/gga-version.out")" >&2
         exit 1
       }
       ${lib.concatMapStringsSep "\n" (name: ''
