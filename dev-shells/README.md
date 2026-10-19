@@ -19,11 +19,16 @@ auto-discovered and exposed as `devShells.<system>.<name>`. Use with
 | `java-17` | Java 17 LTS + Maven + Gradle |
 | `astro-hono` | Astro + Hono + Bun, pnpm workspaces, TypeScript + LSP |
 | `react` | Node 22 + pnpm/yarn/bun, TypeScript + LSP |
+| `brain` | Bun only (direct `mkShellNoCC`, no shared wrapper) |
 
 The language shells listed above do not carry their own toolchain. The versions
 and build tools come from the pure-data catalog in `modules/common/languages`, so
 `java-21` and the Java language pack always agree. See
 [ADR-0018](../docs/decisions/0018-language-pack-class.md).
+
+The `brain` shell is an exception to the shared wrapper: it uses the direct
+`pkgs.mkShellNoCC` with only Bun, so it gets no injected common tools and no
+pre-commit `shellHook`.
 
 ## Usage
 
