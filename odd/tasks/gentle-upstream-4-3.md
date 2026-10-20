@@ -31,9 +31,13 @@ already publishes 1.3.0.
        `~/.gentle-ai/state.json`.
 5. [x] Read back the whole stack (Pi channel included) and record the Pi 1.3.0
        channel block.
-6. [ ] Docs: evidence here, correction note in the closed alignment task, one
-       work-unit commit on a branch.
-7. [ ] Independent verification, then the manual restart handoff.
+6. [x] Docs: evidence here, correction note in the closed alignment task, one
+       work-unit commit on a branch. Delivered as `8b90baa4` (lock refresh) and
+       `3c929ed9` (this record) on `feat/gentle-upstream-4-3`, PR #261, merged
+       as `af643916`.
+7. [ ] Independent verification, then the manual restart handoff. Verification
+       ran on 2026-10-20 and passed; the restart handoff is the user's manual
+       step, so this line stays open until it happens.
 
 ## Log
 
@@ -59,6 +63,11 @@ already publishes 1.3.0.
   `allowScripts` in `~/.pi/agent/npm/package.json` only approves
   `gentle-pi@4.0.0`. Node v24.21.0 and npm 11.19.0 satisfy the 4.3.0 engines
   floor (`>=22.19.0`), and Pi 1.2.0 satisfies its peer floor (`>=1.2.0`).
+- L7 (user, verbatim, 2026-10-20): "commitea el progreso en work-unit, crea PR
+  y mergeala a main"
+- L8 (user, verbatim, 2026-10-20): "Lo de Bun debe ir en otra PR." — the
+  `feat/b06-brain-devshell` commit that was sitting on the same worktree did
+  not belong in this cycle's slice; it was delivered as its own PR #262.
 
 ## Evidence
 
@@ -112,7 +121,23 @@ a plain `nix flake update` once `nixos-unstable` advances.
 
 ### Session skew (restart required)
 
-This session loaded Shell 4.1.0 assets and the mirrored provider bundle
-`1.3.0`; the installed Shell is 4.3.0 with contract `1.4.0`. That is the same
-harness/provider skew the previous cycle recorded, so no native review,
-capture, or delegated write is attempted until Pi restarts.
+The session that wrote this record loaded Shell 4.1.0 assets and the mirrored
+provider bundle `1.3.0` while the installed Shell was 4.3.0 with contract
+`1.4.0`, so it attempted no native review, capture, or delegated write.
+
+That skew is gone after the restart: the session that delivered this record
+started 2026-10-20T10:00 and mirrors bundle `1.4.0` against Shell 4.3.0. Native
+assessment of the delivery candidate returned medium risk, `reviewDue: false`
+(`under_budget`), no Task Size high-risk escalation, and no independent
+verifier; verification therefore stayed with the writer, the local
+`nix flake check`, and the PR CI run.
+
+### Delivery (2026-10-20)
+
+| Evidence | Observed |
+| --- | --- |
+| Work units | `8b90baa4` lock refresh, `3c929ed9` documentation, on `feat/gentle-upstream-4-3` |
+| PR and merge | PR #261, merge commit `af643916`; 4 files, +142/−9 |
+| Local check | `nix flake check --override-input secrets path:./checks/fixtures/secrets` on aarch64-darwin: `all checks passed!`; the first attempt failed on this host's Darwin sandbox limit (`data object length 79212 exceeds maximum (65535)`), which is why the run needs `--option sandbox false`, as the Darwin justfile recipes already do |
+| PR checks | `Check x86_64-linux` 3m7s, `Check aarch64-darwin` 48m11s, `Build dev shells` on both systems, `Check expressions`, `label` — all pass |
+| Separate work unit | the Bun-only brain shell went out as PR #262 (merge `ae7f2113`) instead of riding along here |
