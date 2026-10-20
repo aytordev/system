@@ -366,3 +366,18 @@ that the harness/provider skew was the cause.
 
 Delivery stays under ordinary repository policy: nothing is pushed, opened, or
 merged by this cycle.
+
+### Runtime readback correction (2026-10-19)
+
+The "Runtime steps (done)" section above and this cycle's closure do not match
+the machine as it was read back on 2026-10-19: `pi list` reported
+`npm:gentle-pi@4.1.0`, only `.gentle-ai/v4.1.1` existed, `~/.gentle-ai/state.json`
+still said `installed_binary_version: 4.1.1` with `last_synced_at`
+2026-10-13T10:43:54Z, and `gentle-ai doctor` reported the 4.1.1/4.2.0 asset
+mismatch. The npm tree carried mtime 2026-10-13 12:42 while the pin and
+`package-lock.json` were written 2026-10-19 10:11-10:14, so the pin moved
+without any package re-extraction. Whether the 4.3.0 install was reverted or
+the runtime steps were never executed on this host is not decidable from the
+filesystem. The work was re-executed and verified in
+`odd/tasks/gentle-upstream-4-3.md`; Pi remains 1.2.0 because the tracked
+channel does not carry 1.3.0 yet.
