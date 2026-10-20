@@ -8,6 +8,7 @@ Per-project development environments provided by Nix flakes. This directory cont
 dev-shells/
 ├── default/            # Fallback/generic shell
 ├── astro-hono/         # Astro + Hono + Bun stack
+├── brain/              # Bun only (direct mkShellNoCC, no shared wrapper)
 ├── nix/                # Nix development tools
 ├── node-22-lts/        # Node.js 22 LTS
 ├── node-24-lts/        # Node.js 24 LTS
@@ -113,6 +114,8 @@ mkShell {
 - **java-25**: Java 25 LTS with Maven and Gradle.
 - **python**: Python 3.13 with uv package manager.
 - **react**: Frontend development with Node, pnpm, yarn, bun, and TypeScript.
+- **brain**: Bun only via direct `pkgs.mkShellNoCC` (bypasses the shared
+  wrapper, so no common tools and no pre-commit `shellHook`).
 
 ## Key Files
 
