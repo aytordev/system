@@ -7,12 +7,17 @@
   cfg = config.aytordev.programs.desktop.bars.sketchybar;
   themeCfg = config.aytordev.theme;
 
+  # C helpers (menus, cpu/network event providers) built by Nix at build time,
+  # so the Lua config never compiles anything when a session starts.
+  helpers = import ./helpers.nix {inherit pkgs;};
+
   luaGen = import ./lua-gen.nix {
     inherit
       lib
       pkgs
       cfg
       themeCfg
+      helpers
       ;
   };
 in {
