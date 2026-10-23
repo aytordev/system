@@ -124,3 +124,13 @@ loginwindow watchdog firing.
   `~/Developer` is 23 MB over 2412 files and `~/backups` is 3.8 MB over 2.
   The proposed exclusions would have changed nothing. The only real finding is
   disk hygiene, not indexing: `~/.cache/jdtls-*` alone is 115673 files.
+- **L13.** L8's block cleared: `nix build .#darwinConfigurations.wang-lin.system`
+  with `--option sandbox false` exited 0 and produced
+  `n8jx1b0bakakawgd8v4g69z05412mx8g-darwin-system-26.11.4cff07d`. The closure
+  resolves `lua-5.4.7`, `lua5.4-sbarLua-0-unstable-2026-03-06`,
+  `lua5.4-luaposix-36.2.1` and one `sketchybar-helpers` path. The bootstrapped
+  gcc left behind by the abandoned `--fallback` attempt satisfied the
+  `nativeBuildInputs = [gcc]` requirement, so no download was needed.
+- **L14.** Work units committed: `35d745e2` (T2/S6 helpers in Nix) and
+  `6e21c960` (T1/S5 Lua 5.4 pin). Not pushed, not activated. T3 stays dropped
+  per L12.
