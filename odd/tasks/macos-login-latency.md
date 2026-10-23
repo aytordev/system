@@ -134,3 +134,16 @@ loginwindow watchdog firing.
 - **L14.** Work units committed: `35d745e2` (T2/S6 helpers in Nix) and
   `6e21c960` (T1/S5 Lua 5.4 pin). Not pushed, not activated. T3 stays dropped
   per L12.
+- **L15.** T1 reverted: the Lua 5.4 pin broke the bridge. On the switched
+  system `require("sketchybar")` under `lua-5.4.7` exits with
+  `Segmentation fault: 11` (rc=139), and the faulting stack is
+  `luaopen_sketchybar > lua_getglobal > luaH_Hgetshortstr` in
+  `liblua.5.4.7.dylib`. Four `lua-*.ips` reports were written on 2026-10-23
+  (17:39:16 at the switch, 19:11:51 and 19:14:02/09 during the diagnosis).
+  nixpkgs' sbarlua is written against the Lua 5.5 state, so overriding
+  `lua55Packages` with `lua54Packages` compiles a bridge that dereferences a
+  5.5 `lua_State` under 5.4. Consequence on the live system: sketchybar stayed
+  up with no items and `bar.drawing = off`.
+- **L16.** The override is reverted, so S5 stays open. Any future attempt has to
+  build SbarLua from source pinned at a revision that supports Lua 5.4, not
+  re-target nixpkgs' 5.5 build. T2/S6 is unaffected and stays in.

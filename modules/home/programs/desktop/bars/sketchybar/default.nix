@@ -65,14 +65,18 @@ in {
       enable = true;
       configType = "lua";
       inherit (cfg) package;
-      # SketchyBar's Lua bridge aborts with a libmalloc double-free under Lua
-      # 5.5 (FelixKratz/SbarLua#59), and nixpkgs builds sbarlua against 5.5
-      # unconditionally, so pin both the bridge and the interpreter to 5.4.
-      sbarLuaPackage = pkgs.sbarlua.override {lua55Packages = pkgs.lua54Packages;};
-      luaPackage = pkgs.lua5_4;
+      sbarLuaPackage = pkgs.sbarlua;
       extraPackages = luaGen.allPackages;
 
       extraLuaPackages = luaPkgs: let
+        patchedRockspec = pkgs.runCommand "luaposix-36.2.1-1.rockspec" {} ''
+          sed 's/lua >= 5.1, < 5.5/lua >= 5.1/' ${
+            pkgs.fetchurl {
+              url = "https://luarocks.org/manifests/gvvaughan/luaposix-36.2.1-1.rockspec";
+              hash = "sha256-mlv8WUAdD+pfMUXGVh3zGgknfMoKDzFcyoeOyEtJj1Y=";
+            }
+          } > $out
+        '';
         luaposix = luaPkgs.buildLuarocksPackage {
           pname = "luaposix";
           version = "36.2.1";
@@ -82,10 +86,7 @@ in {
             rev = "v36.2.1";
             hash = "sha256-oxHH7RmaEGLU1tSlFhtf7F6CKOSRaNamq7QxtWyfwtI=";
           };
-          knownRockspec = pkgs.fetchurl {
-            url = "https://luarocks.org/manifests/gvvaughan/luaposix-36.2.1-1.rockspec";
-            hash = "sha256-mlv8WUAdD+pfMUXGVh3zGgknfMoKDzFcyoeOyEtJj1Y=";
-          };
+          knownRockspec = patchedRockspec.outPath;
           disabled = false;
         };
       in [
