@@ -115,3 +115,12 @@ loginwindow watchdog firing.
   the deployed `sketchybar` tree has zero `.c`/makefile files; the only
   remaining `make` match in `lua-gen.nix` is a comment. `alejandra --check`
   passes on all three files.
+- **L11.** T2 committed as `35d745e2` (pre-commit: treefmt, deadnix, statix,
+  typos all pass). T1 remains uncommitted on the branch because its build
+  verification is still blocked by the `cache.nixos.org` cut (L8).
+- **L12.** T3 dropped after measuring, as the user asked. `mdfind -onlyin
+  ~/.cache 'kMDItemFSName == "*"'` returns 0, so Spotlight does not index
+  `~/.cache` at all, and it holds 121454 of the home's 315868 files;
+  `~/Developer` is 23 MB over 2412 files and `~/backups` is 3.8 MB over 2.
+  The proposed exclusions would have changed nothing. The only real finding is
+  disk hygiene, not indexing: `~/.cache/jdtls-*` alone is 115673 files.
