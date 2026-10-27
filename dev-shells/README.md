@@ -11,6 +11,7 @@ auto-discovered and exposed as `devShells.<system>.<name>`. Use with
 | `default` | Generic tools (git, htop, etc.) |
 | `nix` | Nix tooling + just runner |
 | `python` | Python 3.13 + `uv` |
+| `python-314` | Python 3.14 + `uv` |
 | `node-22-lts` | Node.js 22 LTS + yarn/pnpm |
 | `node-24-lts` | Node.js 24 LTS + yarn/pnpm |
 | `node-26` | Node.js 26 + yarn/pnpm |
@@ -35,11 +36,13 @@ pre-commit `shellHook`.
 ```bash
 nix develop .#react          # enter a shell
 nix develop .#python --command "uv run my.py"   # run a command
+nix develop .#python-314    # Python 3.14 and uv from the language catalog
 ```
 
 All shells share a common wrapper (`flake/dev/dev-shells`) that injects common
-tools and handles pre-commit integration. Pre-commit hooks are disabled on
-Darwin due to a broken Swift dependency in nixpkgs.
+tools and installs local pre-commit hooks in the consuming Git checkout on shell
+entry, including on Darwin. The `pkgs.pre-commit` package itself is injected only
+on Linux; the installation script can still create hooks on Darwin.
 
 ## Adding a New Shell
 
