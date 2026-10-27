@@ -17,7 +17,7 @@ dev-shells/
 ├── java-21/            # Java 21 LTS + Maven + Gradle
 ├── java-25/            # Java 25 LTS + Maven + Gradle
 ├── python/             # Python 3.13 + uv
-├── python-314/         # Python 3.14 + uv
+├── python-314/         # Python 3.14 + uv only (direct mkShellNoCC)
 ├── react/              # React development
 └── ...
 ```
@@ -114,7 +114,7 @@ mkShell {
 - **java-21**: Java 21 LTS with Maven and Gradle.
 - **java-25**: Java 25 LTS with Maven and Gradle.
 - **python**: Python 3.13 with uv package manager.
-- **python-314**: Python 3.14 with uv package manager.
+- **python-314**: Python 3.14 and uv from the catalog, using direct `pkgs.mkShellNoCC` without common tools or Git hook installation.
 - **react**: Frontend development with Node, pnpm, yarn, bun, and TypeScript.
 - **brain**: Bun only via direct `pkgs.mkShellNoCC` (bypasses the shared
   wrapper, so no common tools and no pre-commit `shellHook`).

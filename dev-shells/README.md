@@ -11,7 +11,7 @@ auto-discovered and exposed as `devShells.<system>.<name>`. Use with
 | `default` | Generic tools (git, htop, etc.) |
 | `nix` | Nix tooling + just runner |
 | `python` | Python 3.13 + `uv` |
-| `python-314` | Python 3.14 + `uv` |
+| `python-314` | Python 3.14 + `uv` only (no shared tools or Git hook installation) |
 | `node-22-lts` | Node.js 22 LTS + yarn/pnpm |
 | `node-24-lts` | Node.js 24 LTS + yarn/pnpm |
 | `node-26` | Node.js 26 + yarn/pnpm |
@@ -27,9 +27,10 @@ and build tools come from the pure-data catalog in `modules/common/languages`, s
 `java-21` and the Java language pack always agree. See
 [ADR-0018](../docs/decisions/0018-language-pack-class.md).
 
-The `brain` shell is an exception to the shared wrapper: it uses the direct
-`pkgs.mkShellNoCC` with only Bun, so it gets no injected common tools and no
-pre-commit `shellHook`.
+The `brain` and `python-314` shells use direct `pkgs.mkShellNoCC` rather than the
+shared wrapper. They expose only their declared toolchains and do not install
+system-repository Git hooks in consuming projects. Python still comes from the
+language catalog.
 
 ## Usage
 

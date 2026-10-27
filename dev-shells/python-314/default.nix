@@ -1,13 +1,10 @@
-{
-  pkgs,
-  mkShell,
-  ...
-}: let
+{pkgs, ...}: let
   inherit (pkgs) lib;
   catalog = import ../../modules/common/languages/catalog.nix {inherit pkgs;};
   pythonPackages = catalog.python.toolchain "314";
 in
-  mkShell {
+  # A reusable language environment must not install system-repository hooks in its consumer.
+  pkgs.mkShellNoCC {
     packages = pythonPackages;
 
     shellHook = ''
