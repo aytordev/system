@@ -1,7 +1,8 @@
 {pkgs}: let
+  inherit (pkgs) lib;
   python = pkgs.python3.withPackages (ps: [ps.json5]);
 in
-  assert pkgs.python3Packages.json5.version == "0.13.0";
+  assert lib.versionAtLeast pkgs.python3Packages.json5.version "0.13.0";
     pkgs.writeShellApplication {
       name = "zed-upstream";
       text = ''
