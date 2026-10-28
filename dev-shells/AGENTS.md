@@ -13,6 +13,7 @@ dev-shells/
 ├── node-22-lts/        # Node.js 22 LTS
 ├── node-24-lts/        # Node.js 24 LTS
 ├── node-26/            # Node.js 26 (Current)
+├── node-26-minimal/    # Catalog Node 26, no shared tools or Git hook installation
 ├── java-17/            # Java 17 LTS + Maven + Gradle
 ├── java-21/            # Java 21 LTS + Maven + Gradle
 ├── java-25/            # Java 25 LTS + Maven + Gradle
@@ -48,7 +49,7 @@ mkShell {
 
 These shells are automatically discovered and exposed by `flake/dev/dev-shells/default.nix`.
 
-- The `mkShell` function passed to these files is a wrapper that injects common tools (git, htop, etc.) and handles pre-commit hooks integration.
+- The `mkShell` function passed to these files is a wrapper that injects common tools (git, htop, etc.) and handles pre-commit hooks integration. Reusable minimal shells such as `node-26-minimal` and `python-314` use direct `pkgs.mkShellNoCC` while still selecting their language catalog toolchain.
 - Common tools are defined in `flake/dev/dev-shells/default.nix`.
 - Pre-commit configuration is in `flake/dev/checks/default.nix`.
 
@@ -110,6 +111,7 @@ mkShell {
 - **node-22-lts**: Node.js 22 environment.
 - **node-24-lts**: Node.js 24 environment.
 - **node-26**: Node.js 26 environment.
+- **node-26-minimal**: Node 26 toolchain from the language catalog via direct `pkgs.mkShellNoCC`; no common tools or consumer Git hook installation.
 - **java-17**: Java 17 LTS with Maven and Gradle.
 - **java-21**: Java 21 LTS with Maven and Gradle.
 - **java-25**: Java 25 LTS with Maven and Gradle.
