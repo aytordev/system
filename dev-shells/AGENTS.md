@@ -13,10 +13,12 @@ dev-shells/
 ├── node-22-lts/        # Node.js 22 LTS
 ├── node-24-lts/        # Node.js 24 LTS
 ├── node-26/            # Node.js 26 (Current)
+├── node-26-minimal/    # Catalog Node 26, no shared tools or Git hook installation
 ├── java-17/            # Java 17 LTS + Maven + Gradle
 ├── java-21/            # Java 21 LTS + Maven + Gradle
 ├── java-25/            # Java 25 LTS + Maven + Gradle
 ├── python/             # Python 3.13 + uv
+├── python-314/         # Python 3.14 + uv only (direct mkShellNoCC)
 ├── react/              # React development
 └── ...
 ```
@@ -47,7 +49,7 @@ mkShell {
 
 These shells are automatically discovered and exposed by `flake/dev/dev-shells/default.nix`.
 
-- The `mkShell` function passed to these files is a wrapper that injects common tools (git, htop, etc.) and handles pre-commit hooks integration.
+- The `mkShell` function passed to these files is a wrapper that injects common tools (git, htop, etc.) and handles pre-commit hooks integration. Reusable minimal shells such as `node-26-minimal` and `python-314` use direct `pkgs.mkShellNoCC` while still selecting their language catalog toolchain.
 - Common tools are defined in `flake/dev/dev-shells/default.nix`.
 - Pre-commit configuration is in `flake/dev/checks/default.nix`.
 
@@ -109,10 +111,12 @@ mkShell {
 - **node-22-lts**: Node.js 22 environment.
 - **node-24-lts**: Node.js 24 environment.
 - **node-26**: Node.js 26 environment.
+- **node-26-minimal**: Node 26 toolchain from the language catalog via direct `pkgs.mkShellNoCC`; no common tools or consumer Git hook installation.
 - **java-17**: Java 17 LTS with Maven and Gradle.
 - **java-21**: Java 21 LTS with Maven and Gradle.
 - **java-25**: Java 25 LTS with Maven and Gradle.
 - **python**: Python 3.13 with uv package manager.
+- **python-314**: Python 3.14 and uv from the catalog, using direct `pkgs.mkShellNoCC` without common tools or Git hook installation.
 - **react**: Frontend development with Node, pnpm, yarn, bun, and TypeScript.
 - **brain**: Bun only via direct `pkgs.mkShellNoCC` (bypasses the shared
   wrapper, so no common tools and no pre-commit `shellHook`).
@@ -124,4 +128,4 @@ mkShell {
 
 ## Platform-Specific Notes
 
-- **Darwin (macOS)**: Pre-commit hooks are currently disabled in dev shells on Darwin due to broken Swift dependencies in nixpkgs (required by dotnet-sdk, which pre-commit uses for tests).
+- **Darwin (macOS)**: The shared wrapper installs local pre-commit hooks on shell entry. Only the `pkgs.pre-commit` package injection is Linux-only; the installation script also runs on Darwin. Entering a wrapped shell can create `.pre-commit-config.yaml` and a hook in the consuming Git checkout.
