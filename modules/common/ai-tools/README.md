@@ -1,7 +1,7 @@
 # AI Tools: Native Gentle AI and Published Skills
 
-Nix installs Pi, the official public Gentle AI CLI **4.2.0**, Engram
-**3.1.0**, the GGA review CLI **2.10.1**, and Node/npm. The official native installer owns the Pi profile,
+Nix installs Pi, the official public Gentle AI CLI **4.3.1**, Engram
+**3.6.0**, the GGA review CLI **2.10.1**, and Node/npm. The official native installer owns the Pi profile,
 Shell package, private engine, extensions, and workflow. Building this flake
 does **not** install Shell or validate its live runtime/data compatibility.
 
@@ -29,9 +29,11 @@ review provider contract moved to **1.3.0**, an additive change. After the
 upgrade, `gentle-ai sync` retires installed Gentle-owned SDD artifacts and
 refreshes orchestrator prompts, permissions, and reviewer assets.
 
-Shell 4.3 pins its private engine at Gentle AI **4.2.0**, so the session engine
-and this flake's operator CLI converge on one release for the first time. That
-engine moves the review provider contract again, from 1.3.0 to **1.4.0**, which
+Shell 4.3 pins its private engine at Gentle AI **4.2.0**; Shell **4.4.0**
+and later bundle Gentle AI **4.3.1**, the same engine version this flake pins
+for the operator CLI. The live Shell is not managed by this repository, so the
+session engine follows the operator's Shell upgrade, not this pin. Engine
+4.2.0 moved the review provider contract, from 1.3.0 to **1.4.0**, which
 adds a `routing` bundle entry carrying Gentle AI's ODD routing canon; Shell
 renders its own ODD steps from that block instead of hand-copying them. The
 module path stays at `/v4` and no review CLI flag changed.

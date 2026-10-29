@@ -171,7 +171,7 @@
     # Regression: the Nix-owned public CLI pin, asserted on the default package
     # only. User overrides stay authoritative; this never rejects custom
     # versions in the module options.
-    packageVersion = tools.gentle-ai.package.version == "4.2.0";
+    packageVersion = tools.gentle-ai.package.version == "4.3.1";
     # Regression: the Nix-owned Engram engine pin. Asserted on the underlying
     # derivation, not on the module option: `tools.engram.package` is
     # deliberately the `engram-wrapped` runCommand, which has no `version`
@@ -180,7 +180,7 @@
     # `capabilities.isolated_session_registration`, answers `/projects`, and
     # supports the `sync_target_closed_space` repair, so an unguarded downgrade
     # here must fail this check instead of degrading silently at runtime.
-    engramPackageVersion = pkgs.aytordev.engram.version == "3.1.0";
+    engramPackageVersion = pkgs.aytordev.engram.version == "3.6.0";
     # Regression: the drift guard for gentle-ai's own `GGAVersion` pin in
     # `internal/versions/versions.go`, which Nix cannot see mechanically.
     ggaPackageVersion = pkgs.aytordev.gga.version == "2.10.1";
@@ -341,7 +341,7 @@ in
           echo 'gentle-ai version command failed' >&2
           exit 1
         }
-      grep -qx 'gentle-ai 4.2.0' "$TMPDIR/gentle-ai-version.out" || {
+      grep -qx 'gentle-ai 4.3.1' "$TMPDIR/gentle-ai-version.out" || {
         echo "unexpected gentle-ai version output: $(cat "$TMPDIR/gentle-ai-version.out")" >&2
         exit 1
       }
