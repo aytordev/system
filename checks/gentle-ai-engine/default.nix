@@ -180,7 +180,7 @@
     # `capabilities.isolated_session_registration`, answers `/projects`, and
     # supports the `sync_target_closed_space` repair, so an unguarded downgrade
     # here must fail this check instead of degrading silently at runtime.
-    engramPackageVersion = pkgs.aytordev.engram.version == "3.1.0";
+    engramPackageVersion = pkgs.aytordev.engram.version == "3.6.0";
     # Regression: the drift guard for gentle-ai's own `GGAVersion` pin in
     # `internal/versions/versions.go`, which Nix cannot see mechanically.
     ggaPackageVersion = pkgs.aytordev.gga.version == "2.10.1";

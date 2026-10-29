@@ -1,33 +1,38 @@
 {
   lib,
-  buildGoModule,
+  buildGo127Module,
   fetchFromGitHub,
   ...
 }: let
-  version = "3.1.0";
+  version = "3.6.0";
 in
-  buildGoModule {
+  buildGo127Module {
     pname = "engram";
     inherit version;
+
+    # v3.6.0's go.mod declares `go 1.26.10`, above the nixpkgs default Go
+    # (1.26.8), which fails `GOTOOLCHAIN=local` in the sandbox.
+    # buildGo127Module threads go_1_27 into the build and the modules FOD.
 
     src = fetchFromGitHub {
       owner = "Gentleman-Programming";
       repo = "engram";
       rev = "v${version}";
-      hash = "sha256-Dyzi/OH0XwT3Z1QfDM/Tvd6bYcXvQux/jff86st5t30=";
+      hash = "sha256-lVLGjn/eYUNy5S/Ct9lTWGiFso40EKrlIDmD+aUaDgg=";
     };
 
-    vendorHash = "sha256-roVQ+K9Hsz0qi61f+zzb+JvgleOmBHSMcKfhwhI0snQ=";
+    vendorHash = "sha256-hkwwuqar4ngDUWM2XctkiVm8TpfQWnUws/sDxDyvQxU=";
 
     subPackages = ["cmd/engram"];
 
-    # v2.0.0-rc and v3.1.0 autosync e2e tests bind a loopback port via
-    # `httptest`, which the Nix sandbox forbids. Re-verified against 3.1.0 by
-    # temporarily enabling the checks: `net/http/httptest.newLocalListener`
-    # panics from `cmd/engram/autosync_e2e_test.go` in
-    # TestMutationTransportAdapterForwardsPromptAuthority and `cmd/engram`
-    # fails. The package compiles cleanly; only the sandbox-incompatible
-    # checks are skipped.
+    # v2.0.0-rc, v3.1.0 and v3.6.0 autosync e2e tests bind a loopback port
+    # via `httptest`, which the Nix sandbox forbids. Re-verified against 3.6.0
+    # at the source level: `cmd/engram/autosync_e2e_test.go` still exists and
+    # TestMutationTransportAdapterForwardsPromptAuthority still opens an
+    # `httptest.NewTLSServer` (a loopback bind through
+    # `net/http/httptest.newLocalListener`). The same bind was observed to
+    # panic at 3.1.0 by temporarily enabling the checks. The package compiles
+    # cleanly; only the sandbox-incompatible checks are skipped.
     doCheck = false;
 
     ldflags = [
