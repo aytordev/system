@@ -4,18 +4,18 @@
   fetchurl,
   ...
 }: let
-  version = "4.3.1";
+  version = "4.4.0";
 
-  # Official v4.3.1 release archive digests, cross-checked three ways: a local
-  # download of the archives, the release's own checksums.txt, and the
+  # Official v4.4.0 release archive digests, cross-checked three ways: the
+  # release's own checksums.txt, a prefetch of each published archive, and the
   # publisher's tagged installer (gentle-ai-installer.mjs, INSTALLER_VERSION
-  # 4.3.1, gentle-shell tag v4.4.0), converted to SRI locally. fetchurl
-  # verifies the SHA-256; it does not verify the release's minisign signature.
+  # 4.4.0, gentle-shell tag v4.7.0), converted to SRI locally. fetchurl verifies
+  # the SHA-256; it does not verify the release's minisign signature.
   hashes = {
-    x86_64-darwin = "sha256-bPV/7gV02u8qvtB/VKNV/sO5OsjwFzPcbE02dPF0YRI=";
-    aarch64-darwin = "sha256-E+iChEf5CBRl7gw1phsk+0kpbVGjEMaZkifirtF4lWs=";
-    x86_64-linux = "sha256-BOxoXFa0LCnf9tsQ/H3CxzAhfcnJZzblOtKs8yJtr7c=";
-    aarch64-linux = "sha256-mefTE6L/heryOmQV6bOq5nv3TC+habIbkwcK2nYT9qA=";
+    x86_64-darwin = "sha256-lWhuowYVUWqinrtiVyJ7HN1MZ2Sd/2PsettXbKJqZ40=";
+    aarch64-darwin = "sha256-tuAJV+uBEV8Y4zGXriA191gSpiTG1T5ygm7Pe0pjVTk=";
+    x86_64-linux = "sha256-H3LKE7Muh8t/ZbKef65t9EkLU9adR2PN8j6UQWWIDNY=";
+    aarch64-linux = "sha256-LYh0Rky+VLZqd9fJ/mbOV3kz3gCTbtGgNcgd5kBqlfw=";
   };
 
   releaseArch = {
