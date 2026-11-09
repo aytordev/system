@@ -138,3 +138,14 @@ pairs core v3.7.0 with `gentle-engram@0.7.0` and says to upgrade both together,
 so the companion was deliberately left at 0.1.14 rather than creating a
 companion-new/core-old window. After the switch: `engram setup pi` (or
 `pi install npm:gentle-engram@0.7.0`) and keep exactly one versioned entry.
+
+L7 (GU-4 side effect, observed): the 4.7.0 postinstall replaced the package-local
+engine directory, so `.gentle-ai/` now holds only `v4.4.0`; the running Shell 4.3.0
+resolves `.gentle-ai/v4.3.0/gentle-ai` and therefore has no native review binary
+until the restart. That is why `gentle_review assess` on this candidate returned
+`nativeRisk: unassessable` with reason `package-local-binary-missing`,
+`changedPaths: 0` and an `unknown` RDD line. The returned plan asked for writer
+self-verification only (`independentVerifier: false`, "no Task Size high-risk item
+was escalated"), which this session performed: both package builds and their
+`version` output, the engine and theme checks, `just fmt-check`, the all-systems
+evaluation and the Darwin host build. No native review ran, and none is claimed.
