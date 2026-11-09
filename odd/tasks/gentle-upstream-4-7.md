@@ -50,10 +50,14 @@ true. Push, PR and merge stay the operator's decisions.
   .#gentle-ai` realized `gentle-ai-4.4.0` and the binary reports `gentle-ai
   4.4.0`; all four SRIs agree between `checksums.txt`, `nix store prefetch-file`
   and installer `INSTALLER_VERSION 4.4.0` at gentle-shell `v4.7.0`.
-- [ ] **GU-2 — Bump engram to 3.7.0.** Route: inline, after GU-1 (shared check and
+- [x] **GU-2 — Bump engram to 3.7.0.** Route: inline, after GU-1 (shared check and
   README surfaces). Commit: `chore(engram): bump to 3.7.0`. Surfaces:
   `packages/engram/package.nix`, `checks/gentle-ai-engine/default.nix`,
-  `modules/common/ai-tools/README.md`. Covers S2.
+  `modules/common/ai-tools/README.md`. Covers S2. Evidence: `nix build .#engram`
+  realized `engram-3.7.0` and the binary reports `engram 3.7.0`; `go.mod` and
+  `go.sum` are byte-identical to v3.6.0's, which is why `vendorHash` is unchanged;
+  `cmd/engram/autosync_e2e_test.go` still binds loopback through
+  `httptest.NewTLSServer`, so `doCheck = false` still holds.
 - [ ] **GU-3 — Verify both builds and the engine check.** Route: parent, after
   GU-1/GU-2. Covers S1-S3.
 - [ ] **GU-4 — Move the Shell pin to 4.7.0 and pair gentle-engram 0.7.0.** Route:
