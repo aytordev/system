@@ -49,7 +49,8 @@ true. Push, PR and merge stay the operator's decisions.
   `modules/common/ai-tools/README.md`. Covers S1. Evidence: `nix build
   .#gentle-ai` realized `gentle-ai-4.4.0` and the binary reports `gentle-ai
   4.4.0`; all four SRIs agree between `checksums.txt`, `nix store prefetch-file`
-  and installer `INSTALLER_VERSION 4.4.0` at gentle-shell `v4.7.0`.
+  and installer `INSTALLER_VERSION 4.4.0` at gentle-shell `v4.7.0`. Commit
+  `5621df9a`.
 - [x] **GU-2 — Bump engram to 3.7.0.** Route: inline, after GU-1 (shared check and
   README surfaces). Commit: `chore(engram): bump to 3.7.0`. Surfaces:
   `packages/engram/package.nix`, `checks/gentle-ai-engine/default.nix`,
@@ -57,12 +58,14 @@ true. Push, PR and merge stay the operator's decisions.
   realized `engram-3.7.0` and the binary reports `engram 3.7.0`; `go.mod` and
   `go.sum` are byte-identical to v3.6.0's, which is why `vendorHash` is unchanged;
   `cmd/engram/autosync_e2e_test.go` still binds loopback through
-  `httptest.NewTLSServer`, so `doCheck = false` still holds.
+  `httptest.NewTLSServer`, so `doCheck = false` still holds. Commit `bfc552a5`.
 - [x] **GU-3 — Verify both builds and the engine check.** Route: parent, after
   GU-1/GU-2. Covers S1-S3. Evidence: `nix build .#gentle-ai` and
   `nix build .#engram` realize `4.4.0`/`3.7.0` with the expected `version`
   output; `nix build .#checks.aarch64-darwin.integration-gentle-ai-engine`
-  exit 0; `just fmt-check` 0 changed.
+  exit 0; `just fmt-check` 0 changed; `nix flake check --all-systems --no-build
+  --override-input secrets path:./checks/fixtures/secrets` ends `all checks
+  passed!`; `just darwin-build wang-lin` exit 0.
 - [x] **GU-4 — Move the Shell pin to 4.7.0.** Route: parent (operator-owned live
   profile; no Nix surface). Covers S4. Evidence: `pi install
   npm:gentle-pi@4.7.0` wrote the versioned pin and preserved the
@@ -74,8 +77,8 @@ true. Push, PR and merge stay the operator's decisions.
   restart is still required for the new Shell to load.
 - [x] **GU-5 — Verify the repository patches against installed 4.7.0.** Route:
   parent, after GU-4, plus the README prose and one source fix. Covers S3 and S5.
-  Commit: `fix(pi): keep the runtime workflow key when merging profiles` plus the
-  README pin statements. Evidence in L5.
+  Commit `4b5f7162` (`fix(pi): keep the runtime workflow key when merging
+  profiles`) plus the README pin statements. Evidence in L4 and L5.
 - [ ] **GU-6 — Align the live Engram pair.** Route: blocked on the operator's
   activation, which needs the sudo password this session does not have. Covers
   S4's pairing clause.
