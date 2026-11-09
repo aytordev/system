@@ -114,6 +114,23 @@
   ];
   providerReviewRoles = ["review-refuter" "review-validator"];
   profileRoles = shippedAgents ++ providerReviewRoles ++ ["orchestrator"];
+  # The real profiles.json merge, HOME-relative so the test can own the tree.
+  # `active = null` exercises the runtime-preserving branch of the merge.
+  profilesEnabled = mkHome {
+    pi = {
+      enable = true;
+      agent-profiles = {
+        enable = true;
+        active = null;
+        materialize = false;
+      };
+    };
+  };
+  profilesActivation = pkgs.writeText "pi-agent-model-profiles.activation.sh" (
+    lib.replaceStrings [profilesEnabled.home.homeDirectory] ["$HOME"]
+    profilesEnabled.home.activation.piAgentModelProfiles.data
+  );
+  declaredProfileNames = builtins.attrNames (builtins.fromJSON profilesEnabled.aytordev.programs.terminal.tools.pi.agent-profiles.rendered.store).profiles;
   subscriptionProfileName = "openai-subscription-complex";
   subscriptionHome = mkHome {
     pi = {
@@ -171,7 +188,7 @@
     # Regression: the Nix-owned public CLI pin, asserted on the default package
     # only. User overrides stay authoritative; this never rejects custom
     # versions in the module options.
-    packageVersion = tools.gentle-ai.package.version == "4.3.1";
+    packageVersion = tools.gentle-ai.package.version == "4.4.0";
     # Regression: the Nix-owned Engram engine pin. Asserted on the underlying
     # derivation, not on the module option: `tools.engram.package` is
     # deliberately the `engram-wrapped` runCommand, which has no `version`
@@ -180,7 +197,7 @@
     # `capabilities.isolated_session_registration`, answers `/projects`, and
     # supports the `sync_target_closed_space` repair, so an unguarded downgrade
     # here must fail this check instead of degrading silently at runtime.
-    engramPackageVersion = pkgs.aytordev.engram.version == "3.6.0";
+    engramPackageVersion = pkgs.aytordev.engram.version == "3.7.0";
     # Regression: the drift guard for gentle-ai's own `GGAVersion` pin in
     # `internal/versions/versions.go`, which Nix cannot see mechanically.
     ggaPackageVersion = pkgs.aytordev.gga.version == "2.10.1";
@@ -341,7 +358,7 @@ in
           echo 'gentle-ai version command failed' >&2
           exit 1
         }
-      grep -qx 'gentle-ai 4.3.1' "$TMPDIR/gentle-ai-version.out" || {
+      grep -qx 'gentle-ai 4.4.0' "$TMPDIR/gentle-ai-version.out" || {
         echo "unexpected gentle-ai version output: $(cat "$TMPDIR/gentle-ai-version.out")" >&2
         exit 1
       }
@@ -369,6 +386,54 @@ in
         echo "unexpected gga version output: $(cat "$TMPDIR/gga-version.out")" >&2
         exit 1
       }
+      # Regression: the profiles.json merge must preserve the runtime-owned
+      # siblings this repository does not author. gentle-pi 4.7.0 stores a
+      # per-profile orchestrator mode under `workflow`, beside `profiles` and
+      # `active` in the same file, so rebuilding the document from the declared
+      # shape would silently reset every profile to the organic mode.
+      python - <<'PY'
+      import json, os, subprocess, tempfile
+      from pathlib import Path
+
+      declared = ${builtins.toJSON declaredProfileNames}
+      with tempfile.TemporaryDirectory(prefix="pi-agent-profiles ") as directory:
+          home = Path(directory)
+          store = home / ".pi/gentle-ai/profiles.json"
+          store.parent.mkdir(parents=True)
+          runtime_profile = {"orchestrator": {"model": "openai/gpt-5", "thinking": "low"}}
+          seeded = {
+              "kind": "gentle-pi.agent_model_profiles",
+              "version": 1,
+              "active": "runtime-only",
+              "profiles": {"runtime-only": runtime_profile},
+              "workflow": {"runtime-only": {"orchestratorMode": "full-delegation"}},
+          }
+          store.write_text(json.dumps(seeded))
+          store.chmod(0o640)
+
+          def activate():
+              result = subprocess.run(
+                  ["bash", "-euc", 'source "$1"; printf "continued\\n"', "pi-agent-profiles-test", """${profilesActivation}"""],
+                  env=dict(os.environ, HOME=str(home), DRY_RUN_CMD=""),
+                  text=True,
+                  capture_output=True,
+              )
+              assert result.returncode == 0, result.stderr
+              assert result.stdout == "continued\n", (result.stdout, result.stderr)
+              return json.loads(store.read_text())
+
+          merged = activate()
+          assert merged["kind"] == "gentle-pi.agent_model_profiles" and merged["version"] == 1, merged
+          assert set(declared) <= set(merged["profiles"]), (sorted(merged["profiles"]), declared)
+          assert merged["profiles"]["runtime-only"] == runtime_profile, merged["profiles"]
+          assert merged.get("active") == "runtime-only", merged.get("active")
+          assert merged.get("workflow") == seeded["workflow"], merged.get("workflow")
+          assert store.stat().st_mode & 0o777 == 0o640, oct(store.stat().st_mode & 0o777)
+          before = (store.read_bytes(), store.stat().st_mtime_ns)
+          assert activate() == merged
+          assert (store.read_bytes(), store.stat().st_mtime_ns) == before, "re-run must not rewrite the store"
+      print("PASS: profiles.json merge preserves runtime profiles, active and workflow")
+      PY
       ${lib.concatMapStringsSep "\n" (name: ''
           test -d ${enabled.home-files}/${piRoot}${name}
           test ! -L ${enabled.home-files}/${piRoot}${name}

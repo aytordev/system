@@ -36,6 +36,15 @@ runtime-owned and the activation merge is additive: removing a role from a
 profile stops it being re-asserted but does not delete an existing entry, which
 must be cleaned once by hand.
 
+`profiles.json` carries one runtime-owned key beyond `profiles` and `active`:
+gentle-pi 4.7.0 stores a profile's `workflow` (`organic` or
+`full-delegation`, chosen with `w` in `/gentle:profiles`) beside them in the same
+file. The merge rebuilds the document from the declared shape, so it carries
+`workflow` through unchanged; a merge that dropped it would silently reset every
+profile to the organic mode at the next activation. `checks/gentle-ai-engine`
+executes the real activation against a seeded store to pin both the preserved
+`active` marker and that key.
+
 ## Theme
 
 Enabling Pi publishes `~/.pi/agent/themes/aytordev.json` from the active

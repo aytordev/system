@@ -236,8 +236,11 @@
       return 0
     }
 
-    # 1. Global profile store: keep runtime-created profiles, overwrite the
+    # 1. Global profile store: keep runtime-created profiles and the
+    #    runtime-owned siblings this repository does not author, overwrite the
     #    declared ones, keep the existing active marker unless we declare one.
+    #    `workflow` carries gentle-pi 4.7.0's per-profile orchestrator mode in the
+    #    same file; dropping it would reset every profile to the organic mode.
     piAgentModelProfiles_merge "${config.home.homeDirectory}/.pi/gentle-ai/profiles.json" "${storeFile}" '
       . as $cur
       | $declared[0] as $dec
@@ -249,6 +252,7 @@
       | if ($dec | has("active")) then . + {active: $dec.active}
         elif ($cur | has("active")) then . + {active: $cur.active}
         else . end
+      | if ($cur | has("workflow")) then . + {workflow: $cur.workflow} else . end
     ' || true
 
     ${
