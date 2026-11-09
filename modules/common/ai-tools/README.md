@@ -9,9 +9,11 @@ The Shell package is pinned by upstream's own documented upgrade path,
 `pi install npm:gentle-pi@<version>`, so its version lives in
 `~/.pi/agent/settings.json` rather than in this flake; a versioned npm spec is
 skipped by `pi update`, which is what keeps it from drifting. The pin is
-currently **`npm:gentle-pi@4.3.0`**. The banner-filter
+currently **`npm:gentle-pi@4.7.0`**. The banner-filter
 merge matches the bare or pinned source and preserves the pin. Updating Shell
-is an operator action: run the upstream `pi install` command, then
+is an operator action: run the upstream `pi install` command, approve its
+version-keyed install script with `npm install-scripts approve gentle-pi@<version>`
+(the postinstall provisions the bundled engine), restart Pi, then
 `gentle-ai sync`.
 
 Shell 4 raises its native prerequisites, and Shell 4.2 raises the Pi floor
