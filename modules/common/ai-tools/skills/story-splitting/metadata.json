@@ -1,0 +1,8 @@
+{
+    "name": "story-splitting",
+    "description": "Trigger: refining a backlog, decomposing an epic, planning an MVP or walking skeleton, finding vertical slices, reducing story size, applying SPIDR or Hamburger slicing, avoiding scatter-gather component stories, or deciding the first valuable story before implementation planning. Splits broad requirements, large stories, features, or initiatives into small end-to-end child stories that each preserve a whole user-visible capability — never technical component tasks — and names the first slice that delivers value or learning even if no sibling ever happens.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's story-splitting skill: capability slicing over component decomposition, problem-space-first questions, primitive wholes and bargains, the seven splitting dimensions, the Hamburger unstick method, an INVEST-plus-feedback-triad quality bar with red flags, a compact split artifact for downstream planning, and safety rules against deferring legal, safety, privacy, contractual, or security requirements."
+}

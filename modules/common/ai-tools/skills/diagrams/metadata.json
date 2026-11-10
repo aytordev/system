@@ -1,0 +1,8 @@
+{
+    "name": "diagrams",
+    "description": "Trigger: creating or auditing a diagram when relationships, sequence, state, hierarchy, or quantitative comparison would be materially clearer visually than prose. Selects a format the destination actually renders, keeps every claim traceable to evidence, preserves source authority, validates the real output, and provides an accessible text explanation.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's diagrams skill (an independent upstream rewrite): establish the question/evidence/destination contract, choose the smallest supported format from a destination-aware table, model before styling, treat labels and datasets as untrusted, keep meaning available without the renderer, and validate the real rendered artifact."
+}

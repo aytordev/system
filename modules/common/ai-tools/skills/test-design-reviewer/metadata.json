@@ -1,0 +1,8 @@
+{
+    "name": "test-design-reviewer",
+    "description": "Trigger: assessing a test file or suite for quality, reviewing whether tests are understandable, maintainable, repeatable, atomic, necessary, granular, fast, and test-first. Rates each property with file-level evidence and returns only actionable findings.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's test-design-reviewer skill: the eight properties of good tests rated with file-level evidence, an explicit Not-assessed discipline, and a findings-only report that separates test defects from missing production seams."
+}

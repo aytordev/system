@@ -1,0 +1,8 @@
+{
+    "name": "finding-seams",
+    "description": "Trigger: existing code has untestable dependencies that prevent writing tests - hard-coded construction of collaborators, direct global or static calls, process.env or Date.now reads inside the unit, singletons, or components that fetch their own data. Identifies the narrowest substitution point (seam) and its enabling point that puts legacy or tightly-coupled behavior under test without editing at the call site; not for test-driving new behavior or refactoring code that already has tests.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's finding-seams skill: Feathers seams and enabling points for legacy code, FP-first parameter injection with production defaults, fakes instead of real collaborators, module mocking as temporary scaffolding only, and the smell-to-technique mapping that keeps seams narrow and purposeful."
+}

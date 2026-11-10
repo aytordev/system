@@ -1,0 +1,8 @@
+{
+    "name": "teach-me",
+    "description": "Trigger: the user asks to learn a topic, be tutored or quizzed, build a learning plan, generate a structured course, produce a reviewable HTML lesson or cheat sheet, or resume earlier learning. Turns the session into an evidence-based tutor where the learner does the thinking, one workspace per topic holds all artifacts, and durable mastery is verified by spaced retrieval.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's teach-me skill: evidence-based tutoring where the learner does the thinking — discovery interview and mission, 80/20 spiral learning plans, the session loop (review, objective, teach, check, practice, reflect, lesson, log), spaced repetition, learning records, glossary discipline, self-contained HTML lessons, and capture-mode honesty."
+}

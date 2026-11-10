@@ -1,6 +1,6 @@
 # Local AI Knowledge
 
-This subtree owns the thirteen-entry skill catalog, twelve authored skill packages,
+This subtree owns the fifty-six-entry skill catalog, fifty-five authored skill packages,
 private Impeccable preparation recipes, and publication of the unmodified
 packaged upstream skill.
 The official native Gentle AI installer owns Pi's workflow. See
@@ -25,7 +25,7 @@ The official native Gentle AI installer owns Pi's workflow. See
   module imports; retain `aytordev.programs.terminal.tools.ai-skills` for now.
 - `scripts/prepare-pi-skills.sh` is an explicit operator step, not an activation hook.
 - Preserve authored `SKILL.md` identities and matching `metadata.json` in the
-  twelve local folders. Upstream `impeccable` comes from
+  fifty-five local folders. Upstream `impeccable` comes from
   `${pkgs.aytordev.impeccable-skills}/share/impeccable`; do not impose local
   metadata, rewrite upstream files, or vendor its payload here.
 - Export the neutral collection at `$XDG_DATA_HOME/aytordev/skills` whenever
@@ -51,28 +51,77 @@ The official native Gentle AI installer owns Pi's workflow. See
 
 | Name | Purpose |
 |------|---------|
+| acceptance-review | Read-only acceptance review of a change against its contract |
+| api-design | HTTP API contracts: compatibility, errors, idempotency, quotas |
 | aytordev-pen-ops | Observed-capability Pen session operations: inspection, authorized bounded edits, verification |
+| bff-design | backend-for-frontend shape, adoption, and ownership |
+| bff-entry-points | endpoint classification, prepared registrars, authorization boundaries |
+| characterisation-tests | Pins existing behaviour before changing untested code |
 | ci-debugging | CI failure diagnosis: provider evidence, reproduction, environment deltas |
+| cli-design | streams, exit codes, secrets, composability, stability |
+| codebase-design | in-process module and package contracts, plus deep-module consolidation |
+| debugging | preserve evidence, reproduce and localize, one hypothesis at a time |
+| diagrams | evidence and authority, accessibility, validation of diagrams |
+| domain-driven-design | bounded contexts, aggregates, domain services, and placement |
 | dotfiles-coder | Repository architecture and Nix configuration patterns |
+| double-check | Independent second review of a finished artifact |
+| evaluate-existing-solutions | Evidence-based build-versus-adopt evaluation |
+| event-sourcing | event modelling, decider and rehydration, projections, versioning |
 | expectations | Routing a learning to its durable owner |
+| find-gaps | Tightens a written artifact one confirmed answer at a time |
+| find-skills | verification before recommending, installation authorization |
+| finding-seams | introduces seams so untestable dependencies become controllable |
+| folder-structure | deprecation alias that delegates the retired convention and stops when alone |
+| front-end-testing | Browser-observable claims, harness choice, and evidence boundaries |
 | functional | Immutable domain data, pure-function boundaries, composition, and error values |
+| graph-engineering | graph-derived parallel skill application and impact analysis |
+| hexagonal-architecture | ports and adapters, wiring, testing boundaries, anti-patterns |
 | impeccable | Packaged upstream design skill with complete references, scripts, and pinned sibling engine |
+| improve-codebase-architecture | ranks where architecture investment pays off |
+| mutation-testing | Mutation gate, survivor triage, and diff-scoped runs |
 | nix | Nix authoring, operational references, and package-diff helper |
+| observability | wide events, SLOs and alerting, telemetry hygiene and placement |
+| panel-review | Multi-lens review with adversarial verification to PR-readiness |
+| planning | vertical slices, known-good increments, delivery and review cadence |
+| production-parity-skill-builder | derives a skill from a production system, parity map first |
+| react-performance | measurement method first, house rules, anti-patterns |
+| react-testing | React component behaviour, integrity, and browser-mode rules |
+| reduce-system-complexity | whole-path reduction of branches, states, layers and jobs |
 | refactoring | Behaviour-preserving assessment with a labelled reply |
+| render-code-shape | citation contract, render format, findings and boundaries |
+| secure-oauth-oidc | RFC 9700 boundaries, OIDC validation, and false assurances |
 | skill-creator | Local skill authoring and metadata contract |
 | skill-registry | Explicitly invoked local knowledge index |
+| specification | example map, accountable review, spec review template |
+| stack-pull-requests | units and decisions, stack design, verification, merge order |
+| story-splitting | capability slices and the quality of a split story |
+| storyboard | page structure, embedding safety, review lifecycle |
+| structure-codebase | repository tree and package placement decisions |
 | tdd | RED-GREEN-REFACTOR with a bounded feedback loop and one mutation gate |
+| teach-me | tutoring protocol where the learner does the thinking |
+| technical-writing | reader-first structure, receipts for claims, docs as behaviour |
+| test-design-reviewer | Eight-property test review with file-level evidence |
 | testing | Behaviour-first tests, factories, and mutation-aware planning |
+| twelve-factor | twelve-factor conformance for deployable services |
 | typescript-strict | Strict-mode boundary typing, declaration forms, schemas, and compiler checks |
+| ubiquitous-language | one glossary per bounded context, mechanically enforced |
+| wtf | plain-language explanation of unfamiliar code or terms |
+| xstate | statechart modelling before code, actors, and diagrams |
 
-Twelve rows are authored locally: `dotfiles-coder` and `nix` are `local`;
-`aytordev-pen-ops`, `ci-debugging`, `expectations`, `functional`, `refactoring`,
-`skill-creator`, `skill-registry`, `tdd`, `testing`, and `typescript-strict`
-are `adapted`. `impeccable` is the one intact `upstream` package. The seven
-`import-baseline` adaptations record the exact upstream revision their bytes came
-from; the `historical-comparison` ones below keep unknown import revisions null.
+Fifty-five rows are authored locally: `dotfiles-coder` and `nix` are `local`;
+the other fifty-three are `adapted`. `impeccable` is the one intact `upstream`
+package. The fifty `citypaul` adaptations record the exact upstream revision
+their bytes came from; the `historical-comparison` ones keep unknown import
+revisions null.
+Licences are per package, not per repository. Nine adaptations carry nested MIT
+notices from their own authors — `acceptance-review`, `reduce-system-complexity`,
+`render-code-shape`, `technical-writing`, and `wtf` (Adam Bulmer);
+`codebase-design` and `improve-codebase-architecture` (Matt Pocock);
+`api-design` (Addy Osmani); `find-skills` (Vercel, Inc.) — and `cli-design` is
+**CC BY-SA 4.0**, not MIT, because it adapts the Command Line Interface
+Guidelines. Each notice is reproduced verbatim, with its attribution and pinned
+upstream revision, in that package's provenance.
 Local metadata/dependency checks inspect only `skills/`; publication checks
-cover all thirteen. Native Pi and the local registry discover upstream through
-`SKILL.md` without requiring `metadata.json`.
+cover all fifty-six.
 
 `dotfiles-coder/rules/patterns-module.md` remains the canonical module template.

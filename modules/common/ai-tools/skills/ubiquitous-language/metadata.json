@@ -1,0 +1,8 @@
+{
+    "name": "ubiquitous-language",
+    "description": "Trigger: naming domain concepts, a term missing from or fighting the glossary, synonyms or near-duplicate identifiers, bootstrapping a glossary, or renaming across a bounded context. Makes the repository-declared glossary the naming authority: one ubiquitous language per bounded context, an explicit five-step protocol (detect, propose, decide, record, rename) for every new, changed, or suspect term, recorded decisions instead of drift, context-scoped aliases, and safe renames with deliberately versioned published boundaries.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's ubiquitous-language skill: a repository-declared glossary as the naming authority, the five-step language protocol with an explicit decision per term, context-scoped deprecated aliases, honest enforcement reporting with positive controls, and renames that version the published boundary instead of drifting it."
+}

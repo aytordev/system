@@ -1,0 +1,8 @@
+{
+    "name": "planning",
+    "description": "Trigger: starting significant work, turning an already-split story into an implementation plan, planning pull requests, or sequencing complex tasks. Plans as vertical slices in small known-good increments — each slice names an actor, trigger, and observable outcome, ships end to end through the real path, and defaults to one independent trunk-based pull request. Horizontal work only when it explicitly unblocks the next slice or advances an explicitly selected reduction program.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's planning skill: vertical slices with named actors and observable outcomes, known-good increments with bounded horizontal exceptions, reduction transitions that never claim net removal, one independent trunk-based PR per slice by default, a red-first implementation cadence with a single end-of-phase evidence gate, and explicit approval for commits and plan changes."
+}

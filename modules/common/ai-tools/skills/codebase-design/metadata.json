@@ -1,0 +1,8 @@
+{
+    "name": "codebase-design",
+    "description": "Trigger: designing or changing an in-process module or package contract, consolidating shallow pass-through modules, deciding what to hide behind a caller-facing interface, comparing alternative interface shapes, or asking whether code should be combined or split for leverage and locality. Designs deep modules - substantial behaviour hidden behind a small, stable contract - and treats physical layout, whole-path reduction claims, and public cross-service API publication as separate concerns.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from Matt Pocock's codebase-design skill (via citypaul's repository): deep-module design with leverage and locality, the behavior-preserving inlining test, evidence-justified seams, dependency-fidelity questions, a safe deepening migration, and a Design It Twice comparison of genuinely different contracts."
+}

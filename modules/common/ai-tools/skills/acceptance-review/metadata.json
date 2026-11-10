@@ -1,0 +1,8 @@
+{
+    "name": "acceptance-review",
+    "description": "Trigger: deciding whether a PR, branch, diff, or current implementation satisfies an authoritative issue, specification, or decision contract. Returns a read-only criterion-by-criterion proof with a satisfies, does-not-satisfy, or indeterminate verdict; not for improving the artifact, reconstructing meetings, general code review, or implementing fixes.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's acceptance-review skill (itself derived from Mintuz's): authority resolved to independently decidable criteria, implementation/verification/claim evidence lanes kept separate, read-only tracing and proportionate checks, and a machine-readable satisfies/does-not-satisfy/indeterminate verdict."
+}

@@ -1,0 +1,8 @@
+{
+    "name": "double-check",
+    "description": "Trigger: asked to double-check, verify, cross-check, or get a second opinion, or before shipping high-stakes or complex work. Gets a rigorous read-only second opinion from an independent reviewer context, preferably a different model provider, with a mandatory scope-fidelity check for unrequested additions, unrequested removals, and removed or weakened tests.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's double-check skill: cold-start read-only reviewer selection with honest mode labelling, a complete brief carrying the original scope, evidence-tiered actionable findings, an every-round scope-fidelity check, an evidence-driven finding ledger, and convergence on the reviewed final state."
+}

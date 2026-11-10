@@ -1,0 +1,8 @@
+{
+    "name": "improve-codebase-architecture",
+    "description": "Trigger: auditing a repository or multi-module subsystem for where architecture investment would pay off, ranking bounded architecture candidates, or diagnosing systemic coupling, shotgun-change, testability, or AI-navigability problems. Produces an evidence-backed, ranked architecture audit with a self-contained visual HTML report, and stops before any interface design or code change. This is audit-and-selection by default.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's improve-codebase-architecture skill (originally Matt Pocock's): a read-only, evidence-led architecture audit that fixes a scoped review target, generates bounded candidates across deepening, splitting, seam movement, direction repair, and locality restoration, ranks them with explicit counterevidence, and delivers a self-contained visual HTML report before any design or implementation is authorized."
+}

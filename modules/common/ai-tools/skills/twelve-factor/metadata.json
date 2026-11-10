@@ -1,0 +1,8 @@
+{
+    "name": "twelve-factor",
+    "description": "Trigger: configuring deploy-time environment, backing services, process startup/shutdown, logging, or operational parity for a software-as-a-service or long-running process application, or adopting Twelve-Factor App patterns incrementally in a brownfield service. Rules, anti-patterns, and code-level implications live per factor in rules, with Node/TypeScript implementation examples in references. Apply individual principles to frontends, serverless functions, and CLIs only where their runtime and platform make them relevant.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's twelve-factor skill: all Twelve-Factor App factors with rules, anti-patterns, and code-level implications — startup-validated config injected via options objects, explicit dependencies, injected backing services, stateless share-nothing processes, per-process-type concurrency, graceful disposability, structured process-stream logs with request correlation, build/release/run separation, port binding, dev/prod parity, and in-repo admin processes — with Node/TypeScript examples and platform-fit boundaries for frontends, serverless functions, and CLIs."
+}

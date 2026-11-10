@@ -1,0 +1,8 @@
+{
+    "name": "bff-entry-points",
+    "description": "Trigger: adding or reviewing browser-facing HTTP endpoints, classifying which routes are public, protecting BFF or backend entry points, session cookies, CSRF or Origin policy, Fetch Metadata, protected SSE or WebSocket registration, browser session coordination, login or logout flows, or an authorization bug reported on an endpoint. Requires an explicit public/protected access classification for every production route, a composition-prepared registrar that installs policy by construction, provider-free in-application authorization proven by direct tests, and automated enforcement gates.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's bff-entry-points skill: explicit public/protected access classification with a derived entry catalog, a composition-prepared endpoint registrar installing Origin, Fetch Metadata, CSRF, content-type, and session policy by construction, the __Host- session cookie profile, no-oracle failure semantics, provider-free principals with in-application authorization proven by direct refusal tests, protected SSE and WebSocket upgrade registration, the single browser authentication coordinator, and twelve automated enforcement gates with a hostile test matrix."
+}

@@ -1,0 +1,8 @@
+{
+    "name": "cli-design",
+    "description": "Trigger: building or reviewing a command-line tool, designing command trees, flags, or I/O contracts, implementing an output layer, or testing CLI behaviour. Language-agnostic Unix-composability rules: stdout carries data only, stderr carries everything else, semantic exit codes, --json/--plain format contracts, TTY detection, prompt bypass, config precedence, and stable output.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's cli-design skill (itself a CC BY-SA 4.0 adaptation of the Command Line Interface Guidelines): stream separation, pure handlers, three-tier format contracts with versioned JSON envelopes, semantic exit codes, TTY and colour detection, prompt bypass and secret handling, config precedence, composable pipe patterns, and the additive stdout stability contract."
+}

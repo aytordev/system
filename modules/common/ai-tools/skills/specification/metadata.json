@@ -1,0 +1,8 @@
+{
+    "name": "specification",
+    "description": "Trigger: an idea, feature request, or problem statement has no agreed rules or examples yet — let's spec this out, what should this actually do, we need acceptance criteria. Runs specification as a conversation: one question at a time, every material assumption becomes a question, and outputs go back into the team's own story artifact as an example map (rules with concrete examples and open questions), acceptance criteria, candidate glossary terms, and parked questions with owners and dates. The agent-facilitated round is a draft for accountable human review before any build or split.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's specification skill: the conversation is the product, a story artifact written back into its existing home, one question at a time with parked questions carrying owners and dates, an example map challenged by counter-examples and read as a readiness diagnostic, a multi-round accountable review generated from the bundled review-page template, and vocabulary capture for candidate glossary terms."
+}

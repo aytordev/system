@@ -1,0 +1,8 @@
+{
+    "name": "render-code-shape",
+    "description": "Trigger: asking how something composes, tracing what a request actually touches, pseudocoding a change before implementing it, onboarding to an unfamiliar path, or producing the shape a plan and its tests will be checked against. Renders module boundaries, the types that cross them, signatures, and a cited call graph; every name is read from source and cited or marked NEW, and the render is read-only — the deliverable, never the edit.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's render-code-shape skill (itself adapted from Adam Bulmer's pseudocode skill): the waterline cut, citation-or-NEW contract, framing and wirings, three-part shape render, annotated call graphs, facts-not-verdicts hand-back, and the read-only boundary."
+}

@@ -15,10 +15,23 @@ no such helpers exist here. Metadata and publication checks validate delivery.
 
 ### Choose the scope
 
-Ordinary local maintenance updates one of twelve authored packages:
-`aytordev-pen-ops`, `ci-debugging`, `dotfiles-coder`, `expectations`,
-`functional`, `nix`, `refactoring`, `skill-creator`, `skill-registry`, `tdd`,
-`testing`, or `typescript-strict`. The thirteenth published skill,
+Ordinary local maintenance updates one of fifty-five authored packages:
+ `acceptance-review`, `api-design`, `aytordev-pen-ops`, `bff-design`,
+`bff-entry-points`, `characterisation-tests`, `ci-debugging`, `cli-design`,
+`codebase-design`, `debugging`, `diagrams`, `domain-driven-design`,
+`dotfiles-coder`, `double-check`, `evaluate-existing-solutions`,
+`event-sourcing`, `expectations`, `find-gaps`, `find-skills`, `finding-seams`,
+`folder-structure`, `front-end-testing`, `functional`, `graph-engineering`,
+`hexagonal-architecture`, `improve-codebase-architecture`, `mutation-testing`,
+`nix`, `observability`, `panel-review`, `planning`,
+`production-parity-skill-builder`, `react-performance`, `react-testing`,
+`reduce-system-complexity`, `refactoring`, `render-code-shape`,
+`secure-oauth-oidc`, `skill-creator`, `skill-registry`, `specification`,
+`stack-pull-requests`, `story-splitting`, `storyboard`, `structure-codebase`,
+`tdd`, `teach-me`, `technical-writing`, `test-design-reviewer`, `testing`,
+`twelve-factor`, `typescript-strict`, `ubiquitous-language`, `wtf`, `xstate`)
+
+The fifty-sixth published skill,
 `impeccable`, is unmodified upstream content from
 `pkgs.aytordev.impeccable-skills`, not an authored folder. Never add local
 `metadata.json`, rewrite its frontmatter/references, or copy it into `skills/` to
@@ -27,8 +40,10 @@ in `modules/common/ai-tools/catalog.nix`; private preparation recipes live under
 `modules/common/ai-tools/upstream/impeccable/`, with direct-import adapters in
 `packages/`. These paths are target-repository context, not bundled resources.
 
-The catalog classifies `dotfiles-coder` and `nix` as local, the other ten
-authored skills as adapted, and Impeccable as upstream. Maintain provenance in
+The catalog classifies `dotfiles-coder` and `nix` as local, the other
+fifty-three authored skills as adapted, and Impeccable as upstream. Licences
+differ per package: nine adaptations carry their own nested MIT notices and
+`cli-design` is CC BY-SA 4.0. Maintain provenance in
 the linked evidence documents. Creator/registry historical comparison revisions
 are not original-import or last-synchronized revisions; those remain unknown.
 Local descriptions and versions stay in frontmatter/metadata, not the catalog.

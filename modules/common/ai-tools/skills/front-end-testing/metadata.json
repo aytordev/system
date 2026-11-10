@@ -1,0 +1,8 @@
+{
+    "name": "front-end-testing",
+    "description": "Trigger: testing any front-end application, writing UI or end-to-end tests, querying DOM elements, simulating user interactions, or choosing the lightest harness that proves a browser-observable claim. Tests the behaviour users see across Vitest Browser Mode, Playwright E2E evidence boundaries, and DOM Testing Library, and names the harness each hand-back's evidence stops at.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's front-end-testing skill: behaviour-over-implementation UI testing, one claim one harness across Vitest Browser Mode, jsdom/Testing Library, and Playwright E2E, accessibility-first queries, network-level MSW mocking, idempotent browser tests, and the browser-initiator evidence rule for user journeys."
+}

@@ -1,0 +1,8 @@
+{
+    "name": "reduce-system-complexity",
+    "description": "Trigger: the user explicitly wants fewer branches, states, dependencies, layers, flags, retries, jobs, adapters, or operational moving parts in a selected system or behavior path and needs evidence that complexity was removed rather than relocated. Supports read-only diagnosis and authorized reduction slices governed by a conservation ledger with separate behavior and mechanism gates. Not for routine cleanup, architecture-investment discovery, module-contract design, physical tree design, new behavior, functionality cuts, speculative rewrites, or Redux/functional reducer functions.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's reduce-system-complexity skill (originally Adam Bulmer's reducer): conserve behavior while minimizing mechanism through a classified conservation ledger, whole-path mechanism accounting over the same scope and counting method, a first-principles minimum derived from real constraints, reduction transitions versus terminal slices with owned and bounded bridges, and separate behavior and mechanism gates that withhold any net-reduction claim until the superseded machinery is gone."
+}

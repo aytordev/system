@@ -1,0 +1,8 @@
+{
+    "name": "graph-engineering",
+    "description": "Trigger: a task needs several skills applied in parallel — multi-lens review, multi-angle audit or research, migration sweeps — or the user asks for graph engineering, an agent graph, fanning out sub-agents, or orchestrating skills. One orchestrator designs a graph where each node is a sub-agent owning exactly one skill, edges carry structured data, and stages fan work out, adversarially verify it, and synthesize one deliverable. For pull-request review use the panel-review companion when installed; not for tasks one skill handles in one context.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's graph-engineering skill: compose installed skills into one orchestrated multi-agent run — an orchestrator that scouts inline, maps one skill per node with bounded disjoint scopes, briefs nodes without session history, enforces schema-shaped output contracts with file:line evidence, picks stage topologies (fan-out, pipeline versus barrier, adversarial verify, judge panel, loop-until-dry, typed dependent-write edges), assigns capability tiers with a requested-versus-applied ledger, and synthesizes one honest severity-ranked deliverable."
+}

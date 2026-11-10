@@ -1,0 +1,8 @@
+{
+    "name": "characterisation-tests",
+    "description": "Trigger: modifying existing code that lacks tests and its current behaviour must be pinned before changing it. Documents what the code actually does, marks suspicious behaviour instead of fixing it, and retires the tests once intended-behaviour tests replace them.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's characterisation-tests skill: the placeholder-and-run algorithm, recognisable naming and lifecycle, suspicious-behaviour markers, snapshot pinning for long output, async and I/O handling, and the stop heuristic for legacy change areas."
+}

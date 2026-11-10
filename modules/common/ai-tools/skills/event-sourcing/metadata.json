@@ -1,0 +1,8 @@
+{
+    "name": "event-sourcing",
+    "description": "Trigger: implementing a Decider write model, an event store, projections and read models, event versioning, or snapshots — persisting state as an append-only log of past-tense events and rebuilding it by folding them. Assumes the project or bounded context has deliberately opted in to event sourcing; climb no higher than the complexity ladder requires, and do NOT reach for it on CRUD, or when an audit log or the outbox pattern already suffices.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's event-sourcing skill: the pure Decider write model persisted and replayed, optimistic-concurrency event store as a driven port, tolerant readers and upcasters decided on day one, disposable idempotent projections, and the decision framework and anti-pattern catalogue that keep event sourcing scoped to contexts whose history is part of the domain."
+}

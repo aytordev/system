@@ -1,0 +1,8 @@
+{
+    "name": "secure-oauth-oidc",
+    "description": "Trigger: designing, implementing, auditing, testing, troubleshooting, or migrating secure OAuth 2.0 and OpenID Connect (OIDC) systems against RFC 9700 / BCP 240 — authorization servers and OpenID Providers, OAuth clients and OIDC relying parties, resource servers, native apps, browser-based apps, multi-issuer login, redirect URIs, authorization code and PKCE flows, state and nonce handling, ID Token validation, token storage and replay, refresh-token rotation, sender-constrained tokens (DPoP or mTLS), mix-up and injection attacks, discovery and metadata, reverse proxies, or migration away from implicit and resource-owner-password grants.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's secure-oauth-oidc skill: RFC 9700 boundary controls applied without exception, the transaction ledger of protocol bindings, atomic OIDC ID Token and discovery validation, the attack-and-test catalog, false-assurance refusal, and a review-and-delivery contract that reports unknowns instead of converting missing evidence into compliance."
+}

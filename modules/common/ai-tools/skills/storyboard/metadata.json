@@ -1,0 +1,8 @@
+{
+    "name": "storyboard",
+    "description": "Trigger: the user asks to see the whole flow in one place, audit the mocks together, or put everything on one page, or when reviewing several UX surfaces separately would hide transitions, inconsistencies, or gaps. Produces a single reviewable HTML storyboard embedding related mock surfaces side-by-side with per-mock audit checklists, an ASCII flow diagram in a pre element, state-gap flags, and gap cards whose brainstorm questions must be answered before any new mock is drafted. Embeds mocks as sandboxed iframes only when authoritative and safe to load; otherwise uses a labelled static authority.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's storyboard skill: one scrollable review page with nine fixed sections, sandboxed iframe embedding with restrictive CSP and a labelled static fallback, project-token style conformance, pre-element formatter safety, genuine audit checklists, and an active-artifact lifecycle that answers gap questions before drafting new mocks and deletes the artifact when the reviewed outcome ships."
+}

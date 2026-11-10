@@ -1,0 +1,8 @@
+{
+    "name": "find-gaps",
+    "description": "Trigger: tightening a written artifact — stories, plans, acceptance criteria, specs, or design mocks — before planning or coding (what's missing, poke holes in this, what could go wrong, help me tighten this up). Surfaces missing states, unhandled edge cases, unstated assumptions, unverifiable criteria, and slices still too broad, then asks one question at a time and writes each confirmed answer back into the artifact.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's find-gaps skill: silence treated as a red flag, survey/triage/open-the-loop/ask/recap/exit conversational cadence with one question at a time, plan/AC/mock survey checklists, verbatim write-back of every confirmed decision, and an explicit parked list so nothing leaks."
+}

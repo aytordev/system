@@ -1,0 +1,8 @@
+{
+    "name": "technical-writing",
+    "description": "Trigger: writing developer-facing prose that can be skimmed first and trusted enough to finish — READMEs, guides, tutorials, reference docs, proposals, PR descriptions, release notes — before drafting, rewriting, restructuring, or editing technical documents, when a doc reads as a wall of text, when material claims need receipts, or when docs must serve AI agents. Requires one primary reader job per page, claims verified against source, doc changes riding the same reviewable change as the behavior they describe, and enumerable facts in tables with exact copy-paste strings.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's technical-writing skill: one primary reader job per page (Diátaxis with honest limits), material claims with receipts, docs verified as behavior against source, the same-reviewable-change rule, state-based doc lifecycle, agent-readable tables and exact strings, the README cognitive funnel, and the docs-quality enforcement ladder."
+}

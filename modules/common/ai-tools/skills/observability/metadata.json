@@ -1,0 +1,8 @@
+{
+    "name": "observability",
+    "description": "Trigger: instrumenting a new or existing service, designing SLIs, SLOs, or alerts, choosing what to log, trace, or measure, correlating a request across a service hop, debugging a failure the logs cannot explain, or reviewing telemetry cost, cardinality, or sampling. Requires wide-event-first telemetry, OpenTelemetry with propagated trace context, cardinality-bounded metrics, symptom-based burn-rate alerting, and hygiene that keeps secrets and personal data out of every signal.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's observability skill: one wide event per request emitted even on the exception path, the OpenTelemetry baseline (semconv, traceparent propagation, Collector), cardinality routing, the sampling ladder, SLO and burn-rate symptom paging, Effect logging, four-tier instrumentation placement, and hard telemetry-hygiene boundaries that keep secrets and personal data out of every signal."
+}

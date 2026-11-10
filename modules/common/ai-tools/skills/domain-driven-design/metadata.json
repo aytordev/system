@@ -1,0 +1,8 @@
+{
+    "name": "domain-driven-design",
+    "description": "Trigger: a project that explicitly uses Domain-Driven Design and needs ubiquitous language, a glossary, value objects, entities, aggregates, domain events, domain services, bounded contexts, or error modeling in TypeScript. Requires an invariant-driven aggregate design, a repository-declared glossary as naming authority, always-valid entities, result types for expected outcomes, and behavioral tests named after domain concepts; do not apply it to simple CRUD or projects without domain modeling.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's domain-driven-design skill: glossary-as-naming-authority ubiquitous language, the placement and purity framework, value objects and branded types with integer minor-unit money, always-valid entities and illegal-state-free lifecycles, invariant-driven aggregates with optimistic locking, domain services and the Decider pattern with event dispatch ladders, result-type error modeling, and behavior-named tests at the broadest stable boundary."
+}

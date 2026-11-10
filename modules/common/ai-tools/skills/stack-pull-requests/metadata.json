@@ -1,0 +1,8 @@
+{
+    "name": "stack-pull-requests",
+    "description": "Trigger: deciding whether planned vertical implementation work ships as independent pull requests or a stack of small ordered ones, splitting one slice into review layers, stacking dependent slices, or reviewing, restacking, and merging stacked PRs. Treats stacking as optional branch topology that must earn its coordination cost, keeps tests with the earliest boundary that owns the behaviour, and requires every intermediate state to stay safe.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's stack-pull-requests skill: the story/slice/PR-boundary separation, independent-versus-stack gates with counterfactuals, boundary-preference ordering, per-boundary verification routing and CI topology checks, the delivery plan template, and bottom-up build, review, and merge discipline."
+}

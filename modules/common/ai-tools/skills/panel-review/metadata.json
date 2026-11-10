@@ -1,0 +1,8 @@
+{
+    "name": "panel-review",
+    "description": "Trigger: reviewing a change boundary — uncommitted work, a branch diff, a stacked layer, or a pull request — through multiple named review lenses, or judging PR-readiness evidence before merging. One orchestrator fans out read-only lens agents that each apply one review concern, adversarially verifies every finding against the actual code, and synthesizes one severity-ranked report.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's panel-review skill: a composable lens registry (built-in quality/readiness, defaults, auto-detected conditionals), isolated read-only lens agents judged against the change's own claim, adversarial per-finding verification with refuted/unverifiable kept distinct, the once-per-boundary mutation-evidence freshness model, and one severity-ranked report with conflicts and coverage gaps explicit."
+}

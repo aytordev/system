@@ -1,0 +1,8 @@
+{
+    "name": "debugging",
+    "description": "Trigger: diagnosing a reproducible or observable software failure outside a CI-pipeline-specific workflow — a test that fails only sometimes, a wrong value at a boundary, a crash, a regression, an integration mismatch, or a live incident needing mitigation. Requires preserving and redacting evidence, reproducing faithfully, localizing before editing, testing one falsifiable causal hypothesis at a time, and fixing the owning boundary only when the request authorizes it.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's debugging skill: evidence preservation with secret redaction, untrusted diagnostic data, faithful reproduction, end-to-end localization, one falsifiable hypothesis at a time, diagnosis-only versus authorized-fix handoffs, earliest-causal-point fixes, and verification that distinguishes diagnostic probes from fix verification."
+}
