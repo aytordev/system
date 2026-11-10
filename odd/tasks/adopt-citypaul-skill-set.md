@@ -114,3 +114,10 @@ lines and 20 files, which is not one reviewable slice. It becomes three PRs:
 `tdd` + `testing` (833 lines, the two anchors every other testing skill cites),
 then the evidence trio, then the frontend trio. Batch numbering in the plan table
 follows that split.
+
+**L5** — Slice boundary for B2a. `2e29c266` is 844 authored lines: two complete
+packages (13 files, including their MIT notices) plus the inventory wiring. Total
+since `origin/main` is 4 097 lines across nine commits, of which 3 253 belong to
+the two stacked parent branches. Each batch keeps the same shape: one content
+commit per batch with its wiring, and a small `docs(odd)` commit recording the
+boundary.
