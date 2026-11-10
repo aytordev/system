@@ -110,9 +110,44 @@ authored lines since `origin/main` (lock files excluded):
 | --- | --- | --- | --- |
 | Content | `d2ec10c5` | 773 | `typescript-strict` package plus this task document |
 | Content | `8bc85129` | 1154 | `functional` package (13 files, three bundled references) |
-| Wiring | pending | ~120 | Catalog, check expectations, inventory documentation |
+| Wiring | `511e4c62` | 166 | Catalog, check expectations, inventory documentation |
 
 The two content slices exceed the ~400-line guidance because each is one
 coherent, contract-valid package of Markdown rules and references; splitting a
 package by file would produce a tree the skill contract rejects. Review can be
 scoped per folder, and the wiring slice stays small and separate.
+
+**L4** — Verification and closure.
+
+- Focused `nix build` of `integration-ai-tools-skill-contract`,
+  `unit-ai-tools-inventory`, `unit-ai-tools-dependencies`,
+  `integration-ai-tools-docs-links`, `integration-gentle-ai-engine`, and
+  `integration-ai-skills-transition` exited 0. The publication check printed
+  `PASS isolated folder resources: functional`,
+  `PASS isolated folder resources: typescript-strict`, and
+  `PASS missing bundled support rejected; neutral and client contents match`,
+  which covers byte-for-byte publication of both new folders to the neutral
+  collection, the Pi projection, a custom HOME/XDG tree, and a dereferenced
+  isolated copy.
+- `integration-impeccable` exited 0, so the untouched upstream package still
+  passes. `nix flake check path:. --all-systems --no-build` printed
+  `all checks passed!`, so every platform's check set still evaluates.
+- `nix fmt -- --ci` reported 0 changed files, and the repository pre-commit
+  hooks (treefmt, statix, deadnix, typos, conflict markers) passed on all three
+  commits.
+- No independent verifier ran: `assess` reported no Task Size high-risk item and
+  no escalation, so the risk-gated plan kept the writer's self-verification. The
+  native review tier was `unassessable` for uncommitted work; the switch is on
+  and a committed-range assessment is the remaining outside view, not a
+  requirement of this plan.
+- Negative coverage relies on the repository's existing checks, not on new
+  fixtures: the inventory check asserts the exact authored folder set and rejects
+  eleven invalid catalog fixtures, the dependency check asserts every client
+  selection is closed and dependency-free, and the publication check removes one
+  bundled reference from a copied folder and expects failure.
+
+Risk: none. No Task Size high-risk item applies: no stored data, credentials,
+guards, or irreversible effects change; the touched contracts are the ones this
+task exists to change; the catalog remains Nix-evaluated pure data; and the
+ai-tools checks would catch a regression in the inventory, dependencies,
+publication, or documentation links.
