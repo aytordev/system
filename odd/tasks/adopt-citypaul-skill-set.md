@@ -127,3 +127,12 @@ packages (14 files, including their MIT notices, one with Dave Farley's
 attribution for the eight test properties) plus the inventory wiring. Total since
 `origin/main` is 5 054 lines across eleven commits, of which 4 104 belong to the
 three stacked parent branches.
+
+**L7** — Slice boundary for wave 1 (7 skills). `9c34ff6a` is 4 991 authored
+lines: the packages dominate because `front-end-testing` alone carries four
+rules and five bundled references (1 264 lines) and `react-testing` two more.
+This is progressive disclosure working as intended, not a monolithic file: the
+entry points stay at 92-139 lines each. Total since `origin/main` is 10 051
+lines across thirteen commits, of which 5 060 belong to the four stacked parents.
+The remaining waves (33 skills) follow the same shape: delegated authoring in
+disjoint folders, parent wiring and verification, one commit per wave.
