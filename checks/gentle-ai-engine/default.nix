@@ -188,6 +188,13 @@
     "test-design-reviewer"
     "testing"
     "typescript-strict"
+    "acceptance-review"
+    "double-check"
+    "evaluate-existing-solutions"
+    "find-gaps"
+    "front-end-testing"
+    "panel-review"
+    "react-testing"
   ];
   names = lib.sort builtins.lessThan (localNames ++ ["impeccable"]);
   upstream = "${pkgs.aytordev.impeccable-skills}/share/impeccable";

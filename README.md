@@ -73,7 +73,7 @@ sudo nixos-rebuild switch --flake .#<hostname>
   overlays.
 - **Project templates**: `nix flake init -t .#node`.
 - **AI tooling**: Nix-owned Pi/Gentle AI/Engram executables, native upstream
-  Pi onboarding, fifteen authored skills, and unmodified upstream Impeccable with
+  Pi onboarding, twenty-two authored skills, and unmodified upstream Impeccable with
   its pinned engine. See the
   [ownership and adoption guide](modules/common/ai-tools/README.md).
 - **Database tooling**: the `databases` suite (work home `civislend` only)

@@ -22,6 +22,13 @@
     "test-design-reviewer"
     "testing"
     "typescript-strict"
+    "acceptance-review"
+    "double-check"
+    "evaluate-existing-solutions"
+    "find-gaps"
+    "front-end-testing"
+    "panel-review"
+    "react-testing"
   ];
   # Historical source requirements stay fixed if publication expands later.
   oldNames = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];

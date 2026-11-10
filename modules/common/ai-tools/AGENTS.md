@@ -1,6 +1,6 @@
 # Local AI Knowledge
 
-This subtree owns the sixteen-entry skill catalog, fifteen authored skill packages,
+This subtree owns the twenty-three-entry skill catalog, twenty-two authored skill packages,
 private Impeccable preparation recipes, and publication of the unmodified
 packaged upstream skill.
 The official native Gentle AI installer owns Pi's workflow. See
@@ -25,7 +25,7 @@ The official native Gentle AI installer owns Pi's workflow. See
   module imports; retain `aytordev.programs.terminal.tools.ai-skills` for now.
 - `scripts/prepare-pi-skills.sh` is an explicit operator step, not an activation hook.
 - Preserve authored `SKILL.md` identities and matching `metadata.json` in the
-  fifteen local folders. Upstream `impeccable` comes from
+  twenty-two local folders. Upstream `impeccable` comes from
   `${pkgs.aytordev.impeccable-skills}/share/impeccable`; do not impose local
   metadata, rewrite upstream files, or vendor its payload here.
 - Export the neutral collection at `$XDG_DATA_HOME/aytordev/skills` whenever
@@ -51,15 +51,22 @@ The official native Gentle AI installer owns Pi's workflow. See
 
 | Name | Purpose |
 |------|---------|
+| acceptance-review | Read-only acceptance review of a change against its contract |
 | aytordev-pen-ops | Observed-capability Pen session operations: inspection, authorized bounded edits, verification |
 | characterisation-tests | Pins existing behaviour before changing untested code |
 | ci-debugging | CI failure diagnosis: provider evidence, reproduction, environment deltas |
 | dotfiles-coder | Repository architecture and Nix configuration patterns |
+| double-check | Independent second review of a finished artifact |
+| evaluate-existing-solutions | Evidence-based build-versus-adopt evaluation |
 | expectations | Routing a learning to its durable owner |
+| find-gaps | Tightens a written artifact one confirmed answer at a time |
+| front-end-testing | Browser-observable claims, harness choice, and evidence boundaries |
 | functional | Immutable domain data, pure-function boundaries, composition, and error values |
 | impeccable | Packaged upstream design skill with complete references, scripts, and pinned sibling engine |
 | mutation-testing | Mutation gate, survivor triage, and diff-scoped runs |
 | nix | Nix authoring, operational references, and package-diff helper |
+| panel-review | Multi-lens review with adversarial verification to PR-readiness |
+| react-testing | React component behaviour, integrity, and browser-mode rules |
 | refactoring | Behaviour-preserving assessment with a labelled reply |
 | skill-creator | Local skill authoring and metadata contract |
 | skill-registry | Explicitly invoked local knowledge index |
@@ -68,16 +75,13 @@ The official native Gentle AI installer owns Pi's workflow. See
 | testing | Behaviour-first tests, factories, and mutation-aware planning |
 | typescript-strict | Strict-mode boundary typing, declaration forms, schemas, and compiler checks |
 
-Fifteen rows are authored locally: `dotfiles-coder` and `nix` are `local`;
-`aytordev-pen-ops`, `characterisation-tests`, `ci-debugging`, `expectations`,
-`functional`, `mutation-testing`, `refactoring`, `skill-creator`,
-`skill-registry`, `tdd`, `test-design-reviewer`, `testing`, and
-`typescript-strict` are `adapted`. `impeccable` is the one intact `upstream`
-package. The ten `import-baseline` adaptations record the exact upstream revision
-their bytes came from; the `historical-comparison` ones below keep unknown import
-revisions null.
+Twenty-two rows are authored locally: `dotfiles-coder` and `nix` are `local`;
+the other twenty are `adapted`. `impeccable` is the one intact `upstream` package.
+The seventeen `import-baseline` adaptations record the exact upstream revision
+their bytes came from; the `historical-comparison` ones keep unknown import
+revisions null. One of them, `acceptance-review`, carries a nested MIT
+`LICENSE` from its own author instead of the repository license.
 Local metadata/dependency checks inspect only `skills/`; publication checks
-cover all sixteen. Native Pi and the local registry discover upstream through
-`SKILL.md` without requiring `metadata.json`.
+cover all twenty-three.
 
 `dotfiles-coder/rules/patterns-module.md` remains the canonical module template.

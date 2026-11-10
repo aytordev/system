@@ -32,6 +32,13 @@
     (aiTools + "/skills/characterisation-tests")
     (aiTools + "/skills/mutation-testing")
     (aiTools + "/skills/test-design-reviewer")
+    (aiTools + "/skills/acceptance-review")
+    (aiTools + "/skills/double-check")
+    (aiTools + "/skills/evaluate-existing-solutions")
+    (aiTools + "/skills/find-gaps")
+    (aiTools + "/skills/front-end-testing")
+    (aiTools + "/skills/panel-review")
+    (aiTools + "/skills/react-testing")
   ];
 
   markdownFiles = dir: let

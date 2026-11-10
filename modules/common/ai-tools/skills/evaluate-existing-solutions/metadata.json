@@ -1,0 +1,8 @@
+{
+    "name": "evaluate-existing-solutions",
+    "description": "Trigger: library, tool, service, or primitive recommendations; build-versus-adopt questions; replacing custom machinery; due diligence on a prescribed but unadopted material dependency. Compares established options against an explicit bespoke baseline on total lifecycle ownership and produces an evidence-backed adopt, adapt, combine, build, defer, or do-nothing proposal.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's evaluate-existing-solutions skill: three proportionate depths, local capabilities inspected first, hard gates before qualitative trade-offs on the whole adopted system, dated primary evidence with supply-chain and sandbox safety, an explicit bespoke baseline, and a proposed-not-accepted decision artifact with ownership routing and re-evaluation triggers."
+}

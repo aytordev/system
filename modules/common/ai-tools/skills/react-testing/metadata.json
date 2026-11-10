@@ -1,0 +1,8 @@
+{
+    "name": "react-testing",
+    "description": "Trigger: testing React components, hooks, context, or forms. Renders components with vitest-browser-react or @testing-library/react, finds every element the way a person perceives it, never mocks a child component or asserts internals, and keeps the general UI evidence rules governing.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's react-testing skill: vitest-browser-react component, hook, context, and form patterns under perception-based querying, whole-tree rendering without child mocks, harness-scoped act rules, idempotent browser tests, and the @testing-library/react jsdom legacy dialect."
+}

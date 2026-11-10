@@ -112,6 +112,13 @@
       "test-design-reviewer"
       "testing"
       "typescript-strict"
+      "acceptance-review"
+      "double-check"
+      "evaluate-existing-solutions"
+      "find-gaps"
+      "front-end-testing"
+      "panel-review"
+      "react-testing"
     ];
     pi = [
       "aytordev-pen-ops"
@@ -129,6 +136,13 @@
       "test-design-reviewer"
       "testing"
       "typescript-strict"
+      "acceptance-review"
+      "double-check"
+      "evaluate-existing-solutions"
+      "find-gaps"
+      "front-end-testing"
+      "panel-review"
+      "react-testing"
     ];
   };
 

@@ -7,7 +7,7 @@
   entries = builtins.readDir (root + "/skills");
   names = builtins.attrNames entries;
   # Only authored folders carry our metadata contract; upstream is packaged.
-  expected = ["aytordev-pen-ops" "characterisation-tests" "ci-debugging" "dotfiles-coder" "expectations" "functional" "mutation-testing" "nix" "refactoring" "skill-creator" "skill-registry" "tdd" "test-design-reviewer" "testing" "typescript-strict"];
+  expected = ["acceptance-review" "aytordev-pen-ops" "characterisation-tests" "ci-debugging" "dotfiles-coder" "double-check" "evaluate-existing-solutions" "expectations" "find-gaps" "front-end-testing" "functional" "mutation-testing" "nix" "panel-review" "react-testing" "refactoring" "skill-creator" "skill-registry" "tdd" "test-design-reviewer" "testing" "typescript-strict"];
   published = lib.sort builtins.lessThan (expected ++ ["impeccable"]);
   catalog = import (root + "/catalog.nix");
   expectedKinds = {
@@ -27,6 +27,13 @@
     test-design-reviewer = "adapted";
     testing = "adapted";
     typescript-strict = "adapted";
+    acceptance-review = "adapted";
+    double-check = "adapted";
+    evaluate-existing-solutions = "adapted";
+    find-gaps = "adapted";
+    front-end-testing = "adapted";
+    panel-review = "adapted";
+    react-testing = "adapted";
   };
   # Independent expectations: comparison evidence never becomes a sync baseline.
   expectedOrigins = {
@@ -161,6 +168,76 @@
       };
       originalImportRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
       lastSyncRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+    };
+    acceptance-review = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/acceptance-review/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    double-check = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/double-check/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "89225f6ecb4b702fdc6a21b35e0ba83526d692de";
+      };
+      originalImportRevision = "89225f6ecb4b702fdc6a21b35e0ba83526d692de";
+      lastSyncRevision = "89225f6ecb4b702fdc6a21b35e0ba83526d692de";
+    };
+    evaluate-existing-solutions = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/evaluate-existing-solutions/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    find-gaps = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/find-gaps/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    front-end-testing = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/front-end-testing/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+      };
+      originalImportRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+      lastSyncRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+    };
+    panel-review = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/panel-review/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "bcfb33203eea2653f6e6aecac41f8583e38089fb";
+      };
+      originalImportRevision = "bcfb33203eea2653f6e6aecac41f8583e38089fb";
+      lastSyncRevision = "bcfb33203eea2653f6e6aecac41f8583e38089fb";
+    };
+    react-testing = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/react-testing/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+      };
+      originalImportRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+      lastSyncRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
     };
   };
   # Data only: no module arguments, derivations, functions, or store contexts.
