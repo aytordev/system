@@ -1,0 +1,8 @@
+{
+    "name": "tdd",
+    "description": "Trigger: adding, implementing, or fixing production behaviour, including a one-line fix or a named-file change. Runs RED-GREEN-REFACTOR with a fast feedback loop, records RED/GREEN/final-run evidence, and closes with one mutation or alternate-evidence gate at PR readiness.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's tdd skill: the RED-GREEN-REFACTOR workflow with a bounded fast-feedback loop, watcher lifecycle and automation safety, monorepo affected-scope rules, explicit RED/GREEN/final evidence, and a single end-of-phase mutation gate."
+}

@@ -16,6 +16,8 @@
     "refactoring"
     "skill-creator"
     "skill-registry"
+    "tdd"
+    "testing"
     "typescript-strict"
   ];
   # Historical source requirements stay fixed if publication expands later.

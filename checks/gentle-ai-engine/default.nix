@@ -182,6 +182,8 @@
     "refactoring"
     "skill-creator"
     "skill-registry"
+    "tdd"
+    "testing"
     "typescript-strict"
   ];
   names = lib.sort builtins.lessThan (localNames ++ ["impeccable"]);

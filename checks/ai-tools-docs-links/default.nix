@@ -27,6 +27,8 @@
     (aiTools + "/skills/ci-debugging")
     (aiTools + "/skills/expectations")
     (aiTools + "/skills/refactoring")
+    (aiTools + "/skills/tdd")
+    (aiTools + "/skills/testing")
   ];
 
   markdownFiles = dir: let

@@ -181,6 +181,40 @@
     };
     provenance = ../../../docs/ai-tools/upstream-sources.md;
   };
+  tdd = {
+    kind = "adapted";
+    source.path = ./skills/tdd;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/tdd/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+      };
+      originalImportRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+      lastSyncRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+    };
+    provenance = ./skills/tdd/references/provenance.md;
+  };
+  testing = {
+    kind = "adapted";
+    source.path = ./skills/testing;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/testing/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      };
+      originalImportRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      lastSyncRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+    };
+    provenance = ./skills/testing/references/provenance.md;
+  };
   typescript-strict = {
     kind = "adapted";
     source.path = ./skills/typescript-strict;
