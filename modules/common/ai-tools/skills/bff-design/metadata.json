@@ -1,0 +1,8 @@
+{
+    "name": "bff-design",
+    "description": "Trigger: deciding whether a system needs a backend-for-frontend, how many, and what each may own, aggregating upstream services, handling partial failure and resilience budgets, forwarding user identity downstream, weighing a BFF against a shared gateway, GraphQL federation, or a meta-framework server, or auditing a BFF that has drifted into a public API or a business-logic layer. Requires one experience per BFF with frontend-team ownership, shape-don't-decide discipline with the push-down ladder, and upstream calls that carry the user's verified identity rather than the BFF's own.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's bff-design skill: adoption signals with honest costs, one-experience-one-BFF granularity with frontend-team ownership, shape-don't-decide with the push-down ladder, aggregation and partial-failure resilience budgets, identity-keyed caching, token-exchange upstream identity, the public-API drift guardrails, and the alternatives (shared gateway, GraphQL federation, token-mediating backend, meta-framework server)."
+}

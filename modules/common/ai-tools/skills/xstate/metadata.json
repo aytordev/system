@@ -1,0 +1,8 @@
+{
+    "name": "xstate",
+    "description": "Trigger: ordinary React code that is already a hand-rolled statechart — a submitting or isLoading useState, a then/catch chain that sets state in sequence, a double-submit guard, an error cleared just before a retry, a useEffect needing an ignore flag, a timer something must clear, or a gesture handler binding document listeners it must unbind — as well as wizards, checkout/auth/upload flows, async orchestration with retries or timeouts, boolean-flag state bugs, or any XState or state-machine code. Models front-end and workflow logic as XState v5 statecharts and actors: the two lifetime tests that decide ownership, event-first machine design, guards/actions/delays, invoke vs spawn, actor systems, persistence, @xstate/react integration, headless machine testing including model-based paths, and a Mermaid stateDiagram-v2 render regenerated into a repository file whenever a machine is designed or changed.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's xstate skill: the two lifetime tests that decide state ownership over appearance, the hand-rolled statechart smell table, event-first v5 machine design, actors and systems with spawn hygiene, headless testing with provide() and SimulatedClock, and a Mermaid diagram regenerated into a repository file on every machine change."
+}

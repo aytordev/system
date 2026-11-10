@@ -37,6 +37,14 @@
     "reduce-system-complexity"
     "structure-codebase"
     "twelve-factor"
+    "api-design"
+    "bff-design"
+    "bff-entry-points"
+    "domain-driven-design"
+    "event-sourcing"
+    "secure-oauth-oidc"
+    "ubiquitous-language"
+    "xstate"
   ];
   # Historical source requirements stay fixed if publication expands later.
   oldNames = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];

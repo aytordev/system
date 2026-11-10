@@ -47,6 +47,14 @@
     (aiTools + "/skills/reduce-system-complexity")
     (aiTools + "/skills/structure-codebase")
     (aiTools + "/skills/twelve-factor")
+    (aiTools + "/skills/api-design")
+    (aiTools + "/skills/bff-design")
+    (aiTools + "/skills/bff-entry-points")
+    (aiTools + "/skills/domain-driven-design")
+    (aiTools + "/skills/event-sourcing")
+    (aiTools + "/skills/secure-oauth-oidc")
+    (aiTools + "/skills/ubiquitous-language")
+    (aiTools + "/skills/xstate")
   ];
 
   markdownFiles = dir: let

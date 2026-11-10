@@ -1,0 +1,8 @@
+{
+    "name": "api-design",
+    "description": "Trigger: designing REST endpoints, cross-team boundaries, versioned service contracts, error semantics, pagination, idempotency, rate limiting, caching, or backward-compatible API evolution. Requires contract-first definition, one consistent error format (RFC 9457 for public APIs), additive-only evolution with recorded supersessions, validation at trust boundaries, and idempotency for retriable state-changing operations.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's api-design skill (itself adapted from Addy Osmani's api-and-interface-design): contract-first design, Hyrum's Law and the one-version rule, additive-only evolution with recorded supersessions, one consistent error format (RFC 9457 for public APIs), trust-boundary validation with 400/422 mapping, explicit idempotency and quota communication, and REST conventions with explicit caching freshness."
+}
