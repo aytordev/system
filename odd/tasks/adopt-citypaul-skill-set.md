@@ -121,3 +121,9 @@ since `origin/main` is 4 097 lines across nine commits, of which 3 253 belong to
 the two stacked parent branches. Each batch keeps the same shape: one content
 commit per batch with its wiring, and a small `docs(odd)` commit recording the
 boundary.
+
+**L6** — Slice boundary for B2b. `fdba7491` is 950 authored lines: three complete
+packages (14 files, including their MIT notices, one with Dave Farley's
+attribution for the eight test properties) plus the inventory wiring. Total since
+`origin/main` is 5 054 lines across eleven commits, of which 4 104 belong to the
+three stacked parent branches.
