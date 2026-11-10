@@ -172,7 +172,18 @@
       model = "nan/glm5.3-flash";
       thinking = "medium";
     });
-  localNames = ["aytordev-pen-ops" "dotfiles-coder" "functional" "nix" "skill-creator" "skill-registry" "typescript-strict"];
+  localNames = [
+    "aytordev-pen-ops"
+    "ci-debugging"
+    "dotfiles-coder"
+    "expectations"
+    "functional"
+    "nix"
+    "refactoring"
+    "skill-creator"
+    "skill-registry"
+    "typescript-strict"
+  ];
   names = lib.sort builtins.lessThan (localNames ++ ["impeccable"]);
   upstream = "${pkgs.aytordev.impeccable-skills}/share/impeccable";
   source = name:

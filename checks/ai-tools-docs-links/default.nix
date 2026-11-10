@@ -24,6 +24,9 @@
     (aiTools + "/skills/aytordev-pen-ops")
     (aiTools + "/skills/functional")
     (aiTools + "/skills/typescript-strict")
+    (aiTools + "/skills/ci-debugging")
+    (aiTools + "/skills/expectations")
+    (aiTools + "/skills/refactoring")
   ];
 
   markdownFiles = dir: let

@@ -97,6 +97,9 @@
   # but keeps its own contract and has no local metadata.json.
   clients = {
     collection = [
+      "ci-debugging"
+      "expectations"
+      "refactoring"
       "aytordev-pen-ops"
       "dotfiles-coder"
       "functional"
@@ -106,6 +109,9 @@
       "typescript-strict"
     ];
     pi = [
+      "ci-debugging"
+      "expectations"
+      "refactoring"
       "aytordev-pen-ops"
       "dotfiles-coder"
       "functional"

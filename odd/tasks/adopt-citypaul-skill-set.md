@@ -1,0 +1,98 @@
+# Adopt the citypaul skill set
+
+Program record for adopting the remaining Agent Skills from
+`citypaul/.dotfiles`. Batches land as separate stacked PRs; this document owns
+the batch plan, the specs, and the per-batch evidence.
+
+## Specs
+
+- **S1** — The user authorized adopting the whole remaining set, in batches,
+  under this repository's authoring contract:
+
+  > Me gustan mucho todas las skills que leo aqui, con su REFERENCES. https://github.com/citypaul/.dotfiles/tree/main/claude/.claude/skills
+
+  > Todo el set, por lotes, teniendo en cuenta nuestro @skill-creator.
+
+- **S2** — Every package satisfies `skills/skill-creator/SKILL.md`: `SKILL.md`
+  with `name` equal to the directory and one single-line quoted `description`,
+  a matching `metadata.json`, concise runtime entry point, and detail pushed to
+  `rules/` or `references/`. No empty directories, no `README.md`/`CHANGELOG.md`.
+- **S3** — Every package stays independently consumable. `checks/ai-tools-dependencies`
+  forbids declared sibling dependencies, so upstream cross-skill references
+  (`tdd`, `observability`, `characterisation-tests`, `codebase-design`,
+  `reduce-system-complexity`, `technical-writing`, `ubiquitous-language`, …)
+  are restated as bounded local notes, never as declared dependencies. This
+  follows the creator's "bundle necessary references" rule rather than changing
+  the dependency contract.
+- **S4** — Provenance is honest: each entry is `adapted`, records origin
+  repository and content path plus the exact imported revision, keeps
+  `tracking = null`, and carries an MIT notice in `references/provenance.md`.
+- **S5** — The inventory surface moves with each batch: `catalog.nix`,
+  `checks/ai-tools-inventory`, `checks/ai-tools-dependencies`,
+  `checks/gentle-ai-engine`, `checks/ai-skills-transition`,
+  `checks/ai-tools-docs-links`, `modules/common/ai-tools/AGENTS.md`, its
+  `README.md`, `modules/common/AGENTS.md`, root `README.md`, `CONTRIBUTING.md`,
+  and the creator's authored-package list.
+- **S6** — Batches are stacked, not merged into one PR: each batch branches from
+  the previous batch's branch and targets it as PR base, so review stays
+  per-batch and merge order is explicit.
+- **S7** — Each batch is verified with the focused ai-tools checks before its
+  PR exists, and the batch is only reported complete with that evidence.
+
+## Batch plan
+
+48 skills remain (upstream also ships `REFERENCES.md`, a cross-skill index that
+is not a skill and is not copied). Upstream root: `claude/.claude/skills/`.
+
+| Batch | Theme | Skills | Branch |
+| --- | --- | --- | --- |
+| B1 | Engineering hygiene | `expectations`, `ci-debugging`, `refactoring` | `feat/adopt-b1-engineering-hygiene` |
+| B2 | Testing and verification | `tdd`, `testing`, `test-design-reviewer`, `characterisation-tests`, `mutation-testing`, `front-end-testing`, `react-testing`, `double-check` | `feat/adopt-b2-testing` |
+| B3 | Review and evaluation | `acceptance-review`, `panel-review`, `evaluate-existing-solutions`, `find-gaps` | `feat/adopt-b3-review` |
+| B4 | Architecture and structure | `codebase-design`, `structure-codebase`, `folder-structure`, `finding-seams`, `improve-codebase-architecture`, `reduce-system-complexity`, `graph-engineering`, `twelve-factor` | `feat/adopt-b4-architecture` |
+| B5 | Domain, API and events | `api-design`, `bff-design`, `bff-entry-points`, `domain-driven-design`, `ubiquitous-language`, `event-sourcing`, `xstate`, `secure-oauth-oidc` | `feat/adopt-b5-domain-api` |
+| B6 | Frontend and diagrams | `react-performance`, `render-code-shape`, `diagrams` | `feat/adopt-b6-frontend` |
+| B7 | Operations and writing | `observability`, `debugging`, `production-parity-skill-builder`, `technical-writing`, `teach-me`, `wtf` | `feat/adopt-b7-operations` |
+| B8 | Planning and delivery | `planning`, `storyboard`, `story-splitting`, `specification`, `find-skills`, `stack-pull-requests`, `cli-design`, `hexagonal-architecture` | `feat/adopt-b8-planning` |
+
+Batch order is by dependency usefulness, not importance: B1-B3 give the
+vocabulary the later skills cite, so their bounded local notes can reference an
+already-adapted rule instead of restating it from scratch.
+
+## Tasks
+
+| ID | Specs | Route | Commit |
+| --- | --- | --- | --- |
+| B1.1 | S1-S4 | inline, package authoring | `feat(skills): adopt expectations, ci-debugging, and refactoring` |
+| B1.2 | S5-S7 | inline, inventory wiring + focused checks | same commit |
+| B2.x…B8.x | S1-S7 | as each batch opens | one stacked PR each |
+
+## Verification contract
+
+Per batch:
+
+```sh
+nix build path:.#checks.aarch64-darwin.integration-ai-tools-skill-contract \
+  path:.#checks.aarch64-darwin.unit-ai-tools-inventory \
+  path:.#checks.aarch64-darwin.unit-ai-tools-dependencies \
+  path:.#checks.aarch64-darwin.integration-ai-tools-docs-links \
+  path:.#checks.aarch64-darwin.integration-gentle-ai-engine \
+  path:.#checks.aarch64-darwin.integration-ai-skills-transition \
+  --override-input secrets path:./checks/fixtures/secrets \
+  --no-write-lock-file --no-link
+```
+
+## Risk
+
+No Task Size high-risk item applies to a batch: additive skill content plus the
+inventory expectations that batch exists to update. The one contract-shaped
+decision — cross-skill references — is resolved by the creator's existing
+standalone rule (`S3`), not by changing the dependency check.
+
+## Log
+
+**L1** — User request, verbatim:
+
+> Me gustan mucho todas las skills que leo aqui, con su REFERENCES. https://github.com/citypaul/.dotfiles/tree/main/claude/.claude/skills
+
+**L2** — Scope decision, verbatim: `Todo el set, por lotes, teniendo en cuenta nuestro @skill-creator.`

@@ -19,6 +19,23 @@
     };
     provenance = ./skills/aytordev-pen-ops/references/provenance.md;
   };
+  ci-debugging = {
+    kind = "adapted";
+    source.path = ./skills/ci-debugging;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/ci-debugging/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    provenance = ./skills/ci-debugging/references/provenance.md;
+  };
   dotfiles-coder = {
     kind = "local";
     source.path = ./skills/dotfiles-coder;
@@ -30,6 +47,23 @@
   # Adaptation whose imported revision is known exactly, unlike the historical
   # comparison baselines below: originalImportRevision and lastSyncRevision are
   # the bytes this package was authored from, not an inferred synchronization.
+  expectations = {
+    kind = "adapted";
+    source.path = ./skills/expectations;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/expectations/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+      };
+      originalImportRevision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+      lastSyncRevision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+    };
+    provenance = ./skills/expectations/references/provenance.md;
+  };
   functional = {
     kind = "adapted";
     source.path = ./skills/functional;
@@ -96,6 +130,23 @@
   };
   # Historical comparison baseline, NOT original-import or last-synchronized pins.
   # Those adaptation baselines are unknown; do not infer them from the audit.
+  refactoring = {
+    kind = "adapted";
+    source.path = ./skills/refactoring;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/refactoring/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      };
+      originalImportRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      lastSyncRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+    };
+    provenance = ./skills/refactoring/references/provenance.md;
+  };
   skill-creator = {
     kind = "adapted";
     source.path = ./skills/skill-creator;

@@ -1,0 +1,8 @@
+{
+    "name": "refactoring",
+    "description": "Trigger: a request to clean up, tidy, simplify, restructure, deduplicate, collapse, or merge look-alike code, or the refactor step after a passing baseline. Requires a recoverable baseline, a labelled Critical/High/Nice/Skip assessment, and a behaviour-preserving change with proportionate preservation evidence.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's refactoring skill: recoverable-baseline discipline, an explicit labelled assessment with a decision line, DRY as shared knowledge, complete slices, and the boundaries that keep refactoring behaviour-preserving."
+}

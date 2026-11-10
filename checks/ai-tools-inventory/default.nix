@@ -7,15 +7,18 @@
   entries = builtins.readDir (root + "/skills");
   names = builtins.attrNames entries;
   # Only authored folders carry our metadata contract; upstream is packaged.
-  expected = ["aytordev-pen-ops" "dotfiles-coder" "functional" "nix" "skill-creator" "skill-registry" "typescript-strict"];
+  expected = ["aytordev-pen-ops" "ci-debugging" "dotfiles-coder" "expectations" "functional" "nix" "refactoring" "skill-creator" "skill-registry" "typescript-strict"];
   published = lib.sort builtins.lessThan (expected ++ ["impeccable"]);
   catalog = import (root + "/catalog.nix");
   expectedKinds = {
     aytordev-pen-ops = "adapted";
+    ci-debugging = "adapted";
     dotfiles-coder = "local";
+    expectations = "adapted";
     functional = "adapted";
     impeccable = "upstream";
     nix = "local";
+    refactoring = "adapted";
     skill-creator = "adapted";
     skill-registry = "adapted";
     typescript-strict = "adapted";
@@ -32,10 +35,40 @@
       originalImportRevision = null;
       lastSyncRevision = null;
     };
+    ci-debugging = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/ci-debugging/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
     dotfiles-coder = null;
+    expectations = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/expectations/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+      };
+      originalImportRevision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+      lastSyncRevision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+    };
     functional = {
       repository = "https://github.com/citypaul/.dotfiles";
       path = "claude/.claude/skills/functional/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      };
+      originalImportRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      lastSyncRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+    };
+    refactoring = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/refactoring/SKILL.md";
       baseline = {
         role = "import-baseline";
         revision = "fd017e2008465b8ba4d95a0312c112150c836116";
@@ -128,7 +161,7 @@
   rows = lib.filter (line: lib.hasPrefix "| " line && !(lib.hasPrefix "| Name " line)) (lib.splitString "\n" doc);
   documented = map (row: lib.trim (builtins.elemAt (lib.splitString "|" row) 1)) rows;
 in
-  assert lib.assertMsg (builtins.pathExists (root + "/catalog.nix")) "AI skill ownership requires a pure eight-entry catalog";
+  assert lib.assertMsg (builtins.pathExists (root + "/catalog.nix")) "AI skill ownership requires a pure eleven-entry catalog";
   assert lib.assertMsg (catalogShape catalog) "AI skill catalog ownership, structured origins/tracking, payload location, or pure-data shape drifted";
   # Triangulation: reject plausible ownership/metadata mistakes, not just omissions.
   assert lib.assertMsg (lib.all (value: !(catalogShape value)) [
@@ -144,8 +177,8 @@ in
     (catalog // {nix = catalog.nix // {origin = catalog.skill-creator.origin;};})
     (catalog // {impeccable = catalog.impeccable // {source = catalog.impeccable.source // {payloadPath = "skills/impeccable";};};})
   ]) "Catalog shape must reject invalid ownership fixtures";
-  assert lib.assertMsg (names == expected) "Expected exactly seven authored skill packages";
-  assert lib.assertMsg (lib.sort builtins.lessThan documented == published) "Expected the seven authored skills plus upstream impeccable in the documented inventory";
+  assert lib.assertMsg (names == expected) "Expected exactly ten authored skill packages";
+  assert lib.assertMsg (lib.sort builtins.lessThan documented == published) "Expected the ten authored skills plus upstream impeccable in the documented inventory";
   assert lib.all (path: !(builtins.pathExists (root + "/${path}"))) ["default.nix" "agents.nix" "commands.nix" "roles.nix" "registry.nix" "base.md"];
     pkgs.runCommand "ai-tools-inventory-check" {} ''
       touch "$out"

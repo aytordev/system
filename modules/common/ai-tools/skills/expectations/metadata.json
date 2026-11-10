@@ -1,0 +1,8 @@
+{
+    "name": "expectations",
+    "description": "Trigger: a non-obvious discovery, gotcha, workaround, or decision appears and the user asks where it should live, be written down, or be kept for the next person. Routes each fact to its durable owner and separates reusable principle from project-local policy.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's expectations skill: classifies a learning as reusable principle or local policy, routes it to the single artifact that owns its truth, and records it in a scannable entry before the context is lost."
+}
