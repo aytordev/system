@@ -136,3 +136,13 @@ entry points stay at 92-139 lines each. Total since `origin/main` is 10 051
 lines across thirteen commits, of which 5 060 belong to the four stacked parents.
 The remaining waves (33 skills) follow the same shape: delegated authoring in
 disjoint folders, parent wiring and verification, one commit per wave.
+
+**L8** — Slice boundary for wave 2 (8 skills). `ac81d813` is 6 354 authored
+lines: the architecture packages carry substantial bundled references
+(`structure-codebase` 2 423 lines of rules and references, `finding-seams`
+1 064, `graph-engineering` restated from a workflow script). Entry points stay
+117-140 lines. Total since `origin/main` is 16 414 lines across fifteen commits.
+Two of the eight needed their own licence notice: `codebase-design` and
+`improve-codebase-architecture` are Matt Pocock's (c) 2026, and
+`reduce-system-complexity` is Adam Bulmer's (c) 2025 — verified against the
+upstream files, not inferred from the repository licence.
