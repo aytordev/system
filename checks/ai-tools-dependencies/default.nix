@@ -143,6 +143,15 @@
       "teach-me"
       "technical-writing"
       "wtf"
+      "find-skills"
+      "hexagonal-architecture"
+      "planning"
+      "react-performance"
+      "render-code-shape"
+      "specification"
+      "stack-pull-requests"
+      "story-splitting"
+      "storyboard"
     ];
     pi = [
       "aytordev-pen-ops"
@@ -191,6 +200,15 @@
       "teach-me"
       "technical-writing"
       "wtf"
+      "find-skills"
+      "hexagonal-architecture"
+      "planning"
+      "react-performance"
+      "render-code-shape"
+      "specification"
+      "stack-pull-requests"
+      "story-splitting"
+      "storyboard"
     ];
   };
 

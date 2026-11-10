@@ -63,6 +63,15 @@
     (aiTools + "/skills/teach-me")
     (aiTools + "/skills/technical-writing")
     (aiTools + "/skills/wtf")
+    (aiTools + "/skills/find-skills")
+    (aiTools + "/skills/hexagonal-architecture")
+    (aiTools + "/skills/planning")
+    (aiTools + "/skills/react-performance")
+    (aiTools + "/skills/render-code-shape")
+    (aiTools + "/skills/specification")
+    (aiTools + "/skills/stack-pull-requests")
+    (aiTools + "/skills/story-splitting")
+    (aiTools + "/skills/storyboard")
   ];
 
   markdownFiles = dir: let

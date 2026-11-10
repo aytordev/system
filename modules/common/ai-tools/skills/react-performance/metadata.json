@@ -1,0 +1,8 @@
+{
+    "name": "react-performance",
+    "description": "Trigger: React or Next.js feels slow — a search box or list that stutters while typing, a page that burns CPU while it sits open, a sluggish dashboard, jank on scroll, a slow first load — or a bundle, waterfall, re-render, or hydration problem is suspected, or a performance diff or rule conflict is being reviewed. Measurement-first: baseline the symptom, attribute the cost with evidence, apply one rule at a time, re-measure, and revert what does not move the number.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's react-performance skill: the measurement-first method (baseline, attribute, one rule per diff, re-measure or revert), the house rules that stop performance work trading away immutability, typing, or behaviour tests, and the anti-pattern and completion checks."
+}

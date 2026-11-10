@@ -219,6 +219,15 @@
     "teach-me"
     "technical-writing"
     "wtf"
+    "find-skills"
+    "hexagonal-architecture"
+    "planning"
+    "react-performance"
+    "render-code-shape"
+    "specification"
+    "stack-pull-requests"
+    "story-splitting"
+    "storyboard"
   ];
   names = lib.sort builtins.lessThan (localNames ++ ["impeccable"]);
   upstream = "${pkgs.aytordev.impeccable-skills}/share/impeccable";

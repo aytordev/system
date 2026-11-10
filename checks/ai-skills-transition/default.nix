@@ -53,6 +53,15 @@
     "teach-me"
     "technical-writing"
     "wtf"
+    "find-skills"
+    "hexagonal-architecture"
+    "planning"
+    "react-performance"
+    "render-code-shape"
+    "specification"
+    "stack-pull-requests"
+    "story-splitting"
+    "storyboard"
   ];
   # Historical source requirements stay fixed if publication expands later.
   oldNames = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];

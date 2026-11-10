@@ -793,6 +793,159 @@
     };
     provenance = ./skills/wtf/references/provenance.md;
   };
+  find-skills = {
+    kind = "adapted";
+    source.path = ./skills/find-skills;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/find-skills/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "640a334d3f233e7569586ed5e7d2251aab212788";
+      };
+      originalImportRevision = "640a334d3f233e7569586ed5e7d2251aab212788";
+      lastSyncRevision = "640a334d3f233e7569586ed5e7d2251aab212788";
+    };
+    provenance = ./skills/find-skills/references/provenance.md;
+  };
+  hexagonal-architecture = {
+    kind = "adapted";
+    source.path = ./skills/hexagonal-architecture;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/hexagonal-architecture/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+      };
+      originalImportRevision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+      lastSyncRevision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+    };
+    provenance = ./skills/hexagonal-architecture/references/provenance.md;
+  };
+  planning = {
+    kind = "adapted";
+    source.path = ./skills/planning;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/planning/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "89225f6ecb4b702fdc6a21b35e0ba83526d692de";
+      };
+      originalImportRevision = "89225f6ecb4b702fdc6a21b35e0ba83526d692de";
+      lastSyncRevision = "89225f6ecb4b702fdc6a21b35e0ba83526d692de";
+    };
+    provenance = ./skills/planning/references/provenance.md;
+  };
+  react-performance = {
+    kind = "adapted";
+    source.path = ./skills/react-performance;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/react-performance/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+      };
+      originalImportRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+      lastSyncRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+    };
+    provenance = ./skills/react-performance/references/provenance.md;
+  };
+  render-code-shape = {
+    kind = "adapted";
+    source.path = ./skills/render-code-shape;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/render-code-shape/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "96cdd38632b4ef523aa7c445059d97e960de43ce";
+      };
+      originalImportRevision = "96cdd38632b4ef523aa7c445059d97e960de43ce";
+      lastSyncRevision = "96cdd38632b4ef523aa7c445059d97e960de43ce";
+    };
+    provenance = ./skills/render-code-shape/references/provenance.md;
+  };
+  specification = {
+    kind = "adapted";
+    source.path = ./skills/specification;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/specification/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    provenance = ./skills/specification/references/provenance.md;
+  };
+  stack-pull-requests = {
+    kind = "adapted";
+    source.path = ./skills/stack-pull-requests;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/stack-pull-requests/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    provenance = ./skills/stack-pull-requests/references/provenance.md;
+  };
+  story-splitting = {
+    kind = "adapted";
+    source.path = ./skills/story-splitting;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/story-splitting/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    provenance = ./skills/story-splitting/references/provenance.md;
+  };
+  storyboard = {
+    kind = "adapted";
+    source.path = ./skills/storyboard;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/storyboard/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    provenance = ./skills/storyboard/references/provenance.md;
+  };
   typescript-strict = {
     kind = "adapted";
     source.path = ./skills/typescript-strict;

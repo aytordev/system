@@ -1,0 +1,8 @@
+{
+    "name": "find-skills",
+    "description": "Trigger: the user explicitly asks to find or install a skill from the external skills ecosystem, asks whether an installable agent skill exists for a task, mentions a recurring agent workflow they want packaged as a skill, or wants to extend agent capabilities through skills.sh or a skill repository. Discovers and, only with explicit authorization, installs external agent skills — with full-bundle inspection, untrusted-content handling, provenance and licence verification, pinned immutable-revision installation, and explicit scope and agent authorization. Not for choosing among already-installed local skills or selecting software libraries, developer tools, applications, services, frameworks, or platform primitives.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's find-skills skill (itself adapted from vercel-labs/skills): installed-skill coordination first, browsing over executing the Skills CLI, pinned exact-version CLI use only after authorization, seven verification rules that treat candidate bundles as untrusted evidence, provenance and licence verification, and installation only from a checked-out reviewed revision with byte-for-byte post-install comparison."
+}

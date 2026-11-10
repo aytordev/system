@@ -97,7 +97,7 @@ surface (local skills, `models.json`, the startup header, Engram).
 | --- | --- |
 | Nix capabilities | Pi, public `gentle-ai`, Engram, Node/npm, runtime environment, and Pi's palette-generated `themes/aytordev.json`; activation seeds only an absent `theme` key |
 | Official `gentle-ai install --agent pi` | Native Pi profile, Shell package and private engine, extensions/workflow |
-| This `ai-tools/` subtree | Skill ownership catalog, forty-six authored sources, private upstream preparation recipes, and publication |
+| This `ai-tools/` subtree | Skill ownership catalog, fifty-five authored sources, private upstream preparation recipes, and publication |
 | `packages/impeccable-{engine,skills}/package.nix` | Direct-import adapters for existing package discovery; no pins or recipe bodies |
 | `ai-skills` capability | Catalog-derived neutral collection and recursive Pi file publication |
 
@@ -117,7 +117,7 @@ remain upstream-owned. This replacement does not migrate Engram data.
 
 ## Skill ownership and updates
 
-[`catalog.nix`](catalog.nix) is the forty-seven-entry, pure-data ownership inventory.
+[`catalog.nix`](catalog.nix) is the fifty-six-entry, pure-data ownership inventory.
 It records source locations, kind, manual update policy, structured origins,
 provenance pointers, and Impeccable's skill/engine pins and dependency. It is not a module, runtime
 registry, updater, or discovery mechanism. `ai-skills.nix` derives publication
@@ -126,13 +126,13 @@ names and sources from it; the existing namespace, paths, and guards do not chan
 | Kind | Skills | Maintenance |
 | --- | --- | --- |
 | `local` | `dotfiles-coder`, `nix` | Edit local content manually; frontmatter and `metadata.json` remain canonical |
-| `adapted` | `acceptance-review`, `api-design`, `aytordev-pen-ops`, `bff-design`, `bff-entry-points`, `characterisation-tests`, `ci-debugging`, `cli-design`, `codebase-design`, `debugging`, `diagrams`, `domain-driven-design`, `double-check`, `evaluate-existing-solutions`, `event-sourcing`, `expectations`, `find-gaps`, `finding-seams`, `folder-structure`, `front-end-testing`, `functional`, `graph-engineering`, `improve-codebase-architecture`, `mutation-testing`, `observability`, `panel-review`, `production-parity-skill-builder`, `react-testing`, `reduce-system-complexity`, `refactoring`, `secure-oauth-oidc`, `skill-creator`, `skill-registry`, `structure-codebase`, `tdd`, `teach-me`, `technical-writing`, `test-design-reviewer`, `testing`, `twelve-factor`, `typescript-strict`, `ubiquitous-language`, `wtf`, `xstate` | Review upstream evidence manually and retain deliberate local contracts |
+| `adapted` | `acceptance-review`, `api-design`, `aytordev-pen-ops`, `bff-design`, `bff-entry-points`, `characterisation-tests`, `ci-debugging`, `cli-design`, `codebase-design`, `debugging`, `diagrams`, `domain-driven-design`, `double-check`, `evaluate-existing-solutions`, `event-sourcing`, `expectations`, `find-gaps`, `find-skills`, `finding-seams`, `folder-structure`, `front-end-testing`, `functional`, `graph-engineering`, `hexagonal-architecture`, `improve-codebase-architecture`, `mutation-testing`, `observability`, `panel-review`, `planning`, `production-parity-skill-builder`, `react-performance`, `react-testing`, `reduce-system-complexity`, `refactoring`, `render-code-shape`, `secure-oauth-oidc`, `skill-creator`, `skill-registry`, `specification`, `stack-pull-requests`, `story-splitting`, `storyboard`, `structure-codebase`, `tdd`, `teach-me`, `technical-writing`, `test-design-reviewer`, `testing`, `twelve-factor`, `typescript-strict`, `ubiquitous-language`, `wtf`, `xstate` | Review upstream evidence manually and retain deliberate local contracts |
 | `upstream` | `impeccable` | Update catalog pins/hashes manually as a coherent skill-and-engine pair; preserve upstream bytes |
 
 Adapted entries expose `origin.repository`, the upstream content `path`, and
 `baseline.{role,revision}`. Their `originalImportRevision` and `lastSyncRevision`
-are explicitly null where unknown; the forty-one `import-baseline` entries record
-the exact revision their bytes were
+are explicitly null where unknown; the fifty `import-baseline` entries record the
+exact revision their bytes were
 authored from, because that revision is known rather than inferred. Local entries
 have `origin = null`: no external update source, including Nix's independently
 authored implementation.
@@ -174,7 +174,7 @@ independent expectations; see the
 
 ## Published skills
 
-Forty-six authored sources (two local, forty-four adapted) remain under
+Fifty-five authored sources (two local, fifty-three adapted) remain under
 
 - `acceptance-review` — read-only review of a change against its acceptance contract.
 - `api-design` — HTTP API contracts: compatibility, errors, idempotency, quotas
@@ -194,23 +194,32 @@ Forty-six authored sources (two local, forty-four adapted) remain under
 - `event-sourcing` — event modelling, decider and rehydration, projections, versioning
 - `expectations` — routes a learning to the artifact that owns its truth.
 - `find-gaps` — tightens a written artifact one confirmed answer at a time.
+- `find-skills` — verification before recommending, installation authorization
 - `finding-seams` — introduces seams so untestable dependencies become controllable
 - `folder-structure` — deprecation alias that delegates the retired convention and stops when alone
 - `front-end-testing` — browser-observable claims, harness choice, evidence boundaries.
 - `functional` — immutable domain data, pure-function boundaries, composition,
 - `graph-engineering` — graph-derived parallel skill application and impact analysis
+- `hexagonal-architecture` — ports and adapters, wiring, testing boundaries, anti-patterns
 - `improve-codebase-architecture` — ranks where architecture investment pays off
 - `mutation-testing` — mutation gate, survivor triage, and diff-scoped runs.
 - `nix` — authoring rules, operational references, and package-diff helper.
 - `observability` — wide events, SLOs and alerting, telemetry hygiene and placement
 - `panel-review` — multi-lens review with adversarial verification to PR-readiness.
+- `planning` — vertical slices, known-good increments, delivery and review cadence
 - `production-parity-skill-builder` — derives a skill from a production system, parity map first
+- `react-performance` — measurement method first, house rules, anti-patterns
 - `react-testing` — React component behaviour, integrity, and browser-mode rules.
 - `reduce-system-complexity` — whole-path reduction of branches, states, layers and jobs
 - `refactoring` — behaviour-preserving assessment with a labelled reply contract.
+- `render-code-shape` — citation contract, render format, findings and boundaries
 - `secure-oauth-oidc` — RFC 9700 boundaries, OIDC validation, and false assurances
 - `skill-creator` — local skill authoring and metadata contract.
 - `skill-registry` — explicitly invoked local index; session-only by default.
+- `specification` — example map, accountable review, spec review template
+- `stack-pull-requests` — units and decisions, stack design, verification, merge order
+- `story-splitting` — capability slices and the quality of a split story
+- `storyboard` — page structure, embedding safety, review lifecycle
 - `structure-codebase` — repository tree and package placement decisions
 - `tdd` — RED-GREEN-REFACTOR with a bounded loop and one mutation gate.
 - `teach-me` — tutoring protocol where the learner does the thinking
@@ -230,7 +239,7 @@ its original rules, references, and scripts. Resolver guidance is bundled in
 `metadata.json` is our authored-source validation convention, not a universal
 client requirement.
 
-The forty-seventh skill, **`impeccable`**, comes from
+The fifty-sixth skill, **`impeccable`**, comes from
 `${pkgs.aytordev.impeccable-skills}/share/impeccable`, not the authored tree.
 The catalog pins upstream **4.4.0** at commit
 `114ea1d3838fca73b253af45f873b9c4f5f213c8`, preserving all 54 payload files
@@ -250,7 +259,7 @@ not establish that a host has browser/Pen tools or authorize their use.
 | Neutral collection | `${config.xdg.dataHome}/aytordev/skills` (normally `~/.local/share/aytordev/skills`) | `ai-skills.enable`, even with Pi disabled |
 | Pi / Gentle Shell | `~/.pi/agent/skills/<name>` | `ai-skills.enable` and `pi.enable` |
 
-The neutral collection assembles links to the forty-six authored folders and the
+The neutral collection assembles links to the fifty-five authored folders and the
 upstream package. Client publication is recursive: each skill directory stays
 real and its managed files are symlinks,
 matching Pi's native per-file layout. The client profile and whole skills root
@@ -391,7 +400,7 @@ projections, and isolated dereferenced copies with resolvable support. It also
 regresses the pinned public CLI's exact `version` output by running the real
 binary offline under isolated HOME/XDG with the self-update guard, expecting
 no native onboarding profile. Retained
-AI checks cover the independent forty-seven-entry ownership/shape contract (including
+AI checks cover the independent fifty-six-entry ownership/shape contract (including
 invalid catalog fixtures), authored-only dependencies/metadata, and documentation
 links. `checks/impeccable` verifies thin adapters, standalone recipe arguments,
 adapter/private package identity parity on both platforms, upstream byte fidelity,

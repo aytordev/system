@@ -1,0 +1,8 @@
+{
+    "name": "hexagonal-architecture",
+    "description": "Trigger: a project has explicitly opted in to hexagonal (ports and adapters) architecture — a README, CLAUDE.md, or ADR that says so is the opt-in — and work touches it: a new feature, a transport or SDK swap, a bug fix, or a small business-rule change to a function that still calls an SDK directly. Implements TypeScript ports, driving/driven adapters, dependency inversion, and domain isolation. Do not infer hexagonal architecture from a generic adapter, interface, test seam, or isolation request in a project that has not opted in.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's hexagonal-architecture skill: the SDK-client-is-never-a-port gate, port ownership and naming, translation-only adapters with composition-root wiring, fakes-over-mocks use-case testing, CQRS-lite reads, cross-cutting tiers, anti-patterns, and the incremental and greenfield adoption sequences with the full worked example."
+}

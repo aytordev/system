@@ -7,7 +7,7 @@
   entries = builtins.readDir (root + "/skills");
   names = builtins.attrNames entries;
   # Only authored folders carry our metadata contract; upstream is packaged.
-  expected = ["acceptance-review" "api-design" "aytordev-pen-ops" "bff-design" "bff-entry-points" "characterisation-tests" "ci-debugging" "cli-design" "codebase-design" "debugging" "diagrams" "domain-driven-design" "dotfiles-coder" "double-check" "evaluate-existing-solutions" "event-sourcing" "expectations" "find-gaps" "finding-seams" "folder-structure" "front-end-testing" "functional" "graph-engineering" "improve-codebase-architecture" "mutation-testing" "nix" "observability" "panel-review" "production-parity-skill-builder" "react-testing" "reduce-system-complexity" "refactoring" "secure-oauth-oidc" "skill-creator" "skill-registry" "structure-codebase" "tdd" "teach-me" "technical-writing" "test-design-reviewer" "testing" "twelve-factor" "typescript-strict" "ubiquitous-language" "wtf" "xstate"];
+  expected = ["acceptance-review" "api-design" "aytordev-pen-ops" "bff-design" "bff-entry-points" "characterisation-tests" "ci-debugging" "cli-design" "codebase-design" "debugging" "diagrams" "domain-driven-design" "dotfiles-coder" "double-check" "evaluate-existing-solutions" "event-sourcing" "expectations" "find-gaps" "find-skills" "finding-seams" "folder-structure" "front-end-testing" "functional" "graph-engineering" "hexagonal-architecture" "improve-codebase-architecture" "mutation-testing" "nix" "observability" "panel-review" "planning" "production-parity-skill-builder" "react-performance" "react-testing" "reduce-system-complexity" "refactoring" "render-code-shape" "secure-oauth-oidc" "skill-creator" "skill-registry" "specification" "stack-pull-requests" "story-splitting" "storyboard" "structure-codebase" "tdd" "teach-me" "technical-writing" "test-design-reviewer" "testing" "twelve-factor" "typescript-strict" "ubiquitous-language" "wtf" "xstate"];
   published = lib.sort builtins.lessThan (expected ++ ["impeccable"]);
   catalog = import (root + "/catalog.nix");
   expectedKinds = {
@@ -58,6 +58,15 @@
     teach-me = "adapted";
     technical-writing = "adapted";
     wtf = "adapted";
+    find-skills = "adapted";
+    hexagonal-architecture = "adapted";
+    planning = "adapted";
+    react-performance = "adapted";
+    render-code-shape = "adapted";
+    specification = "adapted";
+    stack-pull-requests = "adapted";
+    story-splitting = "adapted";
+    storyboard = "adapted";
   };
   # Independent expectations: comparison evidence never becomes a sync baseline.
   expectedOrigins = {
@@ -496,6 +505,96 @@
     wtf = {
       repository = "https://github.com/citypaul/.dotfiles";
       path = "claude/.claude/skills/wtf/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    find-skills = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/find-skills/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "640a334d3f233e7569586ed5e7d2251aab212788";
+      };
+      originalImportRevision = "640a334d3f233e7569586ed5e7d2251aab212788";
+      lastSyncRevision = "640a334d3f233e7569586ed5e7d2251aab212788";
+    };
+    hexagonal-architecture = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/hexagonal-architecture/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+      };
+      originalImportRevision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+      lastSyncRevision = "618665cb465edbead0b83befd9e96839a58b4dbe";
+    };
+    planning = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/planning/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "89225f6ecb4b702fdc6a21b35e0ba83526d692de";
+      };
+      originalImportRevision = "89225f6ecb4b702fdc6a21b35e0ba83526d692de";
+      lastSyncRevision = "89225f6ecb4b702fdc6a21b35e0ba83526d692de";
+    };
+    react-performance = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/react-performance/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+      };
+      originalImportRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+      lastSyncRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+    };
+    render-code-shape = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/render-code-shape/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "96cdd38632b4ef523aa7c445059d97e960de43ce";
+      };
+      originalImportRevision = "96cdd38632b4ef523aa7c445059d97e960de43ce";
+      lastSyncRevision = "96cdd38632b4ef523aa7c445059d97e960de43ce";
+    };
+    specification = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/specification/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    stack-pull-requests = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/stack-pull-requests/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    story-splitting = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/story-splitting/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    storyboard = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/storyboard/SKILL.md";
       baseline = {
         role = "import-baseline";
         revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
