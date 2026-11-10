@@ -135,6 +135,14 @@
       "secure-oauth-oidc"
       "ubiquitous-language"
       "xstate"
+      "cli-design"
+      "debugging"
+      "diagrams"
+      "observability"
+      "production-parity-skill-builder"
+      "teach-me"
+      "technical-writing"
+      "wtf"
     ];
     pi = [
       "aytordev-pen-ops"
@@ -175,6 +183,14 @@
       "secure-oauth-oidc"
       "ubiquitous-language"
       "xstate"
+      "cli-design"
+      "debugging"
+      "diagrams"
+      "observability"
+      "production-parity-skill-builder"
+      "teach-me"
+      "technical-writing"
+      "wtf"
     ];
   };
 

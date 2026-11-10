@@ -657,6 +657,142 @@
     };
     provenance = ./skills/xstate/references/provenance.md;
   };
+  cli-design = {
+    kind = "adapted";
+    source.path = ./skills/cli-design;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/cli-design/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "bc59bd65ca710e0afe388069e552a6f688ae5c0d";
+      };
+      originalImportRevision = "bc59bd65ca710e0afe388069e552a6f688ae5c0d";
+      lastSyncRevision = "bc59bd65ca710e0afe388069e552a6f688ae5c0d";
+    };
+    provenance = ./skills/cli-design/references/provenance.md;
+  };
+  debugging = {
+    kind = "adapted";
+    source.path = ./skills/debugging;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/debugging/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    provenance = ./skills/debugging/references/provenance.md;
+  };
+  diagrams = {
+    kind = "adapted";
+    source.path = ./skills/diagrams;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/diagrams/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    provenance = ./skills/diagrams/references/provenance.md;
+  };
+  observability = {
+    kind = "adapted";
+    source.path = ./skills/observability;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/observability/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      };
+      originalImportRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      lastSyncRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+    };
+    provenance = ./skills/observability/references/provenance.md;
+  };
+  production-parity-skill-builder = {
+    kind = "adapted";
+    source.path = ./skills/production-parity-skill-builder;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/production-parity-skill-builder/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    provenance = ./skills/production-parity-skill-builder/references/provenance.md;
+  };
+  teach-me = {
+    kind = "adapted";
+    source.path = ./skills/teach-me;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/teach-me/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    provenance = ./skills/teach-me/references/provenance.md;
+  };
+  technical-writing = {
+    kind = "adapted";
+    source.path = ./skills/technical-writing;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/technical-writing/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "315ab6fc9a74794cd6b12964b70d036b53947681";
+      };
+      originalImportRevision = "315ab6fc9a74794cd6b12964b70d036b53947681";
+      lastSyncRevision = "315ab6fc9a74794cd6b12964b70d036b53947681";
+    };
+    provenance = ./skills/technical-writing/references/provenance.md;
+  };
+  wtf = {
+    kind = "adapted";
+    source.path = ./skills/wtf;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/wtf/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    provenance = ./skills/wtf/references/provenance.md;
+  };
   typescript-strict = {
     kind = "adapted";
     source.path = ./skills/typescript-strict;

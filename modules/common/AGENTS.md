@@ -29,26 +29,28 @@ precedent, and the packs themselves are Home Manager modules under
 
 ### AI Tools (`ai-tools/`)
 
-`ai-tools/catalog.nix` owns the thirty-nine-entry pure-data inventory: two local
-skills (`dotfiles-coder`, `nix`), thirty-six adapted skills (
+`ai-tools/catalog.nix` owns the forty-seven-entry pure-data inventory: two local
+skills (`dotfiles-coder`, `nix`), forty-four adapted skills (
 `acceptance-review`, `api-design`, `aytordev-pen-ops`, `bff-design`,
-`bff-entry-points`, `characterisation-tests`, `ci-debugging`,
-`codebase-design`, `domain-driven-design`, `double-check`,
-`evaluate-existing-solutions`, `event-sourcing`, `expectations`, `find-gaps`,
-`finding-seams`, `folder-structure`, `front-end-testing`, `functional`,
-`graph-engineering`, `improve-codebase-architecture`, `mutation-testing`,
-`panel-review`, `react-testing`, `reduce-system-complexity`, `refactoring`,
-`secure-oauth-oidc`, `skill-creator`, `skill-registry`, `structure-codebase`,
-`tdd`, `test-design-reviewer`, `testing`, `twelve-factor`,
-`typescript-strict`, `ubiquitous-language`, `xstate`), and intact upstream
-`impeccable`. The thirty-eight authored folders bundle their own support. Catalog provenance pointers preserve
+`bff-entry-points`, `characterisation-tests`, `ci-debugging`, `cli-design`,
+`codebase-design`, `debugging`, `diagrams`, `domain-driven-design`,
+`double-check`, `evaluate-existing-solutions`, `event-sourcing`,
+`expectations`, `find-gaps`, `finding-seams`, `folder-structure`,
+`front-end-testing`, `functional`, `graph-engineering`,
+`improve-codebase-architecture`, `mutation-testing`, `observability`,
+`panel-review`, `production-parity-skill-builder`, `react-testing`,
+`reduce-system-complexity`, `refactoring`, `secure-oauth-oidc`,
+`skill-creator`, `skill-registry`, `structure-codebase`, `tdd`, `teach-me`,
+`technical-writing`, `test-design-reviewer`, `testing`, `twelve-factor`,
+`typescript-strict`, `ubiquitous-language`, `wtf`, `xstate`), and intact upstream
+`impeccable`. The forty-six authored folders bundle their own support. Catalog provenance pointers preserve
 local metadata authority; manual update policies introduce no updater.
 
 `ai-tools/upstream/impeccable/` owns private standalone package recipes and reads
 catalog pins. Public `packages/impeccable-{engine,skills}/package.nix` files are
 thin direct-import adapters. The external payload remains unmodified and outside
 the local metadata contract. Home Manager's `ai-skills` capability derives all
-thirty-nine publication sources from the catalog, assembles the neutral XDG collection,
+forty-seven publication sources from the catalog, assembles the neutral XDG collection,
 and publishes recursive file links to the enabled Pi client. Native Gentle AI owns Pi's workflow;
 this subtree does not distribute agents or commands.
 

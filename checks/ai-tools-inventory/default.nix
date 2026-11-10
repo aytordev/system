@@ -7,7 +7,7 @@
   entries = builtins.readDir (root + "/skills");
   names = builtins.attrNames entries;
   # Only authored folders carry our metadata contract; upstream is packaged.
-  expected = ["acceptance-review" "api-design" "aytordev-pen-ops" "bff-design" "bff-entry-points" "characterisation-tests" "ci-debugging" "codebase-design" "domain-driven-design" "dotfiles-coder" "double-check" "evaluate-existing-solutions" "event-sourcing" "expectations" "find-gaps" "finding-seams" "folder-structure" "front-end-testing" "functional" "graph-engineering" "improve-codebase-architecture" "mutation-testing" "nix" "panel-review" "react-testing" "reduce-system-complexity" "refactoring" "secure-oauth-oidc" "skill-creator" "skill-registry" "structure-codebase" "tdd" "test-design-reviewer" "testing" "twelve-factor" "typescript-strict" "ubiquitous-language" "xstate"];
+  expected = ["acceptance-review" "api-design" "aytordev-pen-ops" "bff-design" "bff-entry-points" "characterisation-tests" "ci-debugging" "cli-design" "codebase-design" "debugging" "diagrams" "domain-driven-design" "dotfiles-coder" "double-check" "evaluate-existing-solutions" "event-sourcing" "expectations" "find-gaps" "finding-seams" "folder-structure" "front-end-testing" "functional" "graph-engineering" "improve-codebase-architecture" "mutation-testing" "nix" "observability" "panel-review" "production-parity-skill-builder" "react-testing" "reduce-system-complexity" "refactoring" "secure-oauth-oidc" "skill-creator" "skill-registry" "structure-codebase" "tdd" "teach-me" "technical-writing" "test-design-reviewer" "testing" "twelve-factor" "typescript-strict" "ubiquitous-language" "wtf" "xstate"];
   published = lib.sort builtins.lessThan (expected ++ ["impeccable"]);
   catalog = import (root + "/catalog.nix");
   expectedKinds = {
@@ -50,6 +50,14 @@
     secure-oauth-oidc = "adapted";
     ubiquitous-language = "adapted";
     xstate = "adapted";
+    cli-design = "adapted";
+    debugging = "adapted";
+    diagrams = "adapted";
+    observability = "adapted";
+    production-parity-skill-builder = "adapted";
+    teach-me = "adapted";
+    technical-writing = "adapted";
+    wtf = "adapted";
   };
   # Independent expectations: comparison evidence never becomes a sync baseline.
   expectedOrigins = {
@@ -414,6 +422,86 @@
       };
       originalImportRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
       lastSyncRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+    };
+    cli-design = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/cli-design/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "bc59bd65ca710e0afe388069e552a6f688ae5c0d";
+      };
+      originalImportRevision = "bc59bd65ca710e0afe388069e552a6f688ae5c0d";
+      lastSyncRevision = "bc59bd65ca710e0afe388069e552a6f688ae5c0d";
+    };
+    debugging = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/debugging/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    diagrams = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/diagrams/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    observability = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/observability/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      };
+      originalImportRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      lastSyncRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+    };
+    production-parity-skill-builder = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/production-parity-skill-builder/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    teach-me = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/teach-me/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    technical-writing = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/technical-writing/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "315ab6fc9a74794cd6b12964b70d036b53947681";
+      };
+      originalImportRevision = "315ab6fc9a74794cd6b12964b70d036b53947681";
+      lastSyncRevision = "315ab6fc9a74794cd6b12964b70d036b53947681";
+    };
+    wtf = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/wtf/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
     };
   };
   # Data only: no module arguments, derivations, functions, or store contexts.

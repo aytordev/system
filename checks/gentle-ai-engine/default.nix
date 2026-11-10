@@ -211,6 +211,14 @@
     "secure-oauth-oidc"
     "ubiquitous-language"
     "xstate"
+    "cli-design"
+    "debugging"
+    "diagrams"
+    "observability"
+    "production-parity-skill-builder"
+    "teach-me"
+    "technical-writing"
+    "wtf"
   ];
   names = lib.sort builtins.lessThan (localNames ++ ["impeccable"]);
   upstream = "${pkgs.aytordev.impeccable-skills}/share/impeccable";

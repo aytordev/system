@@ -45,6 +45,14 @@
     "secure-oauth-oidc"
     "ubiquitous-language"
     "xstate"
+    "cli-design"
+    "debugging"
+    "diagrams"
+    "observability"
+    "production-parity-skill-builder"
+    "teach-me"
+    "technical-writing"
+    "wtf"
   ];
   # Historical source requirements stay fixed if publication expands later.
   oldNames = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];

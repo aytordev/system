@@ -1,0 +1,8 @@
+{
+    "name": "wtf",
+    "description": "Trigger: the user explicitly asks to re-explain the immediately previous response because it did not land (wtf, too dense, say that again more clearly). Never invoked implicitly. Re-explains it in plain, precise UK English while preserving its meaning and every technical detail, without starting new work.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's wtf skill (itself adapted from Adam Bulmer's Mintuz wtf skill): re-explains the immediately previous response in plain, precise UK English under ASD-STE100-inspired writing rules, resolving glossary authority before rewording, preserving every technical detail, and starting no new work."
+}

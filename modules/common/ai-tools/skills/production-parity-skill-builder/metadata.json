@@ -1,0 +1,8 @@
+{
+    "name": "production-parity-skill-builder",
+    "description": "Trigger: local, CI, PR, preview, staging, or other non-production environments may drift from production behavior; production-only auth, config, identity-provider groups, feature flags, infrastructure, backing services, or policy differences caused bugs; or a team wants a reusable app-specific skill that detects, documents, tests, and helps fix parity drift. Requires inspecting the repository before asking, a parity map with truth sources and guards, questions only for source-unanswerable decisions, and app-specific fixes only when authorized.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's production-parity-skill-builder skill: production as the reference contract, repository inspection before questions, a per-surface parity map, targeted questions only for source-unanswerable decisions, a project-local generated app-specific skill with a complete section contract, named safeguards added only when authorized, and an explicit divergence register."
+}

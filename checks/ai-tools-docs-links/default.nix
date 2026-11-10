@@ -55,6 +55,14 @@
     (aiTools + "/skills/secure-oauth-oidc")
     (aiTools + "/skills/ubiquitous-language")
     (aiTools + "/skills/xstate")
+    (aiTools + "/skills/cli-design")
+    (aiTools + "/skills/debugging")
+    (aiTools + "/skills/diagrams")
+    (aiTools + "/skills/observability")
+    (aiTools + "/skills/production-parity-skill-builder")
+    (aiTools + "/skills/teach-me")
+    (aiTools + "/skills/technical-writing")
+    (aiTools + "/skills/wtf")
   ];
 
   markdownFiles = dir: let

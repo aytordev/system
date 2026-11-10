@@ -1,6 +1,6 @@
 # Local AI Knowledge
 
-This subtree owns the thirty-nine-entry skill catalog, thirty-eight authored skill packages,
+This subtree owns the forty-seven-entry skill catalog, forty-six authored skill packages,
 private Impeccable preparation recipes, and publication of the unmodified
 packaged upstream skill.
 The official native Gentle AI installer owns Pi's workflow. See
@@ -25,7 +25,7 @@ The official native Gentle AI installer owns Pi's workflow. See
   module imports; retain `aytordev.programs.terminal.tools.ai-skills` for now.
 - `scripts/prepare-pi-skills.sh` is an explicit operator step, not an activation hook.
 - Preserve authored `SKILL.md` identities and matching `metadata.json` in the
-  thirty-eight local folders. Upstream `impeccable` comes from
+  forty-six local folders. Upstream `impeccable` comes from
   `${pkgs.aytordev.impeccable-skills}/share/impeccable`; do not impose local
   metadata, rewrite upstream files, or vendor its payload here.
 - Export the neutral collection at `$XDG_DATA_HOME/aytordev/skills` whenever
@@ -58,7 +58,10 @@ The official native Gentle AI installer owns Pi's workflow. See
 | bff-entry-points | endpoint classification, prepared registrars, authorization boundaries |
 | characterisation-tests | Pins existing behaviour before changing untested code |
 | ci-debugging | CI failure diagnosis: provider evidence, reproduction, environment deltas |
+| cli-design | streams, exit codes, secrets, composability, stability |
 | codebase-design | in-process module and package contracts, plus deep-module consolidation |
+| debugging | preserve evidence, reproduce and localize, one hypothesis at a time |
+| diagrams | evidence and authority, accessibility, validation of diagrams |
 | domain-driven-design | bounded contexts, aggregates, domain services, and placement |
 | dotfiles-coder | Repository architecture and Nix configuration patterns |
 | double-check | Independent second review of a finished artifact |
@@ -75,7 +78,9 @@ The official native Gentle AI installer owns Pi's workflow. See
 | improve-codebase-architecture | ranks where architecture investment pays off |
 | mutation-testing | Mutation gate, survivor triage, and diff-scoped runs |
 | nix | Nix authoring, operational references, and package-diff helper |
+| observability | wide events, SLOs and alerting, telemetry hygiene and placement |
 | panel-review | Multi-lens review with adversarial verification to PR-readiness |
+| production-parity-skill-builder | derives a skill from a production system, parity map first |
 | react-testing | React component behaviour, integrity, and browser-mode rules |
 | reduce-system-complexity | whole-path reduction of branches, states, layers and jobs |
 | refactoring | Behaviour-preserving assessment with a labelled reply |
@@ -84,23 +89,29 @@ The official native Gentle AI installer owns Pi's workflow. See
 | skill-registry | Explicitly invoked local knowledge index |
 | structure-codebase | repository tree and package placement decisions |
 | tdd | RED-GREEN-REFACTOR with a bounded feedback loop and one mutation gate |
+| teach-me | tutoring protocol where the learner does the thinking |
+| technical-writing | reader-first structure, receipts for claims, docs as behaviour |
 | test-design-reviewer | Eight-property test review with file-level evidence |
 | testing | Behaviour-first tests, factories, and mutation-aware planning |
 | twelve-factor | twelve-factor conformance for deployable services |
 | typescript-strict | Strict-mode boundary typing, declaration forms, schemas, and compiler checks |
 | ubiquitous-language | one glossary per bounded context, mechanically enforced |
+| wtf | plain-language explanation of unfamiliar code or terms |
 | xstate | statechart modelling before code, actors, and diagrams |
 
-Thirty-eight rows are authored locally: `dotfiles-coder` and `nix` are `local`;
-the other thirty-six are `adapted`. `impeccable` is the one intact `upstream`
-package. The thirty-three `import-baseline` adaptations record the exact upstream
-revision their bytes came from; the `historical-comparison` ones keep unknown
-import revisions null. Five of them carry nested MIT licences from their own
-authors instead of the repository license: `acceptance-review` and
-`reduce-system-complexity` (Adam Bulmer), `codebase-design` and
-`improve-codebase-architecture` (Matt Pocock), and `api-design` (Addy Osmani).
-Each notice is reproduced verbatim from the upstream file.
+Forty-six rows are authored locally: `dotfiles-coder` and `nix` are `local`;
+the other forty-four are `adapted`. `impeccable` is the one intact `upstream`
+package. The forty-one `citypaul` adaptations record the exact upstream revision
+their bytes came from; the `historical-comparison` ones keep unknown import
+revisions null.
+Licences are per package, not per repository: seven adaptations carry nested MIT
+notices from their own authors — `acceptance-review`, `reduce-system-complexity`,
+`technical-writing`, and `wtf` (Adam Bulmer), `codebase-design` and
+`improve-codebase-architecture` (Matt Pocock), `api-design` (Addy Osmani) — and
+`cli-design` is **CC BY-SA 4.0**, not MIT, because it adapts the Command Line
+Interface Guidelines. Each notice is reproduced verbatim, with its attribution
+and pinned upstream revision, in that package's provenance.
 Local metadata/dependency checks inspect only `skills/`; publication checks
-cover all thirty-nine.
+cover all forty-seven.
 
 `dotfiles-coder/rules/patterns-module.md` remains the canonical module template.

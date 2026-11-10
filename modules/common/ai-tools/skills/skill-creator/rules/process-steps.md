@@ -15,19 +15,21 @@ no such helpers exist here. Metadata and publication checks validate delivery.
 
 ### Choose the scope
 
-Ordinary local maintenance updates one of thirty-eight authored packages:
+Ordinary local maintenance updates one of forty-six authored packages:
  `acceptance-review`, `api-design`, `aytordev-pen-ops`, `bff-design`,
-`bff-entry-points`, `characterisation-tests`, `ci-debugging`,
-`codebase-design`, `domain-driven-design`, `dotfiles-coder`, `double-check`,
-`evaluate-existing-solutions`, `event-sourcing`, `expectations`, `find-gaps`,
-`finding-seams`, `folder-structure`, `front-end-testing`, `functional`,
-`graph-engineering`, `improve-codebase-architecture`, `mutation-testing`,
-`nix`, `panel-review`, `react-testing`, `reduce-system-complexity`,
-`refactoring`, `secure-oauth-oidc`, `skill-creator`, `skill-registry`,
-`structure-codebase`, `tdd`, `test-design-reviewer`, `testing`,
-`twelve-factor`, `typescript-strict`, `ubiquitous-language`, `xstate`)
+`bff-entry-points`, `characterisation-tests`, `ci-debugging`, `cli-design`,
+`codebase-design`, `debugging`, `diagrams`, `domain-driven-design`,
+`dotfiles-coder`, `double-check`, `evaluate-existing-solutions`,
+`event-sourcing`, `expectations`, `find-gaps`, `finding-seams`,
+`folder-structure`, `front-end-testing`, `functional`, `graph-engineering`,
+`improve-codebase-architecture`, `mutation-testing`, `nix`, `observability`,
+`panel-review`, `production-parity-skill-builder`, `react-testing`,
+`reduce-system-complexity`, `refactoring`, `secure-oauth-oidc`,
+`skill-creator`, `skill-registry`, `structure-codebase`, `tdd`, `teach-me`,
+`technical-writing`, `test-design-reviewer`, `testing`, `twelve-factor`,
+`typescript-strict`, `ubiquitous-language`, `wtf`, `xstate`)
 
-The thirty-ninth published skill,
+The forty-seventh published skill,
 `impeccable`, is unmodified upstream content from
 `pkgs.aytordev.impeccable-skills`, not an authored folder. Never add local
 `metadata.json`, rewrite its frontmatter/references, or copy it into `skills/` to
@@ -37,7 +39,9 @@ in `modules/common/ai-tools/catalog.nix`; private preparation recipes live under
 `packages/`. These paths are target-repository context, not bundled resources.
 
 The catalog classifies `dotfiles-coder` and `nix` as local, the other
-thirty-six authored skills as adapted, and Impeccable as upstream. Maintain provenance in
+forty-four authored skills as adapted, and Impeccable as upstream. Licences
+differ per package: seven adaptations carry their own nested MIT notices and
+`cli-design` is CC BY-SA 4.0. Maintain provenance in
 the linked evidence documents. Creator/registry historical comparison revisions
 are not original-import or last-synchronized revisions; those remain unknown.
 Local descriptions and versions stay in frontmatter/metadata, not the catalog.
