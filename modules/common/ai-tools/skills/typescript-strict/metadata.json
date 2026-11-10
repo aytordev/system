@@ -1,0 +1,8 @@
+{
+    "name": "typescript-strict",
+    "description": "Trigger: writing or reviewing TypeScript, defining types or schemas, choosing type versus interface, branding identifiers or amounts, tightening tsconfig. Applies strict-mode boundary typing, single-owner value sets, and validating constructors.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "September 2026",
+    "abstract": "Adapted from citypaul's typescript-strict skill: untrusted boundaries typed as unknown, assertion discipline, type versus interface semantics, one owner per value set, branded primitives, schema-first trust boundaries, and deliberate strict-mode compiler configuration."
+}

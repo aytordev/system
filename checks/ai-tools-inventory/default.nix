@@ -7,16 +7,18 @@
   entries = builtins.readDir (root + "/skills");
   names = builtins.attrNames entries;
   # Only authored folders carry our metadata contract; upstream is packaged.
-  expected = ["aytordev-pen-ops" "dotfiles-coder" "nix" "skill-creator" "skill-registry"];
+  expected = ["aytordev-pen-ops" "dotfiles-coder" "functional" "nix" "skill-creator" "skill-registry" "typescript-strict"];
   published = lib.sort builtins.lessThan (expected ++ ["impeccable"]);
   catalog = import (root + "/catalog.nix");
   expectedKinds = {
     aytordev-pen-ops = "adapted";
     dotfiles-coder = "local";
+    functional = "adapted";
     impeccable = "upstream";
     nix = "local";
     skill-creator = "adapted";
     skill-registry = "adapted";
+    typescript-strict = "adapted";
   };
   # Independent expectations: comparison evidence never becomes a sync baseline.
   expectedOrigins = {
@@ -31,6 +33,16 @@
       lastSyncRevision = null;
     };
     dotfiles-coder = null;
+    functional = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/functional/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      };
+      originalImportRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      lastSyncRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+    };
     nix = null;
     skill-creator = {
       repository = "https://github.com/Gentleman-Programming/gentle-ai";
@@ -51,6 +63,16 @@
       };
       originalImportRevision = null;
       lastSyncRevision = null;
+    };
+    typescript-strict = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/typescript-strict/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      };
+      originalImportRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      lastSyncRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
     };
   };
   # Data only: no module arguments, derivations, functions, or store contexts.
@@ -106,7 +128,7 @@
   rows = lib.filter (line: lib.hasPrefix "| " line && !(lib.hasPrefix "| Name " line)) (lib.splitString "\n" doc);
   documented = map (row: lib.trim (builtins.elemAt (lib.splitString "|" row) 1)) rows;
 in
-  assert lib.assertMsg (builtins.pathExists (root + "/catalog.nix")) "AI skill ownership requires a pure six-entry catalog";
+  assert lib.assertMsg (builtins.pathExists (root + "/catalog.nix")) "AI skill ownership requires a pure eight-entry catalog";
   assert lib.assertMsg (catalogShape catalog) "AI skill catalog ownership, structured origins/tracking, payload location, or pure-data shape drifted";
   # Triangulation: reject plausible ownership/metadata mistakes, not just omissions.
   assert lib.assertMsg (lib.all (value: !(catalogShape value)) [
@@ -122,8 +144,8 @@ in
     (catalog // {nix = catalog.nix // {origin = catalog.skill-creator.origin;};})
     (catalog // {impeccable = catalog.impeccable // {source = catalog.impeccable.source // {payloadPath = "skills/impeccable";};};})
   ]) "Catalog shape must reject invalid ownership fixtures";
-  assert lib.assertMsg (names == expected) "Expected exactly five authored local skills";
-  assert lib.assertMsg (lib.sort builtins.lessThan documented == published) "Expected five local skills plus upstream impeccable in the documented inventory";
+  assert lib.assertMsg (names == expected) "Expected exactly seven authored skill packages";
+  assert lib.assertMsg (lib.sort builtins.lessThan documented == published) "Expected the seven authored skills plus upstream impeccable in the documented inventory";
   assert lib.all (path: !(builtins.pathExists (root + "/${path}"))) ["default.nix" "agents.nix" "commands.nix" "roles.nix" "registry.nix" "base.md"];
     pkgs.runCommand "ai-tools-inventory-check" {} ''
       touch "$out"
