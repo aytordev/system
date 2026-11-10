@@ -147,9 +147,10 @@ update knowledge in the catalog without rewriting the external payload.
 
 Detailed provenance stays in its existing documents, not a second prose ledger.
 Pen's [provenance notice](skills/aytordev-pen-ops/references/provenance.md) records
-its concept-level adaptation and MIT notice. The `functional` and
-`typescript-strict` [provenance notices](skills/functional/references/provenance.md)
-record their import revisions and MIT notice. The [Nix skill](skills/nix/SKILL.md)
+its concept-level adaptation and MIT notice. The [functional
+notice](skills/functional/references/provenance.md) and the [typescript-strict
+notice](skills/typescript-strict/references/provenance.md) record their imported
+revision and MIT notice. The [Nix skill](skills/nix/SKILL.md)
 records independent local implementation with behavior-level inspiration, not
 an imported upstream skill. The creator/registry
 [historical comparison](../../../docs/ai-tools/upstream-sources.md) uses Gentle AI

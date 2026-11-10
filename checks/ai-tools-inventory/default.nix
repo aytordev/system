@@ -144,8 +144,8 @@ in
     (catalog // {nix = catalog.nix // {origin = catalog.skill-creator.origin;};})
     (catalog // {impeccable = catalog.impeccable // {source = catalog.impeccable.source // {payloadPath = "skills/impeccable";};};})
   ]) "Catalog shape must reject invalid ownership fixtures";
-  assert lib.assertMsg (names == expected) "Expected exactly seven authored local skills";
-  assert lib.assertMsg (lib.sort builtins.lessThan documented == published) "Expected seven local skills plus upstream impeccable in the documented inventory";
+  assert lib.assertMsg (names == expected) "Expected exactly seven authored skill packages";
+  assert lib.assertMsg (lib.sort builtins.lessThan documented == published) "Expected the seven authored skills plus upstream impeccable in the documented inventory";
   assert lib.all (path: !(builtins.pathExists (root + "/${path}"))) ["default.nix" "agents.nix" "commands.nix" "roles.nix" "registry.nix" "base.md"];
     pkgs.runCommand "ai-tools-inventory-check" {} ''
       touch "$out"
