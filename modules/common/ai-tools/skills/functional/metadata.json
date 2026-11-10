@@ -1,0 +1,8 @@
+{
+    "name": "functional",
+    "description": "Trigger: writing logic or data transformations, fixing mutation bugs, or any feature that builds, merges, filters, sorts, prices, or reshapes records, lists, carts, orders, or invoices, even when it never mentions immutability. Provides immutable domain data, pure-function boundaries, composition, array-iteration choices, options objects, guard clauses, and Result values.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "September 2026",
+    "abstract": "Adapted from citypaul's functional skill: immutable domain data with readonly typing, pure-function boundaries, functional-light composition, intent-driven array iteration, guard clauses, options objects, and Result values, with worked examples and Effect runtime guidance bundled as references."
+}
