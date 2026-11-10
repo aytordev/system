@@ -155,3 +155,11 @@ Fidelity checks before commit: `api-design`'s nested Addy Osmani notice is byte
 identical to upstream, and `secure-oauth-oidc` retains every upstream guard term.
 The pre-commit `typos` hook caught two spellings in `bff-entry-points`; both were
 rewritten rather than allowlisted.
+
+**L10** — Slice boundary for wave 4 (8 skills). `cecb4132` is 8 823 authored
+lines; `cli-design` alone carries four long references and `observability` nine
+rule files. Two defects were caught by the repository's own gates rather than by
+reading: the `docs-links` check rejected a link to a file the writer had dropped
+and five `[label](url)` template placeholders, both rewritten instead of excluded
+from the check. `cli-design` is the collection's first non-MIT package and now
+carries its CC BY-SA 4.0 attribution and pinned upstream revision.
