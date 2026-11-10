@@ -1,0 +1,8 @@
+{
+    "name": "folder-structure",
+    "description": "Trigger: only the exact legacy name folder-structure, an explicit $folder-structure invocation, or an old reference to it. Deprecated compatibility alias: redirect the structure request to the structure-codebase skill and never improvise the retired screaming-architecture convention.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's retired folder-structure alias: a portable deprecation shim that redirects legacy invocations to the structure-codebase skill, refuses to improvise structure guidance, and bars revival of the retired protected-domain/use-cases convention."
+}

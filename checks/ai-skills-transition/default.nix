@@ -29,6 +29,14 @@
     "front-end-testing"
     "panel-review"
     "react-testing"
+    "codebase-design"
+    "finding-seams"
+    "folder-structure"
+    "graph-engineering"
+    "improve-codebase-architecture"
+    "reduce-system-complexity"
+    "structure-codebase"
+    "twelve-factor"
   ];
   # Historical source requirements stay fixed if publication expands later.
   oldNames = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];

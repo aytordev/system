@@ -119,6 +119,14 @@
       "front-end-testing"
       "panel-review"
       "react-testing"
+      "codebase-design"
+      "finding-seams"
+      "folder-structure"
+      "graph-engineering"
+      "improve-codebase-architecture"
+      "reduce-system-complexity"
+      "structure-codebase"
+      "twelve-factor"
     ];
     pi = [
       "aytordev-pen-ops"
@@ -143,6 +151,14 @@
       "front-end-testing"
       "panel-review"
       "react-testing"
+      "codebase-design"
+      "finding-seams"
+      "folder-structure"
+      "graph-engineering"
+      "improve-codebase-architecture"
+      "reduce-system-complexity"
+      "structure-codebase"
+      "twelve-factor"
     ];
   };
 

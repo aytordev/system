@@ -7,7 +7,7 @@
   entries = builtins.readDir (root + "/skills");
   names = builtins.attrNames entries;
   # Only authored folders carry our metadata contract; upstream is packaged.
-  expected = ["acceptance-review" "aytordev-pen-ops" "characterisation-tests" "ci-debugging" "dotfiles-coder" "double-check" "evaluate-existing-solutions" "expectations" "find-gaps" "front-end-testing" "functional" "mutation-testing" "nix" "panel-review" "react-testing" "refactoring" "skill-creator" "skill-registry" "tdd" "test-design-reviewer" "testing" "typescript-strict"];
+  expected = ["acceptance-review" "aytordev-pen-ops" "characterisation-tests" "ci-debugging" "codebase-design" "dotfiles-coder" "double-check" "evaluate-existing-solutions" "expectations" "find-gaps" "finding-seams" "folder-structure" "front-end-testing" "functional" "graph-engineering" "improve-codebase-architecture" "mutation-testing" "nix" "panel-review" "react-testing" "reduce-system-complexity" "refactoring" "skill-creator" "skill-registry" "structure-codebase" "tdd" "test-design-reviewer" "testing" "twelve-factor" "typescript-strict"];
   published = lib.sort builtins.lessThan (expected ++ ["impeccable"]);
   catalog = import (root + "/catalog.nix");
   expectedKinds = {
@@ -34,6 +34,14 @@
     front-end-testing = "adapted";
     panel-review = "adapted";
     react-testing = "adapted";
+    codebase-design = "adapted";
+    finding-seams = "adapted";
+    folder-structure = "adapted";
+    graph-engineering = "adapted";
+    improve-codebase-architecture = "adapted";
+    reduce-system-complexity = "adapted";
+    structure-codebase = "adapted";
+    twelve-factor = "adapted";
   };
   # Independent expectations: comparison evidence never becomes a sync baseline.
   expectedOrigins = {
@@ -238,6 +246,86 @@
       };
       originalImportRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
       lastSyncRevision = "08c3dae2b3dac766ed4dc839df163bcb5dbe3d80";
+    };
+    codebase-design = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/codebase-design/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      };
+      originalImportRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      lastSyncRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+    };
+    finding-seams = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/finding-seams/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      };
+      originalImportRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      lastSyncRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+    };
+    folder-structure = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/folder-structure/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "5f2d0602765f522ddc14b405885174d11320e4fb";
+      };
+      originalImportRevision = "5f2d0602765f522ddc14b405885174d11320e4fb";
+      lastSyncRevision = "5f2d0602765f522ddc14b405885174d11320e4fb";
+    };
+    graph-engineering = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/graph-engineering/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "bcfb33203eea2653f6e6aecac41f8583e38089fb";
+      };
+      originalImportRevision = "bcfb33203eea2653f6e6aecac41f8583e38089fb";
+      lastSyncRevision = "bcfb33203eea2653f6e6aecac41f8583e38089fb";
+    };
+    improve-codebase-architecture = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/improve-codebase-architecture/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    reduce-system-complexity = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/reduce-system-complexity/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      };
+      originalImportRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      lastSyncRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+    };
+    structure-codebase = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/structure-codebase/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      };
+      originalImportRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      lastSyncRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+    };
+    twelve-factor = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/twelve-factor/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "bc59bd65ca710e0afe388069e552a6f688ae5c0d";
+      };
+      originalImportRevision = "bc59bd65ca710e0afe388069e552a6f688ae5c0d";
+      lastSyncRevision = "bc59bd65ca710e0afe388069e552a6f688ae5c0d";
     };
   };
   # Data only: no module arguments, derivations, functions, or store contexts.

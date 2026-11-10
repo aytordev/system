@@ -1,6 +1,6 @@
 # Local AI Knowledge
 
-This subtree owns the twenty-three-entry skill catalog, twenty-two authored skill packages,
+This subtree owns the thirty-one-entry skill catalog, thirty authored skill packages,
 private Impeccable preparation recipes, and publication of the unmodified
 packaged upstream skill.
 The official native Gentle AI installer owns Pi's workflow. See
@@ -25,7 +25,7 @@ The official native Gentle AI installer owns Pi's workflow. See
   module imports; retain `aytordev.programs.terminal.tools.ai-skills` for now.
 - `scripts/prepare-pi-skills.sh` is an explicit operator step, not an activation hook.
 - Preserve authored `SKILL.md` identities and matching `metadata.json` in the
-  twenty-two local folders. Upstream `impeccable` comes from
+  thirty local folders. Upstream `impeccable` comes from
   `${pkgs.aytordev.impeccable-skills}/share/impeccable`; do not impose local
   metadata, rewrite upstream files, or vendor its payload here.
 - Export the neutral collection at `$XDG_DATA_HOME/aytordev/skills` whenever
@@ -55,33 +55,44 @@ The official native Gentle AI installer owns Pi's workflow. See
 | aytordev-pen-ops | Observed-capability Pen session operations: inspection, authorized bounded edits, verification |
 | characterisation-tests | Pins existing behaviour before changing untested code |
 | ci-debugging | CI failure diagnosis: provider evidence, reproduction, environment deltas |
+| codebase-design | in-process module and package contracts, plus deep-module consolidation |
 | dotfiles-coder | Repository architecture and Nix configuration patterns |
 | double-check | Independent second review of a finished artifact |
 | evaluate-existing-solutions | Evidence-based build-versus-adopt evaluation |
 | expectations | Routing a learning to its durable owner |
 | find-gaps | Tightens a written artifact one confirmed answer at a time |
+| finding-seams | introduces seams so untestable dependencies become controllable |
+| folder-structure | deprecation alias that delegates the retired convention and stops when alone |
 | front-end-testing | Browser-observable claims, harness choice, and evidence boundaries |
 | functional | Immutable domain data, pure-function boundaries, composition, and error values |
+| graph-engineering | graph-derived parallel skill application and impact analysis |
 | impeccable | Packaged upstream design skill with complete references, scripts, and pinned sibling engine |
+| improve-codebase-architecture | ranks where architecture investment pays off |
 | mutation-testing | Mutation gate, survivor triage, and diff-scoped runs |
 | nix | Nix authoring, operational references, and package-diff helper |
 | panel-review | Multi-lens review with adversarial verification to PR-readiness |
 | react-testing | React component behaviour, integrity, and browser-mode rules |
+| reduce-system-complexity | whole-path reduction of branches, states, layers and jobs |
 | refactoring | Behaviour-preserving assessment with a labelled reply |
 | skill-creator | Local skill authoring and metadata contract |
 | skill-registry | Explicitly invoked local knowledge index |
+| structure-codebase | repository tree and package placement decisions |
 | tdd | RED-GREEN-REFACTOR with a bounded feedback loop and one mutation gate |
 | test-design-reviewer | Eight-property test review with file-level evidence |
 | testing | Behaviour-first tests, factories, and mutation-aware planning |
+| twelve-factor | twelve-factor conformance for deployable services |
 | typescript-strict | Strict-mode boundary typing, declaration forms, schemas, and compiler checks |
 
-Twenty-two rows are authored locally: `dotfiles-coder` and `nix` are `local`;
-the other twenty are `adapted`. `impeccable` is the one intact `upstream` package.
-The seventeen `import-baseline` adaptations record the exact upstream revision
-their bytes came from; the `historical-comparison` ones keep unknown import
-revisions null. One of them, `acceptance-review`, carries a nested MIT
-`LICENSE` from its own author instead of the repository license.
+Thirty rows are authored locally: `dotfiles-coder` and `nix` are `local`;
+the other twenty-eight are `adapted`. `impeccable` is the one intact `upstream`
+package. The twenty-five `import-baseline` adaptations record the exact upstream
+revision their bytes came from; the `historical-comparison` ones keep unknown
+import revisions null. Four of them carry nested MIT licences from their own
+authors instead of the repository license: `acceptance-review` and
+`reduce-system-complexity` (Adam Bulmer), `codebase-design` and
+`improve-codebase-architecture` (Matt Pocock). Each notice is copied verbatim
+into that package's provenance.
 Local metadata/dependency checks inspect only `skills/`; publication checks
-cover all twenty-three.
+cover all thirty-one.
 
 `dotfiles-coder/rules/patterns-module.md` remains the canonical module template.

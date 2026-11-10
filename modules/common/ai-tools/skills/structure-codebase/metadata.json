@@ -1,0 +1,8 @@
+{
+    "name": "structure-codebase",
+    "description": "Trigger: creating or reviewing a repository tree, deciding where files or packages belong, reducing flat folders, organizing by feature, route, use case, bounded context, workflow, or endpoint, structuring frontend state/data/UI ownership, making inside/outside boundaries visible, planning folder migrations, or enforcing package and import direction. Selects the lightest structure that makes the project's real seams easy to see and mechanically difficult to violate; one module's contract and responsibility design is a separate concern.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's structure-codebase skill: smallest-honest-shape selection by project signal, earned hexagons with mechanically true inside/outside boundaries, endpoint-first BFF and feature-first frontend grammars, proportionate enforcement, and staged migrations that separate semantic work from mechanical movement."
+}

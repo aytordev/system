@@ -39,6 +39,14 @@
     (aiTools + "/skills/front-end-testing")
     (aiTools + "/skills/panel-review")
     (aiTools + "/skills/react-testing")
+    (aiTools + "/skills/codebase-design")
+    (aiTools + "/skills/finding-seams")
+    (aiTools + "/skills/folder-structure")
+    (aiTools + "/skills/graph-engineering")
+    (aiTools + "/skills/improve-codebase-architecture")
+    (aiTools + "/skills/reduce-system-complexity")
+    (aiTools + "/skills/structure-codebase")
+    (aiTools + "/skills/twelve-factor")
   ];
 
   markdownFiles = dir: let

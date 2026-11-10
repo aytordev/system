@@ -195,6 +195,14 @@
     "front-end-testing"
     "panel-review"
     "react-testing"
+    "codebase-design"
+    "finding-seams"
+    "folder-structure"
+    "graph-engineering"
+    "improve-codebase-architecture"
+    "reduce-system-complexity"
+    "structure-codebase"
+    "twelve-factor"
   ];
   names = lib.sort builtins.lessThan (localNames ++ ["impeccable"]);
   upstream = "${pkgs.aytordev.impeccable-skills}/share/impeccable";
