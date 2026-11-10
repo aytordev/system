@@ -1,0 +1,8 @@
+{
+    "name": "ci-debugging",
+    "description": "Trigger: a CI pipeline, workflow, or build job fails, tests pass locally but fail in CI, or a pipeline is red, flaky, or timing out. Diagnoses with evidence-first investigation, faithful local reproduction, and CI-versus-local environment deltas.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's ci-debugging skill: provider evidence before hypotheses, last-green-run comparison, exact local reproduction, environment-delta analysis, fix proof, and the rules that distinguish proven flakiness from an unexplained failure."
+}

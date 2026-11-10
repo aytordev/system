@@ -7,10 +7,13 @@
 }: let
   names = [
     "aytordev-pen-ops"
+    "ci-debugging"
     "dotfiles-coder"
+    "expectations"
     "functional"
     "impeccable"
     "nix"
+    "refactoring"
     "skill-creator"
     "skill-registry"
     "typescript-strict"
@@ -56,7 +59,7 @@
       ai-skills.enable = true;
     };
   };
-  # Separate fixture for the later nine-skill per-file publication. Do not
+  # Separate fixture for the later twelve-skill per-file publication. Do not
   # change the historical four-skill whole-root migration above.
   retiredNames = ["aytordev-design-system" "aytordev-interface-design"];
   retiredSkills = pkgs.runCommand "retired-design-skills-fixture" {} ''
