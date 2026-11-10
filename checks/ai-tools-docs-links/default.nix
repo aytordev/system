@@ -29,6 +29,9 @@
     (aiTools + "/skills/refactoring")
     (aiTools + "/skills/tdd")
     (aiTools + "/skills/testing")
+    (aiTools + "/skills/characterisation-tests")
+    (aiTools + "/skills/mutation-testing")
+    (aiTools + "/skills/test-design-reviewer")
   ];
 
   markdownFiles = dir: let

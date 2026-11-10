@@ -15,10 +15,11 @@ no such helpers exist here. Metadata and publication checks validate delivery.
 
 ### Choose the scope
 
-Ordinary local maintenance updates one of twelve authored packages:
-`aytordev-pen-ops`, `ci-debugging`, `dotfiles-coder`, `expectations`,
-`functional`, `nix`, `refactoring`, `skill-creator`, `skill-registry`, `tdd`,
-`testing`, or `typescript-strict`. The thirteenth published skill,
+Ordinary local maintenance updates one of fifteen authored packages:
+`aytordev-pen-ops`, `characterisation-tests`, `ci-debugging`, `dotfiles-coder`,
+`expectations`, `functional`, `mutation-testing`, `nix`, `refactoring`,
+`skill-creator`, `skill-registry`, `tdd`, `test-design-reviewer`, `testing`, or
+`typescript-strict`. The sixteenth published skill,
 `impeccable`, is unmodified upstream content from
 `pkgs.aytordev.impeccable-skills`, not an authored folder. Never add local
 `metadata.json`, rewrite its frontmatter/references, or copy it into `skills/` to
@@ -27,7 +28,7 @@ in `modules/common/ai-tools/catalog.nix`; private preparation recipes live under
 `modules/common/ai-tools/upstream/impeccable/`, with direct-import adapters in
 `packages/`. These paths are target-repository context, not bundled resources.
 
-The catalog classifies `dotfiles-coder` and `nix` as local, the other ten
+The catalog classifies `dotfiles-coder` and `nix` as local, the other thirteen
 authored skills as adapted, and Impeccable as upstream. Maintain provenance in
 the linked evidence documents. Creator/registry historical comparison revisions
 are not original-import or last-synchronized revisions; those remain unknown.

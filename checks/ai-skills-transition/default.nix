@@ -7,16 +7,19 @@
 }: let
   names = [
     "aytordev-pen-ops"
+    "characterisation-tests"
     "ci-debugging"
     "dotfiles-coder"
     "expectations"
     "functional"
     "impeccable"
+    "mutation-testing"
     "nix"
     "refactoring"
     "skill-creator"
     "skill-registry"
     "tdd"
+    "test-design-reviewer"
     "testing"
     "typescript-strict"
   ];

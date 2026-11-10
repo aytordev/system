@@ -215,6 +215,57 @@
     };
     provenance = ./skills/testing/references/provenance.md;
   };
+  characterisation-tests = {
+    kind = "adapted";
+    source.path = ./skills/characterisation-tests;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/characterisation-tests/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      };
+      originalImportRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      lastSyncRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+    };
+    provenance = ./skills/characterisation-tests/references/provenance.md;
+  };
+  mutation-testing = {
+    kind = "adapted";
+    source.path = ./skills/mutation-testing;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/mutation-testing/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      };
+      originalImportRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      lastSyncRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+    };
+    provenance = ./skills/mutation-testing/references/provenance.md;
+  };
+  test-design-reviewer = {
+    kind = "adapted";
+    source.path = ./skills/test-design-reviewer;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/test-design-reviewer/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    provenance = ./skills/test-design-reviewer/references/provenance.md;
+  };
   typescript-strict = {
     kind = "adapted";
     source.path = ./skills/typescript-strict;

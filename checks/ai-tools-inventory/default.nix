@@ -7,21 +7,24 @@
   entries = builtins.readDir (root + "/skills");
   names = builtins.attrNames entries;
   # Only authored folders carry our metadata contract; upstream is packaged.
-  expected = ["aytordev-pen-ops" "ci-debugging" "dotfiles-coder" "expectations" "functional" "nix" "refactoring" "skill-creator" "skill-registry" "tdd" "testing" "typescript-strict"];
+  expected = ["aytordev-pen-ops" "characterisation-tests" "ci-debugging" "dotfiles-coder" "expectations" "functional" "mutation-testing" "nix" "refactoring" "skill-creator" "skill-registry" "tdd" "test-design-reviewer" "testing" "typescript-strict"];
   published = lib.sort builtins.lessThan (expected ++ ["impeccable"]);
   catalog = import (root + "/catalog.nix");
   expectedKinds = {
     aytordev-pen-ops = "adapted";
+    characterisation-tests = "adapted";
     ci-debugging = "adapted";
     dotfiles-coder = "local";
     expectations = "adapted";
     functional = "adapted";
     impeccable = "upstream";
+    mutation-testing = "adapted";
     nix = "local";
     refactoring = "adapted";
     skill-creator = "adapted";
     skill-registry = "adapted";
     tdd = "adapted";
+    test-design-reviewer = "adapted";
     testing = "adapted";
     typescript-strict = "adapted";
   };
@@ -46,6 +49,16 @@
       };
       originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
       lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+    };
+    characterisation-tests = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/characterisation-tests/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      };
+      originalImportRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      lastSyncRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
     };
     dotfiles-coder = null;
     expectations = {
@@ -77,6 +90,16 @@
       };
       originalImportRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
       lastSyncRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+    };
+    mutation-testing = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/mutation-testing/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      };
+      originalImportRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      lastSyncRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
     };
     nix = null;
     skill-creator = {
@@ -118,6 +141,16 @@
       };
       originalImportRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
       lastSyncRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+    };
+    test-design-reviewer = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/test-design-reviewer/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      };
+      originalImportRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
+      lastSyncRevision = "8f1ebbc67094ecfe47f49a474eeaf87becd8114f";
     };
     typescript-strict = {
       repository = "https://github.com/citypaul/.dotfiles";
@@ -183,7 +216,7 @@
   rows = lib.filter (line: lib.hasPrefix "| " line && !(lib.hasPrefix "| Name " line)) (lib.splitString "\n" doc);
   documented = map (row: lib.trim (builtins.elemAt (lib.splitString "|" row) 1)) rows;
 in
-  assert lib.assertMsg (builtins.pathExists (root + "/catalog.nix")) "AI skill ownership requires a pure thirteen-entry catalog";
+  assert lib.assertMsg (builtins.pathExists (root + "/catalog.nix")) "AI skill ownership requires a pure sixteen-entry catalog";
   assert lib.assertMsg (catalogShape catalog) "AI skill catalog ownership, structured origins/tracking, payload location, or pure-data shape drifted";
   # Triangulation: reject plausible ownership/metadata mistakes, not just omissions.
   assert lib.assertMsg (lib.all (value: !(catalogShape value)) [
@@ -199,8 +232,8 @@ in
     (catalog // {nix = catalog.nix // {origin = catalog.skill-creator.origin;};})
     (catalog // {impeccable = catalog.impeccable // {source = catalog.impeccable.source // {payloadPath = "skills/impeccable";};};})
   ]) "Catalog shape must reject invalid ownership fixtures";
-  assert lib.assertMsg (names == expected) "Expected exactly twelve authored skill packages";
-  assert lib.assertMsg (lib.sort builtins.lessThan documented == published) "Expected the twelve authored skills plus upstream impeccable in the documented inventory";
+  assert lib.assertMsg (names == expected) "Expected exactly fifteen authored skill packages";
+  assert lib.assertMsg (lib.sort builtins.lessThan documented == published) "Expected the fifteen authored skills plus upstream impeccable in the documented inventory";
   assert lib.all (path: !(builtins.pathExists (root + "/${path}"))) ["default.nix" "agents.nix" "commands.nix" "roles.nix" "registry.nix" "base.md"];
     pkgs.runCommand "ai-tools-inventory-check" {} ''
       touch "$out"

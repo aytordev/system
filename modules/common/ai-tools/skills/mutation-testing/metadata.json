@@ -1,0 +1,8 @@
+{
+    "name": "mutation-testing",
+    "description": "Trigger: verifying whether tests actually catch bugs, running or setting up mutation testing with Stryker, or triaging surviving mutants at PR readiness. Scopes runs to the branch diff, classifies every survivor, and strengthens tests only where the evidence earns it.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's mutation-testing skill: one gate per phase, harness-first Stryker setup with an honest run budget, diff-scoped execution against the review base, and mandatory survivor classification including the equivalence question."
+}
