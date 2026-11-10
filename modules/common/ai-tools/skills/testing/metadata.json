@@ -1,0 +1,8 @@
+{
+    "name": "testing",
+    "description": "Trigger: writing tests, creating test factories, structuring test files, or deciding what to test for behaviour. Tests through the subject's public interface, reuses production schemas in fixtures, and names the evidence layer each claim actually proves.",
+    "version": "1.0.0",
+    "organization": "aytordev",
+    "date": "November 2026",
+    "abstract": "Adapted from citypaul's testing skill: behaviour-over-implementation testing at the layer that owns the claim, factory fixtures built from production schemas, mutation-aware test planning, coverage-theatre detection, and affected-scope execution."
+}

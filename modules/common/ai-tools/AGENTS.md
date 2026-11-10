@@ -1,6 +1,6 @@
 # Local AI Knowledge
 
-This subtree owns the eleven-entry skill catalog, ten authored skill packages,
+This subtree owns the thirteen-entry skill catalog, twelve authored skill packages,
 private Impeccable preparation recipes, and publication of the unmodified
 packaged upstream skill.
 The official native Gentle AI installer owns Pi's workflow. See
@@ -25,7 +25,7 @@ The official native Gentle AI installer owns Pi's workflow. See
   module imports; retain `aytordev.programs.terminal.tools.ai-skills` for now.
 - `scripts/prepare-pi-skills.sh` is an explicit operator step, not an activation hook.
 - Preserve authored `SKILL.md` identities and matching `metadata.json` in the
-  ten local folders. Upstream `impeccable` comes from
+  twelve local folders. Upstream `impeccable` comes from
   `${pkgs.aytordev.impeccable-skills}/share/impeccable`; do not impose local
   metadata, rewrite upstream files, or vendor its payload here.
 - Export the neutral collection at `$XDG_DATA_HOME/aytordev/skills` whenever
@@ -61,16 +61,18 @@ The official native Gentle AI installer owns Pi's workflow. See
 | refactoring | Behaviour-preserving assessment with a labelled reply |
 | skill-creator | Local skill authoring and metadata contract |
 | skill-registry | Explicitly invoked local knowledge index |
+| tdd | RED-GREEN-REFACTOR with a bounded feedback loop and one mutation gate |
+| testing | Behaviour-first tests, factories, and mutation-aware planning |
 | typescript-strict | Strict-mode boundary typing, declaration forms, schemas, and compiler checks |
 
-Ten rows are authored locally: `dotfiles-coder` and `nix` are `local`;
+Twelve rows are authored locally: `dotfiles-coder` and `nix` are `local`;
 `aytordev-pen-ops`, `ci-debugging`, `expectations`, `functional`, `refactoring`,
-`skill-creator`, `skill-registry`, and `typescript-strict` are `adapted`.
-`impeccable` is the one intact `upstream` package. The five `import-baseline`
-adaptations record the exact upstream revision their bytes came from; the
-`historical-comparison` ones below keep unknown import revisions null.
+`skill-creator`, `skill-registry`, `tdd`, `testing`, and `typescript-strict`
+are `adapted`. `impeccable` is the one intact `upstream` package. The seven
+`import-baseline` adaptations record the exact upstream revision their bytes came
+from; the `historical-comparison` ones below keep unknown import revisions null.
 Local metadata/dependency checks inspect only `skills/`; publication checks
-cover all eleven. Native Pi and the local registry discover upstream through
+cover all thirteen. Native Pi and the local registry discover upstream through
 `SKILL.md` without requiring `metadata.json`.
 
 `dotfiles-coder/rules/patterns-module.md` remains the canonical module template.

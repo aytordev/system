@@ -106,6 +106,10 @@
       "nix"
       "skill-creator"
       "skill-registry"
+      "tdd"
+      "testing"
+      "tdd"
+      "testing"
       "typescript-strict"
     ];
     pi = [

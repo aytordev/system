@@ -47,7 +47,9 @@ is not a skill and is not copied). Upstream root: `claude/.claude/skills/`.
 | Batch | Theme | Skills | Branch |
 | --- | --- | --- | --- |
 | B1 | Engineering hygiene | `expectations`, `ci-debugging`, `refactoring` | `feat/adopt-b1-engineering-hygiene` |
-| B2 | Testing and verification | `tdd`, `testing`, `test-design-reviewer`, `characterisation-tests`, `mutation-testing`, `front-end-testing`, `react-testing`, `double-check` | `feat/adopt-b2-testing` |
+| B2a | Testing core | `tdd`, `testing` | `feat/adopt-b2-testing-core` |
+| B2b | Test evidence | `test-design-reviewer`, `characterisation-tests`, `mutation-testing` | `feat/adopt-b2-test-evidence` |
+| B2c | Frontend verification | `front-end-testing`, `react-testing`, `double-check` | `feat/adopt-b2-frontend-testing` |
 | B3 | Review and evaluation | `acceptance-review`, `panel-review`, `evaluate-existing-solutions`, `find-gaps` | `feat/adopt-b3-review` |
 | B4 | Architecture and structure | `codebase-design`, `structure-codebase`, `folder-structure`, `finding-seams`, `improve-codebase-architecture`, `reduce-system-complexity`, `graph-engineering`, `twelve-factor` | `feat/adopt-b4-architecture` |
 | B5 | Domain, API and events | `api-design`, `bff-design`, `bff-entry-points`, `domain-driven-design`, `ubiquitous-language`, `event-sourcing`, `xstate`, `secure-oauth-oidc` | `feat/adopt-b5-domain-api` |
@@ -65,7 +67,7 @@ already-adapted rule instead of restating it from scratch.
 | --- | --- | --- | --- |
 | B1.1 | S1-S4 | inline, package authoring | `feat(skills): adopt expectations, ci-debugging, and refactoring` |
 | B1.2 | S5-S7 | inline, inventory wiring + focused checks | same commit |
-| B2.x…B8.x | S1-S7 | as each batch opens | one stacked PR each |
+| B2a.x…B8.x | S1-S7 | as each batch opens | one stacked PR each |
 
 ## Verification contract
 
@@ -106,3 +108,16 @@ catalog, five checks, and six documents. A skill package is the smallest
 contract-valid unit, so the batch is one reviewable slice rather than three
 partial ones; the wiring cannot be split without leaving a tree the repository's
 own checks reject.
+
+**L4** — B2 split before authoring. The eight testing skills total 2 316 upstream
+lines and 20 files, which is not one reviewable slice. It becomes three PRs:
+`tdd` + `testing` (833 lines, the two anchors every other testing skill cites),
+then the evidence trio, then the frontend trio. Batch numbering in the plan table
+follows that split.
+
+**L5** — Slice boundary for B2a. `2e29c266` is 844 authored lines: two complete
+packages (13 files, including their MIT notices) plus the inventory wiring. Total
+since `origin/main` is 4 097 lines across nine commits, of which 3 253 belong to
+the two stacked parent branches. Each batch keeps the same shape: one content
+commit per batch with its wiring, and a small `docs(odd)` commit recording the
+boundary.
