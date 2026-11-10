@@ -28,12 +28,21 @@ type CreateReportOptions = {
   readonly format: 'pdf' | 'csv';
   readonly locale: string;
   readonly timeZone: string;
+  /** Defaults to false. */
   readonly includeCharts?: boolean;
+  /** Defaults to true. */
   readonly sendEmail?: boolean;
 };
 
 function createReport(options: CreateReportOptions): Report {
-  const { reportId, format, locale, timeZone, includeCharts = false, sendEmail = true } = options;
+  const {
+    reportId,
+    format,
+    locale,
+    timeZone,
+    includeCharts = false,
+    sendEmail = true,
+  } = options;
   // ...
 }
 
@@ -43,6 +52,7 @@ createReport({
   locale: 'en-GB',
   timeZone: 'Europe/London',
   includeCharts: true,
+  // sendEmail omitted: the documented default applies
 });
 ```
 

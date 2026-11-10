@@ -75,8 +75,9 @@ it. Return an immutable snapshot, not the accumulator.
 
 - Tests that assert purity should freeze their inputs (`Object.freeze`) so a
   write-through fails loudly instead of silently passing.
-- `structuredClone` or a spread is a shallow copy; nested values are still
-  shared.
+- A spread (`{ ...value }`, `[...items]`) is a shallow copy: nested values are
+  still shared. `structuredClone` copies nested data, but it drops functions,
+  class prototypes, and symbols, so it is not a general-purpose deep copy.
 - Sorting in place (`items.sort()`) mutates the caller's array; copy first.
 - The immutable alternative to each common mutation is in
   [the immutability catalog](../references/immutability-catalog.md).
