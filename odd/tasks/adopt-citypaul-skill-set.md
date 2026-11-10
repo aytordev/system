@@ -146,3 +146,12 @@ Two of the eight needed their own licence notice: `codebase-design` and
 `improve-codebase-architecture` are Matt Pocock's (c) 2026, and
 `reduce-system-complexity` is Adam Bulmer's (c) 2025 — verified against the
 upstream files, not inferred from the repository licence.
+
+**L9** — Slice boundary for wave 3 (8 skills). `ecc748ca` is 9 387 authored
+lines: `secure-oauth-oidc` carries a five-file RFC 9700 control catalog and
+`event-sourcing` eight references, which is where the volume comes from; entry
+points stay 101-145 lines. Total since `origin/main` is 25 811 lines.
+Fidelity checks before commit: `api-design`'s nested Addy Osmani notice is byte
+identical to upstream, and `secure-oauth-oidc` retains every upstream guard term.
+The pre-commit `typos` hook caught two spellings in `bff-entry-points`; both were
+rewritten rather than allowlisted.
