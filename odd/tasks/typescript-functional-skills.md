@@ -100,3 +100,19 @@ publication check printed `PASS isolated folder resources: functional` and
 comparison covered the neutral collection, Pi projection, custom HOME/XDG, and a
 dereferenced isolated copy for both new folders. `nix fmt -- --ci` reported 0
 changed files.
+
+**L3** — Slice boundaries recorded for delivery review. A complete skill package
+is the smallest valid reviewable unit here: a partial package is not a valid
+skill under `S2`, so the fragments cannot be staged independently. Measured
+authored lines since `origin/main` (lock files excluded):
+
+| Slice | Commit | Authored lines | Content |
+| --- | --- | --- | --- |
+| Content | `d2ec10c5` | 773 | `typescript-strict` package plus this task document |
+| Content | `8bc85129` | 1154 | `functional` package (13 files, three bundled references) |
+| Wiring | pending | ~120 | Catalog, check expectations, inventory documentation |
+
+The two content slices exceed the ~400-line guidance because each is one
+coherent, contract-valid package of Markdown rules and references; splitting a
+package by file would produce a tree the skill contract rejects. Review can be
+scoped per folder, and the wiring slice stays small and separate.

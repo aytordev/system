@@ -99,16 +99,20 @@
     collection = [
       "aytordev-pen-ops"
       "dotfiles-coder"
+      "functional"
       "nix"
       "skill-creator"
       "skill-registry"
+      "typescript-strict"
     ];
     pi = [
       "aytordev-pen-ops"
       "dotfiles-coder"
+      "functional"
       "nix"
       "skill-creator"
       "skill-registry"
+      "typescript-strict"
     ];
   };
 

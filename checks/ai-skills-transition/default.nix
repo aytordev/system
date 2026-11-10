@@ -8,10 +8,12 @@
   names = [
     "aytordev-pen-ops"
     "dotfiles-coder"
+    "functional"
     "impeccable"
     "nix"
     "skill-creator"
     "skill-registry"
+    "typescript-strict"
   ];
   # Historical source requirements stay fixed if publication expands later.
   oldNames = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
@@ -54,7 +56,7 @@
       ai-skills.enable = true;
     };
   };
-  # Separate fixture for the later seven-skill per-file publication. Do not
+  # Separate fixture for the later nine-skill per-file publication. Do not
   # change the historical four-skill whole-root migration above.
   retiredNames = ["aytordev-design-system" "aytordev-interface-design"];
   retiredSkills = pkgs.runCommand "retired-design-skills-fixture" {} ''

@@ -15,9 +15,10 @@ no such helpers exist here. Metadata and publication checks validate delivery.
 
 ### Choose the scope
 
-Ordinary local maintenance updates one of five authored packages:
-`aytordev-pen-ops`, `dotfiles-coder`, `nix`, `skill-creator`, or `skill-registry`.
-The sixth published skill, `impeccable`, is unmodified upstream content from
+Ordinary local maintenance updates one of seven authored packages:
+`aytordev-pen-ops`, `dotfiles-coder`, `functional`, `nix`, `skill-creator`,
+`skill-registry`, or `typescript-strict`. The eighth published skill,
+`impeccable`, is unmodified upstream content from
 `pkgs.aytordev.impeccable-skills`, not an authored folder. Never add local
 `metadata.json`, rewrite its frontmatter/references, or copy it into `skills/` to
 satisfy this authoring contract. Its skill and engine pins/hashes belong together
@@ -25,7 +26,7 @@ in `modules/common/ai-tools/catalog.nix`; private preparation recipes live under
 `modules/common/ai-tools/upstream/impeccable/`, with direct-import adapters in
 `packages/`. These paths are target-repository context, not bundled resources.
 
-The catalog classifies `dotfiles-coder` and `nix` as local, the other three
+The catalog classifies `dotfiles-coder` and `nix` as local, the other five
 authored skills as adapted, and Impeccable as upstream. Maintain provenance in
 the linked evidence documents. Creator/registry historical comparison revisions
 are not original-import or last-synchronized revisions; those remain unknown.

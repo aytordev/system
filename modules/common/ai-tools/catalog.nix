@@ -27,6 +27,26 @@
     origin = null;
     provenance = ./skills/dotfiles-coder/SKILL.md;
   };
+  # Adaptation whose imported revision is known exactly, unlike the historical
+  # comparison baselines below: originalImportRevision and lastSyncRevision are
+  # the bytes this package was authored from, not an inferred synchronization.
+  functional = {
+    kind = "adapted";
+    source.path = ./skills/functional;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/functional/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      };
+      originalImportRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+      lastSyncRevision = "fd017e2008465b8ba4d95a0312c112150c836116";
+    };
+    provenance = ./skills/functional/references/provenance.md;
+  };
   impeccable = {
     kind = "upstream";
     source = {
@@ -109,5 +129,22 @@
       lastSyncRevision = null;
     };
     provenance = ../../../docs/ai-tools/upstream-sources.md;
+  };
+  typescript-strict = {
+    kind = "adapted";
+    source.path = ./skills/typescript-strict;
+    update = "manual-adaptation";
+    tracking = null;
+    origin = {
+      repository = "https://github.com/citypaul/.dotfiles";
+      path = "claude/.claude/skills/typescript-strict/SKILL.md";
+      baseline = {
+        role = "import-baseline";
+        revision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      };
+      originalImportRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+      lastSyncRevision = "63a85bef3505f3446ec5c9421fcd84a4bf57dad8";
+    };
+    provenance = ./skills/typescript-strict/references/provenance.md;
   };
 }
