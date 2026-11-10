@@ -96,3 +96,13 @@ standalone rule (`S3`), not by changing the dependency check.
 > Me gustan mucho todas las skills que leo aqui, con su REFERENCES. https://github.com/citypaul/.dotfiles/tree/main/claude/.claude/skills
 
 **L2** — Scope decision, verbatim: `Todo el set, por lotes, teniendo en cuenta nuestro @skill-creator.`
+
+**L3** — Slice boundary for B1. `89d438c8` carries 3 243 authored lines since
+`origin/main`, of which 2 129 belong to the already-delivered
+typescript-strict/functional work that this branch is stacked on. The batch
+itself is 1 114 authored lines in one commit: three complete skill packages
+(17 files, including three MIT notices) plus the routing/media changes to the
+catalog, five checks, and six documents. A skill package is the smallest
+contract-valid unit, so the batch is one reviewable slice rather than three
+partial ones; the wiring cannot be split without leaving a tree the repository's
+own checks reject.
