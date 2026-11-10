@@ -163,3 +163,22 @@ reading: the `docs-links` check rejected a link to a file the writer had dropped
 and five `[label](url)` template placeholders, both rewritten instead of excluded
 from the check. `cli-design` is the collection's first non-MIT package and now
 carries its CC BY-SA 4.0 attribution and pinned upstream revision.
+
+**L11** — Program closure. `12528e96` closes wave 5 (nine packages) and the
+authoring program: 45 of the 50 upstream skills adopted in five waves plus the
+two from the earlier feature, for **55 authored / 56 published** packages and
+**41 350 authored lines** across twenty-one commits. The publication check
+reports **55** `PASS isolated folder resources` lines and the six ai-tools checks
+pass on the final tree.
+
+Licensing is recorded per package, not per repository: nine adaptations carry
+nested MIT notices from their own authors and `cli-design` is CC BY-SA 4.0.
+Each notice was compared against the upstream file; where a separator was
+missing it was restored rather than paraphrased.
+
+Not adopted: `REFERENCES.md` upstream, which is a cross-skill index rather than
+an Agent Skill, and nothing else — the five remaining upstream directories are
+the ones delivered here.
+
+Remaining work is outside authoring: the reviews requested after implementation,
+and the merge order for the stacked PRs.
