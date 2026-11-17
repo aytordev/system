@@ -46,20 +46,51 @@ true. Push, PR and merge stay the operator's decisions.
 
 ## Tasks
 
-- [ ] **GU8-1 — Bump gentle-ai to 4.5.0.** Route: inline (one package file plus
-  its version statements). Commit: `chore(gentle-ai): bump to 4.5.0`. Surfaces:
-  `packages/gentle-ai/package.nix`, `checks/gentle-ai-engine/default.nix`,
-  `modules/common/ai-tools/README.md`. Covers S1 and its share of S3.
-- [ ] **GU8-2 — Bump engram to 3.7.2.** Route: inline, after GU8-1 (shared check
-  and README surfaces). Commit: `chore(engram): bump to 3.7.2`. Surfaces:
-  `packages/engram/package.nix`, `checks/gentle-ai-engine/default.nix`,
-  `modules/common/ai-tools/README.md`. Covers S2 and its share of S3.
-- [ ] **GU8-3 — Verify both builds and the checks.** Route: parent, after
-  GU8-1/GU8-2. Covers S1-S3.
-- [ ] **GU8-4 — Move the Shell pin to 4.8.0 and align the Engram pair.** Route:
-  parent (operator-owned live profile; no Nix surface). Covers S4.
-- [ ] **GU8-5 — Verify the repository patches against installed 4.8.0.** Route:
-  parent, after GU8-4. Covers S5 and its share of S3.
+- [x] **GU8-1 — Bump gentle-ai to 4.5.0.** Route: inline (one package file plus
+  its version statements). Commit: `chore(gentle-ai): bump to 4.5.0`
+  (`a5df7ed8`), plan `58b60abe`. Surfaces: `packages/gentle-ai/package.nix`,
+  `checks/gentle-ai-engine/default.nix`, `modules/common/ai-tools/README.md`.
+  Covers S1 and its share of S3. Evidence: the four SRIs agree between the
+  release `checksums.txt` and `nix store prefetch-file` of each published
+  archive; `nix build .#gentle-ai` realized `gentle-ai-4.5.0` and the binary
+  reports `gentle-ai 4.5.0` under an isolated HOME/XDG with no native
+  onboarding profile created.
+- [x] **GU8-2 — Bump engram to 3.7.2.** Route: inline, after GU8-1 (shared check
+  and README surfaces). Commit: `chore(engram): bump to 3.7.2` (`ac9acb8b`).
+  Surfaces: `packages/engram/package.nix`, `checks/gentle-ai-engine/default.nix`,
+  `modules/common/ai-tools/README.md`. Covers S2 and its share of S3. Evidence:
+  `nix build .#engram` realized `engram-3.7.2` and the binary reports
+  `engram 3.7.2`; `go.sum` is byte-identical to v3.7.0's, so `vendorHash` is
+  unchanged and only the source hash moved; `go.mod` rose from `go 1.26.10` to
+  `go 1.26.11` (default Go in the pinned nixpkgs is now `1.26.10`), so
+  `buildGo127Module` is still required; `cmd/engram/autosync_e2e_test.go` still
+  opens `httptest.NewTLSServer`, so `doCheck = false` still holds.
+- [x] **GU8-3 — Verify both builds and the checks.** Route: parent, after
+  GU8-1/GU8-2. Covers S1-S3. Evidence: `nix build
+  .#checks.aarch64-darwin.integration-gentle-ai-engine` exit 0 (it runs the real
+  `gentle-ai version` grep and the profile-store merge over the real activation);
+  `nix build .#checks.aarch64-darwin.integration-pi-theme` exit 0 after the
+  comment edits; `nix flake check --all-systems --no-build --override-input
+  secrets path:./checks/fixtures/secrets` ends `all checks passed!`; the
+  repository formatter reports `0 changed` over 414 files.
+- [x] **GU8-4 — Move the Shell pin to 4.8.0 and align the Engram pair.** Route:
+  parent (operator-owned live profile; no Nix surface). Commit:
+  `chore(pi): pin the Shell at 4.8.0 and pair engram 3.7.2` (`e2db19d9`).
+  Covers S4. Evidence: `pi install npm:gentle-pi@4.8.0` wrote the versioned pin
+  and preserved the `!startup-banner.ts` filter; `npm install-scripts approve
+  gentle-pi@4.8.0 --allow-scripts-pin` replaced the stale `4.3.0` approval and
+  `npm rebuild gentle-pi` provisioned `.gentle-ai/v4.5.0/gentle-ai`, which
+  reports `gentle-ai 4.5.0` — the session engine and the Nix CLI now match.
+  The 3.7.2 core's own `engram setup pi` added the `gentle-engram@0.8.0`
+  companion and moved `npm/package.json` to `gentle-engram ^0.8.0`; the
+  pre-existing bare `npm:gentle-engram` entry became a duplicate registration and
+  was removed, leaving exactly one versioned entry. `gentle-ai sync` from the
+  4.5.0 binary then reported `no managed sync actions needed`.
+- [x] **GU8-5 — Verify the repository patches against installed 4.8.0.** Route:
+  parent, after GU8-4. Commit:
+  `chore(pi): name Shell 4.8.0 in the verified patch comments` (`75adc099`).
+  Covers S5 and its share of S3. Contracts read from the installed package, not
+  from release prose; evidence in L7.
 
 ## Log
 
@@ -83,3 +114,52 @@ L3 (parent evidence, this host's live state before the change — machine
 `gentle-engram@0.7.0`, package-local engine `.gentle-ai/v4.2.0`. The README
 already claimed `npm:gentle-pi@4.7.0`; that statement was true of the delivered
 pin on the other host, not of this profile, and GU8-4 is what makes it true here.
+
+L4 (GU8-2 source evidence): v3.7.2 differs from v3.7.0 in `go.mod` (`go
+1.26.10` -> `go 1.26.11`) and in the companion installer pin; `go.sum` is
+identical, and `cmd/engram/autosync_e2e_test.go` keeps four
+`httptest.NewTLSServer` occurrences, so both carried comments were re-verified
+rather than copied.
+
+L5 (GU8-3 and GU8-4 observations): `sync --dry-run` predicted eight apply steps
+before the real run, and the real run reported no managed actions; the sequence
+that closed the gap was `approve` -> `npm rebuild`, whose postinstall is what
+refreshes managed assets. `engram setup pi` warned that
+`~/.pi/agent/mcp.json` still carries `mcpServers.engram`, so Pi exposes the same
+server twice (`mcp__engram` tools beside the native `mem_*` tools) and upstream
+does not guarantee native-only writes while that path remains. Removing only
+`mcpServers.engram` is an operator decision for a later step; nothing was deleted
+here.
+
+L6 (GU8-3 risk note): the assess call on this candidate returned
+`nativeRisk: unassessable` with reason `package-local-binary-missing`,
+`changedPaths: 0`, `rddLine: unknown` and writer profile `large` from runtime
+evidence. Shell 4.8.0's postinstall replaced `.gentle-ai/`, so the running Shell
+4.3.0 can no longer resolve its own engine until Pi restarts. The returned plan
+asked for writer self-verification only and escalated no Task Size high-risk
+item; no independent verifier ran and no native review is claimed.
+
+L7 (GU8-5 evidence, contracts read from the installed 4.8.0 tree):
+`lib/agent-profiles.ts` keeps `PROFILES_KIND "gentle-pi.agent_model_profiles"`,
+`PROFILE_EXPORT_KIND "gentle-pi.agent_model_profile"` and `version 1`;
+`lib/agent-profile-pin.ts` keeps `PROFILE_PIN_KIND
+"gentle-pi.agent_model_profile_pin"`; the store still lives at
+`<configHome>/profiles.json`; routing entries still carry `model`/`thinking`;
+the per-profile `workflow.orchestratorMode` sibling and the `active` marker are
+still there, so the `workflow` carry-over this repository added for 4.7.0 stays
+necessary; `assets/agents/` still ships exactly the ten roles
+`checks/gentle-ai-engine` asserts; `extensions/startup-banner.ts` still exists,
+so the `!startup-banner.ts` filter still releases a real banner slot, and the
+filtered entry's `source` is still `npm:gentle-pi@<version>`. The
+`engramPackageVersion` rationale was rewritten because its old wording named the
+plugin at `0.2.0` and two capabilities (`/projects`, `sync_target_closed_space`)
+that neither the 0.7.0 nor the 0.8.0 plugin tree contains; the surviving gate,
+`capabilities.isolated_session_registration` read from the engine's `/health`, is
+present in both trees.
+
+L8 (operator actions that remain, none of them repository state): `sudo -n true`
+exits 1 on this host, so `just darwin-switch` cannot run from this session and
+PATH still reports `gentle-ai 4.4.0` and `engram 3.7.0` until the operator
+activates the reviewed generation; Pi must be restarted for Shell 4.8.0 and the
+native runtimes to load; and the `mcpServers.engram` duplicate path from L5 is
+the operator's decision.
