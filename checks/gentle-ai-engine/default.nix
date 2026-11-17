@@ -249,11 +249,13 @@
     # derivation, not on the module option: `tools.engram.package` is
     # deliberately the `engram-wrapped` runCommand, which has no `version`
     # attribute, while the wrapper execs `pkgs.aytordev.engram`. The Pi plugin
-    # `gentle-engram@0.2.0` needs an engine that advertises
-    # `capabilities.isolated_session_registration`, answers `/projects`, and
-    # supports the `sync_target_closed_space` repair, so an unguarded downgrade
-    # here must fail this check instead of degrading silently at runtime.
-    engramPackageVersion = pkgs.aytordev.engram.version == "3.7.0";
+    # (`gentle-engram`, paired with this core at 0.8.0) validates the engine's
+    # advertised capabilities at startup -- it reads
+    # `capabilities.isolated_session_registration` from the engine's `/health`
+    # response, a gate present in the plugin's 0.7.0 and 0.8.0 trees -- so an
+    # unguarded downgrade here must fail this check instead of degrading
+    # silently at runtime.
+    engramPackageVersion = pkgs.aytordev.engram.version == "3.7.2";
     # Regression: the drift guard for gentle-ai's own `GGAVersion` pin in
     # `internal/versions/versions.go`, which Nix cannot see mechanically.
     ggaPackageVersion = pkgs.aytordev.gga.version == "2.10.1";
