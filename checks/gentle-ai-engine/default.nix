@@ -445,7 +445,7 @@ in
         exit 1
       }
       # Regression: the profiles.json merge must preserve the runtime-owned
-      # siblings this repository does not author. gentle-pi 4.7.0 stores a
+      # siblings this repository does not author. gentle-pi 4.8.0 stores a
       # per-profile orchestrator mode under `workflow`, beside `profiles` and
       # `active` in the same file, so rebuilding the document from the declared
       # shape would silently reset every profile to the organic mode.
