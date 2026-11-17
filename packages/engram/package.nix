@@ -11,9 +11,13 @@ in
     inherit version;
 
     # v3.7.2's go.mod declares `go 1.26.11` (v3.7.0 declared `go 1.26.10`; the
-    # go.sum is byte-identical between them), above the nixpkgs default Go
-    # (1.26.10), which fails `GOTOOLCHAIN=local` in the sandbox.
-    # buildGo127Module threads go_1_27 into the build and the modules FOD.
+    # go.sum is byte-identical between them). When this pin was introduced the
+    # nixpkgs default Go (1.26.10) sat below that floor and `GOTOOLCHAIN=local`
+    # failed in the sandbox, so buildGo127Module threaded go_1_27 into the build
+    # and the modules FOD. The 2026-11-17 lock moved the default Go to 1.27.3,
+    # which already satisfies the floor: the wrapper is now a deliberate
+    # toolchain pin rather than a requirement, and collapsing it into a plain
+    # buildGoModule is a separate simplification, not a lock-update side effect.
 
     src = fetchFromGitHub {
       owner = "Gentleman-Programming";
