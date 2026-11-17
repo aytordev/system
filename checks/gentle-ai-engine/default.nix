@@ -244,16 +244,18 @@
     # Regression: the Nix-owned public CLI pin, asserted on the default package
     # only. User overrides stay authoritative; this never rejects custom
     # versions in the module options.
-    packageVersion = tools.gentle-ai.package.version == "4.4.0";
+    packageVersion = tools.gentle-ai.package.version == "4.5.0";
     # Regression: the Nix-owned Engram engine pin. Asserted on the underlying
     # derivation, not on the module option: `tools.engram.package` is
     # deliberately the `engram-wrapped` runCommand, which has no `version`
     # attribute, while the wrapper execs `pkgs.aytordev.engram`. The Pi plugin
-    # `gentle-engram@0.2.0` needs an engine that advertises
-    # `capabilities.isolated_session_registration`, answers `/projects`, and
-    # supports the `sync_target_closed_space` repair, so an unguarded downgrade
-    # here must fail this check instead of degrading silently at runtime.
-    engramPackageVersion = pkgs.aytordev.engram.version == "3.7.0";
+    # (`gentle-engram`, paired with this core at 0.8.0) validates the engine's
+    # advertised capabilities at startup -- it reads
+    # `capabilities.isolated_session_registration` from the engine's `/health`
+    # response, a gate present in the plugin's 0.7.0 and 0.8.0 trees -- so an
+    # unguarded downgrade here must fail this check instead of degrading
+    # silently at runtime.
+    engramPackageVersion = pkgs.aytordev.engram.version == "3.7.2";
     # Regression: the drift guard for gentle-ai's own `GGAVersion` pin in
     # `internal/versions/versions.go`, which Nix cannot see mechanically.
     ggaPackageVersion = pkgs.aytordev.gga.version == "2.10.1";
@@ -414,7 +416,7 @@ in
           echo 'gentle-ai version command failed' >&2
           exit 1
         }
-      grep -qx 'gentle-ai 4.4.0' "$TMPDIR/gentle-ai-version.out" || {
+      grep -qx 'gentle-ai 4.5.0' "$TMPDIR/gentle-ai-version.out" || {
         echo "unexpected gentle-ai version output: $(cat "$TMPDIR/gentle-ai-version.out")" >&2
         exit 1
       }
@@ -443,7 +445,7 @@ in
         exit 1
       }
       # Regression: the profiles.json merge must preserve the runtime-owned
-      # siblings this repository does not author. gentle-pi 4.7.0 stores a
+      # siblings this repository does not author. gentle-pi 4.8.0 stores a
       # per-profile orchestrator mode under `workflow`, beside `profiles` and
       # `active` in the same file, so rebuilding the document from the declared
       # shape would silently reset every profile to the organic mode.

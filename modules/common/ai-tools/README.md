@@ -1,7 +1,7 @@
 # AI Tools: Native Gentle AI and Published Skills
 
-Nix installs Pi, the official public Gentle AI CLI **4.4.0**, Engram
-**3.7.0**, the GGA review CLI **2.10.1**, and Node/npm. The official native installer owns the Pi profile,
+Nix installs Pi, the official public Gentle AI CLI **4.5.0**, Engram
+**3.7.2**, the GGA review CLI **2.10.1**, and Node/npm. The official native installer owns the Pi profile,
 Shell package, private engine, extensions, and workflow. Building this flake
 does **not** install Shell or validate its live runtime/data compatibility.
 
@@ -9,12 +9,19 @@ The Shell package is pinned by upstream's own documented upgrade path,
 `pi install npm:gentle-pi@<version>`, so its version lives in
 `~/.pi/agent/settings.json` rather than in this flake; a versioned npm spec is
 skipped by `pi update`, which is what keeps it from drifting. The pin is
-currently **`npm:gentle-pi@4.7.0`**. The banner-filter
+currently **`npm:gentle-pi@4.8.0`**. The banner-filter
 merge matches the bare or pinned source and preserves the pin. Updating Shell
 is an operator action: run the upstream `pi install` command, approve its
 version-keyed install script with `npm install-scripts approve gentle-pi@<version>`
 (the postinstall provisions the bundled engine), restart Pi, then
 `gentle-ai sync`.
+
+The same Shell release moves the Engram pair: core **3.7.2** with the
+**`gentle-engram@0.8.0`** companion, installed through the core's own
+`engram setup pi`. Engram validates core and companion together, so both move
+in one step, and `settings.json` may hold exactly one versioned
+`npm:gentle-engram@<version>` entry: a bare `npm:gentle-engram` beside it is a
+duplicate registration of the same server, not a fallback.
 
 Shell 4 raises its native prerequisites, and Shell 4.2 raises the Pi floor
 again: the host Pi must be at least **1.2.0** (Shell 4.0 accepted **0.99.1**)
@@ -33,12 +40,17 @@ refreshes orchestrator prompts, permissions, and reviewer assets.
 
 Shell 4.3 pins its private engine at Gentle AI **4.2.0**; Shell **4.4.0**
 through **4.6.0** bundle Gentle AI **4.3.1**; Shell **4.7.0** pins Gentle AI
-**4.4.0**, the engine version this flake pins for the operator CLI. The live
+**4.4.0** and Shell **4.8.0** pins Gentle AI
+**4.5.0**, the engine version this flake pins for the operator CLI. The live
 Shell is not managed by this repository, so the session engine follows the
 operator's Shell upgrade, not this pin. Engine
 4.2.0 moved the review provider contract, from 1.3.0 to **1.4.0**, which
 adds a `routing` bundle entry carrying Gentle AI's ODD routing canon; Shell
-renders its own ODD steps from that block instead of hand-copying them. The
+renders its own ODD steps from that block instead of hand-copying them. Engine
+4.5.0 moves the same contract to **1.5.0** with one additive stop reason, so a
+review that stops at `correction_required` or `escalated` can return its
+non-blocking findings; the review integration contract stays at `v2`, the
+capability identity at `capabilities/v2.6`. The
 module path stays at `/v4` and no review CLI flag changed.
 
 That pin does not survive on its own. Any `gentle-ai install` — including a

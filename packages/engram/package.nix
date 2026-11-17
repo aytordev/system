@@ -4,36 +4,37 @@
   fetchFromGitHub,
   ...
 }: let
-  version = "3.7.0";
+  version = "3.7.2";
 in
   buildGo127Module {
     pname = "engram";
     inherit version;
 
-    # v3.7.0's go.mod declares `go 1.26.10` (byte-identical to v3.6.0's), above
-    # the nixpkgs default Go (1.26.8), which fails `GOTOOLCHAIN=local` in the
-    # sandbox. buildGo127Module threads go_1_27 into the build and the modules
-    # FOD.
+    # v3.7.2's go.mod declares `go 1.26.11` (v3.7.0 declared `go 1.26.10`; the
+    # go.sum is byte-identical between them), above the nixpkgs default Go
+    # (1.26.10), which fails `GOTOOLCHAIN=local` in the sandbox.
+    # buildGo127Module threads go_1_27 into the build and the modules FOD.
 
     src = fetchFromGitHub {
       owner = "Gentleman-Programming";
       repo = "engram";
       rev = "v${version}";
-      hash = "sha256-RuNg8m+zspKQy5m10ay+Y7dWKCJrDPOGAD0TRPGFSm0=";
+      hash = "sha256-8vychLARVy7Ry+7hXx+NxnUR0KIUC5nJA+1XFduDB/M=";
     };
 
     vendorHash = "sha256-hkwwuqar4ngDUWM2XctkiVm8TpfQWnUws/sDxDyvQxU=";
 
     subPackages = ["cmd/engram"];
 
-    # v2.0.0-rc, v3.1.0, v3.6.0 and v3.7.0 autosync e2e tests bind a loopback
-    # port via `httptest`, which the Nix sandbox forbids. Re-verified against
-    # 3.7.0 at the source level: `cmd/engram/autosync_e2e_test.go` still exists
-    # and TestMutationTransportAdapterForwardsPromptAuthority still opens an
-    # `httptest.NewTLSServer` (a loopback bind through
-    # `net/http/httptest.newLocalListener`). The same bind was observed to
-    # panic at 3.1.0 by temporarily enabling the checks. The package compiles
-    # cleanly; only the sandbox-incompatible checks are skipped.
+    # v2.0.0-rc, v3.1.0, v3.6.0, v3.7.0 and v3.7.2 autosync e2e tests bind a
+    # loopback port via `httptest`, which the Nix sandbox forbids. Re-verified
+    # against 3.7.2 at the source level: `cmd/engram/autosync_e2e_test.go` still
+    # exists and TestMutationTransportAdapterForwardsPromptAuthority still opens
+    # an `httptest.NewTLSServer` (a loopback bind through
+    # `net/http/httptest.newLocalListener`); 3.7.2 is a packaging-only release
+    # whose only runtime change is the companion installer pin. The same bind
+    # was observed to panic at 3.1.0 by temporarily enabling the checks. The
+    # package compiles cleanly; only the sandbox-incompatible checks are skipped.
     doCheck = false;
 
     ldflags = [
