@@ -163,3 +163,13 @@ PATH still reports `gentle-ai 4.4.0` and `engram 3.7.0` until the operator
 activates the reviewed generation; Pi must be restarted for Shell 4.8.0 and the
 native runtimes to load; and the `mcpServers.engram` duplicate path from L5 is
 the operator's decision.
+
+L9 (operator decision on L5, verbatim: "3. Hazlo." — remove only the duplicate
+`mcpServers.engram` path): `~/.pi/agent/mcp.json` had exactly two servers,
+`context7` and `engram`. Only `engram` was removed; `context7` and the
+`mcpServers` shape are untouched, the file stays valid JSON with the same
+formatting, and the previous bytes are backed up outside the repository. The
+native `gentle-engram@0.8.0` plugin is what serves the `mem_*` tools, so no
+capability is lost: `pi list` reports four packages — `npm:gentle-pi@4.8.0`
+(filtered), `npm:pi-web-access`, `npm:pi-btw`, `npm:gentle-engram@0.8.0` — and
+the `mcp__engram` duplicate disappears on the next Pi restart.
