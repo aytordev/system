@@ -173,3 +173,21 @@ native `gentle-engram@0.8.0` plugin is what serves the `mem_*` tools, so no
 capability is lost: `pi list` reports four packages — `npm:gentle-pi@4.8.0`
 (filtered), `npm:pi-web-access`, `npm:pi-btw`, `npm:gentle-engram@0.8.0` — and
 the `mcp__engram` duplicate disappears on the next Pi restart.
+
+L10 (delivery evidence, authorized by the operator with "haz PR y pushealo a main
+cuando este en vered"): published through the repository's personal-identity
+wrapper `ghp` (actor `aytordev`, scopes `repo`, `workflow`, `read:org`), never
+through the work-account `gh`. Approved issue #286 (`status:approved`,
+`type:chore`) and PR #287 (`Closes #286`, `type:chore`) at head `8df9fa9a`, whose
+body carried the version table, the verification list and the `Risk: item 5`
+line. CI at that head: `Check expressions` pass (30s), `Check x86_64-linux` pass
+(3m12s), `Check aarch64-darwin` pass (18m28s), `label` pass (7s) — no failures.
+Merged with `ghp pr merge 287 --merge --match-head-commit 8df9fa9a…` after
+confirming `mergeable: MERGEABLE` and `mergeStateStatus: CLEAN`; merge commit
+`d05ba1140eebf0583da36573fd214e0c25605d04` at 2026-11-17T13:19:49Z, issue #286
+closed, branch kept (no deletion). Local `main` fast-forwarded to the merge
+commit over the personal credential route
+(`credential.helper='!ghp auth git-credential'` against the HTTPS remote) because
+the ambient SSH agent fetch failed with "Could not read from remote repository";
+that is a credential-route observation for future Git network operations, not a
+repository defect.
