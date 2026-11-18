@@ -5,7 +5,7 @@
   undmg,
   ...
 }: let
-  version = "1.2.16";
+  version = "1.2.23";
 in
   stdenvNoCC.mkDerivation {
     pname = "pen-dev";
@@ -17,7 +17,7 @@ in
     # target that follows whatever build upstream publishes last.
     src = fetchurl {
       url = "https://github.com/highagency/pen-desktop-releases/releases/download/v${version}/Pen-${version}-mac-arm64.dmg";
-      hash = "sha256-0NF37bSyrWFiKghQFjW4Vt3DYRSqxtDud/6wirQB6n8=";
+      hash = "sha256-k3v8eaObG16wHEUlzY0iozkzuBchCGO05/4lt76xdKA=";
     };
 
     nativeBuildInputs = [undmg];
