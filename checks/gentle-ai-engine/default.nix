@@ -153,11 +153,11 @@
       "review-reliability"
       "review-validator"
     ] (_: {
-      model = "openai-codex/gpt-6.1-sol";
+      model = "openai-codex/gpt-6.2-sol";
       thinking = "high";
     })
     // lib.genAttrs ["jd-judge-b" "review-risk"] (_: {
-      model = "openai-codex/gpt-6-astra";
+      model = "openai-codex/gpt-6.2-astra";
       thinking = "high";
     })
     // lib.genAttrs ["gentle-ai-explore" "jd-judge-a" "review-refuter" "review-resilience"] (_: {
@@ -344,7 +344,7 @@
         && orchestrator
         == {
           defaultProvider = "openai-codex";
-          defaultModel = "gpt-6.1-sol";
+          defaultModel = "gpt-6.2-sol";
           defaultThinkingLevel = "high";
         }
         && builtins.fromJSON rendered.models == builtins.removeAttrs expectedHybridProfile ["orchestrator"]

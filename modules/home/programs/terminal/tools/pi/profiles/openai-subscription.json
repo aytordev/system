@@ -4,55 +4,55 @@
   "name": "openai-subscription-complex",
   "config": {
     "orchestrator": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "gentle-ai-explore": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "gentle-ai-verify": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "gentle-ai-worker": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "jd-fix-agent": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "jd-judge-a": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "jd-judge-b": {
-      "model": "openai-codex/gpt-6-astra",
+      "model": "openai-codex/gpt-6.2-astra",
       "thinking": "high"
     },
     "review-readability": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "medium"
     },
     "review-reliability": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "review-resilience": {
-      "model": "openai-codex/gpt-6-astra",
+      "model": "openai-codex/gpt-6.2-astra",
       "thinking": "high"
     },
     "review-risk": {
-      "model": "openai-codex/gpt-6-astra",
+      "model": "openai-codex/gpt-6.2-astra",
       "thinking": "high"
     },
     "review-refuter": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "review-validator": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     }
   }

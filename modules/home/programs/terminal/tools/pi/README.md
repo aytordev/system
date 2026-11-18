@@ -4,8 +4,8 @@
 
 The bundled agent-model profiles are `opensource`,
 `openai-subscription-complex`, and `hybrid-nan-openai`. The hybrid profile keeps
-nan's DeepSeek/GLM/Qwen routes and uses `openai-codex/gpt-6.1-sol` and
-`openai-codex/gpt-6-astra` for ChatGPT/Codex subscription-backed roles, following
+nan's DeepSeek/GLM/Qwen routes and uses `openai-codex/gpt-6.2-sol` and
+`openai-codex/gpt-6.2-astra` for ChatGPT/Codex subscription-backed roles, following
 the existing subscription profile. It does not configure OpenAI API keys or
 perform login; the corresponding provider must already be authenticated in Pi.
 
