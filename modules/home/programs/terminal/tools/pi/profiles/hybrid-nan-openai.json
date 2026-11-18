@@ -4,7 +4,7 @@
   "name": "hybrid-nan-openai",
   "config": {
     "orchestrator": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "gentle-ai-explore": {
@@ -12,7 +12,7 @@
       "thinking": "high"
     },
     "gentle-ai-verify": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "gentle-ai-worker": {
@@ -20,7 +20,7 @@
       "thinking": "high"
     },
     "jd-fix-agent": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "jd-judge-a": {
@@ -28,7 +28,7 @@
       "thinking": "high"
     },
     "jd-judge-b": {
-      "model": "openai-codex/gpt-6-astra",
+      "model": "openai-codex/gpt-6.2-astra",
       "thinking": "high"
     },
     "review-readability": {
@@ -36,7 +36,7 @@
       "thinking": "medium"
     },
     "review-reliability": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     },
     "review-resilience": {
@@ -44,7 +44,7 @@
       "thinking": "high"
     },
     "review-risk": {
-      "model": "openai-codex/gpt-6-astra",
+      "model": "openai-codex/gpt-6.2-astra",
       "thinking": "high"
     },
     "review-refuter": {
@@ -52,7 +52,7 @@
       "thinking": "high"
     },
     "review-validator": {
-      "model": "openai-codex/gpt-6.1-sol",
+      "model": "openai-codex/gpt-6.2-sol",
       "thinking": "high"
     }
   }
