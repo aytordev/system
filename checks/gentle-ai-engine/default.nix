@@ -147,7 +147,6 @@
   };
   expectedHybridProfile =
     lib.genAttrs [
-      "orchestrator"
       "gentle-ai-verify"
       "jd-fix-agent"
       "review-reliability"
@@ -156,7 +155,7 @@
       model = "openai-codex/gpt-6.2-sol";
       thinking = "high";
     })
-    // lib.genAttrs ["jd-judge-b" "review-risk"] (_: {
+    // lib.genAttrs ["orchestrator" "jd-judge-b" "review-risk"] (_: {
       model = "openai-codex/gpt-6.2-astra";
       thinking = "high";
     })
@@ -344,7 +343,7 @@
         && orchestrator
         == {
           defaultProvider = "openai-codex";
-          defaultModel = "gpt-6.2-sol";
+          defaultModel = "gpt-6.2-astra";
           defaultThinkingLevel = "high";
         }
         && builtins.fromJSON rendered.models == builtins.removeAttrs expectedHybridProfile ["orchestrator"]
