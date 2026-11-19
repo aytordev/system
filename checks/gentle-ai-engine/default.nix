@@ -243,7 +243,7 @@
     # Regression: the Nix-owned public CLI pin, asserted on the default package
     # only. User overrides stay authoritative; this never rejects custom
     # versions in the module options.
-    packageVersion = tools.gentle-ai.package.version == "4.5.0";
+    packageVersion = tools.gentle-ai.package.version == "4.6.0";
     # Regression: the Nix-owned Engram engine pin. Asserted on the underlying
     # derivation, not on the module option: `tools.engram.package` is
     # deliberately the `engram-wrapped` runCommand, which has no `version`
@@ -415,7 +415,7 @@ in
           echo 'gentle-ai version command failed' >&2
           exit 1
         }
-      grep -qx 'gentle-ai 4.5.0' "$TMPDIR/gentle-ai-version.out" || {
+      grep -qx 'gentle-ai 4.6.0' "$TMPDIR/gentle-ai-version.out" || {
         echo "unexpected gentle-ai version output: $(cat "$TMPDIR/gentle-ai-version.out")" >&2
         exit 1
       }
@@ -444,10 +444,10 @@ in
         exit 1
       }
       # Regression: the profiles.json merge must preserve the runtime-owned
-      # siblings this repository does not author. gentle-pi 4.8.0 stores a
-      # per-profile orchestrator mode under `workflow`, beside `profiles` and
-      # `active` in the same file, so rebuilding the document from the declared
-      # shape would silently reset every profile to the organic mode.
+      # siblings this repository does not author. gentle-pi stores a per-profile
+      # orchestrator mode under `workflow`, beside `profiles` and `active` in the
+      # same file, so rebuilding the document from the declared shape would
+      # silently reset every profile to the organic mode.
       python - <<'PY'
       import json, os, subprocess, tempfile
       from pathlib import Path
