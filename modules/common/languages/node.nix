@@ -4,6 +4,9 @@
     "22" = pkgs.nodejs_22;
     "24" = pkgs.nodejs_24;
     "26" = pkgs.nodejs_26;
+    # Odd-numbered (Current) release. The pinned nixpkgs ships it as a
+    # pre-release build, so `node --version` reports an alpha/rc string.
+    "27" = pkgs.nodejs_27;
   };
 in {
   name = "node";
