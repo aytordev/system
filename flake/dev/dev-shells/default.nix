@@ -42,7 +42,7 @@
     gitHookShellNames = ["nix"];
 
     # Fail-safe for hook-installing shells: a checkout that already carries any
-    # Git hook (a non-sample script in the effective hooks directory) or custom
+    # Git hook (a real Git hook-name file, executable or not) or custom
     # hook routing (core.hooksPath pointing away from the default directory)
     # must be left exactly as the user set it — running the installer would
     # rewrite their core.hooksPath and overwrite or disable their hooks (the
@@ -67,8 +67,19 @@
         fi
         existingHook=""
         if [ -d "$hooksDir" ]; then
-          existingHook="$(ls -A "$hooksDir")" || return 1
-          existingHook="$(printf '%s\n' "$existingHook" | grep -v '\.sample$' | head -n 1 || true)"
+          ls -A "$hooksDir" >/dev/null 2>&1 || return 1
+          local hookName hookList
+          hookList="applypatch-msg pre-applypatch post-applypatch pre-commit pre-merge-commit
+            prepare-commit-msg commit-msg post-commit pre-rebase post-checkout post-merge pre-push
+            pre-receive update proc-receive post-receive post-update reference-transaction
+            push-to-checkout pre-auto-gc post-rewrite sendemail-validate fsmonitor-watchman
+            p4-changelist p4-prepare-changelist p4-post-changelist p4-pre-submit post-index-change"
+          for hookName in $hookList; do
+            if [ -e "$hooksDir/$hookName" ] || [ -L "$hooksDir/$hookName" ]; then
+              existingHook="$hookName"
+              break
+            fi
+          done
         fi
         if [ -n "$existingHook" ]; then
           echo "dev-shell: existing Git hook '$existingHook' found; leaving hooks untouched, skipping Git hook installation" >&2
