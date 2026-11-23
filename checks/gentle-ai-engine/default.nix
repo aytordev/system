@@ -243,7 +243,7 @@
     # Regression: the Nix-owned public CLI pin, asserted on the default package
     # only. User overrides stay authoritative; this never rejects custom
     # versions in the module options.
-    packageVersion = tools.gentle-ai.package.version == "4.6.0";
+    packageVersion = tools.gentle-ai.package.version == "5.0.0";
     # Regression: the Nix-owned Engram engine pin. Asserted on the underlying
     # derivation, not on the module option: `tools.engram.package` is
     # deliberately the `engram-wrapped` runCommand, which has no `version`
@@ -399,7 +399,7 @@ in
     pkgs.runCommand "ai-native-ownership-check" {
       nativeBuildInputs = [pkgs.diffutils pkgs.python3];
     } ''
-      # Realize the public archive and HM leaf publication without executing a CLI.
+      # Check the public CLI's installed path before the version probe.
       test -x ${tools.gentle-ai.package}/bin/gentle-ai
       # Run the real pinned binary offline: isolated HOME/XDG and the
       # self-update guard only, expecting the installer's exact version format
@@ -415,7 +415,7 @@ in
           echo 'gentle-ai version command failed' >&2
           exit 1
         }
-      grep -qx 'gentle-ai 4.6.0' "$TMPDIR/gentle-ai-version.out" || {
+      grep -qx 'gentle-ai 5.0.0' "$TMPDIR/gentle-ai-version.out" || {
         echo "unexpected gentle-ai version output: $(cat "$TMPDIR/gentle-ai-version.out")" >&2
         exit 1
       }
