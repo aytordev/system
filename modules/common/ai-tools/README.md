@@ -1,25 +1,25 @@
 # AI Tools: Native Gentle AI and Published Skills
 
-Nix installs Pi, the official public Gentle AI CLI **4.6.0**, Engram
-**3.7.2**, the GGA review CLI **2.10.1**, and Node/npm. The official native installer owns the Pi profile,
-Shell package, private engine, extensions, and workflow. Building this flake
-does **not** install Shell or validate its live runtime/data compatibility.
+Nix installs Pi, the official public Gentle AI CLI **5.0.0**, Engram
+**3.7.2**, the GGA review CLI **2.10.1**, and Node/npm. The official native
+installer owns the Pi profile, Shell package, private engine, extensions, and
+workflow. Building this flake does **not** install Shell or validate its live
+runtime/data compatibility.
 
-The Shell package is pinned by upstream's own documented upgrade path,
-`pi install npm:gentle-pi@<version>`, so its version lives in
-`~/.pi/agent/settings.json` rather than in this flake; a versioned npm spec is
-skipped by `pi update`, which is what keeps it from drifting. The pin is
-currently **`npm:gentle-pi@4.9.0`**. The banner-filter
-merge matches the bare or pinned source and preserves the pin. Updating Shell
-is an operator action: run the upstream `pi install` command, approve its
-version-keyed install script with `npm install-scripts approve gentle-pi@<version>`
-(the postinstall provisions the bundled engine), restart Pi, then
-`gentle-ai sync`.
+The matching upgrade target is [Gentle Shell **5.0.0**](https://github.com/Gentleman-Programming/gentle-shell/releases/tag/v5.0.0),
+which ships the private Gentle AI **5.0.0** runtime. This is a target, not a
+claim about the installed profile. The operator pins Shell with upstream's
+`pi install npm:gentle-pi@5.0.0`; the version lives in `~/.pi/agent/settings.json`,
+not in this flake. `pi update` skips versioned npm specs, and the banner-filter
+merge matches the bare or pinned source and preserves the pin. Upstream tested
+Shell 5.0.0 with Pi **1.6.0**; its npm manifest declares Pi **≥1.2.0** and Node
+**`^22.19.0 || >=23.6.0`**. After installing, approve the version-keyed script
+with `npm install-scripts approve gentle-pi@5.0.0` (postinstall provisions the
+private engine), restart Pi, then run `gentle-ai sync`.
 
-The same Shell release moves the Engram pair: core **3.7.2** with the
-**`gentle-engram@0.8.0`** companion, installed through the core's own
-`engram setup pi`. Engram validates core and companion together, so both move
-in one step, and `settings.json` may hold exactly one versioned
+The Engram pair is unchanged: core **3.7.2** with the **`gentle-engram@0.8.0`**
+companion, installed through the core's own `engram setup pi`. Engram validates
+core and companion together. `settings.json` may hold exactly one versioned
 `npm:gentle-engram@<version>` entry: a bare `npm:gentle-engram` beside it is a
 duplicate registration of the same server, not a fallback.
 
@@ -41,10 +41,7 @@ refreshes orchestrator prompts, permissions, and reviewer assets.
 Shell 4.3 pins its private engine at Gentle AI **4.2.0**; Shell **4.4.0**
 through **4.6.0** bundle Gentle AI **4.3.1**; Shell **4.7.0** pins Gentle AI
 **4.4.0**, Shell **4.8.0** pins Gentle AI
-**4.5.0**, and Shell **4.9.0** pins Gentle AI
-**4.6.0**, the engine version this flake pins for the operator CLI. The live
-Shell is not managed by this repository, so the session engine follows the
-operator's Shell upgrade, not this pin. Engine
+**4.5.0**, and Shell **4.9.0** pins Gentle AI **4.6.0**. Engine
 4.2.0 moved the review provider contract, from 1.3.0 to **1.4.0**, which
 adds a `routing` bundle entry carrying Gentle AI's ODD routing canon; Shell
 renders its own ODD steps from that block instead of hand-copying them. Engine
@@ -54,9 +51,14 @@ non-blocking findings; the review integration contract stays at `v2`, the
 capability identity at `capabilities/v2.6`. Engine
 4.6.0 moves the same contract to **1.6.0**: when a worker exhausts its
 corrections, the orchestrator becomes responsible for what happens next. The
-module path stays at `/v4` and no review CLI flag changed.
+module path stayed at `/v4` in that release. [Gentle AI **5.0.0**](https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v5.0.0)
+moves the Go module to `/v5` and removes legacy v1 review authority. The provider
+bundle stays at **1.6.0** with updated routing and orchestration assets. The
+`capabilities/v2.6` identifier is unchanged, but its payload is now compact-only
+and native STATUS returns `v9`; refresh capability discovery rather than assuming
+the old feature set still applies.
 
-That pin does not survive on its own. Any `gentle-ai install` — including a
+A versioned Shell pin does not survive on its own. Any `gentle-ai install` — including a
 narrow `--component persona` run — re-registers the agent's npm packages and
 writes the entry as the bare `npm:gentle-pi`, dropping the `@<version>` that
 keeps `pi update` from moving it. `--dry-run` does not warn: it reports
@@ -398,7 +400,8 @@ migration instructions below still apply only to the older layout.
    variables equal `1` before resuming any writers.
 5. Run **`gentle-ai install --agent pi`** using that public CLI and environment.
    The stable official installer reuses Engram on `PATH`; successful installation
-   does **not** establish compatibility with our pinned **2.0.0-rc.11** or its data.
+   does **not** establish live compatibility with the pinned Engram **3.7.2**
+   or its data.
    Complete provider configuration and authentication through native setup;
    Nix no longer supplies Pi models or credentials. Review the backup when
    restoring provider preferences rather than copying the retired extensions.
