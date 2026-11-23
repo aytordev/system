@@ -153,12 +153,15 @@ shell:
     nix shell nixpkgs#git nixpkgs#neovim nixpkgs#colmena
 
 # Install pre-commit hooks
-# Hooks are provided by git-hooks-nix and installed automatically on devShell
-# entry (writes core.hooksPath globally). Entering a shell refreshes them.
+# Hooks are provided by git-hooks-nix and installed through the dev-shell
+# wrapper, which installs them ONLY for the `.#nix` shell and only into a
+# clean checkout: existing user hooks or custom `core.hooksPath` routing are
+# never touched. Entering `.#nix` again skips once the checkout already has
+# hooks.
 # Usage: just install-hooks
 [group('dev')]
 install-hooks:
-    nix develop .#default
+    nix develop .#nix
 
 ############################################################################
 # Git Helpers
