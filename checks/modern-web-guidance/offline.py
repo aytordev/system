@@ -147,4 +147,4 @@ def check_skills(skills):
 skills = Path(sys.argv[2])
 check_skills(skills)
 run(sys.argv[1], skills)
-print("PASS: packaged skills, notices, offline search/list/retrieve, read-only opt-out and opt-in, no runtime side effects")
+print("PASS: packaged skill content, license notices, offline search/list/retrieve, and no runtime side effects")
