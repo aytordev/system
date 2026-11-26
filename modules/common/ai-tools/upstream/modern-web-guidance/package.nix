@@ -5,6 +5,7 @@
   makeWrapper,
   nodejs,
   python3,
+  ...
 }: let
   inherit ((import ../../catalog.nix).modern-web-guidance) release;
 in
