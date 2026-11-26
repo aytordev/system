@@ -11,6 +11,7 @@ from pathlib import Path
 
 MOVING_COMMAND = "npx -y modern-web-guidance@latest"
 LOCAL_COMMAND = "modern-web-guidance"
+UPSTREAM_CLI_SHA256 = "de1b487acb38ba3c61809ac5b4af0a6c4fa31d2a09c46a4810aa2bab656716f0"
 NOTICES = {
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
     "THIRD_PARTY_NOTICES": "25181107e30dfdd5f884f25fa2e3a9df762027954873a7d2c27808e645f26b9e",
@@ -122,16 +123,12 @@ isolation](csp-sandbox.md).
     write(content, text)
 
 
-def adapt_cli(text):
-    # Pin the original command body before stripping any branches. All Clearcut
-    # call sites are here, so missing, added, and reformatted calls require review
-    # on repin rather than silently changing what the removal below matches.
-    bodies = re.findall(r"(?ms)^async function main\(\) \{\n(.*?)^function getCLISkillVersion\(\)", text)
-    if len(bodies) != 1 or hashlib.sha256(bodies[0].encode()).hexdigest() != (
-        "dcffa79c2937c2f70d8a99a282a88d23db9c42b45e4c955b4dc74b1220f9b4c0"
-    ):
-        raise ValueError("Pinned CLI telemetry call sites changed")
+def adapt_cli(upstream):
+    # Review the entire upstream CLI on repin: new calls can appear outside main.
+    if hashlib.sha256(upstream).hexdigest() != UPSTREAM_CLI_SHA256:
+        raise ValueError("Pinned upstream CLI changed; review the entire CLI before updating its digest")
 
+    text = upstream.decode("utf-8")
     # Keep upstream list, search, retrieval and read-only project feature gates.
     text = section(text, "// src/cli/set-allow-gate.ts\nimport * as readline", "// src/cli/version.ts")
     text = section(text, "// src/cli/telemetry/clearcut-logger.ts", "// src/cli/modern-web.ts\nensureNodeVersion();")
@@ -168,7 +165,7 @@ def install(out, version):
     web = skills / "modern-web-guidance"
     chrome = skills / "chrome-extensions"
     originals = Path("skills/modern-web-guidance")
-    cli = adapt_cli((originals / "modern-web.mjs").read_bytes().decode("utf-8"))
+    cli = adapt_cli((originals / "modern-web.mjs").read_bytes())
     for folder in (web, chrome):
         source = Path("skills") / folder.name
         folder.mkdir(parents=True)

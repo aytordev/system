@@ -11,7 +11,7 @@ Branch: feat/modern-web-guidance
 ## Tasks
 - T1 [blocked] S1–S2 — package, publish, document and test both skills; b39d6f90; full CI pending. Risk: item 5 (new dependency).
 
-- T2 [implemented] S3 — verify and address the four advisory findings as a new follow-up unit based on b39d6f90.
+- T2 [verified] S3 — verify and address the four advisory findings in 5fe01580, e7102b5d, and the whole-file digest follow-up.
 
 ## Log
 - L1: Me gustaría implementar las skills de https://github.com/GoogleChrome/modern-web-guidance-src
@@ -23,3 +23,4 @@ Branch: feat/modern-web-guidance
 - L4: resuelve todos los findings de reliability y de readability
 
 - T2: the isolated pinned CLI passed opt-out/opt-in tests, three telemetry drift tests, and unchanged-package comparison. Canonical external-link rejection passed; each of five enablement mutations failed as expected.
+- Independent final proof: missing, extra, reformatted and outside-main calls rejected before output; valid preparation retained 285 identical entries and the original offline-check success line. R3-001 was already evaluated and was not duplicated.
