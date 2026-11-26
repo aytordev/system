@@ -115,8 +115,8 @@ surface (local skills, `models.json`, the startup header, Engram).
 | Nix capabilities | Pi, public `gentle-ai`, Engram, Node/npm, runtime environment, and Pi's palette-generated `themes/aytordev.json`; activation seeds only an absent `theme` key |
 | Official `gentle-ai install --agent pi` | Native Pi profile, Shell package and private engine, extensions/workflow |
 | This `ai-tools/` subtree | Skill ownership catalog, fifty-five authored sources, private upstream preparation recipes, and publication |
-| `packages/impeccable-{engine,skills}/package.nix` | Direct-import adapters for existing package discovery; no pins or recipe bodies |
-| `ai-skills` capability | Catalog-derived neutral collection and recursive Pi file publication |
+| `packages/{impeccable-engine,impeccable-skills,modern-web-guidance}/package.nix` | Direct-import adapters for existing package discovery; no pins or recipe bodies |
+| `ai-skills` capability | Catalog-derived neutral collection, recursive Pi file publication, and the declared guidance CLI dependency for Pi |
 
 The development suite enables these capabilities with overridable defaults.
 The distributor lives in `modules/common/ai-tools/ai-skills.nix`, explicitly
@@ -134,9 +134,9 @@ remain upstream-owned. This replacement does not migrate Engram data.
 
 ## Skill ownership and updates
 
-[`catalog.nix`](catalog.nix) is the fifty-six-entry, pure-data ownership inventory.
+[`catalog.nix`](catalog.nix) is the fifty-eight-entry, pure-data ownership inventory.
 It records source locations, kind, manual update policy, structured origins,
-provenance pointers, and Impeccable's skill/engine pins and dependency. It is not a module, runtime
+provenance pointers, and the packaged skill releases and runtime dependencies. It is not a module, runtime
 registry, updater, or discovery mechanism. `ai-skills.nix` derives publication
 names and sources from it; the existing namespace, paths, and guards do not change.
 
@@ -145,6 +145,7 @@ names and sources from it; the existing namespace, paths, and guards do not chan
 | `local` | `dotfiles-coder`, `nix` | Edit local content manually; frontmatter and `metadata.json` remain canonical |
 | `adapted` | `acceptance-review`, `api-design`, `aytordev-pen-ops`, `bff-design`, `bff-entry-points`, `characterisation-tests`, `ci-debugging`, `cli-design`, `codebase-design`, `debugging`, `diagrams`, `domain-driven-design`, `double-check`, `evaluate-existing-solutions`, `event-sourcing`, `expectations`, `find-gaps`, `find-skills`, `finding-seams`, `folder-structure`, `front-end-testing`, `functional`, `graph-engineering`, `hexagonal-architecture`, `improve-codebase-architecture`, `mutation-testing`, `observability`, `panel-review`, `planning`, `production-parity-skill-builder`, `react-performance`, `react-testing`, `reduce-system-complexity`, `refactoring`, `render-code-shape`, `secure-oauth-oidc`, `skill-creator`, `skill-registry`, `specification`, `stack-pull-requests`, `story-splitting`, `storyboard`, `structure-codebase`, `tdd`, `teach-me`, `technical-writing`, `test-design-reviewer`, `testing`, `twelve-factor`, `typescript-strict`, `ubiquitous-language`, `wtf`, `xstate` | Review upstream evidence manually and retain deliberate local contracts |
 | `upstream` | `impeccable` | Update catalog pins/hashes manually as a coherent skill-and-engine pair; preserve upstream bytes |
+| `packaged-adaptation` | `chrome-extensions`, `modern-web-guidance` | Update the shared GoogleChrome pin manually and recheck the offline and safety adaptations |
 
 Adapted entries expose `origin.repository`, the upstream content `path`, and
 `baseline.{role,revision}`. Their `originalImportRevision` and `lastSyncRevision`
@@ -256,7 +257,7 @@ its original rules, references, and scripts. Resolver guidance is bundled in
 `metadata.json` is our authored-source validation convention, not a universal
 client requirement.
 
-The fifty-sixth skill, **`impeccable`**, comes from
+**`impeccable`** comes from
 `${pkgs.aytordev.impeccable-skills}/share/impeccable`, not the authored tree.
 The catalog pins upstream **4.4.0** at commit
 `114ea1d3838fca73b253af45f873b9c4f5f213c8`, preserving all 54 payload files
@@ -271,13 +272,30 @@ Impeccable replaces `aytordev-interface-design` and `aytordev-design-system`.
 `aytordev-pen-ops` and unrelated skills remain unchanged. Upstream guidance does
 not establish that a host has browser/Pen tools or authorize their use.
 
+**`modern-web-guidance`** and **`chrome-extensions`** come from the pinned
+GoogleChrome **1.0.2** npm release, prepared by Nix without npm lifecycle scripts.
+The first skill uses the CLI on `PATH` when Pi and `ai-skills` are both enabled:
+
+```sh
+modern-web-guidance search "light dismiss dialog"
+modern-web-guidance retrieve "light-dismiss-a-dialog"
+```
+
+Search, list, and retrieve use bundled data; the CLI does not download updates,
+report telemetry, or install skills. The neutral collection includes both folders
+when Pi is disabled but does not add the CLI to `PATH`. A copied skill retains its
+documents and license notices; running search still requires the Nix CLI.
+The extensions skill retains the Manifest V3 references and recommends strict
+CSP, isolation, and validated messages instead of executing untrusted code.
+See the [release and adaptation provenance](upstream/modern-web-guidance/PROVENANCE.md).
+
 | Publication | Path | Enabled when |
 | --- | --- | --- |
 | Neutral collection | `${config.xdg.dataHome}/aytordev/skills` (normally `~/.local/share/aytordev/skills`) | `ai-skills.enable`, even with Pi disabled |
 | Pi / Gentle Shell | `~/.pi/agent/skills/<name>` | `ai-skills.enable` and `pi.enable` |
 
-The neutral collection assembles links to the fifty-five authored folders and the
-upstream package. Client publication is recursive: each skill directory stays
+The neutral collection assembles links to the fifty-five authored folders and
+three packaged skills. Client publication is recursive: each skill directory stays
 real and its managed files are symlinks,
 matching Pi's native per-file layout. The client profile and whole skills root
 remain writable for native owners; additional native files survive. Source edits
@@ -418,13 +436,16 @@ projections, and isolated dereferenced copies with resolvable support. It also
 regresses the pinned public CLI's exact `version` output by running the real
 binary offline under isolated HOME/XDG with the self-update guard, expecting
 no native onboarding profile. Retained
-AI checks cover the independent fifty-six-entry ownership/shape contract (including
+AI checks cover the independent fifty-eight-entry ownership/shape contract (including
 invalid catalog fixtures), authored-only dependencies/metadata, and documentation
 links. `checks/impeccable` verifies thin adapters, standalone recipe arguments,
 adapter/private package identity parity on both platforms, upstream byte fidelity,
 and the pinned offline engine; publication checks compare the complete package in neutral/Pi exports
 and execute the published and copied launcher without fallback downloads.
-Theme transition tests retain real Home Manager collision and orphan-link
+`checks/modern-web-guidance` verifies the legal notices, offline CLI search and
+retrieval, absence of runtime network/installer actions, and the adapted
+extension instructions. Publication checks cover both GoogleChrome folders and
+the CLI's enable guards. Theme transition tests retain real Home Manager collision and orphan-link
 coverage using a surviving themed app's managed theme directory (Yazi flavors).
 `checks/ai-skills-transition` executes the exact preparation script followed by
 the pinned HM collision/link fragments over the synthetic old Pi layout, with

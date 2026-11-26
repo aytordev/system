@@ -1,8 +1,8 @@
 # Local AI Knowledge
 
-This subtree owns the fifty-six-entry skill catalog, fifty-five authored skill packages,
-private Impeccable preparation recipes, and publication of the unmodified
-packaged upstream skill.
+This subtree owns the fifty-eight-entry catalog, fifty-five authored skill packages,
+and standalone recipes for the intact Impeccable skill and two GoogleChrome
+packaged adaptations.
 The official native Gentle AI installer owns Pi's workflow. See
 [README.md](README.md) for ownership and operator onboarding.
 
@@ -10,7 +10,7 @@ The official native Gentle AI installer owns Pi's workflow. See
 
 - `catalog.nix` is pure ownership data: names, kinds, sources, manual update
   policies, structured origins/baseline roles, tracking, provenance pointers,
-  and Impeccable payload/release pins. Null tracking means no configured channel;
+  and package payload/release pins. Null tracking means no configured channel;
   null import/sync revisions mean unknown, not the comparison revision. Local
   entries have no external update source. Keep versions/descriptions in local
   frontmatter/metadata and detailed provenance in its existing documents.
@@ -18,6 +18,9 @@ The official native Gentle AI installer owns Pi's workflow. See
   with no config/Home Manager dependencies. The public `packages/` entry points
   must stay direct imports, preserving `callPackage` argument introspection.
   Do not move ownership back into package adapters or change package discovery.
+- `upstream/modern-web-guidance/` owns the pinned offline CLI and the minimal
+  content adaptations. Retain the license and notices in each skill, never ship
+  package-manager workflows or CSP bypass instructions, and keep telemetry off.
 - Derive publication from the catalog, not a second name/source list. Manual
   updates only: no tracking branch, automatic synchronizer, or runtime registry.
 - `ai-skills.nix` is the shared Home Manager distributor, imported explicitly by
@@ -57,6 +60,7 @@ The official native Gentle AI installer owns Pi's workflow. See
 | bff-design | backend-for-frontend shape, adoption, and ownership |
 | bff-entry-points | endpoint classification, prepared registrars, authorization boundaries |
 | characterisation-tests | Pins existing behaviour before changing untested code |
+| chrome-extensions | Pinned GoogleChrome Manifest V3 guidance with strict CSP and validated messages |
 | ci-debugging | CI failure diagnosis: provider evidence, reproduction, environment deltas |
 | cli-design | streams, exit codes, secrets, composability, stability |
 | codebase-design | in-process module and package contracts, plus deep-module consolidation |
@@ -78,6 +82,7 @@ The official native Gentle AI installer owns Pi's workflow. See
 | hexagonal-architecture | ports and adapters, wiring, testing boundaries, anti-patterns |
 | impeccable | Packaged upstream design skill with complete references, scripts, and pinned sibling engine |
 | improve-codebase-architecture | ranks where architecture investment pays off |
+| modern-web-guidance | Pinned GoogleChrome web platform guides with offline search and retrieval |
 | mutation-testing | Mutation gate, survivor triage, and diff-scoped runs |
 | nix | Nix authoring, operational references, and package-diff helper |
 | observability | wide events, SLOs and alerting, telemetry hygiene and placement |
@@ -109,8 +114,9 @@ The official native Gentle AI installer owns Pi's workflow. See
 | xstate | statechart modelling before code, actors, and diagrams |
 
 Fifty-five rows are authored locally: `dotfiles-coder` and `nix` are `local`;
-the other fifty-three are `adapted`. `impeccable` is the one intact `upstream`
-package. The fifty `citypaul` adaptations record the exact upstream revision
+the other fifty-three are `adapted`. `impeccable` is the intact `upstream`
+package, and both GoogleChrome skills are `packaged-adaptation`. The fifty
+`citypaul` adaptations record the exact upstream revision
 their bytes came from; the `historical-comparison` ones keep unknown import
 revisions null.
 Licences are per package, not per repository. Nine adaptations carry nested MIT
@@ -122,6 +128,6 @@ notices from their own authors — `acceptance-review`, `reduce-system-complexit
 Guidelines. Each notice is reproduced verbatim, with its attribution and pinned
 upstream revision, in that package's provenance.
 Local metadata/dependency checks inspect only `skills/`; publication checks
-cover all fifty-six.
+cover all fifty-eight.
 
 `dotfiles-coder/rules/patterns-module.md` remains the canonical module template.

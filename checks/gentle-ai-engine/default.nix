@@ -228,11 +228,15 @@
     "story-splitting"
     "storyboard"
   ];
-  names = lib.sort builtins.lessThan (localNames ++ ["impeccable"]);
+  googleSkills = ["chrome-extensions" "modern-web-guidance"];
+  names = lib.sort builtins.lessThan (localNames ++ ["impeccable"] ++ googleSkills);
   upstream = "${pkgs.aytordev.impeccable-skills}/share/impeccable";
+  modernWeb = pkgs.aytordev.modern-web-guidance;
   source = name:
     if name == "impeccable"
     then upstream
+    else if lib.elem name googleSkills
+    then "${modernWeb}/share/modern-web-guidance/skills/${name}"
     else ../../modules/common/ai-tools/skills + "/${name}";
   targets = home: map (file: file.target) (builtins.attrValues home.home.file);
   under = root: home: lib.sort builtins.lessThan (lib.filter (lib.hasPrefix root) (targets home));
@@ -380,6 +384,12 @@
       lib.hasInfix "\"providers\"" file.text && lib.hasInfix "\"example\"" file.text;
     skillsDisabled = under piRoot noSkills == [];
     clientsDisabled = under piRoot noClients == [];
+    guidanceCliWithPiSkills =
+      installed enabled modernWeb
+      && installed piOnly modernWeb
+      && !installed noClients modernWeb
+      && !installed noSkills modernWeb
+      && !installed disabled modernWeb;
     neutralEnabled = enabled.xdg.dataFile ? "aytordev/skills";
     standaloneCollection = under ".local/share/aytordev/" noClients == [catalogRoot];
     neutralDisabled = !(disabled.xdg.dataFile ? "aytordev/skills") && !(noSkills.xdg.dataFile ? "aytordev/skills");
@@ -491,7 +501,22 @@ in
           assert (store.read_bytes(), store.stat().st_mtime_ns) == before, "re-run must not rewrite the store"
       print("PASS: profiles.json merge preserves runtime profiles, active and workflow")
       PY
+      # A live link must be rejected while it is still visible in the source.
+      fixture="$TMPDIR/canonical-skill-fixture"
+      mkdir -p "$fixture/references"
+      printf 'resource\n' > "$TMPDIR/resource.md"
+      ln -s "$TMPDIR/resource.md" "$fixture/references/linked.md"
+      status=0
+      python ${./skill-resources.py} "$fixture" > "$TMPDIR/skill-links.out" 2> "$TMPDIR/skill-links.err" || status=$?
+      test "$status" -eq 1
+      test ! -s "$TMPDIR/skill-links.out"
+      printf 'unexpected symlink in canonical skill: references/linked.md\n' | diff - "$TMPDIR/skill-links.err"
+      test -L "$fixture/references/linked.md"
+      echo 'PASS canonical skill rejects a live resource symlink'
       ${lib.concatMapStringsSep "\n" (name: ''
+          ${lib.optionalString (lib.elem name googleSkills) ''
+            python ${./skill-resources.py} ${source name}
+          ''}
           test -d ${enabled.home-files}/${piRoot}${name}
           test ! -L ${enabled.home-files}/${piRoot}${name}
           test -L ${enabled.home-files}/${piRoot}${name}/SKILL.md
@@ -506,13 +531,28 @@ in
           done
           mkdir "$TMPDIR/isolated-${name}"
           cp -RL ${noClients.home-files}/${catalogRoot}/${name} "$TMPDIR/isolated-${name}/${name}"
-          ${lib.optionalString (name != "impeccable") ''
+          ${lib.optionalString (lib.elem name localNames) ''
             python ${./portable-folder.py} "$TMPDIR/isolated-${name}/${name}"
           ''}
         '')
         names}
       python -c 'import os, sys; assert sorted(os.listdir(sys.argv[1])) == sys.argv[2:]' \
         ${noClients.home-files}/${catalogRoot} ${lib.escapeShellArgs names}
+      # Verify copied GoogleChrome skill resources without imposing authored metadata.
+      python - <<'PY'
+      from pathlib import Path
+      import os, re
+
+      for name in ${builtins.toJSON googleSkills}:
+          root = Path(os.environ["TMPDIR"]) / f"isolated-{name}" / name
+          assert (root / "LICENSE").is_file() and (root / "THIRD_PARTY_NOTICES").is_file()
+          entry = (root / "SKILL.md").read_text(encoding="utf-8")
+          assert entry.startswith(f"---\nname: {name}\n"), name
+          for target in re.findall(r"`(references/[\w/-]+\.md)`", entry):
+              assert (root / target).is_file(), target
+          if name == "modern-web-guidance":
+              assert (root / "guides/ui-components/dialog.md").is_file()
+      PY
       # Upstream is exempt from local metadata/rules conventions, not fidelity.
       # Exercise the published launcher and dereferenced copy with no ambient
       # engine, HOME cache, or download fallback. T1 validates the source pin.

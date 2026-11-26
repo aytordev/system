@@ -8,7 +8,8 @@
   names = builtins.attrNames entries;
   # Only authored folders carry our metadata contract; upstream is packaged.
   expected = ["acceptance-review" "api-design" "aytordev-pen-ops" "bff-design" "bff-entry-points" "characterisation-tests" "ci-debugging" "cli-design" "codebase-design" "debugging" "diagrams" "domain-driven-design" "dotfiles-coder" "double-check" "evaluate-existing-solutions" "event-sourcing" "expectations" "find-gaps" "find-skills" "finding-seams" "folder-structure" "front-end-testing" "functional" "graph-engineering" "hexagonal-architecture" "improve-codebase-architecture" "mutation-testing" "nix" "observability" "panel-review" "planning" "production-parity-skill-builder" "react-performance" "react-testing" "reduce-system-complexity" "refactoring" "render-code-shape" "secure-oauth-oidc" "skill-creator" "skill-registry" "specification" "stack-pull-requests" "story-splitting" "storyboard" "structure-codebase" "tdd" "teach-me" "technical-writing" "test-design-reviewer" "testing" "twelve-factor" "typescript-strict" "ubiquitous-language" "wtf" "xstate"];
-  published = lib.sort builtins.lessThan (expected ++ ["impeccable"]);
+  googleSkills = ["chrome-extensions" "modern-web-guidance"];
+  published = lib.sort builtins.lessThan (expected ++ ["impeccable"] ++ googleSkills);
   catalog = import (root + "/catalog.nix");
   expectedKinds = {
     aytordev-pen-ops = "adapted";
@@ -18,6 +19,8 @@
     expectations = "adapted";
     functional = "adapted";
     impeccable = "upstream";
+    chrome-extensions = "packaged-adaptation";
+    modern-web-guidance = "packaged-adaptation";
     mutation-testing = "adapted";
     nix = "local";
     refactoring = "adapted";
@@ -618,6 +621,8 @@
       ++ (
         if name == "impeccable"
         then ["engine" "dependencies"]
+        else if lib.elem name googleSkills
+        then ["release"] ++ lib.optional (name == "modern-web-guidance") "runtimePackage"
         else ["origin"]
       ))
     entry
@@ -636,6 +641,29 @@
         && entry.source.payloadPath == ".pi/skills/impeccable"
         && keysAre ["package" "version" "assets" "release"] entry.engine
         && entry.engine.package == "impeccable-engine"
+      else if lib.elem name googleSkills
+      then
+        entry.source
+        == {
+          package = "modern-web-guidance";
+          subdir = "share/modern-web-guidance/skills/${name}";
+        }
+        && (entry.runtimePackage or null)
+        == (
+          if name == "modern-web-guidance"
+          then "modern-web-guidance"
+          else null
+        )
+        && entry.update == "manual-pinned-adaptation"
+        && entry.release
+        == {
+          repository = "https://github.com/GoogleChrome/modern-web-guidance-src";
+          sourceRevision = "f6d9fc30aff7e177e05a555762808b12eee2c950";
+          distributionRevision = "2b4aa13a72dd47cd135b06ce5abfccd92e19b24f";
+          version = "1.0.2";
+          url = "https://registry.npmjs.org/modern-web-guidance/-/modern-web-guidance-1.0.2.tgz";
+          hash = "sha512-ksFBCdzMl5xxf7wuF7XQbudQ6El1e2VrO0WzcH/U29NYGNzu0EZjtojkfwzFBSnmenDyl7QIwPCgYvfEmZHr+w==";
+        }
       else
         keysAre ["path"] entry.source
         && entry.origin == expectedOrigins.${name}
@@ -656,8 +684,8 @@
   rows = lib.filter (line: lib.hasPrefix "| " line && !(lib.hasPrefix "| Name " line)) (lib.splitString "\n" doc);
   documented = map (row: lib.trim (builtins.elemAt (lib.splitString "|" row) 1)) rows;
 in
-  assert lib.assertMsg (builtins.pathExists (root + "/catalog.nix")) "AI skill ownership requires a pure sixteen-entry catalog";
-  assert lib.assertMsg (catalogShape catalog) "AI skill catalog ownership, structured origins/tracking, payload location, or pure-data shape drifted";
+  assert lib.assertMsg (builtins.pathExists (root + "/catalog.nix")) "AI skill ownership requires a pure fifty-eight-entry catalog";
+  assert lib.assertMsg (catalogShape catalog) "AI skill catalog must publish both pinned GoogleChrome skills and preserve ownership, payload locations, and pure-data shape";
   # Triangulation: reject plausible ownership/metadata mistakes, not just omissions.
   assert lib.assertMsg (lib.all (value: !(catalogShape value)) [
     (builtins.removeAttrs catalog ["nix"])
@@ -672,8 +700,8 @@ in
     (catalog // {nix = catalog.nix // {origin = catalog.skill-creator.origin;};})
     (catalog // {impeccable = catalog.impeccable // {source = catalog.impeccable.source // {payloadPath = "skills/impeccable";};};})
   ]) "Catalog shape must reject invalid ownership fixtures";
-  assert lib.assertMsg (names == expected) "Expected exactly fifteen authored skill packages";
-  assert lib.assertMsg (lib.sort builtins.lessThan documented == published) "Expected the fifteen authored skills plus upstream impeccable in the documented inventory";
+  assert lib.assertMsg (names == expected) "Expected exactly fifty-five authored skill packages";
+  assert lib.assertMsg (lib.sort builtins.lessThan documented == published) "Expected fifty-five authored skills and three packaged skills in the documented inventory";
   assert lib.all (path: !(builtins.pathExists (root + "/${path}"))) ["default.nix" "agents.nix" "commands.nix" "roles.nix" "registry.nix" "base.md"];
     pkgs.runCommand "ai-tools-inventory-check" {} ''
       touch "$out"
