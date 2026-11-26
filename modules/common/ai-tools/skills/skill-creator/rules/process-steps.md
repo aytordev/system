@@ -31,8 +31,7 @@ Ordinary local maintenance updates one of fifty-five authored packages:
 `tdd`, `teach-me`, `technical-writing`, `test-design-reviewer`, `testing`,
 `twelve-factor`, `typescript-strict`, `ubiquitous-language`, `wtf`, `xstate`)
 
-The fifty-sixth published skill,
-`impeccable`, is unmodified upstream content from
+The packaged skill `impeccable` is unmodified upstream content from
 `pkgs.aytordev.impeccable-skills`, not an authored folder. Never add local
 `metadata.json`, rewrite its frontmatter/references, or copy it into `skills/` to
 satisfy this authoring contract. Its skill and engine pins/hashes belong together
@@ -41,7 +40,11 @@ in `modules/common/ai-tools/catalog.nix`; private preparation recipes live under
 `packages/`. These paths are target-repository context, not bundled resources.
 
 The catalog classifies `dotfiles-coder` and `nix` as local, the other
-fifty-three authored skills as adapted, and Impeccable as upstream. Licences
+fifty-three authored skills as adapted, and Impeccable as upstream. GoogleChrome's
+`modern-web-guidance` and `chrome-extensions` use `packaged-adaptation`: their
+source and licenses come from a pinned npm artifact, with local offline and
+safety adaptations applied by the standalone Nix recipe. Neither uses the
+authored metadata contract. Licences
 differ per package: nine adaptations carry their own nested MIT notices and
 `cli-design` is CC BY-SA 4.0. Maintain provenance in
 the linked evidence documents. Creator/registry historical comparison revisions

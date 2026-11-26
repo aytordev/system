@@ -1,7 +1,31 @@
 # Pure ownership data, not a module or runtime discovery registry.
 # Frontmatter/metadata and the linked provenance documents remain canonical.
 # tracking = null means no configured branch/channel/feed, not an update policy.
-{
+let
+  googleRelease = {
+    version = "1.0.2";
+    repository = "https://github.com/GoogleChrome/modern-web-guidance-src";
+    sourceRevision = "f6d9fc30aff7e177e05a555762808b12eee2c950";
+    distributionRevision = "2b4aa13a72dd47cd135b06ce5abfccd92e19b24f";
+    url = "https://registry.npmjs.org/modern-web-guidance/-/modern-web-guidance-1.0.2.tgz";
+    hash = "sha512-ksFBCdzMl5xxf7wuF7XQbudQ6El1e2VrO0WzcH/U29NYGNzu0EZjtojkfwzFBSnmenDyl7QIwPCgYvfEmZHr+w==";
+  };
+  googleSkill = name: {
+    kind = "packaged-adaptation";
+    source = {
+      package = "modern-web-guidance";
+      subdir = "share/modern-web-guidance/skills/${name}";
+    };
+    update = "manual-pinned-adaptation";
+    release = googleRelease;
+    tracking = null;
+    provenance = ./upstream/modern-web-guidance/PROVENANCE.md;
+  };
+in {
+  chrome-extensions = googleSkill "chrome-extensions";
+  modern-web-guidance =
+    googleSkill "modern-web-guidance"
+    // {runtimePackage = "modern-web-guidance";};
   aytordev-pen-ops = {
     kind = "adapted";
     source.path = ./skills/aytordev-pen-ops;

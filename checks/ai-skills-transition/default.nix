@@ -63,6 +63,7 @@
     "story-splitting"
     "storyboard"
   ];
+  currentNames = names ++ ["chrome-extensions" "modern-web-guidance"];
   # Historical source requirements stay fixed if publication expands later.
   oldNames = ["dotfiles-coder" "nix" "skill-creator" "skill-registry"];
   oldSkills = pkgs.runCommand "old-skills-shape-fixture" {} ''
@@ -196,7 +197,7 @@ in
           link_generation "$home" "$backups"
           for root in .pi/agent/skills; do
             test ! -L "$home/$root"
-            for name in ${lib.escapeShellArgs names}; do
+            for name in ${lib.escapeShellArgs currentNames}; do
               test ! -L "$home/$root/$name"
               test "$(readlink "$home/$root/$name/SKILL.md")" = "${current.home-files}/$root/$name/SKILL.md"
             done
@@ -318,7 +319,7 @@ in
             done
             hm "$home" "$backups" ${fragment current "checkLinkTargets"} "$TMPDIR/previous-generation"
             hm "$home" "$backups" ${fragment current "linkGeneration"} "$TMPDIR/previous-generation"
-            for name in ${lib.escapeShellArgs names}; do
+            for name in ${lib.escapeShellArgs currentNames}; do
               test ! -L "$home/.pi/agent/skills/$name"
               test "$(readlink "$home/.pi/agent/skills/$name/SKILL.md")" = "${current.home-files}/.pi/agent/skills/$name/SKILL.md"
             done

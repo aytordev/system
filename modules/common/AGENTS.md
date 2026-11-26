@@ -29,7 +29,7 @@ precedent, and the packs themselves are Home Manager modules under
 
 ### AI Tools (`ai-tools/`)
 
-`ai-tools/catalog.nix` owns the fifty-six-entry pure-data inventory: two local
+`ai-tools/catalog.nix` owns the fifty-eight-entry pure-data inventory: two local
 skills (`dotfiles-coder`, `nix`), fifty-three adapted skills (
 `acceptance-review`, `api-design`, `aytordev-pen-ops`, `bff-design`,
 `bff-entry-points`, `characterisation-tests`, `ci-debugging`, `cli-design`,
@@ -45,15 +45,18 @@ skills (`dotfiles-coder`, `nix`), fifty-three adapted skills (
 `stack-pull-requests`, `story-splitting`, `storyboard`, `structure-codebase`,
 `tdd`, `teach-me`, `technical-writing`, `test-design-reviewer`, `testing`,
 `twelve-factor`, `typescript-strict`, `ubiquitous-language`, `wtf`, `xstate`), and intact upstream
-`impeccable`. The fifty-five authored folders bundle their own support. Catalog provenance pointers preserve
+`impeccable` and packaged adaptations `modern-web-guidance` and `chrome-extensions`.
+The fifty-five authored folders bundle their own support. Catalog provenance pointers preserve
 local metadata authority; manual update policies introduce no updater.
 
 `ai-tools/upstream/impeccable/` owns private standalone package recipes and reads
 catalog pins. Public `packages/impeccable-{engine,skills}/package.nix` files are
-thin direct-import adapters. The external payload remains unmodified and outside
-the local metadata contract. Home Manager's `ai-skills` capability derives all
-fifty-six publication sources from the catalog, assembles the neutral XDG collection,
-and publishes recursive file links to the enabled Pi client. Native Gentle AI owns Pi's workflow;
+thin direct-import adapters. Impeccable's payload stays unmodified. `ai-tools/upstream/modern-web-guidance/`
+owns the offline GoogleChrome CLI and adapted skill projections; both packages
+remain outside the authored metadata contract. Home Manager's `ai-skills`
+capability derives all fifty-eight sources from the catalog, assembles the neutral
+XDG collection, and publishes recursive file links and the guidance CLI to the
+enabled Pi client. Native Gentle AI owns Pi's workflow;
 this subtree does not distribute agents or commands.
 
 `ai-tools/ai-skills.nix` is explicitly included by `mkHomeModules` in

@@ -12,6 +12,7 @@ platform by `flake/packages/default.nix`.
 | `gga` | Provider-agnostic AI code review CLI (Gentleman-Programming, pure Bash, pinned to tag `v2.10.1`) | linux + darwin (x86_64/aarch64) |
 | `impeccable-engine` | Official Impeccable engine 0.1.6, byte-preserved release binary | aarch64-darwin + x86_64-linux |
 | `impeccable-skills` | Complete upstream Impeccable Pi skill 4.4.0 with sibling engine | aarch64-darwin + x86_64-linux |
+| `modern-web-guidance` | Pinned GoogleChrome offline CLI and two adapted Pi skills | Linux and Darwin with nixpkgs Node.js |
 | `luaposix` | Lua 5.5-compatible `luaposix` build (upstream rockspec upper bound patched) | per nixpkgs |
 | `pen-dev` | Pen canvas app (rebranded Pencil; dmg → `/Applications`) | aarch64-darwin only |
 | `sketchybar-app-font` | Ligature icon font + `icon_map.lua` for Sketchybar | per nixpkgs |
