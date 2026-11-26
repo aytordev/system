@@ -98,8 +98,29 @@ require('node:module').syncBuiltinESMExports();
         assert result.returncode == 0 and result.stderr == "", result
         guide = (skills / f"modern-web-guidance/guides/ui-behaviors/{guide_id}.md").read_text(encoding="utf-8")
         assert retrieved.read_text(encoding="utf-8") == f"\n--- Guide for {guide_id} ---\n{guide}\n"
+        project = root / "project"
+        assert not list(project.iterdir())
+        policy = project / ".mwgrc"
+        gated_id = "language-detection"
+        gated_guide = (skills / f"modern-web-guidance/guides/built-in-ai/{gated_id}.md").read_text(encoding="utf-8")
+        denied = (
+            "> [!CAUTION]\n"
+            f"> **Project policy disables this guidance.** Guide `{gated_id}` covers a volatile feature "
+            '(languagedetector). Use a cross-browser approach instead unless the project owner has approved '
+            '`"allowVolatileFeatures": true` in `.mwgrc`. Do not change project policy or read around this gate.\n'
+        )
+        for contents, code, stdout, stderr in (
+            (b'{ "allowVolatileFeatures": false }\n', 1, "", denied),
+            (b'{ "allowVolatileFeatures": true }\n', 0, f"\n--- Guide for {gated_id} ---\n{gated_guide}\n", ""),
+        ):
+            policy.write_bytes(contents)
+            mtime = policy.stat().st_mtime_ns
+            output(["retrieve", gated_id], code, stdout, stderr)
+            assert (policy.read_bytes(), policy.stat().st_mtime_ns) == (contents, mtime)
+
         assert not (root / "network-attempt").exists()
-        for directory in ("home", "project", "temp"):
+        assert list(project.iterdir()) == [policy]
+        for directory in ("home", "temp"):
             assert not list((root / directory).iterdir()), directory
 
 
@@ -126,4 +147,4 @@ def check_skills(skills):
 skills = Path(sys.argv[2])
 check_skills(skills)
 run(sys.argv[1], skills)
-print("PASS: packaged skill content, license notices, offline search/list/retrieve, and no runtime side effects")
+print("PASS: packaged skills, notices, offline search/list/retrieve, read-only opt-out and opt-in, no runtime side effects")

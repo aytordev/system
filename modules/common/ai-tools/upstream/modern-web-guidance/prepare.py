@@ -123,6 +123,15 @@ isolation](csp-sandbox.md).
 
 
 def adapt_cli(text):
+    # Pin the original command body before stripping any branches. All Clearcut
+    # call sites are here, so missing, added, and reformatted calls require review
+    # on repin rather than silently changing what the removal below matches.
+    bodies = re.findall(r"(?ms)^async function main\(\) \{\n(.*?)^function getCLISkillVersion\(\)", text)
+    if len(bodies) != 1 or hashlib.sha256(bodies[0].encode()).hexdigest() != (
+        "dcffa79c2937c2f70d8a99a282a88d23db9c42b45e4c955b4dc74b1220f9b4c0"
+    ):
+        raise ValueError("Pinned CLI telemetry call sites changed")
+
     # Keep upstream list, search, retrieval and read-only project feature gates.
     text = section(text, "// src/cli/set-allow-gate.ts\nimport * as readline", "// src/cli/version.ts")
     text = section(text, "// src/cli/telemetry/clearcut-logger.ts", "// src/cli/modern-web.ts\nensureNodeVersion();")
@@ -159,6 +168,7 @@ def install(out, version):
     web = skills / "modern-web-guidance"
     chrome = skills / "chrome-extensions"
     originals = Path("skills/modern-web-guidance")
+    cli = adapt_cli((originals / "modern-web.mjs").read_bytes().decode("utf-8"))
     for folder in (web, chrome):
         source = Path("skills") / folder.name
         folder.mkdir(parents=True)
@@ -193,7 +203,7 @@ def install(out, version):
     chunks = Path("gen/guide-chunks.json.gz")
     data = gzip.decompress((originals / chunks).read_bytes())
     (runtime / chunks).write_bytes(gzip.compress(data.replace(MOVING_COMMAND.encode(), LOCAL_COMMAND.encode()), mtime=0))
-    write(runtime / "modern-web.mjs", adapt_cli((originals / "modern-web.mjs").read_text(encoding="utf-8")))
+    write(runtime / "modern-web.mjs", cli)
     search = (originals / "search.mjs").read_text(encoding="utf-8")
     write(runtime / "search.mjs", replace_once(search, "//# sourceMappingURL=search.mjs.map\n", ""))
 
